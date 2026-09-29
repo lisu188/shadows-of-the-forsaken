@@ -1,0 +1,84 @@
+name: Unity tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: unity-tests-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  activation:
+    name: Unity activation prerequisite (not tests)
+    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Require configured Unity activation
+        shell: bash
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: |
+          if [[ -z "$UNITY_EMAIL" || -z "$UNITY_PASSWORD" || ( -z "$UNITY_LICENSE" && -z "$UNITY_SERIAL" ) ]]; then
+            echo '::error::Unity tests NOT RUN. Configure UNITY_EMAIL, UNITY_PASSWORD and UNITY_LICENSE (Personal) or UNITY_SERIAL (Pro) in Actions secrets. See docs/unity-testing.md.'
+            echo '## Unity tests NOT RUN' >> "$GITHUB_STEP_SUMMARY"
+            echo 'Activation configuration is incomplete. No Unity import, compilation or test result is claimed. Issue #5 remains blocked.' >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo 'Activation configuration is present; only the Unity jobs can verify it.' >> "$GITHUB_STEP_SUMMARY"
+  tests:
+    name: Unity ${{ matrix.mode }} (clean import)
+    needs: activation
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        include:
+          - mode: editmode
+            assembly: Shadows.EditMode.Tests
+          - mode: playmode
+            assembly: Shadows.PlayMode.Tests
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          filter: blob:none
+      - name: Check source integrity and require a cold import
+        run: |
+          python3 tools/unity_validation.py project
+          test ! -d Library
+      - name: Run real Unity tests
+        id: unity
+        uses: game-ci/unity-test-runner@0ff419b913a3630032cbe0de48a0099b5a9f0ed9
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          unityVersion: 6000.0.24f1
+          projectPath: .
+          testMode: ${{ matrix.mode }}
+          customParameters: -assemblyNames ${{ matrix.assembly }}
+          artifactsPath: artifacts/unity/${{ matrix.mode }}
+          githubToken: ''
+      - name: Require complete passing NUnit evidence
+        if: always() && steps.unity.outcome != 'skipped'
+        run: python3 tools/unity_validation.py results --mode '${{ matrix.mode }}' 'artifacts/unity/${{ matrix.mode }}/${{ matrix.mode }}-results.xml'
+      - name: Upload Unity results and editor log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unity-${{ matrix.mode }}-${{ github.sha }}
+          path: |
+            artifacts/unity/${{ matrix.mode }}/*.xml
+            artifacts/unity/${{ matrix.mode }}/*.log
+          if-no-files-found: warn
+          retention-days: 14
