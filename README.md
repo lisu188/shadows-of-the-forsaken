@@ -56,16 +56,17 @@ Dokument nie określa również wszystkich parametrów implementacyjnych: klawis
 
 ## Aktualny stan
 
-Repozytorium jest na początkowym etapie. Zawiera projekt Unity, scenę szablonową `Assets/Scenes/SampleScene.unity`, podstawowe skrypty `PlayerMovement` i `CameraFollow`, konfigurację Input System oraz zasoby nocnego nieba. Sama obecność skryptów i zasobów **nie oznacza**, że opisany w dokumencie poziom jest grywalny.
+Repozytorium jest na początkowym etapie. Zawiera projekt Unity, scenę szablonową `Assets/Scenes/SampleScene.unity`, skrypty `PlayerMovement` i `CameraFollow`, konfigurację Input System oraz zasoby nocnego nieba. Sama obecność skryptów i zasobów **nie oznacza**, że opisany w dokumencie poziom jest grywalny.
 
 | Obszar | Stan |
 | --- | --- |
 | Specyfikacja, README i zasady pracy | Opisane; DOCX zachowany jako źródło wymagań. |
 | Decyzje i kontrakt pierwszego poziomu (#4) | Zapisane; automatycznie sprawdzane osiągalność, warunki bram, opcjonalność sekretu i niezmienność DOCX. |
 | Runtime postępu (#10) | Dostarczony rdzeń C#, migawki stanu, tokeny sesji, zdarzenia i reset. Adapter MonoBehaviour oraz 7 testów PlayMode są dodane; odbiór integracyjny czeka na rzeczywiste wykonanie Unity (#5). |
-| Projekt Unity, podstawowe skrypty i zasoby nieba | Istnieją w repozytorium; nie stanowią kompletnego poziomu. |
+| Kontroler gracza (#6) | Istniejący PlayerMovement przełączony na Input System; dodano rdzeń ruchu, obsługę sufitu/lądowania i blokadę wejścia. 36 testów rdzenia C# oraz 17 przypadków PlayMode; testy silnika i ręczny odbiór nadal blokuje #5. |
+| Projekt Unity, skrypty i zasoby nieba | Istnieją w repozytorium; nie stanowią kompletnego poziomu. |
 | Dziedziniec, sala tronowa, biblioteka i katakumby | Do zbudowania jako spójny poziom zgodny z dokumentem. |
-| Pierwsze starcie, miniboss i finałowa walka | Do zaimplementowania. |
+| Pierwsze starcie, miniboss i finałowa walka | Do zaimplementowania; sygnał wejścia AttackRequested z #6 nie jest jeszcze mechaniką walki. |
 | Runy / dźwignie, ukryte drzwi i sekrety | Do zaimplementowania; reguły odblokowań są w rdzeniu postępu, nie w colliderach sceny. |
 | Wyjście / zakończenie poziomu | Reguła zakończenia jest w runtime #10; fizyczne wyjście i finał pozostają do implementacji. |
 | Docelowa oprawa i czas 2–3 minut | Niezweryfikowane; wymagają realizacji i testów rozgrywki. |
@@ -106,6 +107,8 @@ cd shadows-of-the-forsaken
 
 Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/SampleScene.unity`. To obecnie scena bazowa, a nie gotowy poziom z dokumentu.
 
+[Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Nie dodano automatycznie gracza ani gotowego zamku do SampleScene; składanie poziomu pozostaje w #8.
+
 ## Dokumentacja i testy narzędzi
 
 Eksport tekstu specyfikacji, walidatory i testy narzędzi wymagają Git oraz Pythona 3.9 lub nowszego, bez dodatkowych bibliotek:
@@ -123,24 +126,28 @@ Workflow `Validate` sprawdza dokumentację, kontrakt poziomu, śledzone źródł
 
 ## Testy runtime C# bez edytora
 
-Wymagany jest .NET SDK 8.0. Projekt testów odwołuje się do rzeczywistego kodu w `Assets/Progression/Core`, nie do kopii lub atrap Unity:
+Wymagany jest .NET SDK 8.0. Projekty testów odwołują się do rzeczywistego kodu w `Assets/Progression/Core` i `Assets/Movement/Core`, nie do kopii lub atrap Unity:
 
 ```sh
 dotnet test tests/Progression/Progression.Tests.csproj --configuration Release
+dotnet test tests/Movement/Movement.Tests.csproj --configuration Release
 ```
 
 Workflow `Progression C# tests` kompiluje rdzeń, uruchamia NUnit, sprawdza raport TRX i publikuje go jako artefakt. Test zgodności z JSON porównuje komendy we wszystkich osiągalnych stanach: 29 bez sekretu i 63 z sekretem, łącznie 1472 porównania. Pokrywa również odrzucane komendy. **Nie zastępuje testów komponentu Unity ani fizycznego przejścia poziomu.** Sposób podłączenia komponentu i granice API opisuje [dokument runtime](docs/progression-runtime.md).
+
+Workflow `Movement C# tests` kompiluje produkcyjny rdzeń ruchu jako .NET Standard 2.1 i wykonuje 36 wspólnych przypadków NUnit. Sprawdza także obecność wszystkich prób przy 30/60/120 FPS w raporcie TRX. Testy matematyki ruchu i blokady wejścia nie potwierdzają fizyki CharacterController ani działania Input System w silniku.
 
 ## Testy Unity
 
 Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.0.24f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
 
-[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano wspólne testy rdzenia oraz testy cyklu życia adaptera #10. Dopóki nie ma udanych wyników obu trybów i logu importu, odbiór Unity pozostaje niepotwierdzony. Automatyczny build gry pozostaje osobnym zadaniem #24.
+[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano wspólne testy rdzeni, testy cyklu życia adaptera #10 i testy kontrolera #6. Dopóki nie ma udanych wyników obu trybów i logu importu, odbiór Unity pozostaje niepotwierdzony. Automatyczny build gry pozostaje osobnym zadaniem #24.
 
 ## Struktura repozytorium
 
 ```text
 Assets/                         Sceny, skrypty, zasoby i powiązane pliki .meta
+Assets/Movement/Core/           Rdzeń ruchu i blokada wejścia bez zależności Unity
 Assets/Progression/             Rdzeń postępu bez Unity i adapter MonoBehaviour
 Assets/Tests/                   Testy EditMode i PlayMode silnika Unity
 Packages/                       Zależności Unity
@@ -148,6 +155,7 @@ ProjectSettings/                Współdzielona konfiguracja i wersja edytora
 docs/                           Decyzje projektowe, kontrakt poziomu i uruchamianie testów
 tools/                          Walidacja dokumentacji, źródeł i wyników; lokalny runner Unity
 tests/                          Testy narzędzi Pythona i modelu poziomu, nie testy silnika
+tests/Movement/                 Runner NUnit/.NET kompilujący produkcyjny rdzeń ruchu
 tests/Progression/              Runner NUnit/.NET kompilujący produkcyjny rdzeń C#
 .github/workflows/              Automatyzacja CI
 Shadows of the Forsaken.docx     Nadrzędna specyfikacja gry i poziomu
