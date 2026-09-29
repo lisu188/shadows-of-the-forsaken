@@ -188,7 +188,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
         public void HeldControlsCannotResumeBeforeNeutral()
         {
             var gate = new PlayerInputGate();
-            Assert.That(gate.Sample(1, 1, PlayerButtons.Jump, PlayerButtons.Jump).Pressed, Is.Zero);
+            Assert.That(gate.Sample(1, 1, PlayerButtons.Jump, PlayerButtons.Jump).Pressed, Is.EqualTo(PlayerButtons.None));
             Assert.That(gate.AwaitingNeutral, Is.True);
             gate.Sample(0, 0, 0, 0);
             Assert.That(gate.AwaitingNeutral, Is.False);
@@ -196,7 +196,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             gate.Suspend();
             var blocked = gate.Sample(1, 1, PlayerButtons.Jump, 0);
             Assert.That(blocked.Forward, Is.Zero);
-            Assert.That(blocked.Pressed, Is.Zero);
+            Assert.That(blocked.Pressed, Is.EqualTo(PlayerButtons.None));
             Assert.That(gate.AwaitingNeutral, Is.True);
         }
 
@@ -208,7 +208,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             var gate = new PlayerInputGate();
             gate.Sample(0, 0, 0, 0);
             Assert.That(gate.Sample(0, 0, button, button).Pressed, Is.EqualTo(button));
-            Assert.That(gate.Sample(0, 0, button, button).Pressed, Is.Zero);
+            Assert.That(gate.Sample(0, 0, button, button).Pressed, Is.EqualTo(PlayerButtons.None));
             gate.Sample(0, 0, 0, 0);
             Assert.That(gate.Sample(0, 0, button, button).Pressed, Is.EqualTo(button));
         }
