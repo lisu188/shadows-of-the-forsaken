@@ -21,16 +21,20 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Compile actual core and run shared NUnit tests
         run: dotnet test tests/Progression/Progression.Tests.csproj --configuration Release --logger 'trx;LogFileName=progression.trx' --results-directory artifacts/progression
-      - name: Require executed passing tests
+      - name: Require executed passing tests and contract parity
         run: |
           python3 - <<'PY'
           import xml.etree.ElementTree as ET
           root = ET.parse('artifacts/progression/progression.trx').getroot()
-          counts = root.find('.//{http://microsoft.com/schemas/VisualStudio/TeamTest/2010}Counters')
+          ns = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+          counts = root.find('.//t:Counters', ns)
+          results = root.findall('.//t:UnitTestResult', ns)
           assert counts is not None, 'Missing counters'
-          assert int(counts.attrib['total']) >= 20, 'Expected progression tests were not discovered'
+          assert int(counts.attrib['total']) == len(results) >= 29, 'Expected progression tests were not discovered'
           assert counts.attrib['executed'] == counts.attrib['total'] == counts.attrib['passed'], counts.attrib
           assert int(counts.attrib['failed']) == 0, counts.attrib
+          assert all(result.get('outcome') == 'Passed' for result in results), 'Nonpassing test result'
+          assert sum('EveryReachableStateAndCommandMatchesJsonOracle' in result.get('testName', '') for result in results) == 2, 'Both JSON parity scenarios must run'
           print('Verified executed C# tests:', counts.attrib['passed'])
           PY
       - name: Upload real test results

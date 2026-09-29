@@ -50,7 +50,7 @@ Mapa z §8 rozwija układ przestrzenny: start znajduje się na dole, pierwsze st
 - **Sekret:** jedna sala bonusowa z dojściem od katakumb oraz ukrytym skrótem od sali tronowej. Oba połączenia odblokowuje dźwignia w katakumbach, dopiero po otwarciu biblioteki. Skrót jest jawną interpretacją połączenia flow chartu, nie korytarzem narysowanym na mapie. Bonus nie jest wymagany do ukończenia.
 - **Finał:** górna komnata należy do katakumb; po walce otwiera się wyjście kończące scenariusz. Bez obowiązkowej cutscenki i bez ładowania nieistniejącego następnego poziomu.
 
-[Kontrakt poziomu w JSON](docs/level-contract.json) zapisuje obszary, połączenia i warunki postępu. Walidator sprawdza osiągalność i brak przedwczesnego ukończenia w modelu, z sekretem i bez niego. **Nie jest to jeszcze logika działająca w Unity ani implementacja issue #10.**
+[Kontrakt poziomu w JSON](docs/level-contract.json) zapisuje obszary, połączenia i warunki postępu. Walidator sprawdza osiągalność i brak przedwczesnego ukończenia w modelu, z sekretem i bez niego. JSON pozostaje kontraktem projektowym; [runtime C# dla #10](docs/progression-runtime.md) implementuje te reguły osobno i jest porównywany z nim w testach. **Testy modelu ani C# nie potwierdzają jeszcze działania sceny w Unity.**
 
 Dokument nie określa również wszystkich parametrów implementacyjnych: klawiszy, statystyk przeciwników, obrażeń, szczegółowych zasad walki czy wymiarów geometrii. Takie decyzje należy oznaczać jako decyzje projektowe / techniczne, a nie dosłowne wymagania DOCX.
 
@@ -62,13 +62,15 @@ Repozytorium jest na początkowym etapie. Zawiera projekt Unity, scenę szablono
 | --- | --- |
 | Specyfikacja, README i zasady pracy | Opisane; DOCX zachowany jako źródło wymagań. |
 | Decyzje i kontrakt pierwszego poziomu (#4) | Zapisane; automatycznie sprawdzane osiągalność, warunki bram, opcjonalność sekretu i niezmienność DOCX. |
+| Runtime postępu (#10) | Dostarczony rdzeń C#, migawki stanu, tokeny sesji, zdarzenia i reset. Adapter MonoBehaviour oraz 7 testów PlayMode są dodane; odbiór integracyjny czeka na rzeczywiste wykonanie Unity (#5). |
 | Projekt Unity, podstawowe skrypty i zasoby nieba | Istnieją w repozytorium; nie stanowią kompletnego poziomu. |
 | Dziedziniec, sala tronowa, biblioteka i katakumby | Do zbudowania jako spójny poziom zgodny z dokumentem. |
 | Pierwsze starcie, miniboss i finałowa walka | Do zaimplementowania. |
-| Runy / dźwignie, ukryte drzwi i sekrety | Do zaimplementowania. |
-| Wyjście / zakończenie poziomu | Do zaimplementowania. |
+| Runy / dźwignie, ukryte drzwi i sekrety | Do zaimplementowania; reguły odblokowań są w rdzeniu postępu, nie w colliderach sceny. |
+| Wyjście / zakończenie poziomu | Reguła zakończenia jest w runtime #10; fizyczne wyjście i finał pozostają do implementacji. |
 | Docelowa oprawa i czas 2–3 minut | Niezweryfikowane; wymagają realizacji i testów rozgrywki. |
 | Walidacja dokumentacji i źródeł | Eksport DOCX, odnośniki README, kontrakt poziomu, integralność `.meta`/GUID i testy narzędzi w GitHub Actions. |
+| Testy C# postępu | Osobne CI kompiluje produkcyjny rdzeń jako .NET Standard 2.1; 26 wspólnych przypadków NUnit i 3 testy kontraktu. Nie uruchamia MonoBehaviour. |
 | Testy bazowe Unity (#5) | Dodano 6 przypadków EditMode i 2 PlayMode oraz osobny workflow. Pierwszy run zablokowany brakiem konfiguracji aktywacji; nie potwierdzono importu ani kompilacji. |
 | Build playera i testy ręczne | Nie zostały wykonane; testy narzędzi nie zastępują odbioru gry. |
 
@@ -119,22 +121,34 @@ Na Windows użyj `python` zamiast `python3`, jeżeli pod tą nazwą dostępny je
 
 Workflow `Validate` sprawdza dokumentację, kontrakt poziomu, śledzone źródła Unity i narzędzia. **Nie uruchamia silnika Unity, nie kompiluje gry i nie testuje rozgrywki.**
 
+## Testy runtime C# bez edytora
+
+Wymagany jest .NET SDK 8.0. Projekt testów odwołuje się do rzeczywistego kodu w `Assets/Progression/Core`, nie do kopii lub atrap Unity:
+
+```sh
+dotnet test tests/Progression/Progression.Tests.csproj --configuration Release
+```
+
+Workflow `Progression C# tests` kompiluje rdzeń, uruchamia NUnit, sprawdza raport TRX i publikuje go jako artefakt. Test zgodności z JSON porównuje komendy we wszystkich osiągalnych stanach: 29 bez sekretu i 63 z sekretem, łącznie 1472 porównania. Pokrywa również odrzucane komendy. **Nie zastępuje testów komponentu Unity ani fizycznego przejścia poziomu.** Sposób podłączenia komponentu i granice API opisuje [dokument runtime](docs/progression-runtime.md).
+
 ## Testy Unity
 
 Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.0.24f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
 
-[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Dopóki nie ma udanych wyników obu trybów i logu importu, #5 pozostaje otwarte. Automatyczny build gry pozostaje osobnym zadaniem #24.
+[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano wspólne testy rdzenia oraz testy cyklu życia adaptera #10. Dopóki nie ma udanych wyników obu trybów i logu importu, odbiór Unity pozostaje niepotwierdzony. Automatyczny build gry pozostaje osobnym zadaniem #24.
 
 ## Struktura repozytorium
 
 ```text
 Assets/                         Sceny, skrypty, zasoby i powiązane pliki .meta
+Assets/Progression/             Rdzeń postępu bez Unity i adapter MonoBehaviour
 Assets/Tests/                   Testy EditMode i PlayMode silnika Unity
 Packages/                       Zależności Unity
 ProjectSettings/                Współdzielona konfiguracja i wersja edytora
 docs/                           Decyzje projektowe, kontrakt poziomu i uruchamianie testów
 tools/                          Walidacja dokumentacji, źródeł i wyników; lokalny runner Unity
 tests/                          Testy narzędzi Pythona i modelu poziomu, nie testy silnika
+tests/Progression/              Runner NUnit/.NET kompilujący produkcyjny rdzeń C#
 .github/workflows/              Automatyzacja CI
 Shadows of the Forsaken.docx     Nadrzędna specyfikacja gry i poziomu
 README.md                       Zakres, uruchomienie i aktualny stan
