@@ -68,8 +68,9 @@ Repozytorium jest na początkowym etapie. Zawiera projekt Unity, scenę szablono
 | Runy / dźwignie, ukryte drzwi i sekrety | Do zaimplementowania. |
 | Wyjście / zakończenie poziomu | Do zaimplementowania. |
 | Docelowa oprawa i czas 2–3 minut | Niezweryfikowane; wymagają realizacji i testów rozgrywki. |
-| Walidacja dokumentacji | Eksport DOCX, odnośniki README i kontrakt poziomu w GitHub Actions. |
-| Kompilacja gry, Unity EditMode / PlayMode, testy ręczne | Nie są potwierdzane przez obecny workflow dokumentacyjny. |
+| Walidacja dokumentacji i źródeł | Eksport DOCX, odnośniki README, kontrakt poziomu, integralność `.meta`/GUID i testy narzędzi w GitHub Actions. |
+| Testy bazowe Unity (#5) | Dodano 6 przypadków EditMode i 2 PlayMode oraz osobny workflow. Pierwszy run zablokowany brakiem konfiguracji aktywacji; nie potwierdzono importu ani kompilacji. |
+| Build playera i testy ręczne | Nie zostały wykonane; testy narzędzi nie zastępują odbioru gry. |
 
 Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings` nie należą do źródeł; usunięcie ich z bieżącego drzewa Git nie usuwa ich ze starej historii.
 
@@ -105,27 +106,35 @@ Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i
 
 ## Dokumentacja i testy narzędzi
 
-Eksport tekstu specyfikacji, walidator kontraktu i testy nie wymagają dodatkowych bibliotek Pythona:
+Eksport tekstu specyfikacji, walidatory i testy narzędzi wymagają Git oraz Pythona 3.9 lub nowszego, bez dodatkowych bibliotek:
 
 ```sh
 python3 tools/export_design.py
 python3 tools/validate_level_contract.py
+python3 tools/unity_validation.py project
 python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 Na Windows użyj `python` zamiast `python3`, jeżeli pod tą nazwą dostępny jest interpreter. Eksport tekstowy **nie zawiera ilustracji ani układu graficznego**. Flow chart, mapę i referencje należy sprawdzać w oryginalnym DOCX.
 
-Workflow `Validate` sprawdza narzędzie eksportu, lokalne odnośniki README i kontrakt poziomu oraz udostępnia eksport tekstowy jako artefakt. **Nie uruchamia silnika Unity, nie kompiluje gry i nie testuje rozgrywki.** Testy Unity oraz automatyczny build będą osobnym etapem; zielony wynik walidacji dokumentacji nie jest dowodem działania poziomu.
+Workflow `Validate` sprawdza dokumentację, kontrakt poziomu, śledzone źródła Unity i narzędzia. **Nie uruchamia silnika Unity, nie kompiluje gry i nie testuje rozgrywki.**
+
+## Testy Unity
+
+Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.0.24f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
+
+[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Dopóki nie ma udanych wyników obu trybów i logu importu, #5 pozostaje otwarte. Automatyczny build gry pozostaje osobnym zadaniem #24.
 
 ## Struktura repozytorium
 
 ```text
 Assets/                         Sceny, skrypty, zasoby i powiązane pliki .meta
+Assets/Tests/                   Testy EditMode i PlayMode silnika Unity
 Packages/                       Zależności Unity
 ProjectSettings/                Współdzielona konfiguracja i wersja edytora
-docs/                           Decyzje projektowe i kontrakt poziomu
-tools/                          Narzędzia dokumentacji i walidacji kontraktu
-tests/                          Testy narzędzi dokumentacji i modelu poziomu
+docs/                           Decyzje projektowe, kontrakt poziomu i uruchamianie testów
+tools/                          Walidacja dokumentacji, źródeł i wyników; lokalny runner Unity
+tests/                          Testy narzędzi Pythona i modelu poziomu, nie testy silnika
 .github/workflows/              Automatyzacja CI
 Shadows of the Forsaken.docx     Nadrzędna specyfikacja gry i poziomu
 README.md                       Zakres, uruchomienie i aktualny stan
