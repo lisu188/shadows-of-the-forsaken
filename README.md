@@ -21,7 +21,7 @@ Kierunek wizualny to gotycka architektura, wszechobecny cień i skąpe światło
 | Przeklęta biblioteka | Zakazane księgi i mechanizm blokujący ukryte drzwi. | §4 |
 | Katakumby | Mroczne podziemne korytarze ze śladami kultu; sekretne przejście i mechanizm. Mapa oznacza sekretną dźwignię. | §4, §7, §8 |
 | Finałowa walka | Flow chart umieszcza finałową walkę w etapie katakumb; mapa oznacza oddzielny końcowy obszar jako „Finałowa Walka/Scena”. | §6, §8 |
-| Opcjonalny sekret | Flow chart pokazuje odnogę „Sekretne Wyjście”, a mapa „Sekretną Salę (Bonus)”. Ich dokładny związek wymaga decyzji opisanej poniżej. | §3, §6, §8 |
+| Opcjonalny sekret | Flow chart pokazuje odnogę „Sekretne Wyjście”, a mapa „Sekretną Salę (Bonus)”. Ich związek określają rozstrzygnięcia poniżej. | §3, §6, §8 |
 | Gotyckie okna / witraże | Światło księżyca podkreślające pozostałości dawnej świetności zamku. | §4 |
 | Zakończenie | Wyjście lub przejście do kolejnego poziomu. | §6, §7 |
 | Tempo rozgrywki | Około 2–3 minut przy podstawowej eksploracji; opcjonalne sekrety wydłużają rozgrywkę. | §3 |
@@ -42,11 +42,15 @@ flowchart TD
 
 Mapa z §8 rozwija układ przestrzenny: start znajduje się na dole, pierwsze starcie powyżej niego, zagadka po lewej, sala tronowa po prawej, katakumby dalej u góry. W górnej części są końcowa walka / scena oraz lewa odnoga do sekretnej sali bonusowej. Połączenia i proporcje przestrzeni należy sprawdzać w oryginalnej ilustracji; schemat Mermaid nie zastępuje mapy.
 
-### Niejednoznaczności do jawnego rozstrzygnięcia
+### Przyjęte rozstrzygnięcia — issue #4
 
-- **Biblioteka:** została opisana w §4, ale nie ma osobnej etykiety na mapie. Nie można jej pomijać tylko z tego powodu; umiejscowienie należy ustalić bez nieuzgodnionej zmiany przebiegu poziomu.
-- **Sekret:** flow chart łączy sekretne wyjście z salą tronową, a mapa pokazuje salę bonusową przy górnej części trasy. Dokument nie przesądza, czy to ten sam sekret, czy dwa różne elementy.
-- **Finał:** na flow charcie finałowa walka należy do etapu katakumb, a mapa wydziela obszar „Finałowa Walka/Scena”. Nie należy usuwać wymagania walki ani dopisywać filmowego przerywnika wyłącznie na podstawie słowa „Scena”.
+[Decyzje projektowe](docs/design-decisions.md) rozdzielają wymagania DOCX od interpretacji przyjętych do implementacji. Zawierają mapowanie obszarów na siatkę mapy, model sterowania i walki oraz wybór pierwszego targetu: Windows x64. Oryginalny DOCX pozostał bez zmian.
+
+- **Biblioteka:** obowiązkowy łącznik między salą tronową a katakumbami; mechanizm ukrytych drzwi otwiera drogę do podziemi.
+- **Sekret:** jedna sala bonusowa z dojściem od katakumb oraz ukrytym skrótem od sali tronowej. Oba połączenia odblokowuje dźwignia w katakumbach, dopiero po otwarciu biblioteki. Skrót jest jawną interpretacją połączenia flow chartu, nie korytarzem narysowanym na mapie. Bonus nie jest wymagany do ukończenia.
+- **Finał:** górna komnata należy do katakumb; po walce otwiera się wyjście kończące scenariusz. Bez obowiązkowej cutscenki i bez ładowania nieistniejącego następnego poziomu.
+
+[Kontrakt poziomu w JSON](docs/level-contract.json) zapisuje obszary, połączenia i warunki postępu. Walidator sprawdza osiągalność i brak przedwczesnego ukończenia w modelu, z sekretem i bez niego. **Nie jest to jeszcze logika działająca w Unity ani implementacja issue #10.**
 
 Dokument nie określa również wszystkich parametrów implementacyjnych: klawiszy, statystyk przeciwników, obrażeń, szczegółowych zasad walki czy wymiarów geometrii. Takie decyzje należy oznaczać jako decyzje projektowe / techniczne, a nie dosłowne wymagania DOCX.
 
@@ -57,13 +61,14 @@ Repozytorium jest na początkowym etapie. Zawiera projekt Unity, scenę szablono
 | Obszar | Stan |
 | --- | --- |
 | Specyfikacja, README i zasady pracy | Opisane; DOCX zachowany jako źródło wymagań. |
+| Decyzje i kontrakt pierwszego poziomu (#4) | Zapisane; automatycznie sprawdzane osiągalność, warunki bram, opcjonalność sekretu i niezmienność DOCX. |
 | Projekt Unity, podstawowe skrypty i zasoby nieba | Istnieją w repozytorium; nie stanowią kompletnego poziomu. |
 | Dziedziniec, sala tronowa, biblioteka i katakumby | Do zbudowania jako spójny poziom zgodny z dokumentem. |
 | Pierwsze starcie, miniboss i finałowa walka | Do zaimplementowania. |
 | Runy / dźwignie, ukryte drzwi i sekrety | Do zaimplementowania. |
 | Wyjście / zakończenie poziomu | Do zaimplementowania. |
 | Docelowa oprawa i czas 2–3 minut | Niezweryfikowane; wymagają realizacji i testów rozgrywki. |
-| Walidacja dokumentacji | Eksport DOCX i testy narzędzia w GitHub Actions. |
+| Walidacja dokumentacji | Eksport DOCX, odnośniki README i kontrakt poziomu w GitHub Actions. |
 | Kompilacja gry, Unity EditMode / PlayMode, testy ręczne | Nie są potwierdzane przez obecny workflow dokumentacyjny. |
 
 Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings` nie należą do źródeł; usunięcie ich z bieżącego drzewa Git nie usuwa ich ze starej historii.
@@ -71,7 +76,7 @@ Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings
 ## Plan realizacji
 
 1. **Fundamenty techniczne:** kontroler gracza, kamera, niezawodne wejście i testy. Zachować istniejące GUID-y skryptów oraz przypiętą wersję Unity.
-2. **Blokowy poziom zamku:** dziedziniec, pierwsze starcie, zagadka, sala tronowa, biblioteka, sekretne przejście, katakumby, finał i wyjście. Rozstrzygnąć wskazane wyżej niejednoznaczności, a następnie odwzorować mapę. Geometria zastępcza nie jest finalną oprawą.
+2. **Blokowy poziom zamku:** dziedziniec, pierwsze starcie, zagadka, sala tronowa, biblioteka, sekretne przejście, katakumby, finał i wyjście. Odwzorować mapę z rozstrzygnięciami zapisanymi w `docs/design-decisions.md`. Geometria zastępcza nie jest finalną oprawą.
 3. **Pełny przebieg rozgrywki:** spokojne wejście, pojedynczy pierwszy przeciwnik, zagadka, miniboss, katakumby, finałowa walka i osiągalne zakończenie. Oddzielić opcjonalny sekret od wymaganej ścieżki.
 4. **Atmosfera i czytelność:** ruiny, kolumny, księgi, ślady kultu, gotyckie okna, światło księżyca i pochodni, mgła oraz czytelna prezentacja zagrożeń.
 5. **Weryfikacja:** testy logiki, testy w Unity i ręczne przejście poziomu. Sprawdzić brak blokad postępu, możliwość ukończenia bez opcjonalnego sekretu oraz dodatkową zawartość sekretnej trasy. Dopiero po pomiarach deklarować osiągnięcie czasu 2–3 minut.
@@ -100,16 +105,17 @@ Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i
 
 ## Dokumentacja i testy narzędzi
 
-Eksport tekstu specyfikacji i testy nie wymagają dodatkowych bibliotek Pythona:
+Eksport tekstu specyfikacji, walidator kontraktu i testy nie wymagają dodatkowych bibliotek Pythona:
 
 ```sh
 python3 tools/export_design.py
+python3 tools/validate_level_contract.py
 python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 Na Windows użyj `python` zamiast `python3`, jeżeli pod tą nazwą dostępny jest interpreter. Eksport tekstowy **nie zawiera ilustracji ani układu graficznego**. Flow chart, mapę i referencje należy sprawdzać w oryginalnym DOCX.
 
-Workflow `Validate` sprawdza narzędzie eksportu i lokalne odnośniki w README oraz udostępnia eksport tekstowy jako artefakt. **Nie uruchamia silnika Unity, nie kompiluje gry i nie testuje rozgrywki.** Testy Unity oraz automatyczny build będą osobnym etapem; zielony wynik walidacji dokumentacji nie jest dowodem działania poziomu.
+Workflow `Validate` sprawdza narzędzie eksportu, lokalne odnośniki README i kontrakt poziomu oraz udostępnia eksport tekstowy jako artefakt. **Nie uruchamia silnika Unity, nie kompiluje gry i nie testuje rozgrywki.** Testy Unity oraz automatyczny build będą osobnym etapem; zielony wynik walidacji dokumentacji nie jest dowodem działania poziomu.
 
 ## Struktura repozytorium
 
@@ -117,8 +123,9 @@ Workflow `Validate` sprawdza narzędzie eksportu i lokalne odnośniki w README o
 Assets/                         Sceny, skrypty, zasoby i powiązane pliki .meta
 Packages/                       Zależności Unity
 ProjectSettings/                Współdzielona konfiguracja i wersja edytora
-tools/                          Narzędzia dokumentacji
-tests/                          Testy narzędzi dokumentacji
+docs/                           Decyzje projektowe i kontrakt poziomu
+tools/                          Narzędzia dokumentacji i walidacji kontraktu
+tests/                          Testy narzędzi dokumentacji i modelu poziomu
 .github/workflows/              Automatyzacja CI
 Shadows of the Forsaken.docx     Nadrzędna specyfikacja gry i poziomu
 README.md                       Zakres, uruchomienie i aktualny stan

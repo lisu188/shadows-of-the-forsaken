@@ -14,6 +14,14 @@ Section 6's flow chart explicitly includes a miniboss and a final fight, which m
 
 Section 8's map separates the first encounter and puzzle spaces, marks a secret lever in the catacombs, and shows an upper-left bonus-room branch and a final fight/scene area. The library is specified in prose but has no separate map label. Do not silently omit it or assert that the two differently placed secret areas are identical. Document explicit decisions resolving these ambiguities before fixing the level layout. Do not infer a required cutscene from the word 'scene'.
 
+### Implemented design decisions (#4)
+
+Read `docs/design-decisions.md` and `docs/level-contract.json` before implementing the next gameplay issue. They record explicit implementation choices under the owner's instruction to select, implement and merge an issue; they are not additional text from the DOCX or a claim of separate owner review.
+
+The library is the mandatory connector from the throne room to the catacombs. There is one optional bonus room: the catacomb lever unlocks its upper branch and a concealed return shortcut to the throne room, only after the library has been opened. The final arena is part of the catacombs; normal completion always requires the final fight. Preserve the lower puzzle/junction backtracking and do not invent a direct puzzle-to-throne passage through a map wall.
+
+The JSON and Python validator are a design model, not the Unity progression implementation (#10), scene validation or a timed playthrough. A later change must keep decisions, contract, tests and README consistent; never auto-update the source DOCX hash merely to silence a failure.
+
 ## Implementation
 
 - Tie each feature and acceptance check to a DOCX section. Label unspecified mechanics/balance values as implementation choices.
@@ -26,6 +34,6 @@ Section 8's map separates the first encounter and puzzle spaces, marks a secret 
 
 ## Verification
 
-Run `python3 -m unittest discover -s tests -p 'test_*.py' -v` for the current documentation tooling. Add regression tests for new logic. Validate scene/component integration in the pinned Unity editor when available.
+Run `python3 tools/validate_level_contract.py` and `python3 -m unittest discover -s tests -p 'test_*.py' -v` for the current documentation and design tooling. Add regression tests for new logic. Validate scene/component integration in the pinned Unity editor when available.
 
 Never report tests that were skipped as passed. Distinguish documentation tests, headless C# tests, Unity EditMode/PlayMode tests, player builds and manual visual checks. Report unexecuted checks explicitly. Do not claim the 2–3 minute target is achieved without a timed playthrough.
