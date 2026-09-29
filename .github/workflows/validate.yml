@@ -8,7 +8,8 @@ concurrency:
   group: validate-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  headless:
+  documentation:
+    name: Documentation tests (not Unity)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -16,24 +17,18 @@ jobs:
         with:
           persist-credentials: false
           filter: blob:none
-      - uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
-      - name: Export design document for review
+      - name: Test design export and README links
+        env:
+          PYTHONUTF8: '1'
+        run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Export design text
         run: |
           mkdir -p artifacts
           python3 tools/export_design.py > artifacts/design-text.md
-          cp 'Shadows of the Forsaken.docx' artifacts/
-      - name: Validate project structure
-        if: ${{ hashFiles('tools/validate_project.py') != '' }}
-        run: python3 tools/validate_project.py
-      - name: Run headless gameplay tests
-        if: ${{ hashFiles('tests/Headless/Headless.csproj') != '' }}
-        run: dotnet run --project tests/Headless/Headless.csproj --configuration Release
-      - name: Upload validation artifacts
-        if: always()
+      - name: Upload documentation artifact
         uses: actions/upload-artifact@v4
         with:
-          name: validation
-          path: artifacts/
-          if-no-files-found: warn
+          name: design-text
+          path: artifacts/design-text.md
+          if-no-files-found: error
+          retention-days: 14
