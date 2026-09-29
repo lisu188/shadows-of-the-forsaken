@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir -p artifacts
           python3 tools/export_design.py > artifacts/design-text.md
-          cat artifacts/design-text.md
+          cp 'Shadows of the Forsaken.docx' artifacts/
       - name: Validate project structure
         if: ${{ hashFiles('tools/validate_project.py') != '' }}
         run: python3 tools/validate_project.py
