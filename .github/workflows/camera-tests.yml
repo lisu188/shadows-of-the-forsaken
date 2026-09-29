@@ -1,0 +1,49 @@
+name: Camera C# tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: camera-tests-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  camera:
+    name: C# camera math (not Unity physics)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile production camera math and run shared NUnit tests
+        run: dotnet test tests/Camera/Camera.Tests.csproj --configuration Release --logger 'trx;LogFileName=camera.trx' --results-directory artifacts/camera
+      - name: Require executed camera and frame-rate tests
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          root = ET.parse('artifacts/camera/camera.trx').getroot()
+          ns = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+          counts = root.find('.//t:Counters', ns)
+          assert counts is not None, 'Missing counters'
+          total = int(counts.attrib['total'])
+          assert total >= 32, 'Camera tests not discovered'
+          assert int(counts.attrib['executed']) == int(counts.attrib['passed']) == total
+          assert int(counts.attrib['failed']) == 0
+          results = root.findall('.//t:UnitTestResult', ns)
+          assert len(results) == total and all(r.get('outcome') == 'Passed' for r in results)
+          for method in ('StationaryTargetDampingIsFrameRateIndependent', 'ReturningFromObstructionIsSmoothAndFrameRateIndependent', 'ObstructionSafetyIsNotDelayedByDamping'):
+              for fps in (30, 60, 120):
+                  assert any(r.get('testName') == f'{method}({fps})' for r in results), (method, fps)
+          print('Verified executed C# camera math tests:', total)
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: camera-test-results
+          path: artifacts/camera/
+          if-no-files-found: error
+          retention-days: 14
