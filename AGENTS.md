@@ -22,6 +22,12 @@ The library is the mandatory connector from the throne room to the catacombs. Th
 
 The JSON and Python validator are a design model, not the Unity progression implementation (#10), scene validation or a timed playthrough. A later change must keep decisions, contract, tests and README consistent; never auto-update the source DOCX hash merely to silence a failure.
 
+### Runtime progression (#10)
+
+Reuse `Assets/Progression/Core/LevelProgression.cs` and `LevelProgressionController` instead of inventing another progression state. Read `docs/progression-runtime.md`. Core rules are compared against the JSON in .NET tests; the MonoBehaviour lifecycle requires real Unity verification, currently dependent on #5 activation.
+
+Use one scene-owned controller per game session, capture its SessionId when starting an action, and reject callbacks carrying an old session. Do not replace the token inside an old callback. A reset clears progress and notifies current observers; the physical reset of enemies, player and doors belongs to their scene components. Subscribe/unsubscribe consumers with their lifecycle. Do not mutate progression synchronously from Changed listeners or use a global/static singleton. All gameplay calls belong on Unity's main thread.
+
 ## Implementation
 
 - Tie each feature and acceptance check to a DOCX section. Label unspecified mechanics/balance values as implementation choices.
@@ -34,6 +40,6 @@ The JSON and Python validator are a design model, not the Unity progression impl
 
 ## Verification
 
-Run `python3 tools/validate_level_contract.py` and `python3 -m unittest discover -s tests -p 'test_*.py' -v` for the current documentation and design tooling. Add regression tests for new logic. Validate scene/component integration in the pinned Unity editor when available.
+Run `python3 tools/validate_level_contract.py` and `python3 -m unittest discover -s tests -p 'test_*.py' -v` for the current documentation and design tooling. Run `python3 tools/unity_validation.py project` for source integrity and `dotnet test tests/Progression/Progression.Tests.csproj --configuration Release` for real C# core tests. The .NET project compiles the same source as Unity; it does not compile or simulate MonoBehaviour. Add regression tests for new logic. Validate scene/component integration in the pinned Unity editor when available.
 
 Never report tests that were skipped as passed. Distinguish documentation tests, headless C# tests, Unity EditMode/PlayMode tests, player builds and manual visual checks. Report unexecuted checks explicitly. Do not claim the 2–3 minute target is achieved without a timed playthrough.
