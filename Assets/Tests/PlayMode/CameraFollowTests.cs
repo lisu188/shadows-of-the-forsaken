@@ -1,0 +1,340 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
+using Object = UnityEngine.Object;
+
+namespace ShadowsOfTheForsaken.Tests.PlayMode
+{
+    public class CameraFollowTests
+    {
+        private readonly List<GameObject> objects = new List<GameObject>();
+        private Component follow;
+        private Type followType;
+        private Camera camera;
+        private GameObject player;
+        private const string Missing = "CameraFollow: assign player or tag exactly one active character Player.";
+        private const string Blocked = "CameraFollow: no safe visible camera pose; rendering suspended until recovery.";
+
+        [SetUp]
+        public void SetUp()
+        {
+            followType = Type.GetType("CameraFollow, Assembly-CSharp", true);
+            player = Make("Camera test player");
+            var character = player.AddComponent<CharacterController>();
+            character.center = Vector3.up;
+            character.height = 2f;
+            character.radius = 0.3f;
+            var rig = Make("Camera test rig");
+            rig.SetActive(false);
+            follow = rig.AddComponent(followType);
+            camera = rig.GetComponent<Camera>();
+            camera.nearClipPlane = 0.1f;
+            camera.fieldOfView = 60f;
+            camera.aspect = 16f / 9f;
+            Set("player", player.transform);
+            Set("findTaggedPlayer", false);
+            rig.SetActive(true);
+            Physics.SyncTransforms();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            for (int i = objects.Count - 1; i >= 0; i--)
+                if (objects[i] != null) Object.DestroyImmediate(objects[i]);
+            objects.Clear();
+        }
+
+        private GameObject Make(string name)
+        {
+            var result = new GameObject(name);
+            objects.Add(result);
+            return result;
+        }
+
+        private GameObject Box(Vector3 position, Vector3 size)
+        {
+            var result = Make("Camera obstacle");
+            result.transform.position = position;
+            result.AddComponent<BoxCollider>().size = size;
+            Physics.SyncTransforms();
+            return result;
+        }
+
+        private void Set(string field, object value) => followType.GetField(field).SetValue(follow, value);
+        private T Get<T>(string property) => (T)followType.GetProperty(property).GetValue(follow);
+        private object Call(string method, params object[] args)
+        {
+            try { return followType.GetMethod(method, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Invoke(follow, args); }
+            catch (TargetInvocationException error) { throw error.InnerException; }
+        }
+        private bool Step(float dt = 1f / 60f)
+        {
+            Physics.SyncTransforms();
+            return (bool)Call("Simulate", dt);
+        }
+        private void AssertClear(Collider obstacle)
+        {
+            float radius = Get<float>("EffectiveCollisionRadius");
+            float clearance = Vector3.Distance(obstacle.ClosestPoint(camera.transform.position), camera.transform.position);
+            Assert.That(clearance, Is.GreaterThanOrEqualTo(radius - 0.001f));
+            Assert.That(Get<bool>("HasSafePose"), Is.True);
+        }
+
+        [Test]
+        public void OriginalSerializedFieldsAndDefaultsRemainAvailable()
+        {
+            Assert.That(followType.GetField("player").FieldType, Is.EqualTo(typeof(Transform)));
+            Assert.That(followType.GetField("distance").GetValue(follow), Is.EqualTo(5f));
+            Assert.That(followType.GetField("height").GetValue(follow), Is.EqualTo(2f));
+            Assert.That(followType.GetField("smoothSpeed").GetValue(follow), Is.EqualTo(2f));
+        }
+
+        [Test]
+        public void MissingTargetWarnsOnceAndCanRecover()
+        {
+            Set("player", null);
+            LogAssert.Expect(LogType.Warning, Missing);
+            Assert.That(Step(), Is.False);
+            Assert.That(Step(), Is.False);
+            Assert.That(camera.enabled, Is.False);
+            Call("SetTarget", player.transform);
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.enabled, Is.True);
+        }
+
+        [Test]
+        public void DestroyedTargetCanBeReplacedWithoutOldSmoothingState()
+        {
+            Assert.That(Step(), Is.True);
+            Object.DestroyImmediate(player);
+            LogAssert.Expect(LogType.Warning, Missing);
+            Assert.That(Step(), Is.False);
+            var replacement = Make("Respawned player");
+            replacement.transform.position = new Vector3(20f, 0f, 0f);
+            Call("SetTarget", replacement.transform);
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.transform.position.x, Is.EqualTo(20f).Within(0.001f));
+        }
+
+        [Test]
+        public void AcquiresOneTaggedPlayerButDoesNotChooseBetweenTwo()
+        {
+            player.tag = "Player";
+            var second = Make("Second player");
+            second.tag = "Player";
+            Set("findTaggedPlayer", true);
+            Call("SetTarget", (Transform)null);
+            LogAssert.Expect(LogType.Warning, Missing);
+            Assert.That(Step(), Is.False);
+            second.tag = "Untagged";
+            Call("SetTarget", (Transform)null);
+            Assert.That(Step(), Is.True);
+            Assert.That(followType.GetField("player").GetValue(follow), Is.EqualTo(player.transform));
+        }
+
+        [Test]
+        public void RejectsSelfAsTargetWithoutInvalidLookRotation()
+        {
+            Call("SetTarget", follow.transform);
+            LogAssert.Expect(LogType.Warning, Missing);
+            Assert.That(Step(), Is.False);
+            Assert.That(Step(), Is.False);
+        }
+
+        [Test]
+        public void WallShortensBoomImmediately()
+        {
+            Step();
+            var wall = Box(new Vector3(0f, 2f, -2f), new Vector3(10f, 6f, 0.2f)).GetComponent<Collider>();
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.transform.position.z, Is.GreaterThan(-1.9f));
+            AssertClear(wall);
+        }
+
+        [TestCase(30)]
+        [TestCase(60)]
+        [TestCase(120)]
+        public void WallRemovalReturnsSmoothlyAtRepresentativeFrameRates(int fps)
+        {
+            var wall = Box(new Vector3(0f, 2f, -2f), new Vector3(10f, 6f, 0.2f));
+            Assert.That(Step(), Is.True);
+            Vector3 initial = camera.transform.position;
+            Object.DestroyImmediate(wall);
+            float last = initial.z;
+            for (int i = 0; i < fps; i++)
+            {
+                Assert.That(Step(1f / fps), Is.True);
+                Assert.That(camera.transform.position.z, Is.InRange(-5.001f, last + 0.00001f));
+                last = camera.transform.position.z;
+            }
+            float expected = -5f + (initial.z + 5f) * Mathf.Exp(-2f);
+            Assert.That(last, Is.EqualTo(expected).Within(0.001f));
+        }
+
+        [Test]
+        public void LowCeilingAndCornerLeaveCollisionVolumeClear()
+        {
+            var ceiling = Box(new Vector3(0f, 2.1f, -3f), new Vector3(10f, 0.2f, 6f)).GetComponent<Collider>();
+            var side = Box(new Vector3(0.5f, 1f, -3f), new Vector3(0.2f, 3f, 6f)).GetComponent<Collider>();
+            Assert.That(Step(), Is.True);
+            AssertClear(ceiling);
+            AssertClear(side);
+        }
+
+        [Test]
+        public void ChildTargetIgnoresItsCharacterAndCompoundColliders()
+        {
+            var child = Make("Head target");
+            child.transform.SetParent(player.transform, false);
+            var decoration = Make("Player compound collider");
+            decoration.transform.SetParent(player.transform, false);
+            decoration.AddComponent<BoxCollider>().size = new Vector3(2f, 3f, 2f);
+            Call("SetTarget", child.transform);
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.transform.position.z, Is.EqualTo(-5f).Within(0.001f));
+        }
+
+        [Test]
+        public void TriggersAndExcludedLayersDoNotBlockCamera()
+        {
+            var trigger = Box(new Vector3(0f, 1f, -1f), new Vector3(10f, 6f, 0.2f));
+            trigger.GetComponent<Collider>().isTrigger = true;
+            var excluded = Box(new Vector3(0f, 1f, -2f), new Vector3(10f, 6f, 0.2f));
+            excluded.layer = 8;
+            Set("obstructionMask", (LayerMask)~(1 << 8));
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.transform.position.z, Is.EqualTo(-5f).Within(0.001f));
+        }
+
+        [Test]
+        public void WideNearPlaneIsIncludedInCollisionRadius()
+        {
+            camera.nearClipPlane = 0.5f;
+            camera.aspect = 2.4f;
+            camera.fieldOfView = 90f;
+            var wall = Box(new Vector3(0f, 2f, -4f), new Vector3(10f, 6f, 0.2f)).GetComponent<Collider>();
+            Assert.That(Step(), Is.True);
+            var corners = new Vector3[4];
+            camera.CalculateFrustumCorners(new Rect(0f, 0f, 1f, 1f), camera.nearClipPlane, Camera.MonoOrStereoscopicEye.Mono, corners);
+            foreach (var corner in corners)
+                Assert.That(Get<float>("EffectiveCollisionRadius"), Is.GreaterThanOrEqualTo(corner.magnitude - 0.0001f));
+            AssertClear(wall);
+        }
+
+        [Test]
+        public void SaturatedQueryBufferDoesNotLoseTheNearestWall()
+        {
+            for (int i = 0; i < 40; i++)
+                Box(new Vector3(0f, 1f, -2f - i * 0.02f), new Vector3(10f, 6f, 0.01f));
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.transform.position.z, Is.GreaterThan(-1.9f));
+        }
+
+        [Test]
+        public void StartingInsideWallIsResolvedBeforeRendering()
+        {
+            camera.transform.position = new Vector3(0f, 2f, -3f);
+            var wall = Box(camera.transform.position, new Vector3(10f, 6f, 0.5f)).GetComponent<Collider>();
+            Assert.That(Step(), Is.True);
+            AssertClear(wall);
+            Assert.That(camera.transform.position.z, Is.GreaterThan(-2.75f));
+        }
+
+        [Test]
+        public void PartiallyOverlappingPivotDoesNotPermitCrossingThinWall()
+        {
+            var wall = Box(new Vector3(0f, 1f, -0.1f), new Vector3(10f, 6f, 0.02f));
+            LogAssert.Expect(LogType.Warning, Blocked);
+            Assert.That(Step(), Is.False);
+            Assert.That(camera.enabled, Is.False);
+            Object.DestroyImmediate(wall);
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.enabled, Is.True);
+        }
+
+        [Test]
+        public void EmbeddedPivotFailsSafelyAndRestoresRenderingAfterRecovery()
+        {
+            var wall = Box(Vector3.up, new Vector3(4f, 4f, 4f));
+            LogAssert.Expect(LogType.Warning, Blocked);
+            Assert.That(Step(), Is.False);
+            Assert.That(Step(), Is.False);
+            Assert.That(camera.enabled, Is.False);
+            Object.DestroyImmediate(wall);
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.enabled, Is.True);
+        }
+
+        [Test]
+        public void OriginallyDisabledCameraIsNotEnabledByRecovery()
+        {
+            camera.enabled = false;
+            Set("player", null);
+            LogAssert.Expect(LogType.Warning, Missing);
+            Assert.That(Step(), Is.False);
+            Call("SetTarget", player.transform);
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.enabled, Is.False);
+        }
+
+        [Test]
+        public void TeleportAndExplicitSnapDoNotFlyThroughOldSceneSpace()
+        {
+            Step();
+            player.transform.position = new Vector3(20f, 0f, 0f);
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.transform.position.x, Is.EqualTo(20f).Within(0.001f));
+            player.transform.position = new Vector3(21f, 0f, 0f);
+            Assert.That((bool)Call("SnapToTarget"), Is.True);
+            Assert.That(camera.transform.position.x, Is.EqualTo(21f).Within(0.001f));
+        }
+
+        [Test]
+        public void RapidTurnDoesNotPlaceCameraInsideCorner()
+        {
+            var wall = Box(new Vector3(-2f, 2f, 0f), new Vector3(0.2f, 6f, 10f)).GetComponent<Collider>();
+            Step();
+            player.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            for (int i = 0; i < 120; i++)
+            {
+                Assert.That(Step(), Is.True);
+                AssertClear(wall);
+            }
+        }
+
+        [Test]
+        public void ReenabledComponentStartsWithFreshTracking()
+        {
+            Step();
+            ((Behaviour)follow).enabled = false;
+            Assert.That(Step(), Is.False);
+            player.transform.position = Vector3.right;
+            ((Behaviour)follow).enabled = true;
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.transform.position.x, Is.EqualTo(1f).Within(0.001f));
+        }
+
+        [UnityTest]
+        public IEnumerator UnloadedTargetSceneCanBeReplaced()
+        {
+            Scene oldScene = SceneManager.CreateScene("Camera target " + Guid.NewGuid());
+            SceneManager.MoveGameObjectToScene(player, oldScene);
+            Step();
+            ((Behaviour)follow).enabled = false;
+            yield return SceneManager.UnloadSceneAsync(oldScene);
+            var replacement = Make("Reloaded target");
+            replacement.tag = "Player";
+            replacement.transform.position = new Vector3(10f, 0f, 0f);
+            Set("findTaggedPlayer", true);
+            ((Behaviour)follow).enabled = true;
+            Assert.That(Step(), Is.True);
+            Assert.That(camera.transform.position.x, Is.EqualTo(10f).Within(0.001f));
+        }
+    }
+}
