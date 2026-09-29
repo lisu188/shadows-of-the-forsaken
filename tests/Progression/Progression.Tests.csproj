@@ -14,5 +14,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
     <ProjectReference Include="Core/Progression.Core.csproj" />
     <Compile Include="../../Assets/Tests/EditMode/LevelProgressionTests.cs" Link="LevelProgressionTests.cs" />
+    <Compile Include="ContractParityTests.cs" />
+    <None Include="../../docs/level-contract.json" Link="level-contract.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

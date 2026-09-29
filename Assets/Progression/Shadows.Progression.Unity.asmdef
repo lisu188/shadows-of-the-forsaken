@@ -1,0 +1,14 @@
+{
+  "name": "Shadows.Progression.Unity",
+  "rootNamespace": "ShadowsOfTheForsaken.Progression",
+  "references": ["Shadows.Progression.Core"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
