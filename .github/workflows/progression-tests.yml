@@ -1,0 +1,43 @@
+name: Progression C# tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: progression-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  progression:
+    name: C# progression (not Unity)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile actual core and run shared NUnit tests
+        run: dotnet test tests/Progression/Progression.Tests.csproj --configuration Release --logger 'trx;LogFileName=progression.trx' --results-directory artifacts/progression
+      - name: Require executed passing tests
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          root = ET.parse('artifacts/progression/progression.trx').getroot()
+          counts = root.find('.//{http://microsoft.com/schemas/VisualStudio/TeamTest/2010}Counters')
+          assert counts is not None, 'Missing counters'
+          assert int(counts.attrib['total']) >= 20, 'Expected progression tests were not discovered'
+          assert counts.attrib['executed'] == counts.attrib['total'] == counts.attrib['passed'], counts.attrib
+          assert int(counts.attrib['failed']) == 0, counts.attrib
+          print('Verified executed C# tests:', counts.attrib['passed'])
+          PY
+      - name: Upload real test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: progression-test-results
+          path: artifacts/progression/
+          if-no-files-found: error
+          retention-days: 14
