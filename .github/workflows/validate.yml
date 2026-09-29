@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   documentation:
-    name: Documentation tests (not Unity)
+    name: Source and tooling tests (not Unity)
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -17,10 +17,12 @@ jobs:
         with:
           persist-credentials: false
           filter: blob:none
-      - name: Test documentation and level design contract
+      - name: Test documentation, level contract and validation tools
         env:
           PYTHONUTF8: '1'
         run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Validate tracked Unity source (not editor import)
+        run: python3 tools/unity_validation.py project
       - name: Validate level design graph (not Unity)
         run: python3 tools/validate_level_contract.py
       - name: Export design text
