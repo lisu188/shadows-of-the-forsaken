@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "source": {
+    "path": "Shadows of the Forsaken.docx",
+    "git_blob_sha": "8c5b63bdf8f054a60b024407641921caa8055e75"
+  },
+  "start": "courtyard",
+  "exit": "exit",
+  "required_events": ["first_enemy_defeated", "main_puzzle_solved", "miniboss_defeated", "library_opened", "final_enemy_defeated"],
+  "rooms": [
+    {"id": "courtyard", "optional": false, "requires": []},
+    {"id": "first_encounter", "optional": false, "requires": []},
+    {"id": "puzzle", "optional": false, "requires": ["first_enemy_defeated"]},
+    {"id": "throne_room", "optional": false, "requires": ["first_enemy_defeated", "main_puzzle_solved"]},
+    {"id": "library", "optional": false, "requires": ["miniboss_defeated"]},
+    {"id": "catacombs", "optional": false, "requires": ["library_opened"]},
+    {"id": "bonus_room", "optional": true, "requires": ["library_opened", "secret_lever_pulled"]},
+    {"id": "final_arena", "optional": false, "requires": ["library_opened"]},
+    {"id": "exit", "optional": false, "requires": ["first_enemy_defeated", "main_puzzle_solved", "miniboss_defeated", "library_opened", "final_enemy_defeated"]}
+  ],
+  "events": [
+    {"id": "first_enemy_defeated", "room": "first_encounter", "optional": false, "requires": []},
+    {"id": "main_puzzle_solved", "room": "puzzle", "optional": false, "requires": ["first_enemy_defeated"]},
+    {"id": "miniboss_defeated", "room": "throne_room", "optional": false, "requires": ["first_enemy_defeated", "main_puzzle_solved"]},
+    {"id": "library_opened", "room": "library", "optional": false, "requires": ["miniboss_defeated"]},
+    {"id": "secret_lever_pulled", "room": "catacombs", "optional": true, "requires": ["library_opened"]},
+    {"id": "bonus_discovered", "room": "bonus_room", "optional": true, "requires": ["secret_lever_pulled"]},
+    {"id": "final_enemy_defeated", "room": "final_arena", "optional": false, "requires": ["library_opened", "miniboss_defeated"]}
+  ],
+  "connections": [
+    {"from": "courtyard", "to": "first_encounter", "requires": []},
+    {"from": "first_encounter", "to": "puzzle", "requires": ["first_enemy_defeated"]},
+    {"from": "first_encounter", "to": "throne_room", "requires": ["first_enemy_defeated", "main_puzzle_solved"]},
+    {"from": "throne_room", "to": "library", "requires": ["miniboss_defeated"]},
+    {"from": "library", "to": "catacombs", "requires": ["library_opened"]},
+    {"from": "catacombs", "to": "final_arena", "requires": ["library_opened"]},
+    {"from": "catacombs", "to": "bonus_room", "requires": ["library_opened", "secret_lever_pulled"]},
+    {"from": "throne_room", "to": "bonus_room", "requires": ["miniboss_defeated", "library_opened", "secret_lever_pulled"]},
+    {"from": "final_arena", "to": "exit", "requires": ["first_enemy_defeated", "main_puzzle_solved", "miniboss_defeated", "library_opened", "final_enemy_defeated"]}
+  ]
+}
