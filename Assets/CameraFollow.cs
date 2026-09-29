@@ -110,13 +110,14 @@ public class CameraFollow : MonoBehaviour
             var body = player.GetComponentInParent<Rigidbody>();
             actorRoot = character != null ? character.transform : body != null ? body.transform : player;
         }
+        Physics.SyncTransforms();
         physicsScene = player.gameObject.scene.GetPhysicsScene();
         Vector3 pivot = player.position + Vector3.up * pivotHeight;
         Vector3 desired = player.position - player.forward * distance + Vector3.up * height;
         bool snap = !tracking || newTarget || (player.position - previousTargetPosition).sqrMagnitude > teleportDistance * teleportDistance;
         Vector3 candidate = snap ? desired : Vector3.Lerp(transform.position, desired, blend);
         EffectiveCollisionRadius = NearPlaneRadius();
-        bool safe = Finite(pivot) && Finite(candidate) && !float.IsInfinity(EffectiveCollisionRadius) &&
+        bool safe = Finite(pivot) && Finite(candidate) && Finite(EffectiveCollisionRadius) &&
                     TryResolve(pivot, candidate, out candidate);
         if (!safe && Finite(pivot) && Finite(desired))
             safe = TryResolve(pivot, desired, out candidate);
