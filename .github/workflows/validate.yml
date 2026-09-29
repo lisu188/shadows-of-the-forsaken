@@ -17,10 +17,12 @@ jobs:
         with:
           persist-credentials: false
           filter: blob:none
-      - name: Test design export and README links
+      - name: Test documentation and level design contract
         env:
           PYTHONUTF8: '1'
         run: python3 -m unittest discover -s tests -p 'test_*.py' -v
+      - name: Validate level design graph (not Unity)
+        run: python3 tools/validate_level_contract.py
       - name: Export design text
         run: |
           mkdir -p artifacts
