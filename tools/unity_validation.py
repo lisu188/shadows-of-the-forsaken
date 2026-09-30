@@ -9,11 +9,11 @@ import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
-UNITY_VERSION = "6000.0.24f1"
+UNITY_VERSION = "6000.6.3f1"
 PACKAGES = {
-    "com.unity.inputsystem": "1.11.1",
-    "com.unity.render-pipelines.universal": "17.0.3",
-    "com.unity.test-framework": "1.4.5",
+    "com.unity.inputsystem": "1.20.0",
+    "com.unity.render-pipelines.universal": "17.6.0",
+    "com.unity.test-framework": "1.8.0",
 }
 EXPECTED_TESTS = {
     "editmode": {

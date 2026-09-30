@@ -67,12 +67,12 @@ Po spełnieniu warunków bramy pozostają otwarte do restartu. Połączenia są 
 | Interakcja | E; jeden cel w zasięgu i bez przeszkody. Wariant i podpowiedź zagadki ustala #13. |
 | Ponowna gra | R lub przycisk ekranowy wyłącznie po porażce/ukończeniu; reset całej sesji, bez zapisu na dysku. |
 | Obsada | Jeden demon na początku, jeden skażony strażnik jako miniboss, jeden demon w finale; brak obowiązkowych fal i wielofazowości. |
-| Wejście techniczne | Jeden zestaw akcji istniejącego Input System 1.11.1: Move, Jump, Attack, Interact oraz terminalne Restart. Nie odczytywać jednocześnie starego i nowego wejścia. |
+| Wejście techniczne | Jeden zestaw akcji istniejącego Input System, obecnie 1.20.0: Move, Jump, Attack, Interact oraz terminalne Restart. Nie odczytywać jednocześnie starego i nowego wejścia. |
 | Build | Windows x64, `BuildTarget.StandaloneWindows64`; jedna scena poziomu. To wybór targetu, nie potwierdzenie zbudowanego artefaktu. |
 
-Obrażenia, zdrowie, prędkości, okna ataku, rozmiary i ewentualny budżet FPS będą jawnie dostrajane w #6/#11/#23/#24. Nie są zamrożonymi liczbami z DOCX. Nie dodajemy staminy, uników, blokowania, ekwipunku, rozwoju postaci, craftingu ani trwałych zapisów. Unity `6000.0.24f1`, pakiety i istniejące GUID-y pozostają bez zmian.
+Obrażenia, zdrowie, prędkości, okna ataku, rozmiary i ewentualny budżet FPS będą jawnie dostrajane w #6/#11/#23/#24. Nie są zamrożonymi liczbami z DOCX. Nie dodajemy staminy, uników, blokowania, ekwipunku, rozwoju postaci, craftingu ani trwałych zapisów. Pierwotne #4 zachowało wersje edytora i pakietów. Późniejsze polecenie właściciela zatwierdziło zapis aktualizacji do Unity `6000.6.3f1` i pakietów wskazanych w README; te wersje są obecnie przypięte. Istniejące GUID-y pozostają bez zmian. Weryfikacja nowej wersji w silniku nadal jest wymagana.
 
-Dokumentacja techniczna: [Input System 1.11 — Actions](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Actions.html), [Unity 6 — StandaloneWindows64](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/BuildTarget.StandaloneWindows64.html). Te źródła opisują API, nie narzucają przyjętego modelu rozgrywki.
+Historyczne odniesienia techniczne z #4: [Input System 1.11 — Actions](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Actions.html), [Unity 6 — StandaloneWindows64](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/BuildTarget.StandaloneWindows64.html). Te źródła opisują ówczesne API, nie narzucają przyjętego modelu rozgrywki ani nie potwierdzają zgodności po aktualizacji.
 
 ## Testowalny kontrakt i granice weryfikacji
 

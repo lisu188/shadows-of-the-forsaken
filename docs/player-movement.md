@@ -47,4 +47,4 @@ Projekt .NET Standard 2.1 kompiluje ten sam produkcyjny rdzeń co Unity, a runne
 - [InputActionMap: Clone i Dispose](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/api/UnityEngine.InputSystem.InputActionMap.html)
 - [CharacterController.Move i CollisionFlags](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/CharacterController.Move.html)
 
-Dokumentacja rodziny Input System 1.11 wyświetla 1.11.2; projekt nadal używa przypiętego 1.11.1. To źródła zachowania API, nie dowód wykonania testów silnika.
+Odnośniki do Input System 1.11 i Unity 6000.0 zachowano jako historyczne źródła implementacji #6. Projekt używa obecnie przypiętego Input System 1.20.0 i Unity 6000.6.3f1. Te źródła nie potwierdzają zgodności ani wykonania testów silnika po aktualizacji.

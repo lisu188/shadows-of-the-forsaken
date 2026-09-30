@@ -2,7 +2,7 @@
 
 ## Stan i granice weryfikacji
 
-Dodano kod **6 przypadków EditMode i 2 PlayMode**, osobne assembly definitions, walidator źródeł i raportów NUnit, lokalny runner oraz workflow `Unity tests`. Istniejące skrypty, sceny, wersje pakietów i GUID-y nie zostały zmienione.
+W ramach #5 dodano kod **6 przypadków EditMode i 2 PlayMode**, osobne assembly definitions, walidator źródeł i raportów NUnit, lokalny runner oraz workflow `Unity tests`. W tamtym zadaniu istniejące skrypty, sceny, wersje pakietów i GUID-y nie zostały zmienione. Obecna konfiguracja wskazuje Unity `6000.6.3f1` i pakiety wymienione w README po późniejszej aktualizacji na polecenie właściciela; nie potwierdzono jeszcze importu, kompilacji ani testów w tej wersji.
 
 Pierwsza próba CI w [PR #26](https://github.com/lisu188/shadows-of-the-forsaken/pull/26) wykazała **brak konfiguracji aktywacji Unity**. Etap `Unity activation prerequisite (not tests)` zakończył się błędem, a testy edytora nie wystartowały. Nie jest to wynik testów C# ani dowód błędnej kompilacji. Issue #5 pozostaje otwarte do uzyskania rzeczywistych raportów obu trybów i logu czystego importu.
 
@@ -30,11 +30,11 @@ Walidator korzysta z `git ls-files`, więc wykrywa również `.meta` istniejące
 
 ## Rzeczywisty test lokalny
 
-Zainstaluj i aktywuj **Unity 6000.0.24f1**, zamknij projekt w edytorze i uruchom oba tryby oddzielnie. Na Windows, z katalogu repozytorium:
+Zainstaluj i aktywuj **Unity 6000.6.3f1**, zamknij projekt w edytorze i uruchom oba tryby oddzielnie. Na Windows, z katalogu repozytorium:
 
 ```powershell
-python tools/unity_validation.py run --editor "C:\Program Files\Unity\Hub\Editor\6000.0.24f1\Editor\Unity.exe" --mode editmode
-python tools/unity_validation.py run --editor "C:\Program Files\Unity\Hub\Editor\6000.0.24f1\Editor\Unity.exe" --mode playmode
+python tools/unity_validation.py run --editor "C:\Program Files\Unity\Hub\Editor\6000.6.3f1\Editor\Unity.exe" --mode editmode
+python tools/unity_validation.py run --editor "C:\Program Files\Unity\Hub\Editor\6000.6.3f1\Editor\Unity.exe" --mode playmode
 ```
 
 Na Linux/macOS podaj rzeczywistą ścieżkę do binarnego pliku Unity przez `--editor`. Runner używa już aktywowanego edytora: nie przyjmuje haseł ani nie wykonuje aktywacji. W środowisku Linux bez ekranu potrzebny jest działający serwer wyświetlania, np. Xvfb; same kontrole źródeł tego nie wymagają.
@@ -51,7 +51,7 @@ Po konfiguracji uruchom workflow `Unity tests` przez **Actions → Unity tests �
 
 Workflow działa na push do `main`, pull requestach i ręcznie. Nie używa `pull_request_target`; fork PR i Dependabot nie uruchamiają zadań z sekretami. Takie pominięcie nie jest dowodem zaliczenia testów. Dla zmian z zewnętrznego źródła testy z aktywacją uruchamiać dopiero po przeglądzie na zaufanej gałęzi.
 
-Testy obu trybów są wykonywane kolejno, każdy na świeżym runnerze bez cache `Library`. GameCI Test Runner jest przypięty do commita `0ff419b913a3630032cbe0de48a0099b5a9f0ed9` (v4.3.1), z Unity 6000.0.24f1. Raporty `editmode-results.xml` / `playmode-results.xml` i logi edytora są publikowane jako osobne artefakty z identyfikatorem commita. Nie jest wymagany token z prawem zapisu checks; poświadczenia checkoutu nie są utrwalane.
+Testy obu trybów są wykonywane kolejno, każdy na świeżym runnerze bez cache `Library`. GameCI Test Runner jest przypięty do commita `0ff419b913a3630032cbe0de48a0099b5a9f0ed9` (v4.3.1), z Unity 6000.6.3f1. Raporty `editmode-results.xml` / `playmode-results.xml` i logi edytora są publikowane jako osobne artefakty z identyfikatorem commita. Nie jest wymagany token z prawem zapisu checks; poświadczenia checkoutu nie są utrwalane.
 
 ## Zasady odbioru
 
@@ -62,6 +62,8 @@ Do zamknięcia #5 należy dołączyć: udany run obu trybów, XML-e, logi import
 Automatyczny build docelowego Windows playera i test całego poziomu pozostają odpowiednio zadaniami #24 i #22.
 
 ## Źródła techniczne
+
+Poniższe odnośniki pochodzą z implementacji #5. Dokumentacja Test Framework 1.4 jest historycznym odniesieniem; projekt używa obecnie 1.8.0, a zgodność wymaga rzeczywistego uruchomienia testów.
 
 - [Unity Test Framework 1.4: uruchamianie z linii poleceń](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/reference-command-line.html).
 - [Unity Test Framework: assemblies testowe](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/workflow-create-test-assembly.html).
