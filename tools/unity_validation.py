@@ -22,10 +22,18 @@ EXPECTED_TESTS = {
         "RuntimeScriptImportsWithOriginalGuid": 2,
         "BaselineSceneHasNoMissingComponents": 1,
         "MaterialsHaveResolvableShaders": 1,
+        "CastleIsFirstEnabledSceneAndHasNoMissingComponents": 1,
+        "PlayerAndCameraUseExistingScriptsAndExplicitReferences": 1,
+        "RoomAndPassageMarkersMatchTheProgressionTopologyWithoutRunningIt": 1,
+        "ImportedSceneMarkersMatchTheCommittedLayoutModel": 1,
+        "FutureGameplayAnchorsAndSpawnArePresentWithoutActiveGameplay": 1,
     },
     "playmode": {
         "BaselineSceneRunsWithoutMissingComponents": 1,
         "BaselineCameraAndDirectionalLightAreActive": 1,
+        "EveryPassageIsWalkableInBothDirections": 18,
+        "UnityJumpAtCourtyardLandsInsideBounds": 1,
+        "PuzzleNorthWallRejectsWalkingAndJumpingThroughTheMapBoundary": 1,
     },
 }
 GENERATED_ROOTS = {"library", "temp", "obj", "logs", "usersettings", "build", "builds", "artifacts", "testresults"}

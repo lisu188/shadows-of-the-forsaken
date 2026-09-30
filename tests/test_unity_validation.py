@@ -174,10 +174,26 @@ class NUnitEvidenceTests(unittest.TestCase):
         ET.ElementTree(report).write(self.path, encoding="utf-8", xml_declaration=True)
 
     def test_accepts_complete_baseline_reports_for_both_modes(self):
-        for mode, count in [("editmode", 6), ("playmode", 2)]:
+        for mode, count in [("editmode", 11), ("playmode", 22)]:
             with self.subTest(mode=mode):
                 self.save(report_for(mode))
                 self.assertEqual(count, validation.validate_results(self.path, mode)["passed"])
+
+    def test_rejects_reports_that_omit_castle_scene_coverage(self):
+        for mode, omitted in [("editmode", "CastleIsFirstEnabledSceneAndHasNoMissingComponents"),
+                              ("playmode", "EveryPassageIsWalkableInBothDirections")]:
+            with self.subTest(mode=mode):
+                report = report_for(mode)
+                suite = report.find("test-suite")
+                for case in list(suite):
+                    if omitted in case.get("fullname", ""):
+                        suite.remove(case)
+                count = str(len(list(report.iter("test-case"))))
+                report.set("total", count)
+                report.set("passed", count)
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, omitted):
+                    validation.validate_results(self.path, mode)
 
     def test_rejects_missing_report(self):
         with self.assertRaisesRegex(validation.ValidationError, "results missing"):
@@ -303,7 +319,7 @@ class LocalRunnerCommandTests(unittest.TestCase):
             ET.ElementTree(report_for("editmode")).write(self.output / "editmode-results.xml")
             return subprocess.CompletedProcess(command, 0)
         process.side_effect = execute
-        self.assertEqual(6, self.run_editor()["passed"])
+        self.assertEqual(11, self.run_editor()["passed"])
         project.assert_called_once_with(self.root)
 
     @patch.object(validation, "validate_project")

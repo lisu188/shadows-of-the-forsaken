@@ -56,7 +56,7 @@ Dokument nie określa również wszystkich parametrów implementacyjnych: klawis
 
 ## Aktualny stan
 
-Repozytorium jest na początkowym etapie. Zawiera projekt Unity, scenę szablonową `Assets/Scenes/SampleScene.unity`, skrypty `PlayerMovement` i `CameraFollow`, konfigurację Input System oraz zasoby nocnego nieba. Sama obecność skryptów i zasobów **nie oznacza**, że opisany w dokumencie poziom jest grywalny.
+Repozytorium zawiera scenę układu zamku `Assets/Scenes/ForsakenCastle.unity`, zachowaną scenę bazową `SampleScene`, skrypty `PlayerMovement` i `CameraFollow`, konfigurację Input System oraz zasoby nocnego nieba. [Blockout #8](docs/castle-layout.md) zapisuje geometrię wszystkich obszarów, zejście biblioteki i osobny dolny skrót. Jest podglądem układu z otwartymi miejscami przyszłych bram; nie uruchamia walki, zagadek ani postępu. Import, fizyka i ręczne przejście nowej sceny pozostają do potwierdzenia w Unity.
 
 | Obszar | Stan |
 | --- | --- |
@@ -66,10 +66,10 @@ Repozytorium jest na początkowym etapie. Zawiera projekt Unity, scenę szablono
 | Kontroler gracza (#6) | Istniejący PlayerMovement przełączony na Input System; dodano rdzeń ruchu, obsługę sufitu/lądowania i blokadę wejścia. 36 testów rdzenia C# oraz 17 przypadków PlayMode; testy silnika i ręczny odbiór nadal blokuje #5. |
 | Kamera (#7) | CameraFollow rozszerzony o kolizje uwzględniające near plane, wygładzanie, odnajdywanie celu i reset po teleporcie. 32 przypadki matematyki C# oraz 22 przypadki PlayMode; wykonanie fizyki i odbiór wizualny nadal wymagają Unity (#5). |
 | Projekt Unity, skrypty i zasoby nieba | Istnieją w repozytorium; nie stanowią kompletnego poziomu. |
-| Dziedziniec, sala tronowa, biblioteka i katakumby | Do zbudowania jako spójny poziom zgodny z dokumentem. |
+| Dziedziniec, sala tronowa, biblioteka i katakumby | Zapisana scena blockoutu #8: dziewięć obszarów, obie drogi do bonusu, geometria, kolizje, gracz, kamera i znaczniki przyszłej rozgrywki. Kontrole źródeł i modelu nie zastępują oczekującego odbioru Unity. |
 | Pierwsze starcie, miniboss i finałowa walka | Do zaimplementowania; sygnał wejścia AttackRequested z #6 nie jest jeszcze mechaniką walki. |
 | Runy / dźwignie, ukryte drzwi i sekrety | Do zaimplementowania; reguły odblokowań są w rdzeniu postępu, nie w colliderach sceny. |
-| Wyjście / zakończenie poziomu | Reguła zakończenia jest w runtime #10; fizyczne wyjście i finał pozostają do implementacji. |
+| Wyjście / zakończenie poziomu | Reguła zakończenia jest w runtime #10, a przestrzeń wyjścia w blockoucie #8. Finał i podłączenie zakończenia pozostają do implementacji. |
 | Docelowa oprawa i czas 2–3 minut | Niezweryfikowane; wymagają realizacji i testów rozgrywki. |
 | Walidacja dokumentacji i źródeł | Eksport DOCX, odnośniki README, kontrakt poziomu, integralność `.meta`/GUID i testy narzędzi w GitHub Actions. |
 | Testy C# postępu | Osobne CI kompiluje produkcyjny rdzeń jako .NET Standard 2.1; 26 wspólnych przypadków NUnit i 3 testy kontraktu. Nie uruchamia MonoBehaviour. |
@@ -108,9 +108,9 @@ git clone https://github.com/lisu188/shadows-of-the-forsaken.git
 cd shadows-of-the-forsaken
 ```
 
-Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/SampleScene.unity`. To obecnie scena bazowa, a nie gotowy poziom z dokumentu.
+Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/ForsakenCastle.unity` i włącz Play, aby sprawdzić układ: W/S porusza, A/D obraca, Spacja skacze. Scena jest już zapisana i nie wymaga generowania. To podgląd geometrii, nie gotowy poziom z walką. `SampleScene` pozostaje drugą włączoną sceną dla dotychczasowych testów bazowych. Przed dużym importem obowiązuje limit miejsca na dysku z instrukcji projektu.
 
-[Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Nie dodano automatycznie gracza ani gotowego zamku do SampleScene; składanie poziomu pozostaje w #8.
+[Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Gracz i geometria zamku są zapisane w ForsakenCastle; odbiór sceny w Unity pozostaje częścią #8.
 
 [Instrukcja kamery #7](docs/camera-follow.md) opisuje przypisanie celu, tag Player, maskę przeszkód, parametry kolizji, `SetTarget` i `SnapToTarget`. Ściany muszą mieć collidery na uwzględnianych warstwach. Przy braku bezpiecznej pozycji kamera czasowo wstrzymuje renderowanie zamiast pokazywać wnętrze geometrii; ograniczenia i wymagany odbiór są opisane w instrukcji.
 

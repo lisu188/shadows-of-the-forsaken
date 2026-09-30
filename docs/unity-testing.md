@@ -17,6 +17,8 @@ Pierwsza próba CI w [PR #26](https://github.com/lisu188/shadows-of-the-forsaken
 
 Scena bazowa pozostaje sceną szablonową. Testy nie twierdzą, że zawiera gracza albo gotowy poziom zamku. Testy EditMode sprawdzają import istniejących skryptów przez `MonoScript`, bez przenoszenia ich do nowych assemblies. Assembly testowe nie są dołączane do zwykłych buildów gry; PlayMode nie odwołuje się do `UnityEditor`.
 
+Dla [blockoutu #8](castle-layout.md) dodano 5 przypadków EditMode oraz 20 PlayMode: 18 kierunkowych przejść dziewięciu połączeń, skok na dziedzińcu i próba przejścia/skoku przez ścianę zagadki. Walidator wyników wymaga ich obecności oprócz 8 bazowych przypadków (minimum 11 EditMode i 22 PlayMode); raport zawiera również wcześniejsze testy rdzeni i komponentów. Brak nowych testów nie jest zaliczonym odbiorem sceny. Ich wykonanie w Unity pozostaje niepotwierdzone.
+
 ## Kontrole bez edytora
 
 Wymagane: Git oraz Python 3.9 lub nowszy, bez dodatkowych bibliotek.
