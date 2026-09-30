@@ -42,7 +42,7 @@ Dnia 2026-09-30 przez Windows Unity CLI z edytorem `6000.6.3f1` wykonano 36 przy
 
 Lokalny wynik potwierdza kompilację adaptera oraz sprawdzone zachowania fizyki i Input System. Ręczne przejście i build gry nadal nie zostały wykonane; odbiór #6 wymaga osobnej ręcznej kontroli. Brak sekretów aktywacji nadal blokuje workflow Unity w GitHub Actions (#5), niezależnie od lokalnego wyniku.
 
-[Raport mechanik #9/#11](validation/shared-gameplay-2026-09-30.md) opisuje także testy wejścia i ruchu w zapisanych scenach demonstracyjnych. Wynik 148 EditMode i 89 PlayMode dotyczy wersji mechanik przed połączeniem z blockoutem; ponowne wykonanie całego połączonego zestawu pozostaje do potwierdzenia.
+[Raport mechanik #9/#11](validation/shared-gameplay-2026-09-30.md) opisuje także testy wejścia i ruchu w zapisanych scenach demonstracyjnych. Po połączeniu z blockoutem ponownie wykonano pełne zestawy: 153 EditMode i 109 PlayMode zaliczonych, bez pominięć.
 
 ## Dokumentacja API
 

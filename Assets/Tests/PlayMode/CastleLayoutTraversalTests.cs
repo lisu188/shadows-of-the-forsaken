@@ -329,6 +329,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             bool originalAsyncCompilation = ShaderUtil.allowAsyncCompilation;
             var otherRenderers = new List<Renderer>();
             var otherLights = new List<Light>();
+            var otherVolumes = new List<Behaviour>();
             RenderTexture texture = null;
             Texture2D pixels = null;
             try
@@ -345,6 +346,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                     if (light.enabled && light.gameObject.scene != scene)
                     {
                         otherLights.Add(light); light.enabled = false;
+                    }
+                foreach (var behaviour in Object.FindObjectsByType<Behaviour>())
+                    if (behaviour.isActiveAndEnabled && behaviour.gameObject.scene != scene &&
+                        behaviour.GetType().FullName == "UnityEngine.Rendering.Volume")
+                    {
+                        otherVolumes.Add(behaviour); behaviour.enabled = false;
                     }
                 // Avoid first-use asynchronous shader placeholders in evidence.
                 ShaderUtil.allowAsyncCompilation = false;
@@ -369,6 +376,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 if (texture != null) { texture.Release(); Object.DestroyImmediate(texture); }
                 foreach (var renderer in otherRenderers) if (renderer != null) renderer.enabled = true;
                 foreach (var light in otherLights) if (light != null) light.enabled = true;
+                foreach (var volume in otherVolumes) if (volume != null) volume.enabled = true;
                 if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
             }
 #endif
