@@ -1351,5 +1351,28 @@
     "tracked_files": 348,
     "unique_guids": 143,
     "result": "Passed"
+  },
+  "implementation_commit": "31298895a73891651eea6ed92c154b1554e41fec",
+  "cleanup": {
+    "windows": {
+      "status": "completed",
+      "removed_file_count": 31290,
+      "removed_logical_bytes": 1353409219,
+      "windows_free_before_bytes": 97826643968,
+      "windows_free_after_bytes": 99218915328,
+      "windows_free_delta_bytes": 1392271360
+    },
+    "linux": {
+      "removed_paths_count": 22,
+      "removed_logical_bytes": 118359541,
+      "free_increase_bytes": 122458112,
+      "free_after_bytes": 867146743808
+    },
+    "windows_removed_relative_path": "artifacts/full-route-unity/project/Library",
+    "windows_temp_already_absent": true,
+    "windows_report_sha256": "5983db28a29dd27861dfb2900e55373ef078d839a2013fb4dbe3b9a343e796c7",
+    "linux_report_sha256": "69f46d726c18dc0259e77db6f5723748b44d1b343f4f0387791b9f19328979c6",
+    "retained": "Windows player, all raw failure/pass results, unique captures, input traces, source snapshots, Git worktrees and original user work",
+    "wsl_vhd_compaction": false
   }
 }
