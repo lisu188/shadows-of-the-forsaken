@@ -38,7 +38,7 @@ jobs:
           counts = root.find('.//t:Counters', ns)
           assert counts is not None, 'Missing counters'
           total = int(counts.attrib['total'])
-          minimum = {'Interactions': 17, 'Combat': 31}[suite]
+          minimum = {'Interactions': 17, 'Combat': 46}[suite]
           assert total >= minimum, f'{suite} regression cases not discovered'
           assert int(counts.attrib['executed']) == int(counts.attrib['passed']) == total
           assert int(counts.attrib['failed']) == 0

@@ -1,0 +1,1355 @@
+{
+  "schema_version": 1,
+  "collected_utc": "2026-09-30T21:06:35.150833+00:00",
+  "scope": "Full castle route local implementation validation; standalone route acceptance remains blocked by the locked Windows desktop.",
+  "git_base_commit": "be9e2a43887d186e86cf51e58853ada8fce0e727",
+  "git_branch": "feat/full-castle-route",
+  "worktree_state": "Per-file hashes identify native test inputs; compare with the Git revision containing this manifest. Unity import/build changes are listed separately.",
+  "unity": "6000.6.3f1 (45d8eee7de74)",
+  "source_docx_sha256": "9baa88bd8a9c26fc6adcbcdc9032266096716a7475969c5a6d793356cf15ed31",
+  "source_manifest_encoding": "SHA256 of UTF-8 json.dumps(mapping, sort_keys=True, separators=(comma,colon))",
+  "first_run_source_manifest_sha256": "19ff8b67b78e6e06f8c1f0f6ac80a60f4f211cc9cdcd052a31504dbf85e5349b",
+  "first_run_source_inputs": {
+    "Assets/CameraFollow.cs": "0484f3717802bfe80e22fa388803838123bde82dba8863293085505d81310328",
+    "Assets/CameraFollow.cs.meta": "15eb9f2ccec4876d4ce0caac5c136421f6e80d4ef13c3e61093518db6ac97ba5",
+    "Assets/CameraPlayerOcclusion.cs": "91d6c600f6278835f83e32852a372b0e4cc6ec89e24f1f22f28069ca36e0a221",
+    "Assets/CameraPlayerOcclusion.cs.meta": "83bdc08e60e257ef30c9a92b881a84bae98424604616df604046cd23c07c08f8",
+    "Assets/CameraRig.meta": "39f2a023a6dd51757e7f1cd7f38cffdfd2f4e054da1be6063fd99d2ee547c014",
+    "Assets/Combat.meta": "e66bdd28354d2dd4ee6379dc46410cb618e470f68bca2cfa6adddc79cc4e7a05",
+    "Assets/Encounters.meta": "7727ca82dd0bed6e2049dc3201e9c933aa3a894403f4fbf0f896ea64debaf34b",
+    "Assets/FreeNightSky.meta": "7126d1e433ed33df534f52dfebb2edf7a6443962729b208fd874518d8d51c7a1",
+    "Assets/InputSystem_Actions.inputactions": "098fedbafc1cf480f54a92e63388202aba4ce5cc1a1728051d25d64580b175b2",
+    "Assets/InputSystem_Actions.inputactions.meta": "3b4e424a80f5b4fa76b6abd774884a24285eaa61f22ff9bb20e5ad505fd8b569",
+    "Assets/Interactions.meta": "8da6101292c371a1a82167283085933e54f154240c70dac243f835bfea3fe321",
+    "Assets/LevelLayout.meta": "19b1d2b992b172f062bcd2dd9cdd0f14dedef1e45e1e8a2268f185c1f0c57520",
+    "Assets/LevelSession.meta": "cb86947148fa776a0cfe7f26f29505beaf2d694b78a9319b4e6e2cb7386f740d",
+    "Assets/Movement.meta": "29512af129fdb36aa8f811cb363f34e034054768fac8245b2c787e1fd1545caa",
+    "Assets/PlayerCombat.cs": "ed4e53114de71bb2309ebe900ab3daed498a8f71228a9ca85d460335aac06c5b",
+    "Assets/PlayerCombat.cs.meta": "51655b5b6fd5ea19eb1378b7a39e8c6ff9f2325510a68440d9b6046ce3556fb3",
+    "Assets/PlayerInteractor.cs": "2c677f261d824ef216331f43fcb1952917be9246745392103831dcbbe6d48d40",
+    "Assets/PlayerInteractor.cs.meta": "ed9112e6dc99de9950dfe43840a9b658ab14c998bb7e43b0c4bd6734e36ff12a",
+    "Assets/PlayerMovement.cs": "c240252379fe4fc22875930af6dd54364f3685b5f5caf6d52af666f3bd24a481",
+    "Assets/PlayerMovement.cs.meta": "3ce54a1e8fdbefcc509279f6704dce7429858cce7907c37d50fff0d2b886a7ee",
+    "Assets/Progression.meta": "11a6c9c1f95208d6aa739416e9c6c8da7eea77e86859aa83314eb50a8315097d",
+    "Assets/Readme.asset": "6d098604e909b6a0e64fe5910c2719704864d49678bcf5413bd47b67e5490107",
+    "Assets/Readme.asset.meta": "46c6b89ac1d47bd0c0d1a8b141ae3e32cd95d3e74c49381f0d9f942488c254ce",
+    "Assets/Scenes.meta": "92598ef42aeaa7813a50e780bcee1ad6c832b257592d09ffb0e6fb6116bb703f",
+    "Assets/Settings.meta": "73c8e19843240273facb0af6bdbf430d719e397aded705629594060ce25ce7ad",
+    "Assets/Tests.meta": "b6c62e5a855274e3e60b434969c264c613835c66d12bcdc3b67969054523d89e",
+    "Assets/TutorialInfo.meta": "07f022e5932c833d026e020b27d73452ebd781993b616d76003494af1e140946",
+    "Assets/CameraRig/Core.meta": "b449902f07978814700b2da0ca7a30e18e99a1e101e2ef9846b320bba14c3347",
+    "Assets/CameraRig/Core/CameraMotion.cs": "93d211648017f643a050a258927c8a817b0e6ad7484f7a72f08b34c4b00550a8",
+    "Assets/CameraRig/Core/CameraMotion.cs.meta": "d3520ab19c04c6de10fdc2b8069c60deb2dbf63125ce947384ace8cff5b75331",
+    "Assets/CameraRig/Core/Shadows.Camera.Core.asmdef": "17659303d9ff29a53cd7e151b4128ea4e6603a483c63167f678c7f561f8cfb38",
+    "Assets/CameraRig/Core/Shadows.Camera.Core.asmdef.meta": "215958803b95314aa84741354dd9773915465eae5b93450e7ae03445850bdc6f",
+    "Assets/Combat/CombatDemoHUD.cs": "a2d77c4be1e196e9de0dcce1bfc4a562b3721833f00b8f95a64c45debed1c9a3",
+    "Assets/Combat/CombatDemoHUD.cs.meta": "359b5b2e82394c6d013898e91fdbca5ebe98b47e7bef100cdb51bb28a8644edd",
+    "Assets/Combat/CombatFeedback.cs": "2731f990aaa1d3db71781a988c40584cc437eb191871f43d043df35b60195acc",
+    "Assets/Combat/CombatFeedback.cs.meta": "42e8a01abaa66f216d220995923faedc7ba646af4eecc756314461de01a0046e",
+    "Assets/Combat/CombatHealth.cs": "bc624d9f7d7740b5ed074f8ea915e0a5a5896e11ed8ea341eb350ff443b84bb4",
+    "Assets/Combat/CombatHealth.cs.meta": "d72056c31b239f8f34f2b1aff43bcd23e738e618839daf3cfefc094c5c58b476",
+    "Assets/Combat/Core.meta": "e6920acb4719692cc67907e1d6e9f496cbd8395da39a8d44087486d8668c2fd5",
+    "Assets/Combat/Demo.meta": "728586a3ab29a6504a70d38a931d3c43a067ad1604a99c643073a18125c312ce",
+    "Assets/Combat/Editor.meta": "a96d0562dfdff0cac7ef0984241785d9f3508c63fcab0e744e4d3c85465d49a5",
+    "Assets/Combat/MeleeCombat.cs": "0f97b8a7bdf907014ddbadebb171c36af30162ed3ab69e8b653192f929d600ce",
+    "Assets/Combat/MeleeCombat.cs.meta": "fd20cf9dcbac54642995ada787665d4a13d101352515c56a5d6c317aed549538",
+    "Assets/Combat/Core/CombatState.cs": "a1422bd6f2d284925dc8555b27efb878d268cd7646c9adb21e8d16dba1b66347",
+    "Assets/Combat/Core/CombatState.cs.meta": "88c690b16756f605b03f19546f62b630d64b014401da85c80747efade2987c94",
+    "Assets/Combat/Core/EncounterState.cs": "88eeb73ca040e777f56ad2e58da388f288f0d6a183ef8e67be5b2b7b5c90fa14",
+    "Assets/Combat/Core/EncounterState.cs.meta": "dd562eb849ce803ecd5efa6e76d26acfcb18917caa8744a0fc3d496a008c684a",
+    "Assets/Combat/Core/Shadows.Combat.Core.asmdef": "62e455e7a4a1566b6190462591a66ce15680054d8cc7b12f72649c570a1282e2",
+    "Assets/Combat/Core/Shadows.Combat.Core.asmdef.meta": "23be15b8f6ce23fd618d19eee61a271c50d7244a57b46a2a3652917f458f1435",
+    "Assets/Combat/Demo/CombatDemo.unity": "87bd5344dbe79a66cd39254deac686e820e568aaa69407e62cdf67176bcb25fd",
+    "Assets/Combat/Demo/CombatDemo.unity.meta": "a9f74f36a1bda6be9adc6e5725f7e326a9aa84504a85939752b60808d349066e",
+    "Assets/Combat/Demo/Player.mat": "2076252739f88622ebb47946d63122727b8e578e472cf3603fe1574878dfaf06",
+    "Assets/Combat/Demo/Player.mat.meta": "d9ffc7fb421738bb59a415de45a97083fa679d0e902ee5da25d00f7bfff266d4",
+    "Assets/Combat/Demo/Stone.mat": "9e20598b04c4bcb53dea0ba4d4e5545da3086f6ff675435fedcad20f270f60f5",
+    "Assets/Combat/Demo/Stone.mat.meta": "0ea25ce2ed5ef87a5a91f11f3268ed69a91395aaae2cdfa26a2038624521e51a",
+    "Assets/Combat/Demo/Target.mat": "abafc4095a354e38d245f65f267d27e7898f20fd64af22c148418d699b3fa160",
+    "Assets/Combat/Demo/Target.mat.meta": "7460fb3b3f2a4656321773de576fb74cba675c3f07f90a2719a85b3e1ee37c21",
+    "Assets/Combat/Editor/CombatDemoBuilder.cs": "da02a00b2978cfedb2b6b068e9f6966b6808a89692c1d0fe8b5ecf849171d625",
+    "Assets/Combat/Editor/CombatDemoBuilder.cs.meta": "f06111c1bcd8c5756e7e13b97736bf22843ae7b6ca30e31a1b2ae610b5317053",
+    "Assets/Encounters/EnemyEncounter.cs": "4b08259870e80dad42594a67c8ce89f1539494103ee0293005cb447c107dd896",
+    "Assets/Encounters/EnemyEncounter.cs.meta": "221f3b02955518da0a6b561c683c0311b2fa1ee1bcc2d089a54c16c08f811be1",
+    "Assets/FreeNightSky/Materials.meta": "de853573a10ca535b04ad3dd348e2215b4ac76801dda0101330e7c7b854de8c3",
+    "Assets/FreeNightSky/Textures.meta": "7d81774af01e8e9f45cc72e3cc28a62b206aaa6683c0d9e1de74a637210e3093",
+    "Assets/FreeNightSky/Materials/nightsky1.mat": "1125e49602bd8ae3a38747482f42529278ed376dc648db51b5eb2a594215243f",
+    "Assets/FreeNightSky/Materials/nightsky1.mat.meta": "8059c03dc8aee35f5545f857350f0eee3f2b1390d9912c6017a702188c4178ab",
+    "Assets/FreeNightSky/Materials/nightsky2.mat": "4f278e7f595ef268cdd5fe0b78e0e816d68a82878652e41905f0ef41a023e7ed",
+    "Assets/FreeNightSky/Materials/nightsky2.mat.meta": "4c13f987d1c7278073482c58c44a818886cac22ac1bae6ce539560b9a85892c1",
+    "Assets/FreeNightSky/Textures/nightsky1_back.png": "d42e539ca795728f93892f71297c0c3f8f2cf692fbaca07304500def58606ca9",
+    "Assets/FreeNightSky/Textures/nightsky1_back.png.meta": "df89bebf124712abc6817baf5abc888ff4a39406896f234137fdd62f22f5670a",
+    "Assets/FreeNightSky/Textures/nightsky1_down.png": "65f1988517b0245bb67337689dbaf9ff81fea6ec0df0059cc3ff292b94e7fc1d",
+    "Assets/FreeNightSky/Textures/nightsky1_down.png.meta": "d3917580deb3009972cd329946c265c720f0573c46fd8ed47ef0e9ffd6e6e512",
+    "Assets/FreeNightSky/Textures/nightsky1_front.png": "3a2f38174d3a2357bd952f9db6eb5f6c0069b880ab66b765e767fd85e523abca",
+    "Assets/FreeNightSky/Textures/nightsky1_front.png.meta": "8ad3ab405cf388a1053264b4fd0b78f9158daf74fe88434944a321faee0490f0",
+    "Assets/FreeNightSky/Textures/nightsky1_left.png": "8bf58fad8753d92be022d2aebb2480d13acf13ad0321f6d3f0678ce7333733cc",
+    "Assets/FreeNightSky/Textures/nightsky1_left.png.meta": "d7886c5c6991402f145e588ac35352cc7597afd0e9a3b71af7f6d94e79eea79b",
+    "Assets/FreeNightSky/Textures/nightsky1_right.png": "806b54511294b78800f0a27706226a3558cf1ff4320fbe2a89b59ba2edc4f17c",
+    "Assets/FreeNightSky/Textures/nightsky1_right.png.meta": "2ce10c8df4a3403a9e325e3cb8ffe6419cc7eaf31936e17742f3fff16a969e55",
+    "Assets/FreeNightSky/Textures/nightsky1_up.png": "6e0af2edc3cde52df6be095ecfd04d6f41027e3e4fdf0536951cc4937620afb3",
+    "Assets/FreeNightSky/Textures/nightsky1_up.png.meta": "6ec6b2279ee2810d6306dbccecde2b82c8deee1a02c45695adbb6987343526d8",
+    "Assets/FreeNightSky/Textures/nightsky2_back.png": "f65f820924d3c1f89e66f51ee60fee1e6236975165b8802dc411e278e0c2d729",
+    "Assets/FreeNightSky/Textures/nightsky2_back.png.meta": "45c257f073edebf48508d822860c5b55be4491abbe4e1cea853861f27bf1bbda",
+    "Assets/FreeNightSky/Textures/nightsky2_down.png": "65f1988517b0245bb67337689dbaf9ff81fea6ec0df0059cc3ff292b94e7fc1d",
+    "Assets/FreeNightSky/Textures/nightsky2_down.png.meta": "14cb6d14980fb1e740c80fa289ffe814445b873ec50a164926a336e37a24428f",
+    "Assets/FreeNightSky/Textures/nightsky2_front.png": "52df672e43376c263a303fc61c888e4105ac0bcbe65255973dbd7d72d57987f4",
+    "Assets/FreeNightSky/Textures/nightsky2_front.png.meta": "30e7e829787ae628e5a2ac73aff5b7e922dcbebb62f0f47eb22a4c18306a9640",
+    "Assets/FreeNightSky/Textures/nightsky2_left.png": "75a0be42cb2c179f00510aabe781a74616a46b5732c264b33c3c9e66d8d17b0c",
+    "Assets/FreeNightSky/Textures/nightsky2_left.png.meta": "8f27dfa5f6ae80f993d4433c6aa5f1a6ecb4290ef9c409ae9d1aa82fb4f3630f",
+    "Assets/FreeNightSky/Textures/nightsky2_right.png": "ef8c1bd596b9bf7c96fb1652c7bd8fdd869aaf3fc0d2a56851f42b3ca0fb1f7a",
+    "Assets/FreeNightSky/Textures/nightsky2_right.png.meta": "345b95f77f0524c62b751064c3da87a608c4cf8dd57194382b28a677d92dee10",
+    "Assets/FreeNightSky/Textures/nightsky2_up.png": "0dc539e3b75d66cf9d6e60a020fa5a2f8d8424df19f1e08a4ec3ae91ded23736",
+    "Assets/FreeNightSky/Textures/nightsky2_up.png.meta": "c69d10ac3cea5eb93782c2d940ff1e790e7b705189a2366bc629f2cc7be33dee",
+    "Assets/Interactions/Core.meta": "6826ee498b4f0c6557013a598c9f64c67fb0e933167a1ba81d44d48492fe6720",
+    "Assets/Interactions/Demo.meta": "0a97ebbd4032ee7e5c5a167085408234ccc903270566649c2b29627902183010",
+    "Assets/Interactions/Editor.meta": "6024b084ef5f1f3424dc98f5b2e3e4334d26b02532cb6979410c15a80e5ffd56",
+    "Assets/Interactions/InteractionDemoSession.cs": "7c8d9c469a4cdae448dfbdd81ca25088c58251776418d5812ac5b67a113f90f9",
+    "Assets/Interactions/InteractionDemoSession.cs.meta": "640732053a74fc0ea4964cc399b90b1f26a99c142d3d66d6d48a74e18d4e9d6f",
+    "Assets/Interactions/InteractionTarget.cs": "40eea42d398661221f4d27c25ed8cfcadcad15d710d7ee0d788c046c7b6573bc",
+    "Assets/Interactions/InteractionTarget.cs.meta": "a20f26d4c2d56b7f824dc13247aa066e23abf6d22461d5f2a0d6b64e2477feca",
+    "Assets/Interactions/ProgressionGate.cs": "e409bf60b2c3a4e25b7339152f8272760ee2b4b8ea004ab63bed5231c9c96c05",
+    "Assets/Interactions/ProgressionGate.cs.meta": "e623c43d667275ba02fee8c544ebecfc611987114b03ca2f38bd58f8c87ff9cf",
+    "Assets/Interactions/Core/InteractionRules.cs": "7f7fd336e5280c566a42a2e5941460b41992d19176aa12d2130919d443846198",
+    "Assets/Interactions/Core/InteractionRules.cs.meta": "43a5b460abb1caedfd2c3dc3312625d550cfd32e52a3061c5d90e5e084856d29",
+    "Assets/Interactions/Core/Shadows.Interactions.Core.asmdef": "388d3893cd2ac191f0b21a233e3df3100ef647abe685f2eb51422ac70897b21b",
+    "Assets/Interactions/Core/Shadows.Interactions.Core.asmdef.meta": "eacd22b762ea428c1ed59a28a60c625edd3ab0dea4f99871b6be7c43db791b50",
+    "Assets/Interactions/Demo/BlockedRune.mat": "8f9a8ddf3f69d7b01a70be9267a1d5a276df34d77f0ee3c69ba3a9249c56625c",
+    "Assets/Interactions/Demo/BlockedRune.mat.meta": "9c365cd488e455570130db597d2097bd6e54c6aec5f6b97281a3f5f1756cdf29",
+    "Assets/Interactions/Demo/Gate.mat": "4bf4ddee0f12fcbac68d05597905a65f795fab01b81b99e8ee601da5b85240d1",
+    "Assets/Interactions/Demo/Gate.mat.meta": "b99efc77c288e76956841c5be53cf69ed2fba6a3495edf5c253de09bf607ea93",
+    "Assets/Interactions/Demo/InteractionDemo.unity": "dbdda0a29bef7faccb69404b69325cc0077823290a5973794cc3f15b5ae79d77",
+    "Assets/Interactions/Demo/InteractionDemo.unity.meta": "78c5356d376b03efa6570ce758dd9298639c76bb5f4897793adb064cb29eb852",
+    "Assets/Interactions/Demo/Lever.mat": "9091ccc46d2e433320e67a6da0fe0de19028ac2b408233dc6b665fc2463a763a",
+    "Assets/Interactions/Demo/Lever.mat.meta": "63b5dc37b0b652c23a536b54557efd5267f096c7e8e0409bcfa64823d6c572e9",
+    "Assets/Interactions/Demo/Stone.mat": "bfc68cb2a5cb5cb9a3f4aa9b99e4423297be0add48044b224a3df8f9646fe037",
+    "Assets/Interactions/Demo/Stone.mat.meta": "219f84e81b55ba33e94291ec6f0478c8f52c96bb9fbca0e156d2137e5a3fc1e6",
+    "Assets/Interactions/Editor/InteractionDemoBuilder.cs": "042c20e71d414481c60e688b39b9404533ed5291a4d657d8b74c84f7dbf3b4af",
+    "Assets/Interactions/Editor/InteractionDemoBuilder.cs.meta": "1ce9b6d1ee2dc4b9c2dfc398776702c4a645eaa5b265e42d466090c0b721caa7",
+    "Assets/LevelLayout/CastleLayoutPreview.cs": "e8bf23155759b323231c4d548c2f044203e165a335235eee7b1e0f45047cb084",
+    "Assets/LevelLayout/CastleLayoutPreview.cs.meta": "44fefe4cef25170dfdfb531ff6185227095d239fed88d1874ffe1144bd649841",
+    "Assets/LevelLayout/CastleNavigation.asset": "40b64dca08e51dbe3bcecc57be73a7cb70bc11cac2ae6dcd281a953a9e16777b",
+    "Assets/LevelLayout/CastleNavigation.asset.meta": "53cbeb606c1023c26d85d138099279ffbe01c3c4494309a5329709ebda7fa40c",
+    "Assets/LevelLayout/Editor.meta": "e8dc5f59ed0d08f8c30d5259fdf6ad0232370ec4a09e930f082911358d5cca80",
+    "Assets/LevelLayout/Materials.meta": "4f814fbe14b49ceb2e9a80fb0a7c6932aae7323819201d18a8d17f59fa36777d",
+    "Assets/LevelLayout/MechanismFeedback.cs": "55217547b473294c6de044a2884a6d60c4f674ffad94336a99ff4a0af11ec1be",
+    "Assets/LevelLayout/MechanismFeedback.cs.meta": "1ad83945e0b13460ec232586f530b56656ce56325d2606b828a4242e3393194c",
+    "Assets/LevelLayout/Editor/CastleLayout.json": "136c274793fc6172ffadeb61a722633b5e6cf2bcb417073fce16959099e2450f",
+    "Assets/LevelLayout/Editor/CastleLayout.json.meta": "2bbc35a18008a65060d42139f7d93e6ab32df8292d37fd9fcefbae24c3729004",
+    "Assets/LevelLayout/Editor/CastleLayoutBuilder.cs": "daa29475bac9493ec9e18c849f3d4088e770be53122a4f97992e8d2229afc876",
+    "Assets/LevelLayout/Editor/CastleLayoutBuilder.cs.meta": "188b54d76e5a674b997b07fd801475e5ab48b57a9fbe527684e09f19ca96481f",
+    "Assets/LevelLayout/Editor/CastlePlayerBuild.cs": "396e550b1c5e1ee8165e9a716248efea4baa9d23c4fe7d235be830d3e1bbf0a0",
+    "Assets/LevelLayout/Editor/CastlePlayerBuild.cs.meta": "21b56e2f17dfecc2b6a459520bf9567fa6dc53270663b62f28519861e3143e9a",
+    "Assets/LevelLayout/Materials/Blood.mat": "cff60fc9fc4576233ffcb0b6c68f62eabd71a37dd853cb09fa8661727f94fcd0",
+    "Assets/LevelLayout/Materials/Blood.mat.meta": "295a524f73132c6f8c1438e79d1b82ce0b3b933b03409742452d5484a681d835",
+    "Assets/LevelLayout/Materials/BookGold.mat": "5a1f7b3b3b8fd7ea124ebced20c339b50dd16c147293fb9193d1a7d85c548afa",
+    "Assets/LevelLayout/Materials/BookGold.mat.meta": "3e4e4e3f6e8b7c7787598b206fae7febfce5d11e477912675faf9c0457142946",
+    "Assets/LevelLayout/Materials/BookRed.mat": "a74b08d390bbc8883b5a8614c2329350bd9cf83cbdea54701fba5d4d0b176611",
+    "Assets/LevelLayout/Materials/BookRed.mat.meta": "d60e992063e32212b19dc1d704bb0aa649d78132401a617eb27560fc4c43c99c",
+    "Assets/LevelLayout/Materials/DarkStone.mat": "71568f8c70114342f24989d3f008be024f8c2b3f33ac0b835092bf44b86af90b",
+    "Assets/LevelLayout/Materials/DarkStone.mat.meta": "fb7eb9518a46ead42f10754a0c18f351e74a38331b3edc3c3842a26e0a129f52",
+    "Assets/LevelLayout/Materials/Flame.mat": "caef4f69e47b8c15edd1d5cf8630f4760d2a7da61e7fce93184f95c7864a5efd",
+    "Assets/LevelLayout/Materials/Flame.mat.meta": "16a9548dd85f196d08daacd985e171a11885702f8b51ea28659286351b9d4cae",
+    "Assets/LevelLayout/Materials/Glass.mat": "e58bcee2e473c1fe75f6f49d8583e023dae3ec2a45b728dd411095e486b4507d",
+    "Assets/LevelLayout/Materials/Glass.mat.meta": "b2af1ea0a3c1ddc7b321368edf4ebebffbd099c76b9f95e8765dc5d1fa9beedc",
+    "Assets/LevelLayout/Materials/Iron.mat": "783b268f0810fb8d93ade96cf1b3b61694425276ad8e647c0e3ad78e8f7eb7ce",
+    "Assets/LevelLayout/Materials/Iron.mat.meta": "7153f5edd4817dda563dbec6a387538e9f9000bbc42d6ce5e7fa3ad3f5998f43",
+    "Assets/LevelLayout/Materials/Player.mat": "9e2251b4e66620d645808f7f7317e322f3e41a6fe3f64871147df1042cd3aae8",
+    "Assets/LevelLayout/Materials/Player.mat.meta": "dc1e7efc867547950ba5cab808deee031a9ca614c493f966f7a94ce56e37085c",
+    "Assets/LevelLayout/Materials/Rune.mat": "40588a5589d48401361923c82171895ff8c054ad1dd70b914b211c0e4a8c769a",
+    "Assets/LevelLayout/Materials/Rune.mat.meta": "6a631da6cdd03b5bbfd38ec219c2dcb4fb966a90e5144254029dd185eb2db171",
+    "Assets/LevelLayout/Materials/Stone.mat": "f4c378b3bf5b887b63386351a55b32c7595ae5c711c3854b208e4a64f0593516",
+    "Assets/LevelLayout/Materials/Stone.mat.meta": "d9ea2398ed43a48723ed7b6205670b69a7e7e37cb7e76ef265ec5b8db3b64966",
+    "Assets/LevelLayout/Materials/Trim.mat": "58e7af2587b431841120512c96ebd69a4f2d9a359bc3073abb710402e54e000b",
+    "Assets/LevelLayout/Materials/Trim.mat.meta": "9f81327a04e2def8e754b9b32d32094427b773d266cbde726a8939e3fd1aa3b1",
+    "Assets/LevelLayout/Materials/Wall.mat": "e33203a9a3bf16e509497f2582e25b1427e83344e207ffc64cda84791c482c8f",
+    "Assets/LevelLayout/Materials/Wall.mat.meta": "432f66d279e0fa7bbfc390ecd16ff69b9e7704977d42a78d4f4c44018f7cbede",
+    "Assets/LevelLayout/Materials/Wood.mat": "6b48c1ba8aae65a8130e8b75d120593bc966c14f22d45d3ae6979db9e033c566",
+    "Assets/LevelLayout/Materials/Wood.mat.meta": "a6bd5c4d7aff8b75bef48c18262396e70351ac1d3fec6f6c02775b8bf7009ce8",
+    "Assets/LevelSession/LevelHUD.cs": "3868245815a507bbe0834fb371d284d3113990a4459d977ce98bb5a5a69bc8a4",
+    "Assets/LevelSession/LevelHUD.cs.meta": "a0b502b5fed532fd7895acd210f3d6a3d44aac6e2c71559568a671b3182811a4",
+    "Assets/LevelSession/LevelRoomTrigger.cs": "4a7e747eab31fbd8e64ccd8447e11feccd6f467dc068ca5dcb29439955bb7b1d",
+    "Assets/LevelSession/LevelRoomTrigger.cs.meta": "aa3fa9d8fde978fd4ce7d438f80a845e28d1a4dcceb6922d2874f06e221ff49f",
+    "Assets/LevelSession/LevelSessionController.cs": "4e0877b195665a38ec8a0d21e5d438aa05d91f4ff4ed63413b02a3fc5b1864eb",
+    "Assets/LevelSession/LevelSessionController.cs.meta": "a5fdf6975751dd72109b4d533b2be19e3fa9eac9a2fbbb47fe61f4c73e04131e",
+    "Assets/LevelSession/PlayerValidationEvidence.cs": "b61359b1b4f08a3fb68baee17cc40d46f817763d88e72ee00e8b2b16cf13b5ca",
+    "Assets/LevelSession/PlayerValidationEvidence.cs.meta": "cb700162ebeebc3fa54fa7dd9ea7696348d653db6bd7ba33b6d334ec30858cf0",
+    "Assets/Movement/Core.meta": "ae47dc8ffa8667d17005f7505e5cb7af4feaadef66137801b2482613fa524a96",
+    "Assets/Movement/Core/PlayerMotor.cs": "7002eb43afe142f39eefa47d497d360ee07f2ef98e02549bffb27655a983b0d5",
+    "Assets/Movement/Core/PlayerMotor.cs.meta": "652cf62d8339daa846de678e1c87bd79ad76f227b1a6db7041a1e09a75b39e75",
+    "Assets/Movement/Core/Shadows.Movement.Core.asmdef": "c3a0777e4ed4af9c3fe9886230fb8f0829c62311175ca6a18df5a66bddbfec11",
+    "Assets/Movement/Core/Shadows.Movement.Core.asmdef.meta": "3c3f3174ecd68b2707b663e3d74fc00dac73d3897906d295cd3d9e8fa8ce54f2",
+    "Assets/Progression/Core.meta": "5381dc72108a0892eda2fe070a9acdbabd288d066305cf82bb7dec1c42721fd0",
+    "Assets/Progression/LevelProgressionController.cs": "c98f7dd398012132c130709ad07185bded821a946cbe71aba89c76e0f525dff4",
+    "Assets/Progression/LevelProgressionController.cs.meta": "a957d35f86776c41c1b9f608fdb9bc3a6b1fe8f6fad35b58993543bc6d7a263a",
+    "Assets/Progression/Shadows.Progression.Unity.asmdef": "2942d35ef91ba5a4533ec58f7b33404b7db0a6c9d9aa282aebf094c3c199db88",
+    "Assets/Progression/Shadows.Progression.Unity.asmdef.meta": "d87a71fc74ec1c2fbfaa628112d254b6b445ca6d36a4f34ad83e92ba49c3634f",
+    "Assets/Progression/Core/LevelProgression.cs": "e27f8c53c753a635900c9946420d3896b62a9941311d31e17d68055dd0fd3790",
+    "Assets/Progression/Core/LevelProgression.cs.meta": "67db880cf4062212839e135bd44643285da0c2c2c3ed1bb3584ad09cb64d4909",
+    "Assets/Progression/Core/Shadows.Progression.Core.asmdef": "4cfd5a3e0967689c08f7f3c5e48fbfe7767165548ae0002b5cd52b69118a071e",
+    "Assets/Progression/Core/Shadows.Progression.Core.asmdef.meta": "c7ba620074d4541c574967a139b4b0795a69fac887072c183d1dfdc938e0529f",
+    "Assets/Scenes/ForsakenCastle.unity": "e5922d822b8727f70264fcadf9161db6727c2de69dacf02e3b9793d4ac7da311",
+    "Assets/Scenes/ForsakenCastle.unity.meta": "49e210312cede77ece55648d849c9d86c43a2afbf29d744365a550ebc66c1814",
+    "Assets/Scenes/SampleScene.unity": "07fce8b04804ddccb3026db5b43d8dc41ba138e49d50d36a5c24877081eacdca",
+    "Assets/Scenes/SampleScene.unity.meta": "b5815a6b12afaf810577bc89041c4ce46516c7cd6609693f8db616f8e5584d80",
+    "Assets/Settings/DefaultVolumeProfile.asset": "3a6f825e8d07fe8b9f3b52e7d4e2dfa0e22c555b22335adb19f0ecc66dfa38dd",
+    "Assets/Settings/DefaultVolumeProfile.asset.meta": "efbcb026cee6b8e32fdf27018c06b0515296a6ccbb43969e792fea270310700a",
+    "Assets/Settings/Mobile_Renderer.asset": "2043eaf96a62493c1b43b600c02d8b6d1a5aec5ca9cbccb7ae9c6f9ec397245d",
+    "Assets/Settings/Mobile_Renderer.asset.meta": "a148ee2b4987b05b8ff7ae5f9bf84916184f77aefddc821dceb551f5a69f8179",
+    "Assets/Settings/Mobile_RPAsset.asset": "650d1edd40e9a14ea1618abb9d0dfcbc201f67912bf63b430f62d6466f87b8c2",
+    "Assets/Settings/Mobile_RPAsset.asset.meta": "53ea46647712c615fd1a3f2e0dddfa8559eeedc649e9a1dbf93ff913de28544c",
+    "Assets/Settings/PC_Renderer.asset": "3d0b01d8ded3327263b6690be128a3de58d17c514943ae42fe743a3e084a9c79",
+    "Assets/Settings/PC_Renderer.asset.meta": "b5df8ddb2708c6ed4c133a5ff9ee95a75cc20e4ee3ed6181366a61aedbaf31ec",
+    "Assets/Settings/PC_RPAsset.asset": "684af083c0c3f025cdc9a9ea2287a8cc05df4e2137572b7781ca0f3b17a1e51a",
+    "Assets/Settings/PC_RPAsset.asset.meta": "bb469b9b6f318e9e9bed29c3b2e73e79371c04743c6f95dd6603941f1cd3e53e",
+    "Assets/Settings/SampleSceneProfile.asset": "a8677d4bac051d24caa11cd622e39f968155ee277bfce132274f1de225692fe9",
+    "Assets/Settings/SampleSceneProfile.asset.meta": "2e23abc214069f0adbf2b2207f1db54be7876629ec2a3681d0f4aa5b61622ef0",
+    "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset": "6cbc535caaf1b4f83e68f8f98661ab2281115cfbd8697413e053caa555e7acae",
+    "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset.meta": "f61661d8bc8dbe531daf09f6211ef978c7ba145c9207c8e76524396ae0722d7c",
+    "Assets/Tests/EditMode.meta": "9d8eba421400edcfa6473cd47ff6a6c443a708559680b3ac27b5f972dda7bebd",
+    "Assets/Tests/PlayMode.meta": "28d8d342aeae767aff68caf2f8d58da155b217834404c09fd8474197c8d68cbc",
+    "Assets/Tests/EditMode/CameraMotionTests.cs": "6fc733de096df5511e23515349fe901e5590a10baaa264ea4c7cf9e82a9280d3",
+    "Assets/Tests/EditMode/CameraMotionTests.cs.meta": "fb5b79be60e9acefd24a1e72b598fd53afb10bf80b3e68abc571e53c3a6a5c5b",
+    "Assets/Tests/EditMode/CastleLayoutSceneTests.cs": "6aed5452f76619e485692b31dd7349d375a81f007105b0f07f65845e1e78d35d",
+    "Assets/Tests/EditMode/CastleLayoutSceneTests.cs.meta": "4fae7ab5b275ff6c31e97ecb826f030ee9af189d950d1c2a1da19dbff7b3b7b4",
+    "Assets/Tests/EditMode/CombatStateTests.cs": "eedc751f358f8ef8611dba6e54518f57485323a5d3331e682b12c0581c31756e",
+    "Assets/Tests/EditMode/CombatStateTests.cs.meta": "a2b2cb54043cbb8c4840dd1ad9249d6ae97a20e2bf97765899fa6c1a2cf8b69f",
+    "Assets/Tests/EditMode/EncounterStateTests.cs": "6d495baabad18c932692c79d9eb6d3a282e1032984f001d7cd72dc0dd8a88fdd",
+    "Assets/Tests/EditMode/EncounterStateTests.cs.meta": "7a042856e3d2543b44193e4adb0409349e9d2ac0a3ad729bd5c203c7fedbee02",
+    "Assets/Tests/EditMode/InteractionRulesTests.cs": "f41d68cecb26c80750bc9bd57c6bb4a1faa6e80140af666a1ab81eb956b57b71",
+    "Assets/Tests/EditMode/InteractionRulesTests.cs.meta": "770710de67670291b47835691b43bcb77437979c568daeb4dba8e4ddc172d118",
+    "Assets/Tests/EditMode/LevelProgressionTests.cs": "602b6b8f4f5a0d2570fee03b9bf37b7d814901d3d61e291e75c65384483f1443",
+    "Assets/Tests/EditMode/LevelProgressionTests.cs.meta": "20268e4563cff15ecf55165cfbc646f1ec57e7e033376867506e57f546437134",
+    "Assets/Tests/EditMode/PlayerMotorTests.cs": "a3eb3f76d932eea9e6cfd6d0934d4c2bf146d8285c97a8046a3f19fb0dea4d02",
+    "Assets/Tests/EditMode/PlayerMotorTests.cs.meta": "762a082fbc276190001c7a3e3176bf2a52d8845077fe79fcf91604d08802ec1d",
+    "Assets/Tests/EditMode/ProjectBaselineTests.cs": "0d724e7fd50465522cef4659e4037249759a64fb3085587de0c33cd3f197cff9",
+    "Assets/Tests/EditMode/ProjectBaselineTests.cs.meta": "8e0e8a2c1325181e5607259d24a03f95da7c503252ad92308efbc59b391250d4",
+    "Assets/Tests/EditMode/Shadows.EditMode.Tests.asmdef": "98dbbcec27cf7de74811b7e7c0f380c62b8f1687146d389bfd0237ffca2dab23",
+    "Assets/Tests/EditMode/Shadows.EditMode.Tests.asmdef.meta": "bad4c2068042d845f93b5e4ad3545e75a879b55bc8db20284318d2618ea7d57c",
+    "Assets/Tests/PlayMode/BaselineSceneTests.cs": "b80a1c995c2dda33264fcd121db961d48d684bdbfd9eed55d498396484bc46c6",
+    "Assets/Tests/PlayMode/BaselineSceneTests.cs.meta": "824ea7778c304f8517d24318b5c7efec274858188b4fdb3e52caf3f4bd7a0c58",
+    "Assets/Tests/PlayMode/CameraFollowTests.cs": "3e1419c27c4fae909a6fae87c49c84343e4e7dbdff974b4324cc043be417a611",
+    "Assets/Tests/PlayMode/CameraFollowTests.cs.meta": "0f6f7683fa9d8a78dc9c3b90c49d55230db47156df598050d2288478ef65ec8a",
+    "Assets/Tests/PlayMode/CameraPlayerOcclusionTests.cs": "95dcb299fa7c5f8be10615fe10c8913944c1e76f378af11ce6e2c91f39251ea7",
+    "Assets/Tests/PlayMode/CameraPlayerOcclusionTests.cs.meta": "6beba33f18a52f58ee2f7acbe77d57ac18cc98a982b6bab3de1b50e9cfa29218",
+    "Assets/Tests/PlayMode/CastleLayoutTraversalTests.cs": "97c7dc6d1ea5be34eb2e34cd8595207a5bd48a3166b6ea5b8914c6ed8f8576c6",
+    "Assets/Tests/PlayMode/CastleLayoutTraversalTests.cs.meta": "8c09a21bb27cc53bd06533fb09d4bb110d69323d317b000d0ac50dd25e77a490",
+    "Assets/Tests/PlayMode/CombatPhysicsTests.cs": "47a4fe3c5a4153c487d4e1ab1c18c259ec2304724d426e6c98f12e0ace20cab2",
+    "Assets/Tests/PlayMode/CombatPhysicsTests.cs.meta": "32c01519d60438ed264cedd5425dbc00a7974a9f0d97df3501f7dafd04d071ee",
+    "Assets/Tests/PlayMode/EnemyEncounterTests.cs": "f8b4716a14b7a4e7dfea91047bcc749f19648b23b7ec47347422fce5860cb5f8",
+    "Assets/Tests/PlayMode/EnemyEncounterTests.cs.meta": "cf70001b6e361f95a077c8a25c43e4c8b52d2bfb9fa137f5c42f2788058cc34b",
+    "Assets/Tests/PlayMode/FullCastleRouteTests.cs": "e2e24708beab2fdc1b3d16b8f5228b50f021a31369cf0643a232247f83e3c2c7",
+    "Assets/Tests/PlayMode/FullCastleRouteTests.cs.meta": "595bfc814f5a4a6e16bf5c48140791a2892a3b5daffb8773860499548ff9f8a2",
+    "Assets/Tests/PlayMode/GameplayDemoTests.cs": "b02feca928001d356771325380401f5c6edc77df62f14dd580c5a0ac59db6c40",
+    "Assets/Tests/PlayMode/GameplayDemoTests.cs.meta": "be557bbca88cced727e0cc287ff670e890b2e90d0809f8e359094559784e6246",
+    "Assets/Tests/PlayMode/InteractionComponentTests.cs": "1c1c5efec9862a4a71334f15cde948c9df5311bc073644e02f09a62c7fc5b809",
+    "Assets/Tests/PlayMode/InteractionComponentTests.cs.meta": "c099f93a6286b42da588292c51b58c16297dcc217ae1b89917506442f35ade1a",
+    "Assets/Tests/PlayMode/LevelSessionTests.cs": "e9365ff0b61613be0b9741fb78ce03d4570f5b303047fa5dcaf4c870c9338bdf",
+    "Assets/Tests/PlayMode/LevelSessionTests.cs.meta": "d361a44ea31d4f602876d392063ed3c33e9d5bfb3226bba28ea986a9da472301",
+    "Assets/Tests/PlayMode/MechanismFeedbackTests.cs": "285c05839655776c4f8cc780fbe7cd55c36a84ca33dc1b7742103dd11e1748ba",
+    "Assets/Tests/PlayMode/MechanismFeedbackTests.cs.meta": "89784298df4990eb070ba0d8df0b4baa9530b8236455fb68f3a73a1eefb6b66b",
+    "Assets/Tests/PlayMode/PlayerMovementTests.cs": "0db8282c7f9259f27683d2186427ba4af74d6839a3b7b02e67dadbf240ada0bc",
+    "Assets/Tests/PlayMode/PlayerMovementTests.cs.meta": "21b7ad5e6e7cdb59a27db562b73ab201af88e3337e3b24739ecf6de205d46c1d",
+    "Assets/Tests/PlayMode/ProgressionControllerTests.cs": "682023328ddc914ba76de38d555b4a023759285a13a73062482d0f3dbc0f91e0",
+    "Assets/Tests/PlayMode/ProgressionControllerTests.cs.meta": "e031e39f6421078fbd5b8b0d1ed96b86fd16469f634967ec9ae7185d8181e644",
+    "Assets/Tests/PlayMode/Shadows.PlayMode.Tests.asmdef": "d5a3ba7ed86cf72e4efa3a31dfa8b268ba295f724002493368d6e8ad25e55c1d",
+    "Assets/Tests/PlayMode/Shadows.PlayMode.Tests.asmdef.meta": "3879e0ebb21e0aafbf2b4d08c0a86b5f41d737f09c04a798887ef0756df31ae4",
+    "Assets/TutorialInfo/Icons.meta": "546e7d7af6b4d5e17d284c8f1188d05472e681911b8359905ee9b9e20769a106",
+    "Assets/TutorialInfo/Layout.wlt": "0a18bf035aa7ce914f19f7ce6b60a5a2d33e2371af6f492a8ea7a1bc78755b8b",
+    "Assets/TutorialInfo/Layout.wlt.meta": "b8745a251df078ffa75dbaac0c4c6debecb61ab306b5b119a490ce6c635a11d8",
+    "Assets/TutorialInfo/Scripts.meta": "930d0c8276cea1559a3e315f8500ea6ca8b58d980eee3b44aaa1d461742c47e0",
+    "Assets/TutorialInfo/Icons/URP.png": "1d17a9ff3537859abe2c008603d29d90cf43191ae77aa386167cc65e53ba03d9",
+    "Assets/TutorialInfo/Icons/URP.png.meta": "b330f1fcfc4e6ceccc95fc34a38434141603469b135633e1c4e8a03c19f9fdbc",
+    "Assets/TutorialInfo/Scripts/Editor.meta": "7036bdbc8af05799b5fd508484343b35c28a68b390198da4673d34357d7d667f",
+    "Assets/TutorialInfo/Scripts/Readme.cs": "c09c93844f93eb252a6fb39c222d169c63a63e96008fd040b9e7628c3e7ccc2e",
+    "Assets/TutorialInfo/Scripts/Readme.cs.meta": "80a3df9969fab6e656583ee9bbca884d0507e2b7de3417f6ea3118fba901cd60",
+    "Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs": "d2023934bc2be23af69cd930ade85eff41c5db0a6f6666b05324b975befdb5b5",
+    "Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs.meta": "f59080b424c16fa13edd105bf006fdbad98c11fce0c921043e63c8877f144cd9",
+    "Packages/manifest.json": "39b2613ae71efed05acb131f85af8cf0268211afbe2c13586d7bf4b8d57cc944",
+    "Packages/packages-lock.json": "0430a662ff295193bf7e0a7892a6c7f5a5b156d71e8dace08b1d1c55d1a5331a",
+    "ProjectSettings/AudioManager.asset": "aeedeb3243f07b61dbbe854aa08b5ef6f0b5274dd9852ad9f6129dde3e105a31",
+    "ProjectSettings/ClusterInputManager.asset": "40e65dd214bf254955d2c8829ca8ce2130fd3510485560ce012e9a1ddd93e623",
+    "ProjectSettings/DynamicsManager.asset": "b7c9a9dc08b98990109d4346f68745e15e238de400f96c583e53e1c83c743a78",
+    "ProjectSettings/EditorBuildSettings.asset": "89de8cd417535128e3ca76ba1c6d97325dda534bd3e6fb1c253665b8a425109e",
+    "ProjectSettings/EditorSettings.asset": "e604d57e55c4533bbcf097da9e8c564aa5393f186bc793d01d60e0c3194b4847",
+    "ProjectSettings/GraphicsSettings.asset": "44b78d6b562c59e88f79cd39614a94173b4570d0485e1ccc93798851ff5f410c",
+    "ProjectSettings/InputManager.asset": "7a1bb836a1008d26d0860d143e9d9df7ca41731d30a72901b518063819c62df2",
+    "ProjectSettings/MemorySettings.asset": "1e8379a461b10ae09f3f696911088c16875d63e87ed5f2d95df9e1892703f9fd",
+    "ProjectSettings/MultiplayerManager.asset": "aba89fd1a1ddad182727ad82727e536d27372e90328a8196da2a4560398983dd",
+    "ProjectSettings/NavMeshAreas.asset": "80106cfa7e6181a1928b142c075f3e510d527441e3d79bc83590e4ac91e7cd66",
+    "ProjectSettings/PackageManagerSettings.asset": "68fc2c15a7011ba61cbba52c3f38097329c84da652bdb5845c14fb7d0e46d221",
+    "ProjectSettings/Physics2DSettings.asset": "e3cbdbf0be15244b7b67d2f07bdb8e8981911c11a8c7fe8035f5261272fec658",
+    "ProjectSettings/PhysicsCoreProjectSettings2D.asset": "bedc5339a832c60dc3f11b84abc4f4384dbfa20b0cd9ad6c444b907e751fc35e",
+    "ProjectSettings/PresetManager.asset": "29c125923fe6e29f90190d4fce1c82d660e7051546e2c9d02908d18c9cf2436c",
+    "ProjectSettings/ProjectAuditorSettings.asset": "7b96b4b637e0ff3513edbe878c6375e8d0f8eb6b2f5b4e3202dcbd52aa55897d",
+    "ProjectSettings/ProjectSettings.asset": "03ce1b99777646dbe853ba6c477febe166a15e409e96023e86006f93c6645a69",
+    "ProjectSettings/ProjectVersion.txt": "87289075c168cdd875e46a5fc308d15c686987848a70c7ce47faf40196ac0e20",
+    "ProjectSettings/QualitySettings.asset": "90a6246b84df30886fb817936db3934edd391241d003785606137c0e27014856",
+    "ProjectSettings/SceneTemplateSettings.json": "bb9098b3bfcde78d93e264b96f7b77b5430e64e8c57a7aad7f5a5d9c3945e16a",
+    "ProjectSettings/ShaderGraphSettings.asset": "cdba1e5d65bcf6e3269d76ed3e60b6c21f98322002996642c9d74f1eb89f6b91",
+    "ProjectSettings/TagManager.asset": "23fc56b484aa3d7edf5914cd3591f7a823ccef5e3f3496f8a51f30388ead63dc",
+    "ProjectSettings/TimeManager.asset": "1a83e54adbbda7c9f4851103a0c6ab7f6448a3343d4ea5b7620452fa08416ecd",
+    "ProjectSettings/UnityConnectSettings.asset": "d6034acbef6c9e3179866486c31eab81fcbe5e7ed350ce71e0fa2b1449b77109",
+    "ProjectSettings/URPProjectSettings.asset": "c317fe22b9488785c0611f0642429922e5d324430d929bffb41648130f30c218",
+    "ProjectSettings/VersionControlSettings.asset": "e7bda45bf7a394745fee1316e6c71fa676004d591ad1f3aa247fd3e4ceb86071",
+    "ProjectSettings/VFXManager.asset": "f066c6483919961332415ee64204f74fe52f38c02e82892eb02b7a5b2e381f0e",
+    "ProjectSettings/XRSettings.asset": "edd2beb4a2e388312b4b7da241aa51070434005d82c59363f1237dd2e567585f"
+  },
+  "runs_chronological": [
+    {
+      "mode": "author",
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "run",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "1800",
+        "--no-tail",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--log-file",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\author-6\\editor.log",
+        "--",
+        "-executeMethod",
+        "CastleLayoutBuilder.BuildForBatch"
+      ],
+      "started_unix": 1790801250.9410071,
+      "exit_code": 0,
+      "stopped": null,
+      "elapsed_seconds": 18.64,
+      "id": "author-6",
+      "source_file_count": 284,
+      "source_manifest_sha256": "19ff8b67b78e6e06f8c1f0f6ac80a60f4f211cc9cdcd052a31504dbf85e5349b",
+      "artifact_directory": "artifacts/full-route-unity/results/author-6",
+      "artifact_sha256": {
+        "cli.log": "02d92f60437d31228ae470f8a351924d4108a60b885b48b9138b3ee6c897613d",
+        "editor.log": "b7de33ed63c3f8a3fff1f44e674f59a4d6c04df77c6284dd696b803aac815bf7",
+        "execution.json": "be87f08f5f0d3f9586e8775a98de3fc11e244163f0dc74aa9b372a889ffafa05",
+        "source-before.json": "b013836d70d1961442f57e5d99cb9ecad9cb4d1a0ee2cbc2f95f7464dfeb0a50"
+      },
+      "source_changes_from_previous_run": []
+    },
+    {
+      "mode": "editmode",
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "test",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project",
+        "--mode",
+        "EditMode",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "1800",
+        "--output",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\editmode-3\\results.xml",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--",
+        "-assemblyNames",
+        "Shadows.EditMode.Tests",
+        "-logFile",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\editmode-3\\editor.log"
+      ],
+      "started_unix": 1790801395.1709867,
+      "exit_code": 0,
+      "stopped": null,
+      "elapsed_seconds": 18.14,
+      "id": "editmode-3",
+      "source_file_count": 284,
+      "source_manifest_sha256": "7854d301926a7bba3b02db9cd9ca58c99277ba1a335460f6062101d7af483eda",
+      "artifact_directory": "artifacts/full-route-unity/results/editmode-3",
+      "artifact_sha256": {
+        "cli.log": "1d20520d721beb8118ffa2a7a67be9a49277960b225b7c72a48e3d191e45c131",
+        "editor.log": "03267a401bb1a08e5719d29b3d2ddfb6ead5f0b8744a1accd999c939e04829ae",
+        "execution.json": "a8795d807a8b8789be85cb200f645190cd60c7073045750488825ad0af44483e",
+        "results.xml": "015612fe58e53a3fa472118d4eda8034f1d387a31b9311a0303ce7046d5a6b76",
+        "source-before.json": "ed6251154dad52ec873216ef9ffc615ff2ddf9c1931d1559e90eb9659b76ad51"
+      },
+      "source_changes_from_previous_run": [
+        {
+          "path": "Assets/LevelLayout/Materials/Blood.mat",
+          "before_sha256": "cff60fc9fc4576233ffcb0b6c68f62eabd71a37dd853cb09fa8661727f94fcd0",
+          "after_sha256": "9c177d9dde02a2ba5617d4a0f9f6425df18edc2baadbb322941684ce1f7fa707"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/BookGold.mat",
+          "before_sha256": "5a1f7b3b3b8fd7ea124ebced20c339b50dd16c147293fb9193d1a7d85c548afa",
+          "after_sha256": "147458b5be4a5dc4ae4bae975ef835d063a3b95c3e2069d7c4116f7060f7749a"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/BookRed.mat",
+          "before_sha256": "a74b08d390bbc8883b5a8614c2329350bd9cf83cbdea54701fba5d4d0b176611",
+          "after_sha256": "defb7ba1ae9f17b26de518b4cb456a1cd49e86f8b59be2e380853d3dce902883"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/DarkStone.mat",
+          "before_sha256": "71568f8c70114342f24989d3f008be024f8c2b3f33ac0b835092bf44b86af90b",
+          "after_sha256": "12e88c9bf98de0c45ddc1c9183ab2b2428d0c6db996cb5bd7172754cef7446fa"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Flame.mat",
+          "before_sha256": "caef4f69e47b8c15edd1d5cf8630f4760d2a7da61e7fce93184f95c7864a5efd",
+          "after_sha256": "ba4eea2c527d5566c0978f2d5c73a84684d29f7ea24336ccfaf3834a20d545f0"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Glass.mat",
+          "before_sha256": "e58bcee2e473c1fe75f6f49d8583e023dae3ec2a45b728dd411095e486b4507d",
+          "after_sha256": "21c0d68af1cd56d532455c06d6488b311e96ece4a2c8e4fa37831e6cf0b430b0"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Iron.mat",
+          "before_sha256": "783b268f0810fb8d93ade96cf1b3b61694425276ad8e647c0e3ad78e8f7eb7ce",
+          "after_sha256": "1208c83dc5de4b7fb0f43b8c966b2748eb4d1009cf6333b5935955efd69fac23"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Player.mat",
+          "before_sha256": "9e2251b4e66620d645808f7f7317e322f3e41a6fe3f64871147df1042cd3aae8",
+          "after_sha256": "9a9ace608768fca2f33be5d5c503c5828e357b534504524dfee62c8b31a7e5a5"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Rune.mat",
+          "before_sha256": "40588a5589d48401361923c82171895ff8c054ad1dd70b914b211c0e4a8c769a",
+          "after_sha256": "f59463f2c32c81007ce399cdd956e58d777d8cb0cd3bd00910ab7519261dd75c"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Stone.mat",
+          "before_sha256": "f4c378b3bf5b887b63386351a55b32c7595ae5c711c3854b208e4a64f0593516",
+          "after_sha256": "8b2a801c7f55b759bde61430097d5c82f2de314d3be4cefdabdec07d20fc2786"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Trim.mat",
+          "before_sha256": "58e7af2587b431841120512c96ebd69a4f2d9a359bc3073abb710402e54e000b",
+          "after_sha256": "1aa4080cd07189bff9a82da103999354753ae392aea5118065c2f94bae100069"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Wall.mat",
+          "before_sha256": "e33203a9a3bf16e509497f2582e25b1427e83344e207ffc64cda84791c482c8f",
+          "after_sha256": "e2437601894d42c8850156d9af49c3808519bfc5f46153d5fa798939cde4a729"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Wood.mat",
+          "before_sha256": "6b48c1ba8aae65a8130e8b75d120593bc966c14f22d45d3ae6979db9e033c566",
+          "after_sha256": "c01a72272588a5d30eec7740657595daff03900c05eaec044fa5e43ac6e2b1eb"
+        },
+        {
+          "path": "Assets/Scenes/ForsakenCastle.unity",
+          "before_sha256": "e5922d822b8727f70264fcadf9161db6727c2de69dacf02e3b9793d4ac7da311",
+          "after_sha256": "bb8667cd3e01d72a14f30d0878a14c32c9e2e6956e5ba5129086be33c4386632"
+        },
+        {
+          "path": "ProjectSettings/ProjectAuditorSettings.asset",
+          "before_sha256": "7b96b4b637e0ff3513edbe878c6375e8d0f8eb6b2f5b4e3202dcbd52aa55897d",
+          "after_sha256": "9e68444b9bda981e2927a98df9edf69ea88362f0c6b7f3c81b39b9d515d2a416"
+        },
+        {
+          "path": "ProjectSettings/ProjectSettings.asset",
+          "before_sha256": "03ce1b99777646dbe853ba6c477febe166a15e409e96023e86006f93c6645a69",
+          "after_sha256": "200dc70efa535d919f553bd136cc41dfb9b2d2d756abb8e32f3c7c26af70ae92"
+        }
+      ],
+      "nunit": {
+        "result": "Passed",
+        "total": "169",
+        "passed": "169",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "start-time": "2026-09-30 20:50:07Z",
+        "end-time": "2026-09-30 20:50:08Z",
+        "duration": "0.4844198"
+      },
+      "nonpassing_cases": [],
+      "route_cases": []
+    },
+    {
+      "mode": "build",
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "run",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "1800",
+        "--no-tail",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--log-file",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\build-2\\editor.log",
+        "--",
+        "-executeMethod",
+        "CastlePlayerBuild.BuildForBatch"
+      ],
+      "started_unix": 1790801454.356551,
+      "exit_code": 0,
+      "stopped": null,
+      "elapsed_seconds": 30.03,
+      "id": "build-2",
+      "source_file_count": 284,
+      "source_manifest_sha256": "7854d301926a7bba3b02db9cd9ca58c99277ba1a335460f6062101d7af483eda",
+      "artifact_directory": "artifacts/full-route-unity/results/build-2",
+      "artifact_sha256": {
+        "cli.log": "634efe733c3f2255e64cbdbfb92f9c9364b7698ff4466026d44058712cf8cefc",
+        "editor.log": "f0d38e1847ea3f5fd57cc3e3bf030ae5605c862d7b87818f81f30c1c1ac7513f",
+        "execution.json": "f83c7f6021804ffdad137a938c495d98bff984553b9ffa346192e53947a1f3e6",
+        "source-before.json": "9a8aaf4381fa1a4d7a546cbfabfbd1bd1e37723c0eccaa4d662cc0d12e68f32b"
+      },
+      "source_changes_from_previous_run": []
+    },
+    {
+      "mode": "playmode",
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "test",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project",
+        "--mode",
+        "PlayMode",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "1800",
+        "--output",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-9\\results.xml",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--",
+        "-assemblyNames",
+        "Shadows.PlayMode.Tests",
+        "-logFile",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-9\\editor.log"
+      ],
+      "started_unix": 1790801509.9141412,
+      "exit_code": 8,
+      "stopped": null,
+      "elapsed_seconds": 467.47,
+      "id": "playmode-9",
+      "source_file_count": 284,
+      "source_manifest_sha256": "05788a4acee2ed01919d8b1fbb2552d258076fce90b9de85147d8e82ad1a204e",
+      "artifact_directory": "artifacts/full-route-unity/results/playmode-9",
+      "artifact_sha256": {
+        "cli.log": "c39e35fdc5a5e9e6a8ea56cbd35147f5416c200bb69e7cc334099d01976cc90a",
+        "editor.log": "61e10c08e9540ef07270e886330cb8e5ecf5b0a90f5d47667fb67fa68c0a08c3",
+        "execution.json": "36a8d6a1681f42b39730abc861b56ffbb348323b3c3a01367f319c530beb8095",
+        "results.xml": "88301bb5cfe46cbc073aab76bbc2537b6e36ae9451fb0b652894d3b5bd4e10b1",
+        "source-before.json": "9f1d476b7bb85468085ac868f45bb21067051d792c9f21ef7b6b5b39fbb9515e"
+      },
+      "source_changes_from_previous_run": [
+        {
+          "path": "Assets/Settings/DefaultVolumeProfile.asset",
+          "before_sha256": "3a6f825e8d07fe8b9f3b52e7d4e2dfa0e22c555b22335adb19f0ecc66dfa38dd",
+          "after_sha256": "463776c51ae49d4fef980e8fd268081b2f505610d79315003faae1acff8f4115"
+        },
+        {
+          "path": "Assets/Settings/PC_RPAsset.asset",
+          "before_sha256": "684af083c0c3f025cdc9a9ea2287a8cc05df4e2137572b7781ca0f3b17a1e51a",
+          "after_sha256": "362f427deb9e767720ed0ec3eb1284e93ddf2042c7ddd22d31e9678e5f16bdf4"
+        },
+        {
+          "path": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+          "before_sha256": "6cbc535caaf1b4f83e68f8f98661ab2281115cfbd8697413e053caa555e7acae",
+          "after_sha256": "9035df085c3de1c069aa254cce96789fc5764c5d79da92cdb45a5ce65e30027f"
+        }
+      ],
+      "nunit": {
+        "result": "Failed(Child)",
+        "total": "162",
+        "passed": "161",
+        "failed": "1",
+        "inconclusive": "0",
+        "skipped": "0",
+        "start-time": "2026-09-30 20:52:10Z",
+        "end-time": "2026-09-30 20:59:31Z",
+        "duration": "441.2190248"
+      },
+      "nonpassing_cases": [
+        {
+          "name": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+          "result": "Failed",
+          "message": "Unhandled log message: '[Error] FMOD failed to initialize the output device.: \"Error initializing output device. \" (60)'. Use UnityEngine.TestTools.LogAssert.Expect",
+          "stack_trace": "\n"
+        }
+      ],
+      "route_cases": [
+        {
+          "name": "CastleFinalFightDeathRestartsTheSavedWorld",
+          "result": "Passed",
+          "duration_seconds": "83.512121"
+        },
+        {
+          "name": "CastleFirstFightDeathRestartsTheSavedWorld",
+          "result": "Passed",
+          "duration_seconds": "44.857267"
+        },
+        {
+          "name": "CastleLockedMainGatesRejectWalkingAndJumping",
+          "result": "Passed",
+          "duration_seconds": "37.890772"
+        },
+        {
+          "name": "CastleMainRouteCompletesThroughControlsWithoutSecret",
+          "result": "Failed",
+          "duration_seconds": "81.977403"
+        },
+        {
+          "name": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+          "result": "Passed",
+          "duration_seconds": "121.625431"
+        },
+        {
+          "name": "CastleThroneFightDeathRestartsTheSavedWorld",
+          "result": "Passed",
+          "duration_seconds": "62.080569"
+        }
+      ]
+    },
+    {
+      "mode": "playmode",
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "test",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project",
+        "--mode",
+        "PlayMode",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "1800",
+        "--output",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-10\\results.xml",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--",
+        "-assemblyNames",
+        "Shadows.PlayMode.Tests",
+        "-logFile",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-10\\editor.log",
+        "-disableaudio"
+      ],
+      "started_unix": 1790802205.2787511,
+      "exit_code": 0,
+      "stopped": null,
+      "elapsed_seconds": 491.31,
+      "id": "playmode-10",
+      "source_file_count": 284,
+      "source_manifest_sha256": "c2e2b46e377aea6a1c8d6f149305640be4d3457019008ae1e0a200f7f9aad136",
+      "source_changes_from_previous_run": [
+        {
+          "path": "Assets/Combat/Demo/Player.mat",
+          "before_sha256": "2076252739f88622ebb47946d63122727b8e578e472cf3603fe1574878dfaf06",
+          "after_sha256": "f16355e6e75f05defa5dddb83464a5904fa7528951f90bd9efbba8b1c053d821"
+        },
+        {
+          "path": "Assets/Combat/Demo/Stone.mat",
+          "before_sha256": "9e20598b04c4bcb53dea0ba4d4e5545da3086f6ff675435fedcad20f270f60f5",
+          "after_sha256": "0a438501137f8c7954c8d08f3acb2ddbb4706930001fc9608ed10bf6951ec829"
+        },
+        {
+          "path": "Assets/Combat/Demo/Target.mat",
+          "before_sha256": "abafc4095a354e38d245f65f267d27e7898f20fd64af22c148418d699b3fa160",
+          "after_sha256": "e4b73562a574200b50ec9f7d7b716490fc257f8e35db0e7b7812456f55736630"
+        },
+        {
+          "path": "Assets/Interactions/Demo/BlockedRune.mat",
+          "before_sha256": "8f9a8ddf3f69d7b01a70be9267a1d5a276df34d77f0ee3c69ba3a9249c56625c",
+          "after_sha256": "afdee58e80723af3796bb8be56c95f95d6a46a4e7ac749c729554b0759bcb67a"
+        },
+        {
+          "path": "Assets/Interactions/Demo/Gate.mat",
+          "before_sha256": "4bf4ddee0f12fcbac68d05597905a65f795fab01b81b99e8ee601da5b85240d1",
+          "after_sha256": "fe17e2458826420d6bc21e555149d4c8775ec522bcf5f0a30bd3b1ae62d6c85a"
+        },
+        {
+          "path": "Assets/Interactions/Demo/Lever.mat",
+          "before_sha256": "9091ccc46d2e433320e67a6da0fe0de19028ac2b408233dc6b665fc2463a763a",
+          "after_sha256": "a18ab64c8e2daf003d8d1c7b9c8c88e4799dcaeb95fb1d11bb0886f28c544171"
+        },
+        {
+          "path": "Assets/Interactions/Demo/Stone.mat",
+          "before_sha256": "bfc68cb2a5cb5cb9a3f4aa9b99e4423297be0add48044b224a3df8f9646fe037",
+          "after_sha256": "b5bbdb33b007d116a7b68c92b86a3d8e0bc4c11734be726140e7756c98b8ffa6"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Blood.mat",
+          "before_sha256": "9c177d9dde02a2ba5617d4a0f9f6425df18edc2baadbb322941684ce1f7fa707",
+          "after_sha256": "c6a2e6d032f99879342c766681335815a882147e961be26ac83b0d98a6c8e431"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/BookGold.mat",
+          "before_sha256": "147458b5be4a5dc4ae4bae975ef835d063a3b95c3e2069d7c4116f7060f7749a",
+          "after_sha256": "d582418e5b0acb4cf0aad69097e61f0c88c5a8539fd1fa1ee8dba0cfec361c26"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/BookRed.mat",
+          "before_sha256": "defb7ba1ae9f17b26de518b4cb456a1cd49e86f8b59be2e380853d3dce902883",
+          "after_sha256": "4d2c416b4d69eda014d2a408bc7e7f526d5978801509a371d04d1f1c035f9fcf"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/DarkStone.mat",
+          "before_sha256": "12e88c9bf98de0c45ddc1c9183ab2b2428d0c6db996cb5bd7172754cef7446fa",
+          "after_sha256": "0cac6186419357781f90603ab4d4b3cbae5b88d1f8e1f0f745817b79a74b0fc5"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Flame.mat",
+          "before_sha256": "ba4eea2c527d5566c0978f2d5c73a84684d29f7ea24336ccfaf3834a20d545f0",
+          "after_sha256": "d82bafbc1463fa9fda8a9dc93b204f72aca618469cc5c26afe361aeec1723e16"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Glass.mat",
+          "before_sha256": "21c0d68af1cd56d532455c06d6488b311e96ece4a2c8e4fa37831e6cf0b430b0",
+          "after_sha256": "8649fb4be5ac205a315583358632ed2b7dc099a4319e811b09285a8829cfcc4e"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Iron.mat",
+          "before_sha256": "1208c83dc5de4b7fb0f43b8c966b2748eb4d1009cf6333b5935955efd69fac23",
+          "after_sha256": "035cc6e870a09fc36daecd4f1989a85621c6b960f58cd89623daf89b85a4c1b4"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Player.mat",
+          "before_sha256": "9a9ace608768fca2f33be5d5c503c5828e357b534504524dfee62c8b31a7e5a5",
+          "after_sha256": "100ca088ab97db5499e48fae8f456511d20713e886a93a9f6be63c003f014015"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Rune.mat",
+          "before_sha256": "f59463f2c32c81007ce399cdd956e58d777d8cb0cd3bd00910ab7519261dd75c",
+          "after_sha256": "0062df1577cc2ad8fa5f7d9e0f60e1896a016fe897ad7ef22cd8efa5cb3dcc93"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Stone.mat",
+          "before_sha256": "8b2a801c7f55b759bde61430097d5c82f2de314d3be4cefdabdec07d20fc2786",
+          "after_sha256": "73acac5dd268e01726e745cf267bc9ecc35f7945e90903a9c18498cfd49291ff"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Trim.mat",
+          "before_sha256": "1aa4080cd07189bff9a82da103999354753ae392aea5118065c2f94bae100069",
+          "after_sha256": "0553b90fd3cc614c58fa40b2b0b287ec2cfe7bfb82a707f683c6de3d6e34ccf0"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Wall.mat",
+          "before_sha256": "e2437601894d42c8850156d9af49c3808519bfc5f46153d5fa798939cde4a729",
+          "after_sha256": "dc83485f7469ab887c677587a61d57246285726c9705eb206ab8e22a918f746b"
+        },
+        {
+          "path": "Assets/LevelLayout/Materials/Wood.mat",
+          "before_sha256": "c01a72272588a5d30eec7740657595daff03900c05eaec044fa5e43ac6e2b1eb",
+          "after_sha256": "b43609628ad33ef2c46a6580b08be34f271004b56ef3187ebe6b69dda17da3bf"
+        }
+      ],
+      "artifact_directory": "artifacts/full-route-unity/results/playmode-10",
+      "artifact_sha256": {
+        "cli.log": "63957b4a4456d359cf033db153d3a8befe541917db654d49a4f9a112776da755",
+        "editor.log": "88751fce1245ee10ca31f71fe8c8590d996815dd51ec9cd615662c97555f261a",
+        "execution.json": "73f1596de3e1fb8a3c5824e24b6e531d0c92e200687068163fdd95c0013b41c0",
+        "results.xml": "8b97b74c4977e7003a1513554c6256b91588a26c308bd0ceef9041e2f8673dd0",
+        "source-before.json": "f35b804adffae5d0ac1d378eec9ee8a94e8a06afbecdc44bc0ad9ab8e19ca9df"
+      },
+      "nunit": {
+        "result": "Passed",
+        "total": "162",
+        "passed": "162",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "start-time": "2026-09-30 21:04:10Z",
+        "end-time": "2026-09-30 21:11:32Z",
+        "duration": "441.5470266"
+      },
+      "nonpassing_cases": [],
+      "route_cases": [
+        {
+          "name": "CastleFinalFightDeathRestartsTheSavedWorld",
+          "result": "Passed",
+          "duration_seconds": "82.929875"
+        },
+        {
+          "name": "CastleFirstFightDeathRestartsTheSavedWorld",
+          "result": "Passed",
+          "duration_seconds": "44.833078"
+        },
+        {
+          "name": "CastleLockedMainGatesRejectWalkingAndJumping",
+          "result": "Passed",
+          "duration_seconds": "38.155495"
+        },
+        {
+          "name": "CastleMainRouteCompletesThroughControlsWithoutSecret",
+          "result": "Passed",
+          "duration_seconds": "81.736431"
+        },
+        {
+          "name": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+          "result": "Passed",
+          "duration_seconds": "123.007039"
+        },
+        {
+          "name": "CastleThroneFightDeathRestartsTheSavedWorld",
+          "result": "Passed",
+          "duration_seconds": "62.092436"
+        }
+      ],
+      "audio": "Disabled using -disableaudio; no audio playback acceptance"
+    }
+  ],
+  "identical_csharp_inputs": {
+    "count": 53,
+    "runs": [
+      "author-6",
+      "editmode-3",
+      "build-2",
+      "playmode-9",
+      "playmode-10 (input snapshot only)"
+    ],
+    "also_matches_authoring_worktree": true
+  },
+  "native_import_differences": {
+    "basis": "Authoring worktree versus native project at the immutable PlayMode10 source-before snapshot. This is an observed diff; not every difference is a code change or attributable solely to a single import.",
+    "files": [
+      {
+        "path": "Assets/Combat/Demo/Player.mat",
+        "authoring_sha256": "2076252739f88622ebb47946d63122727b8e578e472cf3603fe1574878dfaf06",
+        "native_sha256": "f16355e6e75f05defa5dddb83464a5904fa7528951f90bd9efbba8b1c053d821",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Combat/Demo/Stone.mat",
+        "authoring_sha256": "9e20598b04c4bcb53dea0ba4d4e5545da3086f6ff675435fedcad20f270f60f5",
+        "native_sha256": "0a438501137f8c7954c8d08f3acb2ddbb4706930001fc9608ed10bf6951ec829",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Combat/Demo/Target.mat",
+        "authoring_sha256": "abafc4095a354e38d245f65f267d27e7898f20fd64af22c148418d699b3fa160",
+        "native_sha256": "e4b73562a574200b50ec9f7d7b716490fc257f8e35db0e7b7812456f55736630",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Interactions/Demo/BlockedRune.mat",
+        "authoring_sha256": "8f9a8ddf3f69d7b01a70be9267a1d5a276df34d77f0ee3c69ba3a9249c56625c",
+        "native_sha256": "afdee58e80723af3796bb8be56c95f95d6a46a4e7ac749c729554b0759bcb67a",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Interactions/Demo/Gate.mat",
+        "authoring_sha256": "4bf4ddee0f12fcbac68d05597905a65f795fab01b81b99e8ee601da5b85240d1",
+        "native_sha256": "fe17e2458826420d6bc21e555149d4c8775ec522bcf5f0a30bd3b1ae62d6c85a",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Interactions/Demo/Lever.mat",
+        "authoring_sha256": "9091ccc46d2e433320e67a6da0fe0de19028ac2b408233dc6b665fc2463a763a",
+        "native_sha256": "a18ab64c8e2daf003d8d1c7b9c8c88e4799dcaeb95fb1d11bb0886f28c544171",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Interactions/Demo/Stone.mat",
+        "authoring_sha256": "bfc68cb2a5cb5cb9a3f4aa9b99e4423297be0add48044b224a3df8f9646fe037",
+        "native_sha256": "b5bbdb33b007d116a7b68c92b86a3d8e0bc4c11734be726140e7756c98b8ffa6",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Blood.mat",
+        "authoring_sha256": "cff60fc9fc4576233ffcb0b6c68f62eabd71a37dd853cb09fa8661727f94fcd0",
+        "native_sha256": "c6a2e6d032f99879342c766681335815a882147e961be26ac83b0d98a6c8e431",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/BookGold.mat",
+        "authoring_sha256": "5a1f7b3b3b8fd7ea124ebced20c339b50dd16c147293fb9193d1a7d85c548afa",
+        "native_sha256": "d582418e5b0acb4cf0aad69097e61f0c88c5a8539fd1fa1ee8dba0cfec361c26",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/BookRed.mat",
+        "authoring_sha256": "a74b08d390bbc8883b5a8614c2329350bd9cf83cbdea54701fba5d4d0b176611",
+        "native_sha256": "4d2c416b4d69eda014d2a408bc7e7f526d5978801509a371d04d1f1c035f9fcf",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/DarkStone.mat",
+        "authoring_sha256": "71568f8c70114342f24989d3f008be024f8c2b3f33ac0b835092bf44b86af90b",
+        "native_sha256": "0cac6186419357781f90603ab4d4b3cbae5b88d1f8e1f0f745817b79a74b0fc5",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Flame.mat",
+        "authoring_sha256": "caef4f69e47b8c15edd1d5cf8630f4760d2a7da61e7fce93184f95c7864a5efd",
+        "native_sha256": "d82bafbc1463fa9fda8a9dc93b204f72aca618469cc5c26afe361aeec1723e16",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Glass.mat",
+        "authoring_sha256": "e58bcee2e473c1fe75f6f49d8583e023dae3ec2a45b728dd411095e486b4507d",
+        "native_sha256": "8649fb4be5ac205a315583358632ed2b7dc099a4319e811b09285a8829cfcc4e",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Iron.mat",
+        "authoring_sha256": "783b268f0810fb8d93ade96cf1b3b61694425276ad8e647c0e3ad78e8f7eb7ce",
+        "native_sha256": "035cc6e870a09fc36daecd4f1989a85621c6b960f58cd89623daf89b85a4c1b4",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Player.mat",
+        "authoring_sha256": "9e2251b4e66620d645808f7f7317e322f3e41a6fe3f64871147df1042cd3aae8",
+        "native_sha256": "100ca088ab97db5499e48fae8f456511d20713e886a93a9f6be63c003f014015",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Rune.mat",
+        "authoring_sha256": "40588a5589d48401361923c82171895ff8c054ad1dd70b914b211c0e4a8c769a",
+        "native_sha256": "0062df1577cc2ad8fa5f7d9e0f60e1896a016fe897ad7ef22cd8efa5cb3dcc93",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Stone.mat",
+        "authoring_sha256": "f4c378b3bf5b887b63386351a55b32c7595ae5c711c3854b208e4a64f0593516",
+        "native_sha256": "73acac5dd268e01726e745cf267bc9ecc35f7945e90903a9c18498cfd49291ff",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Trim.mat",
+        "authoring_sha256": "58e7af2587b431841120512c96ebd69a4f2d9a359bc3073abb710402e54e000b",
+        "native_sha256": "0553b90fd3cc614c58fa40b2b0b287ec2cfe7bfb82a707f683c6de3d6e34ccf0",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Wall.mat",
+        "authoring_sha256": "e33203a9a3bf16e509497f2582e25b1427e83344e207ffc64cda84791c482c8f",
+        "native_sha256": "dc83485f7469ab887c677587a61d57246285726c9705eb206ab8e22a918f746b",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/LevelLayout/Materials/Wood.mat",
+        "authoring_sha256": "6b48c1ba8aae65a8130e8b75d120593bc966c14f22d45d3ae6979db9e033c566",
+        "native_sha256": "b43609628ad33ef2c46a6580b08be34f271004b56ef3187ebe6b69dda17da3bf",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Settings/DefaultVolumeProfile.asset",
+        "authoring_sha256": "3a6f825e8d07fe8b9f3b52e7d4e2dfa0e22c555b22335adb19f0ecc66dfa38dd",
+        "native_sha256": "463776c51ae49d4fef980e8fd268081b2f505610d79315003faae1acff8f4115",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Settings/PC_RPAsset.asset",
+        "authoring_sha256": "684af083c0c3f025cdc9a9ea2287a8cc05df4e2137572b7781ca0f3b17a1e51a",
+        "native_sha256": "362f427deb9e767720ed0ec3eb1284e93ddf2042c7ddd22d31e9678e5f16bdf4",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+        "authoring_sha256": "6cbc535caaf1b4f83e68f8f98661ab2281115cfbd8697413e053caa555e7acae",
+        "native_sha256": "9035df085c3de1c069aa254cce96789fc5764c5d79da92cdb45a5ce65e30027f",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "ProjectSettings/ProjectAuditorSettings.asset",
+        "authoring_sha256": "7b96b4b637e0ff3513edbe878c6375e8d0f8eb6b2f5b4e3202dcbd52aa55897d",
+        "native_sha256": "9e68444b9bda981e2927a98df9edf69ea88362f0c6b7f3c81b39b9d515d2a416",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "ProjectSettings/ProjectSettings.asset",
+        "authoring_sha256": "03ce1b99777646dbe853ba6c477febe166a15e409e96023e86006f93c6645a69",
+        "native_sha256": "200dc70efa535d919f553bd136cc41dfb9b2d2d756abb8e32f3c7c26af70ae92",
+        "kind": "changed",
+        "authoring_crlf": 0,
+        "native_crlf": 0
+      },
+      {
+        "path": "ProjectSettings/SceneTemplateSettings.json",
+        "authoring_sha256": null,
+        "native_sha256": "bb9098b3bfcde78d93e264b96f7b77b5430e64e8c57a7aad7f5a5d9c3945e16a",
+        "kind": "native_only"
+      }
+    ],
+    "exact_text_diff": "native-import-differences.json",
+    "summary": [
+      "13 castle materials expand to the installed URP serialized schema and normalize legacy _Color precision.",
+      "7 demo materials normalize legacy _Color precision and/or empty YAML scalar whitespace.",
+      "3 URP settings assets contain serialized/default or build-prefilter/runtime-list updates.",
+      "2 ProjectSettings assets differ only by empty YAML scalar whitespace; SceneTemplateSettings.json exists only in native project."
+    ]
+  },
+  "windows_build": {
+    "run": "build-2",
+    "target": "StandaloneWindows64",
+    "report_line": "Castle Windows build: Succeeded; errors=0; warnings=0; bytes=123103498; duration=00:00:15.9177150",
+    "reported_size_bytes": 123103498,
+    "critical_output_hashes": [
+      {
+        "path": "ShadowsOfTheForsaken.exe",
+        "bytes": 667136,
+        "sha256": "96b492cb271111251fe42b8646e65370a1b7b566773a1e35b34c3f2d1ae70873"
+      },
+      {
+        "path": "UnityPlayer.dll",
+        "bytes": 38696368,
+        "sha256": "7c8127007131559a3daa04aa3a3e8d1477975fe449f59917c5c75d86fa1f904f"
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Assembly-CSharp.dll",
+        "bytes": 72192,
+        "sha256": "6892985998af8423a7f2801f2a1c85a33d615ec29ec88d91ca258cc10209cdd8"
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/globalgamemanagers",
+        "bytes": 120132,
+        "sha256": "5959cdb42cf2346a0cbe5859be0230f212c60fb30eadf95cec43edc866d71730"
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/boot.config",
+        "bytes": 156,
+        "sha256": "914fc4fefce4a684b4ee0d233741ffd7216234031dbdf5aa196bef1fced2722a"
+      }
+    ],
+    "limitation": "A successful build is not a standalone playthrough. These PNGs were not captured from the standalone executable."
+  },
+  "gallery": [
+    {
+      "file": "01-courtyard.png",
+      "caption": "Extended calm courtyard approach",
+      "capture_type": "Unity PlayMode scene camera (not standalone player)",
+      "source": "artifacts/full-route-unity/results/playmode-9/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-courtyard.png",
+      "sha256": "b29d221f306ebf00320567600c0c454466325041e26704278b28b2cc84239209",
+      "bytes": 197622,
+      "width": 960,
+      "height": 540,
+      "case": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "case_result": "Passed",
+      "suite_result": "Failed:161/162",
+      "unchanged_png": true
+    },
+    {
+      "file": "02-first-fight.png",
+      "caption": "First encounter: live placeholder attack feedback",
+      "capture_type": "Unity PlayMode scene camera (not standalone player)",
+      "source": "artifacts/full-route-unity/results/playmode-9/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-fight-FirstEnemyDefeated.png",
+      "sha256": "4fc3696527164bb4200309b8d7ab11f384420695dbb96bc9aa595c4dad09c6cb",
+      "bytes": 160956,
+      "width": 960,
+      "height": 540,
+      "case": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "case_result": "Passed",
+      "suite_result": "Failed:161/162",
+      "unchanged_png": true
+    },
+    {
+      "file": "03-rune-lever.png",
+      "caption": "Activated marked rune lever and gate acknowledgement",
+      "capture_type": "Unity PlayMode scene camera (not standalone player)",
+      "source": "artifacts/full-route-unity/results/playmode-9/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-rune-lever.png",
+      "sha256": "796dfa4ea0930fa199c67e33a738b87a592fb7bf37b0fb56e3bf60a778fc46ad",
+      "bytes": 164235,
+      "width": 960,
+      "height": 540,
+      "case": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "case_result": "Passed",
+      "suite_result": "Failed:161/162",
+      "unchanged_png": true
+    },
+    {
+      "file": "04-throne-fight.png",
+      "caption": "Throne-room guard encounter",
+      "capture_type": "Unity PlayMode scene camera (not standalone player)",
+      "source": "artifacts/full-route-unity/results/playmode-9/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-fight-MinibossDefeated.png",
+      "sha256": "037fb7c871f526ce98254823e56c2de8366420dc62162f8f10fc73e4dd5f94f9",
+      "bytes": 112553,
+      "width": 960,
+      "height": 540,
+      "case": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "case_result": "Passed",
+      "suite_result": "Failed:161/162",
+      "unchanged_png": true
+    },
+    {
+      "file": "05-library.png",
+      "caption": "Marked book activated in the descending library",
+      "capture_type": "Unity PlayMode scene camera (not standalone player)",
+      "source": "artifacts/full-route-unity/results/playmode-9/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-library.png",
+      "sha256": "d3114540dfc3003362f78d199d14d65c4d54134de53259102d1a84b775a81bbd",
+      "bytes": 171532,
+      "width": 960,
+      "height": 540,
+      "case": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "case_result": "Passed",
+      "suite_result": "Failed:161/162",
+      "unchanged_png": true
+    },
+    {
+      "file": "06-relic.png",
+      "caption": "Optional relic recovered; one-time lore feedback",
+      "capture_type": "Unity PlayMode scene camera (not standalone player)",
+      "source": "artifacts/full-route-unity/results/playmode-9/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-relic.png",
+      "sha256": "9112bc2ba232599efbd5c2d205e2194ee7a453a316abb1e7f2fe4c54def6ad5b",
+      "bytes": 144575,
+      "width": 960,
+      "height": 540,
+      "case": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "case_result": "Passed",
+      "suite_result": "Failed:161/162",
+      "unchanged_png": true
+    },
+    {
+      "file": "07-final-fight.png",
+      "caption": "Mandatory final encounter after optional secret",
+      "capture_type": "Unity PlayMode scene camera (not standalone player)",
+      "source": "artifacts/full-route-unity/results/playmode-9/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-fight-FinalEnemyDefeated.png",
+      "sha256": "7f59be7b149f662b1705542d4ff75e8f30960b23c2b694368939174b2ff7bd6d",
+      "bytes": 109149,
+      "width": 960,
+      "height": 540,
+      "case": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "case_result": "Passed",
+      "suite_result": "Failed:161/162",
+      "unchanged_png": true
+    },
+    {
+      "file": "08-secret-complete.png",
+      "caption": "Exit completion acknowledges the optional relic",
+      "capture_type": "Unity PlayMode scene camera (not standalone player)",
+      "source": "artifacts/full-route-unity/results/playmode-9/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-complete-secret.png",
+      "sha256": "ef1883e6bb3a53f4dab42733cbd6a7f8620c4bd0a5baf29d30f4e3e27bc141e1",
+      "bytes": 100639,
+      "width": 960,
+      "height": 540,
+      "case": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "case_result": "Passed",
+      "suite_result": "Failed:161/162",
+      "unchanged_png": true
+    }
+  ],
+  "gallery_total_bytes": 1161261,
+  "capture_method": "Existing FullCastleRouteTests advances actual saved-scene gameplay through input; capture calls the saved CameraFollow.SnapToTarget and requests that scene camera at960x540. HUD is temporarily switched to ScreenSpaceCamera for capture, feedback is refreshed, async shader compilation is temporarily disabled, then settings are restored. No alternate camera, image editing or synthetic art.",
+  "status": {
+    "authoring": "Succeeded",
+    "editmode": "169/169 Passed",
+    "build": "Succeeded;0errors;0warnings",
+    "playmode9": "Failed:161/162; main-route case emitted unhandled FMOD output-device initialization error",
+    "release_acceptance": "Not established by this evidence snapshot",
+    "manual_timing_target": "Not certified; the shown2:01 is an automated secret-route HUD timer, not three manual basic-route measurements.",
+    "playmode10": "162/162 Passed with -disableaudio; no skipped cases",
+    "standalone_routes": "Not completed: Windows desktop locked (LockApp.exe foreground); initial pilot reached combat; later attempts closed normally without inputs."
+  },
+  "retention": "All original XML, raw logs, source-before manifests, unsuccessful attempts, input traces, raw PNGs and player deliverable remain retained. Task-local reproducible caches may be removed; see the validation report cleanup record.",
+  "headless_results": {
+    "Camera.trx": {
+      "sha256": "c7391997faa4eee68c0271b80708532daa314d6d47037f6b747fe40cba4af286",
+      "counters": {
+        "total": "32",
+        "executed": "32",
+        "passed": "32",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    "Combat.trx": {
+      "sha256": "2bc943aa3095e7375096495ee649cf2967a22a24d674a117328aeccd98434bc4",
+      "counters": {
+        "total": "46",
+        "executed": "46",
+        "passed": "46",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    "Interactions.trx": {
+      "sha256": "d826f7b49da7dd1dc4e969c96dee17d77438dc1d68046ff411e7fb27e6b09303",
+      "counters": {
+        "total": "17",
+        "executed": "17",
+        "passed": "17",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    "Movement.trx": {
+      "sha256": "7de952d6237c545c48369ef92f3d5b5a78100ff5ba74856fd1b8345991811c1d",
+      "counters": {
+        "total": "36",
+        "executed": "36",
+        "passed": "36",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    "Progression.trx": {
+      "sha256": "22080cde10b22a61a7101c832d640d35f7693ffdd75c41628af9551dfc006232",
+      "counters": {
+        "total": "29",
+        "executed": "29",
+        "passed": "29",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    }
+  },
+  "python_results": {
+    "passed": 84,
+    "failed": 0,
+    "skipped": 0,
+    "report_sha256": "53bdf1fe1c7ec050b6e39fde98e7fbf4ce4eea8ac1a1cd6ab83f5baf4d740435",
+    "artifact": "artifacts/validation/python-final-delivery.log"
+  },
+  "automated_route_timings": {
+    "main": {
+      "seconds": 81.5822525024414,
+      "secret": false,
+      "health": 200,
+      "progression": [
+        "FirstEncounter:None",
+        "FirstEncounter:FirstEnemyDefeated",
+        "Puzzle:FirstEnemyDefeated",
+        "Puzzle:FirstEnemyDefeated, MainPuzzleSolved",
+        "FirstEncounter:FirstEnemyDefeated, MainPuzzleSolved",
+        "ThroneRoom:FirstEnemyDefeated, MainPuzzleSolved",
+        "ThroneRoom:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated",
+        "Library:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated",
+        "Library:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened",
+        "Catacombs:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened",
+        "FinalArena:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened",
+        "FinalArena:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, FinalEnemyDefeated",
+        "Exit:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, FinalEnemyDefeated"
+      ],
+      "input_trace_sha256": "33cea5f31d08a256f7bd7c63ba5bbd50c2a1494f9ffe53cec4eee409076951bd"
+    },
+    "secret": {
+      "seconds": 122.84589385986328,
+      "secret": true,
+      "health": 200,
+      "progression": [
+        "FirstEncounter:None",
+        "FirstEncounter:FirstEnemyDefeated",
+        "Puzzle:FirstEnemyDefeated",
+        "Puzzle:FirstEnemyDefeated, MainPuzzleSolved",
+        "FirstEncounter:FirstEnemyDefeated, MainPuzzleSolved",
+        "ThroneRoom:FirstEnemyDefeated, MainPuzzleSolved",
+        "ThroneRoom:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated",
+        "Library:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated",
+        "Library:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened",
+        "Catacombs:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened",
+        "Catacombs:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled",
+        "BonusRoom:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled",
+        "BonusRoom:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled, BonusDiscovered",
+        "ThroneRoom:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled, BonusDiscovered",
+        "Library:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled, BonusDiscovered",
+        "Catacombs:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled, BonusDiscovered",
+        "FinalArena:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled, BonusDiscovered",
+        "FinalArena:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled, BonusDiscovered, FinalEnemyDefeated",
+        "Exit:FirstEnemyDefeated, MainPuzzleSolved, MinibossDefeated, LibraryOpened, SecretLeverPulled, BonusDiscovered, FinalEnemyDefeated"
+      ],
+      "input_trace_sha256": "737a8f3f3127fdd9793dc7a1542bcca2e6e7e6d6eb26903e36b89cbeb30ee036"
+    }
+  },
+  "source_integrity": {
+    "assets": 112,
+    "tracked_files": 348,
+    "unique_guids": 143,
+    "result": "Passed"
+  }
+}

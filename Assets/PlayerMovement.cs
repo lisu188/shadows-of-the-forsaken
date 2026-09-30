@@ -16,23 +16,29 @@ public class PlayerMovement : MonoBehaviour
 
     public event Action AttackRequested;
     public event Action InteractRequested;
-    public bool ControlsEnabled => controlsEnabled;
+    public event Action RestartRequested;
+    public bool ControlsEnabled => controlsEnabled && sessionControlsEnabled;
+    public bool RequestedControlsEnabled => controlsEnabled;
     public float VerticalVelocity => motor.VerticalVelocity;
 
     private readonly PlayerMotor motor = new PlayerMotor();
     private readonly PlayerInputGate inputGate = new PlayerInputGate();
     private CharacterController characterController;
     private InputActionMap ownedActions;
-    private InputAction moveAction, jumpAction, attackAction, interactAction;
+    private InputAction moveAction, jumpAction, attackAction, interactAction, restartAction;
     private MovementInput movement;
     private PlayerButtons pendingButtons;
     private bool controlsEnabled = true;
+    private bool sessionControlsEnabled = true;
+    private bool restartEnabled, restartAwaitingNeutral = true, restartHeld, pendingRestart;
     private bool focused = true;
     private bool paused;
     private bool inputUpdated;
 
-    private bool CanControl => isActiveAndEnabled && controlsEnabled && focused && !paused &&
+    private bool CanControl => isActiveAndEnabled && ControlsEnabled && focused && !paused &&
         characterController != null && characterController.enabled && ownedActions != null && Time.timeScale > 0;
+    private bool CanRestart => isActiveAndEnabled && restartEnabled && focused && !paused &&
+        ownedActions != null && restartAction != null && Time.timeScale > 0;
 
     private void Awake()
     {
@@ -43,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
     private void OnEnable()
     {
         ResetMotion();
+        ResetRestartInput();
         var source = inputActions != null ? inputActions : InputSystem.actions;
         try
         {
@@ -55,6 +62,8 @@ public class PlayerMovement : MonoBehaviour
             jumpAction = ownedActions.FindAction("Jump", true);
             attackAction = ownedActions.FindAction("Attack", true);
             interactAction = ownedActions.FindAction("Interact", true);
+            // Existing standalone movement fixtures need not supply a session action.
+            restartAction = ownedActions.FindAction("Restart", false);
             if (moveAction.type != InputActionType.Value || moveAction.expectedControlType != "Vector2")
                 throw new InvalidOperationException("Player/Move must be a Value action with Vector2 controls.");
             for (int i = 0; i < moveAction.bindings.Count; i++)
@@ -72,6 +81,13 @@ public class PlayerMovement : MonoBehaviour
                 action.Enable();
             }
             moveAction.Enable();
+            if (restartAction != null)
+            {
+                if (restartAction.type != InputActionType.Button)
+                    throw new InvalidOperationException("Restart must be a Button action.");
+                restartAction.wantsInitialStateCheck = true;
+                restartAction.Enable();
+            }
             InputSystem.onAfterUpdate += SampleInput;
         }
         catch (Exception error)
@@ -90,26 +106,30 @@ public class PlayerMovement : MonoBehaviour
             ownedActions.Dispose();
             ownedActions = null;
         }
-        moveAction = jumpAction = attackAction = interactAction = null;
+        moveAction = jumpAction = attackAction = interactAction = restartAction = null;
         ResetMotion();
+        ResetRestartInput();
     }
 
     private void OnDestroy()
     {
         AttackRequested = null;
         InteractRequested = null;
+        RestartRequested = null;
     }
 
     private void OnApplicationFocus(bool hasFocus)
     {
         focused = hasFocus;
         ResetMotion();
+        ResetRestartInput();
     }
 
     private void OnApplicationPause(bool isPaused)
     {
         paused = isPaused;
         ResetMotion();
+        ResetRestartInput();
     }
 
     public void SetControlsEnabled(bool value)
@@ -117,6 +137,28 @@ public class PlayerMovement : MonoBehaviour
         if (controlsEnabled == value) return;
         controlsEnabled = value;
         ResetMotion();
+    }
+
+    // Separate from the gameplay caller's permission so health restoration cannot
+    // reopen input midway through a level reset or after terminal completion.
+    public void SetSessionControlsEnabled(bool value)
+    {
+        if (sessionControlsEnabled == value) return;
+        sessionControlsEnabled = value;
+        ResetMotion();
+    }
+
+    public void SetRestartEnabled(bool value)
+    {
+        if (restartEnabled == value) return;
+        restartEnabled = value;
+        ResetRestartInput();
+    }
+
+    private void ResetRestartInput()
+    {
+        restartAwaitingNeutral = true;
+        restartHeld = pendingRestart = false;
     }
 
     public void ResetMotion()
@@ -131,6 +173,18 @@ public class PlayerMovement : MonoBehaviour
     private void SampleInput()
     {
         if ((InputState.currentUpdateType & (InputUpdateType.BeforeRender | InputUpdateType.Editor)) != 0) return;
+        if (!CanRestart) ResetRestartInput();
+        else
+        {
+            bool restartHeldNow = restartAction.IsPressed();
+            bool restartPressedNow = restartAction.WasPressedThisFrame();
+            if (restartAwaitingNeutral)
+            {
+                if (!restartHeldNow && !restartPressedNow) restartAwaitingNeutral = false;
+            }
+            else if (restartPressedNow && !restartHeld) pendingRestart = true;
+            restartHeld = restartHeldNow;
+        }
         if (!CanControl)
         {
             ResetMotion();
@@ -157,6 +211,18 @@ public class PlayerMovement : MonoBehaviour
 
     public void Simulate(float deltaTime)
     {
+        if (pendingRestart && CanRestart && !float.IsNaN(deltaTime) && !float.IsInfinity(deltaTime) && deltaTime > 0)
+        {
+            pendingRestart = false;
+            var listeners = RestartRequested;
+            if (listeners != null)
+                foreach (Action listener in listeners.GetInvocationList())
+                {
+                    if (!CanRestart) break;
+                    try { listener(); }
+                    catch (Exception error) { Debug.LogException(error, this); }
+                }
+        }
         if (!CanControl || float.IsNaN(deltaTime) || float.IsInfinity(deltaTime) || deltaTime <= 0)
         {
             ResetMotion();

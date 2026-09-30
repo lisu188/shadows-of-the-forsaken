@@ -29,7 +29,7 @@ namespace ShadowsOfTheForsaken.Combat
         public AttackPhase Phase => attack.Phase;
         public CombatHealth Health => health != null ? health : (health = GetComponent<CombatHealth>());
         private PlayerMovement Movement => movement != null ? movement : (movement = GetComponent<PlayerMovement>());
-        private bool CanAct => isActiveAndEnabled && attacksEnabled && Health.isActiveAndEnabled && Health.IsAlive &&
+        private bool CanAct => isActiveAndEnabled && attacksEnabled && Health.isActiveAndEnabled && Health.IsAlive && Health.DamageEnabled &&
             Time.timeScale > 0 && !applicationPaused && (Movement == null || (Movement.isActiveAndEnabled && Movement.ControlsEnabled)) &&
             (Health.progression == null || (Health.progression.isActiveAndEnabled && !Health.progression.Snapshot.IsCompleted));
         public bool CanAttack => CanAct && Phase == AttackPhase.Ready;

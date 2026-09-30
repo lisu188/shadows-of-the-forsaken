@@ -56,29 +56,24 @@ Dokument nie określa również wszystkich parametrów implementacyjnych: klawis
 
 ## Aktualny stan
 
-Repozytorium zawiera scenę układu zamku `Assets/Scenes/ForsakenCastle.unity`, zachowaną scenę bazową `SampleScene`, skrypty `PlayerMovement` i `CameraFollow`, konfigurację Input System oraz zasoby nocnego nieba. [Blockout #8](docs/castle-layout.md) zapisuje geometrię wszystkich obszarów, zejście biblioteki i osobny dolny skrót. Jest podglądem układu z otwartymi miejscami przyszłych bram; nie uruchamia walki, zagadek ani postępu. Dnia 2026-09-30 wykonano czysty import i rzeczywiste testy Windows Unity `6000.6.3f1`: **105/105 EditMode oraz 68/68 PlayMode**. [Raport walidacji](docs/validation/unity-castle-2026-09-30.md) zachowuje także pierwszą nieudaną próbę PlayMode i opis poprawki środowiska testowego. Ręczne przejście i odbiór wizualny pozostają do wykonania.
+Kod i jawny builder sceny `Assets/Scenes/ForsakenCastle.unity` łączą pełną trasę zamku: spokojny dziedziniec, trzy odrębne starcia, runiczną dźwignię, mechanizm biblioteki, opcjonalny relikt i wyjście. [Opis pełnej trasy](docs/full-castle-route.md) podaje sterowanie, parametry AI, połączenia, restart i granice dowodów. Zachowano scenę bazową `SampleScene` oraz oddzielne demonstracje mechanik.
 
 | Obszar | Stan |
 | --- | --- |
-| Specyfikacja, README i zasady pracy | Opisane; DOCX zachowany jako źródło wymagań. |
-| Decyzje i kontrakt pierwszego poziomu (#4) | Zapisane; automatycznie sprawdzane osiągalność, warunki bram, opcjonalność sekretu i niezmienność DOCX. |
-| Runtime postępu (#10) | Dostarczony rdzeń C#, migawki stanu, tokeny sesji, zdarzenia i reset. 7 testów adaptera MonoBehaviour zaliczono w rzeczywistym PlayMode; postęp nie jest jeszcze podłączony do sceny zamku. |
-| Kontroler gracza (#6) | Istniejący PlayerMovement używa Input System; rdzeń ruchu, obsługa sufitu/lądowania i blokada wejścia. 36 testów rdzenia oraz 17 przypadków PlayMode zaliczono w Unity; ręczny odbiór pozostaje otwarty. |
-| Kamera (#7) | CameraFollow uwzględnia kolizje near plane, wygładzanie, odnajdywanie celu i reset po teleporcie. 32 przypadki matematyki oraz 22 przypadki PlayMode zaliczono w Unity; odbiór wizualny pozostaje otwarty. |
-| Wspólne interakcje i bramy (#9) | Dodano wybór celu E z kontrolą zasięgu/przeszkód, jednorazowe mechanizmy powiązane z sesją i fizyczne bramy czekające na opuszczenie zajętego przejścia. [Podłączenie i demo](docs/interactions.md); konkretne zagadki pozostają osobnymi zadaniami. |
-| Wspólna walka (#11) | Dodano atak LPM, przygotowanie/aktywne okno/odstęp, kontrolę trafienia i przeszkód, zdrowie, jednorazową śmierć oraz wizualny feedback. [Parametry i arena testowa](docs/combat.md); AI i konkretne starcia pozostają osobnymi zadaniami. |
-| Projekt Unity, skrypty i zasoby nieba | Istnieją w repozytorium; nie stanowią kompletnego poziomu. |
-| Dziedziniec, sala tronowa, biblioteka i katakumby | Zapisana scena blockoutu #8: dziewięć obszarów, obie drogi do bonusu, geometria, kolizje, gracz, kamera i znaczniki przyszłej rozgrywki. Zaliczono 5 testów EditMode i 20 PlayMode, w tym przejścia wszystkich połączeń w obie strony. Zapisano cztery widoki z kamery gry; ręczne przejście i poprawa widoczności w bibliotece pozostają wymagane. |
-| Pierwsze starcie, miniboss i finałowa walka | Wspólny model walki jest dostępny; AI, obsada i podłączenie celów starć pozostają w #12, #14 i #17. |
-| Runy / dźwignie, ukryte drzwi i sekrety | Wspólne mechanizmy i fizyczne bramy są dostępne; reguły konkretnych zagadek, biblioteki i sekretu pozostają w #13, #15, #16 i #19. |
-| Wyjście / zakończenie poziomu | Reguła zakończenia jest w runtime #10, a przestrzeń wyjścia w blockoucie #8. Finał i podłączenie zakończenia pozostają do implementacji. |
-| Docelowa oprawa i czas 2–3 minut | Niezweryfikowane; wymagają realizacji i testów rozgrywki. |
-| Walidacja dokumentacji i źródeł | Eksport DOCX, odnośniki README, kontrakt poziomu, integralność `.meta`/GUID i testy narzędzi w GitHub Actions. |
-| Testy C# postępu | Osobne CI kompiluje produkcyjny rdzeń jako .NET Standard 2.1; 26 wspólnych przypadków NUnit i 3 testy kontraktu. Nie uruchamia MonoBehaviour. |
-| Testy bazowe Unity (#5) | 6 przypadków EditMode i 2 PlayMode zaliczono lokalnie wraz z rozszerzonym zestawem i czystym importem. GitHub Actions nadal blokuje brak sekretów aktywacji; #5 pozostaje otwarte. |
-| Build playera i testy ręczne | Nie zostały wykonane; testy narzędzi nie zastępują odbioru gry. |
+| Specyfikacja i kontrakt (#4) | DOCX i jego hash zachowane; główna trasa oraz opcjonalność sekretu pozostają zgodne z kontraktem. Późniejsze decyzje opisują wydłużone podejście i proste mechanizmy. |
+| Postęp i integracja sceny (#10, #18) | Jeden kontroler postępu, przestrzenne triggery pokoi, sesja Running/Defeated/Completed/Resetting, terminalny restart i odtwarzanie świata. |
+| Ruch i kamera (#6–7) | Istniejące sterowanie i ochrona kamery przed kolizjami; dodano R oraz niezależną blokadę sesji i ukrywanie własnego modelu przy zbliżeniu kamery. |
+| Interakcje i bramy (#9, #13, #15–16, #19) | E uruchamia oznaczoną dźwignię, księgę, dźwignię sekretu i relikt. Uszkodzony mechanizm daje nieszkodliwy komunikat. Bramy synchronizują collider, panel i blokadę nawigacji. |
+| Walka i starcia (#11–12, #14, #17) | Wspólne zdrowie i melee obsługują jednego demona, wytrzymalszego strażnika i szybszego demona finałowego. AI ma ograniczoną arenę, nawigację, kontrolę przeszkód i zachowuje tokeny oczekującego zaliczenia śmierci. |
+| Geometria zamku (#8) | Zachowano dziewięć obszarów, zejście biblioteki i osobny dolny skrót. Podejście wydłużono do 100 m; brak przejścia przez ścianę między zagadką a tronem. |
+| HUD i zakończenie (#18) | Zdrowie, cel, interakcja, komunikaty, oddzielna porażka i ukończenie. R/przycisk resetuje poziom tylko po stanie terminalnym; sekret nie jest wymagany do wyjścia. |
+| Walidacja rdzeni | 160 testów .NET zaliczonych, w tym 46 reguł walki i starć. Te testy nie uruchamiają MonoBehaviour ani nawigacji. |
+| Walidacja integracji Unity (#22) | Zaliczono 169 EditMode i 162 PlayMode (ostatni zestaw z wyłączonym audio); PlayMode obejmuje realne komponenty, oba pełne przejścia, trzy porażki/restarty i zamknięte bramy. Końcowy wynik i zachowane nieudane próby opisuje [raport](docs/validation/full-castle-route-2026-09-30.md). |
+| Windows player i ręczny odbiór (#23–24) | Zbudowano i uruchomiono Windows x64. Pilot dotarł do walki; pełne pomiary standalone są zablokowane przez zablokowany pulpit Windows. Ręczny odbiór pozostaje otwarty. |
+| Finalna oprawa i 2–3 minuty (#20–21, #23) | Wciąż wymagają odbioru; blockout i testy automatyczne nie zatwierdzają jakości wizualnej ani tempa. |
+| Aktywacja Unity w CI (#5) | Brak sekretów GitHub Actions nadal blokuje testy silnika w CI; lokalna aktywacja i wyniki .NET nie usuwają tego ograniczenia. |
 
-Po rebase na scalony blockout zaliczono lokalnie **145 testów .NET, 153 Unity EditMode i 109 Unity PlayMode**, bez pominięć, oraz 82 testy narzędzi Pythona. [Raport i rzeczywiste obrazy z Unity](docs/validation/shared-gameplay-2026-09-30.md) zawierają wyniki, hashe źródeł, sceny demonstracyjne i cztery widoki zamku. Obrazy pokazują także problem zasłaniania widoku biblioteki przez postać; ręczny odbiór i ukończenie poziomu pozostają osobnymi zadaniami.
+Historyczny [raport blockoutu](docs/validation/unity-castle-2026-09-30.md) zawiera 105 EditMode i 68 PlayMode, a [raport wspólnych mechanik i rzeczywistych obrazów](docs/validation/shared-gameplay-2026-09-30.md) — 145 .NET, 153 EditMode, 109 PlayMode oraz 82 Python. Te wyniki opisują wcześniejsze rewizje i nie są deklaracją zaliczenia nowych starć, pełnej trasy ani player builda.
 
 Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings` nie należą do źródeł; usunięcie ich z bieżącego drzewa Git nie usuwa ich ze starej historii.
 
@@ -101,6 +96,8 @@ Wersje zapisane w repozytorium:
 | Unity Editor | `6000.6.3f1` |
 | Universal Render Pipeline | `17.6.0` |
 | Input System | `1.20.0` |
+| AI Navigation | `2.0.14` |
+| Unity UI | `2.6.0` |
 | Unity Test Framework | `1.8.0` |
 
 Źródła wersji: [ProjectVersion.txt](ProjectSettings/ProjectVersion.txt) i [manifest.json](Packages/manifest.json). Nie aktualizować edytora ani pakietów przypadkowo podczas otwierania projektu.
@@ -112,13 +109,13 @@ git clone https://github.com/lisu188/shadows-of-the-forsaken.git
 cd shadows-of-the-forsaken
 ```
 
-Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/ForsakenCastle.unity` i włącz Play, aby sprawdzić układ: W/S porusza, A/D obraca, Spacja skacze. Scena jest już zapisana i nie wymaga generowania. To podgląd geometrii, nie gotowy poziom z walką. `SampleScene` pozostaje drugą włączoną sceną dla dotychczasowych testów bazowych. Przed dużym importem obowiązuje limit miejsca na dysku z instrukcji projektu.
+Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/ForsakenCastle.unity` i włącz Play: W/S porusza, A/D obraca, Spacja skacze, LPM atakuje, E używa mechanizmu. R lub przycisk ekranowy rozpoczyna nową sesję po śmierci albo ukończeniu. Instrukcja trasy i jawnego autorowania jest w [opisie integracji](docs/full-castle-route.md). `SampleScene` pozostaje drugą włączoną sceną dla dotychczasowych testów bazowych. Przed dużym importem obowiązuje limit miejsca na dysku z instrukcji projektu.
 
 [Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Gracz i geometria zamku są zapisane w ForsakenCastle; odbiór sceny w Unity pozostaje częścią #8.
 
 [Instrukcja kamery #7](docs/camera-follow.md) opisuje przypisanie celu, tag Player, maskę przeszkód, parametry kolizji, `SetTarget` i `SnapToTarget`. Ściany muszą mieć collidery na uwzględnianych warstwach. Przy braku bezpiecznej pozycji kamera czasowo wstrzymuje renderowanie zamiast pokazywać wnętrze geometrii; ograniczenia i wymagany odbiór są opisane w instrukcji.
 
-Wspólne mechaniki można sprawdzić w zapisanych scenach [InteractionDemo](Assets/Interactions/Demo/InteractionDemo.unity) (E: dźwignia i brama) oraz [CombatDemo](Assets/Combat/Demo/CombatDemo.unity) (LPM: atak na cel). [Instrukcja interakcji](docs/interactions.md) i [instrukcja walki](docs/combat.md) opisują podłączenie i parametry. Są to oddzielne sceny testowe; nie należą do Build Settings i nie podłączają jeszcze mechanik do układu zamku.
+Wspólne mechaniki można sprawdzić w zapisanych scenach [InteractionDemo](Assets/Interactions/Demo/InteractionDemo.unity) (E: dźwignia i brama) oraz [CombatDemo](Assets/Combat/Demo/CombatDemo.unity) (LPM: atak na cel). [Instrukcja interakcji](docs/interactions.md) i [instrukcja walki](docs/combat.md) opisują podłączenie i parametry. Są to oddzielne sceny testowe poza Build Settings. Te same komponenty są używane przez integrację pełnej trasy; przygotowane warunki demonstracji nie są dowodem ukończenia zamku.
 
 ## Dokumentacja i testy narzędzi
 
@@ -153,20 +150,22 @@ Workflow `Movement C# tests` kompiluje produkcyjny rdzeń ruchu jako .NET Standa
 
 Workflow `Camera C# tests` kompiluje produkcyjną matematykę kamery jako .NET Standard 2.1 i wykonuje 32 wspólne przypadki NUnit, w tym próby 30/60/120 FPS. Nie wykonuje zapytań kolizji, renderowania ani automatycznego odnajdywania celu w Unity.
 
-Workflow `Shared gameplay C# tests` kompiluje produkcyjne rdzenie interakcji i walki. Wymaga niepustych, kompletnie zaliczonych raportów TRX z co najmniej 17 przypadkami interakcji i 31 walki. Raycasty, fizyczne bramy, CharacterController i wejście są weryfikowane osobno w PlayMode.
+Workflow `Shared gameplay C# tests` kompiluje produkcyjne rdzenie interakcji i walki. Wymaga niepustych, kompletnie zaliczonych raportów TRX; zestaw zawiera 17 przypadków interakcji oraz 46 walki i cyklu życia starć. Raycasty, fizyczne bramy, CharacterController i wejście są weryfikowane osobno w PlayMode.
 
 ## Testy Unity
 
 Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.6.3f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
 
-[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano wspólne testy rdzeni, testy cyklu życia adaptera #10, kontrolera #6, kamery #7, układu zamku #8, interakcji #9 i walki #11 oraz zapisanych scen demonstracyjnych. Walidator wymaga wykonania nowych regresji, a nie tylko bazowych przypadków. [Raport blockoutu](docs/validation/unity-castle-2026-09-30.md) zachowuje wyniki 105/105 i 68/68 oraz czysty import; [raport wspólnych mechanik](docs/validation/shared-gameplay-2026-09-30.md) opisuje walidację połączonego zestawu po rebase. Aktywacja CI, ręczny odbiór i automatyczny build gry (#24) pozostają osobnymi zadaniami.
+[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano testy rdzeni, cyklu życia, kontrolera, kamery, geometrii, interakcji, walki i demonstracji, a następnie regresje AI/nawigacji, sesji, HUD oraz pełnej trasy zamku. Walidator wymaga wykonania nowych regresji, a nie tylko bazowych przypadków. [Raport blockoutu](docs/validation/unity-castle-2026-09-30.md) zachowuje wyniki 105/105 i 68/68 oraz czysty import; [raport wspólnych mechanik](docs/validation/shared-gameplay-2026-09-30.md) opisuje walidację połączonego zestawu po rebase. Aktywacja CI, ręczny odbiór i automatyczny build gry (#24) pozostają osobnymi zadaniami.
 
 ## Struktura repozytorium
 
 ```text
 Assets/                         Sceny, skrypty, zasoby i powiązane pliki .meta
 Assets/CameraRig/Core/          Matematyka wygładzania i limitów kamery bez Unity
-Assets/Combat/                  Zdrowie, atak, oprawa zastępcza, rdzeń i arena testowa
+Assets/Combat/                  Zdrowie, atak, reguły tożsamości starć i arena testowa
+Assets/Encounters/              AI, nawigacja i zaliczanie trzech starć
+Assets/LevelSession/            Sesja, obszary, HUD i pełny restart
 Assets/Interactions/            Mechanizmy, fizyczne bramy, rdzeń i scena testowa
 Assets/Movement/Core/           Rdzeń ruchu i blokada wejścia bez zależności Unity
 Assets/Progression/             Rdzeń postępu bez Unity i adapter MonoBehaviour

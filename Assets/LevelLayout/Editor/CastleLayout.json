@@ -4,8 +4,40 @@
   "spawn": {
     "x": 0.0,
     "y": 0.05,
-    "z": -2.0
+    "z": -88.0
   },
+  "approachWaypoints": [
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": -88.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": -64.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": -40.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": -16.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": 0.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": 12.0
+    }
+  ],
   "materials": [
     {
       "name": "Stone",
@@ -320,7 +352,7 @@
       "position": {
         "x": 0.0,
         "y": -0.25,
-        "z": 0.0
+        "z": -44.0
       },
       "rotation": {
         "x": 0.0,
@@ -330,7 +362,7 @@
       "scale": {
         "x": 8.0,
         "y": 0.5,
-        "z": 8.0
+        "z": 96.0
       },
       "kind": "Cube",
       "material": "Stone",
@@ -870,7 +902,7 @@
       "position": {
         "x": -4.2,
         "y": 2.25,
-        "z": 0.0
+        "z": -44.0
       },
       "rotation": {
         "x": 0.0,
@@ -880,7 +912,7 @@
       "scale": {
         "x": 0.4,
         "y": 4.5,
-        "z": 8.0
+        "z": 96.0
       },
       "kind": "Cube",
       "material": "Wall",
@@ -1046,7 +1078,7 @@
       "position": {
         "x": 4.2,
         "y": 2.25,
-        "z": 0.0
+        "z": -44.0
       },
       "rotation": {
         "x": 0.0,
@@ -1056,7 +1088,7 @@
       "scale": {
         "x": 0.4,
         "y": 4.5,
-        "z": 8.0
+        "z": 96.0
       },
       "kind": "Cube",
       "material": "Wall",
@@ -1244,7 +1276,7 @@
       "position": {
         "x": 0.0,
         "y": 2.25,
-        "z": -4.2
+        "z": -92.2
       },
       "rotation": {
         "x": 0.0,
@@ -3087,12 +3119,56 @@
       "collider": true
     },
     {
+      "name": "LibraryExitShoulder_13",
+      "parent": "Ramps",
+      "position": {
+        "x": 13.0,
+        "y": -1.75,
+        "z": 44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
       "name": "LibraryEntranceShoulder_19",
       "parent": "Ramps",
       "position": {
         "x": 19.0,
         "y": 2.25,
         "z": 35.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryExitShoulder_19",
+      "parent": "Ramps",
+      "position": {
+        "x": 19.0,
+        "y": -1.75,
+        "z": 44.0
       },
       "rotation": {
         "x": 0.0,
@@ -4713,6 +4789,336 @@
       "kind": "Cube",
       "material": "Wall",
       "collider": true
+    },
+    {
+      "name": "Approach_Pier_0_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -80.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_0_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -80.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -80.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Approach_Pier_1_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_1_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Approach_Pier_2_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_2_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Approach_Pier_3_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_3_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_3",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Approach_Pier_4_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_4_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_4",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
     },
     {
       "name": "Puzzle_RunePlinth",
@@ -6937,7 +7343,7 @@
       "position": {
         "x": 0.0,
         "y": 0.05,
-        "z": -2.0
+        "z": -88.0
       }
     },
     {
@@ -7014,6 +7420,86 @@
     }
   ],
   "lights": [
+    {
+      "name": "Approach_Light_0",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -80.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Approach_Light_1",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -64.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Approach_Light_2",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -48.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Approach_Light_3",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -32.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Approach_Light_4",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -16.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
     {
       "name": "Torch_00",
       "position": {

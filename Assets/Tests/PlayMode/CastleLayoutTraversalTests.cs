@@ -90,6 +90,15 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             follow = Root("Main Camera").GetComponent(Type.GetType("CameraFollow, Assembly-CSharp", true));
             Assert.That(movement, Is.Not.Null);
             Assert.That(follow, Is.Not.Null);
+            // This fixture checks architecture independently of gameplay gates
+            // and actors. FullCastleRouteTests exercises the active scene session.
+            foreach (var component in player.GetComponents<Behaviour>())
+                if (component.GetType().Name == "PlayerCombat" || component.GetType().Name == "PlayerInteractor" ||
+                    component.GetType().Name == "CombatHealth" || component.GetType().Name == "MeleeCombat")
+                    component.enabled = false;
+            Root("Gameplay").SetActive(false);
+            Call(movement, "SetControlsEnabled", true);
+            Call(movement, "SetSessionControlsEnabled", true);
 
             // Clone the scene's actual bindings and restrict only this test instance
             // to synthetic devices. Never edit the imported action asset.
@@ -305,6 +314,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Call(movement, "Simulate", seconds);
             Physics.SyncTransforms();
             Call(follow, "Simulate", seconds);
+            RefreshBodyVisibility();
         }
 
         private void Keys(params Key[] keys)
@@ -322,6 +332,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 "Optional castle captures require graphics; omit SHADOWS_CAPTURE_DIR for -nographics runs.");
             var camera = Root("Main Camera").GetComponent<Camera>();
             Assert.That((bool)Call(follow, "SnapToTarget"), Is.True, "Capture requires the saved camera's safe follow pose.");
+            RefreshBodyVisibility();
             Assert.That(camera.isActiveAndEnabled, Is.True);
             var previousScene = SceneManager.GetActiveScene();
             var originalTarget = camera.targetTexture;
@@ -383,6 +394,11 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         }
 
         private GameObject Root(string name) => scene.GetRootGameObjects().Single(root => root.name == name);
+        private void RefreshBodyVisibility()
+        {
+            var body = follow.GetComponent(Type.GetType("CameraPlayerOcclusion, Assembly-CSharp", true));
+            if (body != null) Call(body, "RefreshVisibility");
+        }
         private static float HorizontalDistance(Vector3 first, Vector3 second) =>
             new Vector2(first.x - second.x, first.z - second.z).magnitude;
 

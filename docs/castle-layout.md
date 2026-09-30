@@ -1,19 +1,18 @@
 # Przechodni układ zamku — issue #8
 
-Źródła: DOCX §2–4 i §6–8, obejrzane ilustracje `media/image5.png` oraz `media/image6.png`, decyzje #4 i niezmieniony kontrakt poziomu. Ta iteracja realizuje wybrany przez właściciela **walkable layout first**. Scena `Assets/Scenes/ForsakenCastle.unity` jest zapisana w repozytorium i włączona jako pierwsza w Build Settings. `SampleScene` pozostaje włączona jako druga dla istniejących testów.
+Źródła: DOCX §2–4 i §6–8, obejrzane ilustracje `media/image5.png` oraz `media/image6.png`, decyzje #4 i niezmieniony kontrakt poziomu. Pierwotne #8 realizowało wybrany przez właściciela etap **walkable layout first**; obecna scena zawiera również integrację rozgrywki. Scena `Assets/Scenes/ForsakenCastle.unity` jest zapisana w repozytorium i włączona jako pierwsza w Build Settings. `SampleScene` pozostaje włączona jako druga dla istniejących testów.
 
 ## Stan i granice
 
-Scena zawiera dziewięć obszarów, fizyczne podłoże, ściany, stropy, rampy, wspólne materiały URP, proste gotyckie punkty orientacyjne, jawnie podłączony kontroler gracza i kamerę oraz znaczniki późniejszych starć i interakcji. Wszystkie przejścia są otwarte do przeglądu geometrii. Napis w Game View wyjaśnia, że rozgrywka nie została podłączona.
+Scena zawiera dziewięć obszarów, fizyczne podłoże, ściany, stropy, rampy i materiały URP. Obecna integracja dodaje trzech przeciwników, aktywne mechanizmy, fizyczne bramy, HUD, zakończenie i restart. Jeden `LevelProgressionController` zachowuje wymagania biblioteki, sekretnej dźwigni i finału. Szczegóły opisuje [pełna trasa](full-castle-route.md).
 
-Nie ma przeciwników, aktywnych zagadek, nagród, zakończenia, restartu ani komponentu `LevelProgressionController`. Scena nie zalicza celów, nie zmienia kontraktu i nie wprowadza drugiego systemu postępu. Późniejsza integracja ma użyć istniejącego kontrolera i jego tokenów sesji. Otwarte skróty są wyłącznie trybem odbioru układu; docelowe wymagania biblioteki, dźwigni i finału nadal obowiązują.
-
-Zapisany YAML powstał małym eksporterem źródeł, bez uruchomienia Unity na etapie autorowania. Dnia 2026-09-30 wykonano następnie czysty import i testy przez Windows Unity CLI z edytorem `6000.6.3f1`: 105/105 EditMode i 68/68 PlayMode, w tym wszystkie 25 przypadków zamku. [Raport](validation/unity-castle-2026-09-30.md) rozdziela pierwszą nieudaną próbę PlayMode, poprawkę fixture'ów wejścia i ponowne pełne wykonanie. Player builda, zrzutów z edytora i ręcznego przejścia nadal nie wykonano. Odbiór #8 pozostaje otwarty.
+Pierwotny blockout powstał przez eksporter źródeł. Jego historyczny [raport](validation/unity-castle-2026-09-30.md) zawiera 105/105 EditMode i 68/68 PlayMode. Obecna scena i NavMesh są zapisywane natywnie w Unity `6000.6.3f1` przez jawny builder. Wyniki starszego blockoutu nie potwierdzają nowych starć ani tempa gry.
 
 ## Skala i zgodność mapy
 
 Wymiary są decyzjami implementacyjnymi, nie liczbami z DOCX:
 
+- Spokojne podejście zostało wydłużone do 100 m: start `(0, 0.05, -88)`, granica pierwszego starcia `z=12`. Dalsze pokoje zachowują współrzędne.
 - Jedna komórka mapy = 8 m; środki mają `x=(kolumna−5)*8`, `z=(10−wiersz)*8`. Dziedziniec jest początkiem układu współrzędnych.
 - Pokoje mają zasadniczo 8 × 8 m; główne korytarze zachowują 4 m wolnej szerokości. Otwarte ramy bram mają 4 m światła, czyli więcej niż przyjęte minimum 3 m.
 - Ściany mają 4.5 m wysokości i 0.4 m grubości; płyty podłogowe 0.5 m. Stropy pozostawiają co najmniej 4 m wysokości. Początek i pierwsze starcie pozostają pod nocnym niebem.
@@ -25,41 +24,39 @@ Zajęte komórki oryginalnej mapy: rząd 10: c5; rząd 9: c5; rząd 8: c4–6; r
 
 Wspólne materiały i lokalne bryły tworzą tron, uszkodzone kolumny, regały i księgi, sarkofagi, ślady kultu, plamy krwi oraz ostre łuki okienne. Referencyjne obrazy DOCX nie są użyte jako zasoby gry. Nie dodano pakietów, zakupionych modeli ani nowych wejść.
 
-## Autorowanie i przyszłe połączenia
+## Autorowanie i integracja
 
-`Assets/LevelLayout/Editor/CastleLayout.json` opisuje geometrię, materiały, pokoje, przebiegi przejść i znaczniki. To wejście narzędzi edytora, nie ładowany w playerze system reguł. Główne grupy sceny to `Geometry`, `Rooms`, `Passages`, `Anchors` i `Lighting`.
+`Assets/LevelLayout/Editor/CastleLayout.json` opisuje geometrię, materiały, pokoje, przebiegi przejść i znaczniki. To wejście narzędzi edytora, nie ładowany w playerze system reguł. Główne grupy sceny to `Geometry`, `Rooms`, `Passages`, `Anchors`, `Lighting` i `Gameplay`.
 
 - `Room_<LevelRoom>` wskazuje środek obszaru, zgodnie z enumem istniejącego rdzenia.
-- Każdy z dziewięciu `Passage_<From>_<To>` ma `Waypoint_00…` na trasie oraz `GateAnchor` na poziomie podłogi. Znaczniki są pustymi Transform, bez skryptów postępu i colliderów blokujących.
+- Każdy z dziewięciu `Passage_<From>_<To>` ma `Waypoint_00…` na trasie oraz `GateAnchor` na poziomie podłogi. Znaczniki geometrii pozostają osobne od aktywnych bram i wolumenów pokojów w grupie `Gameplay`.
 - `Anchors` zawiera `Spawn`, `FirstEnemy`, `MainPuzzle`, `ThroneMiniboss`, `LibraryMechanism`, `SecretLever`, `BonusDiscovery`, `FinalEnemy` i `Exit`.
 - Gracz używa istniejącego `PlayerMovement` i assetu Input System. CharacterController: wysokość 2 m, promień 0.3 m, środek `(0,1,0)`, krok 0.3 m, skin 0.02 m. Scena ustawia obrót 120°/s; domyślne pola skryptu pozostają bez zmian. Kamera ma jawny cel i uwzględnia wszystkie collidery architektury.
 
 Jawna komenda **Shadows → Level → Rebuild Castle Layout** odtwarza scenę i jej materiały przez natywne API Unity. Pyta o zapis zmodyfikowanych scen i zastąpienie wygenerowanego układu. Nie działa podczas importu, uruchomienia gry ani automatycznie. Metoda batch: `CastleLayoutBuilder.BuildForBatch`. Regeneracja zastępuje ręczne zmiany sceny; trwałe zmiany układu należy wprowadzać w jego generatorze/JSON.
 
-Mały eksporter bez silnika służy bootstrapowi i przeglądowi źródeł:
+Generator JSON nadal służy przeglądowi układu:
 
 ```sh
 python3 tools/castle_layout.py
-python3 tools/export_castle_scene.py
 python3 tools/castle_layout.py --check
-python3 tools/export_castle_scene.py --check
 ```
 
-Natywny zapis Unity może inaczej uporządkować YAML; porównanie bajtowe eksportera nie jest warunkiem odbioru sceny po zapisie w edytorze. Testy porównują znaczenie geometrii i referencji. Oba sposoby autorowania zachowują istniejące GUID-y skryptów gracza i kamery. Nowe GUID-y są stałe; metadane są wersjonowane.
+Eksporter `export_castle_scene.py` obsługuje wyłącznie geometrię i odmawia nadpisania sceny zintegrowanej z rozgrywką. Natywny zapis Unity może inaczej uporządkować YAML; porównanie bajtowe eksportera nie jest warunkiem odbioru sceny po zapisie w edytorze. Testy porównują znaczenie geometrii i referencji. Oba sposoby autorowania zachowują istniejące GUID-y skryptów gracza i kamery. Nowe GUID-y są stałe; metadane są wersjonowane.
 
 ## Weryfikacja
 
 Testy Pythona niezależnie sprawdzają komórki mapy, zgodność połączeń z kontraktem, nachylenia ramp, podparcie i prześwit w trzech pasach korytarzy oraz referencje i transformacje zapisane w scenie. To kontrole matematyczne źródeł, nie symulacja CharacterController.
 
-Testy EditMode sprawdzają import sceny, Build Settings, brakujące komponenty, przypięcie gracza i kamery, pokoje i połączenia wobec istniejącego modelu oraz zgodność znaczników z JSON. Testy PlayMode prowadzą rzeczywisty CharacterController przez wszystkie dziewięć przejść w obie strony, używając istniejących akcji wejścia; sprawdzają również skok i granicę odnogi zagadki. Wszystkie zaliczono 2026-09-30. Fixture zapewnia kierowanie syntetycznego wejścia do gry również bez fokusu Game View i przywraca ustawienia Input System po teście; kod produkcyjnego sterowania pozostał bez zmian.
+Testy EditMode sprawdzają import sceny, Build Settings, brakujące komponenty, przypięcie gracza i kamery, pokoje i połączenia wobec istniejącego modelu oraz zgodność znaczników z JSON. Testy PlayMode prowadzą rzeczywisty CharacterController przez wszystkie dziewięć przejść w obie strony, używając istniejących akcji wejścia; sprawdzają również skok i granicę odnogi zagadki. Wszystkie zaliczono 2026-09-30. Fixture zapewnia kierowanie syntetycznego wejścia do gry również bez fokusu Game View i przywraca ustawienia Input System po teście; testy geometrii jawnie wyłączają rozgrywkę i otwierają bramy. Osobne `FullCastleRouteTests` przechodzą scenę z aktywnymi starciami i warunkami postępu.
 
 Warunki odbioru:
 
-1. Obowiązkowe testy dokumentacji, kontraktu, integralności źródeł oraz trzy zestawy rdzeni C#.
+1. Obowiązkowe testy dokumentacji, kontraktu, integralności źródeł oraz pięć zestawów rdzeni C#.
 2. Rzeczywiste raporty obu trybów Unity `6000.6.3f1`, bez pominiętych nowych testów, oraz log importu/kompilacji — uzyskane lokalnie 2026-09-30; nie zastępują punktów 3–4.
-3. Ręczne przejście zwykłymi W/S, A/D i Spacją przez główną trasę, powrót z zagadki, odnogę bonusu i dolny skrót; próby ścian, narożników, ramp i miejsc przyszłych bram. Kamera ma stale pokazywać postać i przejście.
+3. Ręczne przejście zwykłymi W/S, A/D i Spacją przez główną trasę, powrót z zagadki, odnogę bonusu i dolny skrót; próby ścian, narożników, ramp i działających bram. Kamera ma czytelnie pokazywać trasę i zagrożenia; bardzo bliska kamera może ukryć wyłącznie własny model postaci, zachowując jego fizykę.
 4. Rzut z edytora zestawiony z mapą DOCX, kilka reprezentatywnych widoków oraz krótki raport z rewizją, poleceniami i wynikami. Rysunek źródeł lub test modelu nie zastępuje zrzutu Unity.
 
-Czas przejścia samego blockoutu można zanotować pomocniczo. Cel 2–3 minut wymaga późniejszego przejścia z walką i zagadkami.
+Czas przejścia samego blockoutu można zanotować pomocniczo. Cel 2–3 minut wymaga pomiarów kompletnej rozgrywki z walką i mechanizmami oraz oddzielnego ręcznego odbioru; automatyczna trasa o znanym układzie nie zastępuje takiego odbioru.
 
 Podczas implementacji C: przekraczał próg 90%, dlatego początkowo nie uruchomiono dużego importu ani player builda. Właściciel później jawnie zezwolił na ograniczony lokalny import i testy mimo zajętości dysku; wykonano je w izolowanej kopii z natywną ścieżką Windows, zachowując pierwotny checkout. Ten wyjątek nie znosi ogólnego limitu dla kolejnych zadań. Lokalna licencja i aktywacja GitHub Actions są niezależne; brak sekretów CI nadal blokuje tam testy Unity. Przy uruchamianiu Windows Unity z WSL użyć Windows Python lub prawidłowych ścieżek Windows, zamiast przekazywać `/tmp` czy `/mnt/c` jako `-projectPath`.
