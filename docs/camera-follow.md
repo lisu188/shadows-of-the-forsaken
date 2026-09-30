@@ -1,6 +1,6 @@
 # Kamera śledząca — issue #7
 
-Zakres: fundament eksploracji zamku z DOCX §2–4. Rozwinięto istniejący `Assets/CameraFollow.cs`, bez zmiany nazwy, ścieżki, GUID oraz pól `player`, `distance`, `height`, `smoothSpeed`. Domyślne wartości trzech liczb pozostają 5, 2 i 2. Nie zmieniono scen ani wersji pakietów. Kamera nie wymaga Cinemachine ani nowej zależności Unity.
+Zakres: fundament eksploracji zamku z DOCX §2–4. Rozwinięto istniejący `Assets/CameraFollow.cs`, bez zmiany nazwy, ścieżki, GUID oraz pól `player`, `distance`, `height`, `smoothSpeed`. Domyślne wartości trzech liczb pozostają 5, 2 i 2. W ramach #7 nie zmieniono scen ani wersji pakietów. Kamera nie wymaga Cinemachine ani nowej zależności Unity.
 
 ## Podłączenie i wybory implementacyjne
 
@@ -34,9 +34,11 @@ dotnet test tests/Camera/Camera.Tests.csproj --configuration Release
 
 `CameraFollowTests` sprawdza w PlayMode prawdziwe Camera, CharacterController i zapytania fizyki: brak/zmianę celu, tagi, ścianę, sufit, narożnik, near plane, nasycenie bufora, początkowe nakładanie, teleport, cykl życia oraz wyładowanie sceny. Testy korzystają z odbicia dla istniejącej klasy Assembly-CSharp, bez zmiany jej assembly/GUID. Samo dodanie tych testów nie jest wynikiem ich wykonania.
 
-Odbiór wymaga raportów rzeczywistego Unity 6000.0.24f1 i ręcznego przejścia ciasnych wnętrz. Znana blokada aktywacji #5 nie jest zaliczonym testem. Ten etap nie buduje poziomu, nie zmienia sterowania i nie dostarcza player builda. Sprawdzić osobno testy matematyki C#, testy silnika i ocenę wizualną.
+Odbiór wymaga raportów rzeczywistego Unity 6000.6.3f1 i ręcznego przejścia ciasnych wnętrz. Znana blokada aktywacji #5 nie jest zaliczonym testem. Ten etap nie buduje poziomu, nie zmienia sterowania i nie dostarcza player builda. Sprawdzić osobno testy matematyki C#, testy silnika i ocenę wizualną.
 
 ## Sprawdzone odniesienia API
+
+Odnośniki do Unity 6000.0 zachowano jako historyczne źródła implementacji #7. Nie stanowią dowodu zgodności ani wykonania testów po aktualizacji projektu do 6000.6.3f1.
 
 - [SphereCast](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Physics.SphereCast.html): nie wystarcza do wykrywania nakładania w punkcie początkowym.
 - [RaycastNonAlloc](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/Physics.RaycastNonAlloc.html): pełny bufor nie gwarantuje najbliższych wyników.

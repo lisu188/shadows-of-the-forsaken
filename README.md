@@ -94,12 +94,14 @@ Wersje zapisane w repozytorium:
 
 | Składnik | Wersja |
 | --- | --- |
-| Unity Editor | `6000.0.24f1` |
-| Universal Render Pipeline | `17.0.3` |
-| Input System | `1.11.1` |
-| Unity Test Framework | `1.4.5` |
+| Unity Editor | `6000.6.3f1` |
+| Universal Render Pipeline | `17.6.0` |
+| Input System | `1.20.0` |
+| Unity Test Framework | `1.8.0` |
 
 Źródła wersji: [ProjectVersion.txt](ProjectSettings/ProjectVersion.txt) i [manifest.json](Packages/manifest.json). Nie aktualizować edytora ani pakietów przypadkowo podczas otwierania projektu.
+
+Na polecenie właściciela zapisano aktualizację do Unity `6000.6.3f1` oraz pakietów z manifestu i lockfile; dostosowano przypięcia walidatora, testu wersji i CI. Import, kompilacja i testy w nowym edytorze pozostają niepotwierdzone; ta aktualizacja nie oznacza odbioru silnika ani gry.
 
 ```sh
 git clone https://github.com/lisu188/shadows-of-the-forsaken.git
@@ -145,7 +147,7 @@ Workflow `Camera C# tests` kompiluje produkcyjną matematykę kamery jako .NET S
 
 ## Testy Unity
 
-Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.0.24f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
+Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.6.3f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
 
 [Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano wspólne testy rdzeni, testy cyklu życia adaptera #10, testy kontrolera #6 i kamery #7. Dopóki nie ma udanych wyników obu trybów i logu importu, odbiór Unity pozostaje niepotwierdzony. Automatyczny build gry pozostaje osobnym zadaniem #24.
 
