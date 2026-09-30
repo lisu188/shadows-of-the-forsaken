@@ -10,6 +10,11 @@ using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
+#if UNITY_EDITOR
+using System.IO;
+using UnityEditor;
+using UnityEngine.Rendering;
+#endif
 
 namespace ShadowsOfTheForsaken.Tests.PlayMode
 {
@@ -170,6 +175,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Assert.That(direction.sqrMagnitude, Is.GreaterThan(0.01f));
             PlacePlayer(waypoints[0], direction, passageName);
             AssertSupported(waypoints[0], passageName + " start");
+            if (!reverse && from == "Courtyard" && to == "FirstEncounter") Capture("castle-courtyard");
 
             for (int i = 1; i < waypoints.Length; i++)
             {
@@ -180,6 +186,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                     passageName + " camera after waypoint " + i);
             }
             Assert.That(Root("Main Camera").GetComponent<Camera>().enabled, Is.True);
+            if (!reverse && from == "FirstEncounter" && to == "ThroneRoom") Capture("castle-throne");
+            if (!reverse && from == "ThroneRoom" && to == "Library") Capture("castle-library");
+            if (!reverse && from == "Library" && to == "Catacombs") Capture("castle-catacombs");
             LogAssert.NoUnexpectedReceived();
         }
 
@@ -302,6 +311,67 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         {
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(keys));
             InputSystem.Update();
+        }
+
+        private void Capture(string name)
+        {
+#if UNITY_EDITOR
+            string directory = Environment.GetEnvironmentVariable("SHADOWS_CAPTURE_DIR");
+            if (string.IsNullOrWhiteSpace(directory)) return;
+            Assert.That(SystemInfo.graphicsDeviceType, Is.Not.EqualTo(GraphicsDeviceType.Null),
+                "Optional castle captures require graphics; omit SHADOWS_CAPTURE_DIR for -nographics runs.");
+            var camera = Root("Main Camera").GetComponent<Camera>();
+            Assert.That((bool)Call(follow, "SnapToTarget"), Is.True, "Capture requires the saved camera's safe follow pose.");
+            Assert.That(camera.isActiveAndEnabled, Is.True);
+            var previousScene = SceneManager.GetActiveScene();
+            var originalTarget = camera.targetTexture;
+            var originalActive = RenderTexture.active;
+            bool originalAsyncCompilation = ShaderUtil.allowAsyncCompilation;
+            var otherRenderers = new List<Renderer>();
+            var otherLights = new List<Light>();
+            RenderTexture texture = null;
+            Texture2D pixels = null;
+            try
+            {
+                // Render this saved scene's lighting and geometry only. These
+                // temporary presentation changes never alter traversal physics.
+                Assert.That(SceneManager.SetActiveScene(scene), Is.True);
+                foreach (var renderer in Object.FindObjectsByType<Renderer>())
+                    if (renderer.enabled && renderer.gameObject.scene != scene)
+                    {
+                        otherRenderers.Add(renderer); renderer.enabled = false;
+                    }
+                foreach (var light in Object.FindObjectsByType<Light>())
+                    if (light.enabled && light.gameObject.scene != scene)
+                    {
+                        otherLights.Add(light); light.enabled = false;
+                    }
+                // Avoid first-use asynchronous shader placeholders in evidence.
+                ShaderUtil.allowAsyncCompilation = false;
+                texture = new RenderTexture(960, 540, 24, RenderTextureFormat.ARGB32);
+                texture.Create();
+                var request = new RenderPipeline.StandardRequest { destination = texture };
+                Assert.That(RenderPipeline.SupportsRenderRequest(camera, request), Is.True,
+                    "The saved scene pipeline must support a camera render request.");
+                RenderPipeline.SubmitRenderRequest(camera, request);
+                RenderTexture.active = texture;
+                pixels = new Texture2D(960, 540, TextureFormat.RGB24, false);
+                pixels.ReadPixels(new Rect(0, 0, 960, 540), 0, 0); pixels.Apply();
+                Directory.CreateDirectory(directory);
+                File.WriteAllBytes(Path.Combine(directory, name + ".png"), pixels.EncodeToPNG());
+            }
+            finally
+            {
+                ShaderUtil.allowAsyncCompilation = originalAsyncCompilation;
+                camera.targetTexture = originalTarget;
+                RenderTexture.active = originalActive;
+                if (pixels != null) Object.DestroyImmediate(pixels);
+                if (texture != null) { texture.Release(); Object.DestroyImmediate(texture); }
+                foreach (var renderer in otherRenderers) if (renderer != null) renderer.enabled = true;
+                foreach (var light in otherLights) if (light != null) light.enabled = true;
+                if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
+            }
+#endif
         }
 
         private GameObject Root(string name) => scene.GetRootGameObjects().Single(root => root.name == name);

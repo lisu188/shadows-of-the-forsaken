@@ -34,7 +34,7 @@ dotnet test tests/Camera/Camera.Tests.csproj --configuration Release
 
 `CameraFollowTests` sprawdza w PlayMode prawdziwe Camera, CharacterController i zapytania fizyki: brak/zmianę celu, tagi, ścianę, sufit, narożnik, near plane, nasycenie bufora, początkowe nakładanie, teleport, cykl życia oraz wyładowanie sceny. Testy korzystają z odbicia dla istniejącej klasy Assembly-CSharp, bez zmiany jej assembly/GUID. Dnia 2026-09-30 wszystkie 22 przypadki PlayMode oraz 32 przypadki matematyki w EditMode zaliczono przez Windows Unity CLI z edytorem `6000.6.3f1`; zob. [raport pełnych zestawów 105/105 i 68/68](validation/unity-castle-2026-09-30.md).
 
-Raporty rzeczywistego Unity są dostępne; odbiór nadal wymaga ręcznego przejścia ciasnych wnętrz i oceny wizualnej. Brak sekretów aktywacji #5 blokuje GitHub Actions, lecz nie lokalne wykonanie z aktywną licencją. Nie dostarczono player builda ani zrzutów potwierdzających wygląd kamery. Testy matematyki C#, testy silnika i ocena wizualna pozostają oddzielnymi dowodami.
+Raporty rzeczywistego Unity są dostępne; odbiór nadal wymaga ręcznego przejścia ciasnych wnętrz i oceny wizualnej. Brak sekretów aktywacji #5 blokuje GitHub Actions, lecz nie lokalne wykonanie z aktywną licencją. [Sceny demonstracyjne interakcji i walki](validation/shared-gameplay-2026-09-30.md) korzystają z tej kamery; zapisane obrazy dokumentują ich oprawę zastępczą, ale nie zastępują odbioru kamery w zamku. Nie dostarczono player builda. Testy matematyki C#, testy silnika i ocena wizualna pozostają oddzielnymi dowodami.
 
 ## Sprawdzone odniesienia API
 

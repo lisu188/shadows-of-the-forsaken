@@ -1,7 +1,7 @@
 {
   "name": "Shadows.EditMode.Tests",
   "rootNamespace": "ShadowsOfTheForsaken.Tests.EditMode",
-  "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner", "Shadows.Progression.Core", "Shadows.Movement.Core", "Shadows.Camera.Core"],
+  "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner", "Shadows.Progression.Core", "Shadows.Movement.Core", "Shadows.Camera.Core", "Shadows.Interactions.Core", "Shadows.Combat.Core"],
   "includePlatforms": ["Editor"],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
