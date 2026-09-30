@@ -32,7 +32,7 @@ Dodać jeden `LevelProgressionController` do obiektu sesji w scenie poziomu. Kom
 
 Rdzeń zakłada wiarygodne sygnały od komponentów rozgrywki. Nie potwierdza sam, że przeciwnik naprawdę zginął ani że rozwiązano zagadkę; nie wolno wystawiać `TryComplete` jako dowolnego polecenia gracza. Sygnał jest odrzucany poza właściwym logicznym pokojem — starcia i mechanizmy muszą kończyć się w swoim obszarze lub dostarczyć zdarzenie po powrocie gracza. Nie zaliczać celu przez zmianę Inspectora.
 
-Nie podłączono postępu do `SampleScene`: pozostaje ona sceną bazową, a fizyczny poziom powstaje w #8. Ten PR dostarcza runtime i adapter, nie gotowe bramy, walczących przeciwników lub grywalną trasę.
+`SampleScene` pozostaje sceną bazową, a [ForsakenCastle z #8](castle-layout.md) zapisanym podglądem geometrii bez kontrolera postępu. [InteractionTarget i ProgressionGate z #9](interactions.md) korzystają już z tego runtime: cel przekazuje przechwycony token do `TryComplete`, a brama odczytuje `IsPassageOpen` i bezpiecznie odracza fizyczne zamknięcie zajętego przejścia. Demonstracja interakcji jawnie ustawia wcześniejsze warunki testowe; nie potwierdza przejścia rzeczywistej trasy. [Wspólna walka z #11](combat.md) udostępnia zdrowie i zdarzenia śmierci, ale podłączenie konkretnych przeciwników do celów postępu pozostaje zadaniem starć. Pełny poziom nadal wymaga triggerów obszarów, zagadek, starć i resetu świata.
 
 ## Weryfikacja
 

@@ -1,6 +1,6 @@
 # Kontroler gracza — issue #6
 
-Implementacja rozwija `Assets/PlayerMovement.cs`, zachowując nazwę, ścieżkę, GUID `963b3f782c6d71942ad1e73d117b2820` oraz pola `speed`, `rotationSpeed`, `gravity`, `jumpForce`. Domyślne wartości pozostają 5, 20, 9.81 i 5. Nie zmieniono sceny, kamery, pakietów ani DOCX.
+Implementacja rozwija `Assets/PlayerMovement.cs`, zachowując nazwę, ścieżkę, GUID `963b3f782c6d71942ad1e73d117b2820` oraz pola `speed`, `rotationSpeed`, `gravity`, `jumpForce`. Domyślne wartości pozostają 5, 20, 9.81 i 5. W ramach #6 nie zmieniono sceny, kamery, pakietów ani DOCX.
 
 ## Sterowanie i integracja
 
@@ -12,7 +12,7 @@ Kontroler ma prywatną kopię mapy, włącza tylko cztery używane akcje i zwaln
 
 Wejście jest próbkowane po aktualizacji Input System, a komendy konsumowane raz podczas aktualizacji ruchu. Nie ma odczytów starego `UnityEngine.Input`. Krótkie naciśnięcie i zwolnienie pomiędzy klatkami nie musi być utrzymywane do `Update`. Kilka naciśnięć tej samej akcji przed jedną klatką gry jest celowo scalane do jednego żądania.
 
-`AttackRequested` i `InteractRequested` to sygnały C# bez parametrów, emitowane przy naciśnięciu. LPM oraz E są zdefiniowane w istniejącym assetcie. Interakcja jest natychmiastowym żądaniem naciśnięcia również przy szablonowym Hold, ponieważ odczyt dotyczy progu przycisku, nie ukończenia interakcji Hold. Nie są to jeszcze system walki (#11) ani interakcji z obiektami (#9): ich komponenty mają subskrybować te sygnały we własnym OnEnable/OnDisable, a nie ponownie czytać klawiaturę. Obsługa Restart należy do #18.
+`AttackRequested` i `InteractRequested` to sygnały C# bez parametrów, emitowane przy naciśnięciu. LPM oraz E są zdefiniowane w istniejącym assetcie. Interakcja jest natychmiastowym żądaniem naciśnięcia również przy szablonowym Hold, ponieważ odczyt dotyczy progu przycisku, nie ukończenia interakcji Hold. [PlayerCombat (#11)](combat.md) i [PlayerInteractor (#9)](interactions.md) subskrybują te sygnały we własnym OnEnable/OnDisable, bez ponownego odczytu klawiatury. Ich zapisane sceny demo korzystają z tego samego kontrolera. Pełna obsługa restartu poziomu należy do #18.
 
 `SetControlsEnabled(false)` zatrzymuje ruch, skok i oba sygnały. `ResetMotion()` zeruje prędkość pionową i bufor wejścia, ale nie odblokowuje jawnie wyłączonego sterowania. Po przestawieniu/odtworzeniu gracza należy wywołać `ResetMotion()`; po zakończeniu restartu również `SetControlsEnabled(true)`. Tych metod nie należy wywoływać z innych wątków. `Simulate(deltaTime)` jest krokiem kontrolera używanym przez Update oraz testy; zwykłe komponenty gry nie powinny wywoływać go drugi raz w tej samej klatce.
 
@@ -41,6 +41,8 @@ Projekt .NET Standard 2.1 kompiluje ten sam produkcyjny rdzeń co Unity, a runne
 Dnia 2026-09-30 przez Windows Unity CLI z edytorem `6000.6.3f1` wykonano 36 przypadków `PlayerMotorTests` w EditMode oraz 17 przypadków `PlayerMovementTests` w PlayMode, wszystkie zaliczone w pełnych raportach 105/105 i 68/68. Pierwszy PlayMode ujawnił błąd środowiska testowego: bez fokusu Game View Input System kierował aktualizacje do edytora, mimo wymuszenia fokusu samego komponentu. Fixture zapisuje teraz, ustawia i przywraca `IgnoreFocus` oraz `AllDeviceInputAlwaysGoesToGameView`, a po pierwszej aktualizacji wymaga typu `Manual`. Produkcyjne sterowanie i testy utraty fokusu/pauzy pozostały bez zmian; szczegóły obu prób zawiera [raport](validation/unity-castle-2026-09-30.md).
 
 Lokalny wynik potwierdza kompilację adaptera oraz sprawdzone zachowania fizyki i Input System. Ręczne przejście i build gry nadal nie zostały wykonane; odbiór #6 wymaga osobnej ręcznej kontroli. Brak sekretów aktywacji nadal blokuje workflow Unity w GitHub Actions (#5), niezależnie od lokalnego wyniku.
+
+[Raport mechanik #9/#11](validation/shared-gameplay-2026-09-30.md) opisuje także testy wejścia i ruchu w zapisanych scenach demonstracyjnych. Po połączeniu z blockoutem ponownie wykonano pełne zestawy: 153 EditMode i 109 PlayMode zaliczonych, bez pominięć.
 
 ## Dokumentacja API
 

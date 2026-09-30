@@ -1,7 +1,7 @@
 {
   "name": "Shadows.PlayMode.Tests",
   "rootNamespace": "ShadowsOfTheForsaken.Tests.PlayMode",
-  "references": ["UnityEngine.TestRunner", "Shadows.Progression.Core", "Shadows.Progression.Unity", "Shadows.Movement.Core", "Unity.InputSystem"],
+  "references": ["UnityEngine.TestRunner", "Shadows.Progression.Core", "Shadows.Progression.Unity", "Shadows.Movement.Core", "Shadows.Combat.Core", "Unity.InputSystem"],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,

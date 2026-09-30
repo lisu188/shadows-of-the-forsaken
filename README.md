@@ -65,16 +65,20 @@ Repozytorium zawiera scenę układu zamku `Assets/Scenes/ForsakenCastle.unity`, 
 | Runtime postępu (#10) | Dostarczony rdzeń C#, migawki stanu, tokeny sesji, zdarzenia i reset. 7 testów adaptera MonoBehaviour zaliczono w rzeczywistym PlayMode; postęp nie jest jeszcze podłączony do sceny zamku. |
 | Kontroler gracza (#6) | Istniejący PlayerMovement używa Input System; rdzeń ruchu, obsługa sufitu/lądowania i blokada wejścia. 36 testów rdzenia oraz 17 przypadków PlayMode zaliczono w Unity; ręczny odbiór pozostaje otwarty. |
 | Kamera (#7) | CameraFollow uwzględnia kolizje near plane, wygładzanie, odnajdywanie celu i reset po teleporcie. 32 przypadki matematyki oraz 22 przypadki PlayMode zaliczono w Unity; odbiór wizualny pozostaje otwarty. |
+| Wspólne interakcje i bramy (#9) | Dodano wybór celu E z kontrolą zasięgu/przeszkód, jednorazowe mechanizmy powiązane z sesją i fizyczne bramy czekające na opuszczenie zajętego przejścia. [Podłączenie i demo](docs/interactions.md); konkretne zagadki pozostają osobnymi zadaniami. |
+| Wspólna walka (#11) | Dodano atak LPM, przygotowanie/aktywne okno/odstęp, kontrolę trafienia i przeszkód, zdrowie, jednorazową śmierć oraz wizualny feedback. [Parametry i arena testowa](docs/combat.md); AI i konkretne starcia pozostają osobnymi zadaniami. |
 | Projekt Unity, skrypty i zasoby nieba | Istnieją w repozytorium; nie stanowią kompletnego poziomu. |
-| Dziedziniec, sala tronowa, biblioteka i katakumby | Zapisana scena blockoutu #8: dziewięć obszarów, obie drogi do bonusu, geometria, kolizje, gracz, kamera i znaczniki przyszłej rozgrywki. Zaliczono 5 testów EditMode i 20 PlayMode, w tym przejścia wszystkich połączeń w obie strony. Ręczne przejście i widoki z edytora nadal wymagane. |
-| Pierwsze starcie, miniboss i finałowa walka | Do zaimplementowania; sygnał wejścia AttackRequested z #6 nie jest jeszcze mechaniką walki. |
-| Runy / dźwignie, ukryte drzwi i sekrety | Do zaimplementowania; reguły odblokowań są w rdzeniu postępu, nie w colliderach sceny. |
+| Dziedziniec, sala tronowa, biblioteka i katakumby | Zapisana scena blockoutu #8: dziewięć obszarów, obie drogi do bonusu, geometria, kolizje, gracz, kamera i znaczniki przyszłej rozgrywki. Zaliczono 5 testów EditMode i 20 PlayMode, w tym przejścia wszystkich połączeń w obie strony. Zapisano cztery widoki z kamery gry; ręczne przejście i poprawa widoczności w bibliotece pozostają wymagane. |
+| Pierwsze starcie, miniboss i finałowa walka | Wspólny model walki jest dostępny; AI, obsada i podłączenie celów starć pozostają w #12, #14 i #17. |
+| Runy / dźwignie, ukryte drzwi i sekrety | Wspólne mechanizmy i fizyczne bramy są dostępne; reguły konkretnych zagadek, biblioteki i sekretu pozostają w #13, #15, #16 i #19. |
 | Wyjście / zakończenie poziomu | Reguła zakończenia jest w runtime #10, a przestrzeń wyjścia w blockoucie #8. Finał i podłączenie zakończenia pozostają do implementacji. |
 | Docelowa oprawa i czas 2–3 minut | Niezweryfikowane; wymagają realizacji i testów rozgrywki. |
 | Walidacja dokumentacji i źródeł | Eksport DOCX, odnośniki README, kontrakt poziomu, integralność `.meta`/GUID i testy narzędzi w GitHub Actions. |
 | Testy C# postępu | Osobne CI kompiluje produkcyjny rdzeń jako .NET Standard 2.1; 26 wspólnych przypadków NUnit i 3 testy kontraktu. Nie uruchamia MonoBehaviour. |
 | Testy bazowe Unity (#5) | 6 przypadków EditMode i 2 PlayMode zaliczono lokalnie wraz z rozszerzonym zestawem i czystym importem. GitHub Actions nadal blokuje brak sekretów aktywacji; #5 pozostaje otwarte. |
 | Build playera i testy ręczne | Nie zostały wykonane; testy narzędzi nie zastępują odbioru gry. |
+
+Po rebase na scalony blockout zaliczono lokalnie **145 testów .NET, 153 Unity EditMode i 109 Unity PlayMode**, bez pominięć, oraz 82 testy narzędzi Pythona. [Raport i rzeczywiste obrazy z Unity](docs/validation/shared-gameplay-2026-09-30.md) zawierają wyniki, hashe źródeł, sceny demonstracyjne i cztery widoki zamku. Obrazy pokazują także problem zasłaniania widoku biblioteki przez postać; ręczny odbiór i ukończenie poziomu pozostają osobnymi zadaniami.
 
 Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings` nie należą do źródeł; usunięcie ich z bieżącego drzewa Git nie usuwa ich ze starej historii.
 
@@ -114,6 +118,8 @@ Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i
 
 [Instrukcja kamery #7](docs/camera-follow.md) opisuje przypisanie celu, tag Player, maskę przeszkód, parametry kolizji, `SetTarget` i `SnapToTarget`. Ściany muszą mieć collidery na uwzględnianych warstwach. Przy braku bezpiecznej pozycji kamera czasowo wstrzymuje renderowanie zamiast pokazywać wnętrze geometrii; ograniczenia i wymagany odbiór są opisane w instrukcji.
 
+Wspólne mechaniki można sprawdzić w zapisanych scenach [InteractionDemo](Assets/Interactions/Demo/InteractionDemo.unity) (E: dźwignia i brama) oraz [CombatDemo](Assets/Combat/Demo/CombatDemo.unity) (LPM: atak na cel). [Instrukcja interakcji](docs/interactions.md) i [instrukcja walki](docs/combat.md) opisują podłączenie i parametry. Są to oddzielne sceny testowe; nie należą do Build Settings i nie podłączają jeszcze mechanik do układu zamku.
+
 ## Dokumentacja i testy narzędzi
 
 Eksport tekstu specyfikacji, walidatory i testy narzędzi wymagają Git oraz Pythona 3.9 lub nowszego, bez dodatkowych bibliotek:
@@ -131,12 +137,14 @@ Workflow `Validate` sprawdza dokumentację, kontrakt poziomu, śledzone źródł
 
 ## Testy runtime C# bez edytora
 
-Wymagany jest .NET SDK 8.0. Projekty testów odwołują się do rzeczywistego kodu w `Assets/Progression/Core`, `Assets/Movement/Core` i `Assets/CameraRig/Core`, nie do kopii lub atrap Unity:
+Wymagany jest .NET SDK 8.0. Projekty testów odwołują się do rzeczywistego kodu rdzeni w `Assets`, nie do kopii lub atrap Unity:
 
 ```sh
 dotnet test tests/Progression/Progression.Tests.csproj --configuration Release
 dotnet test tests/Movement/Movement.Tests.csproj --configuration Release
 dotnet test tests/Camera/Camera.Tests.csproj --configuration Release
+dotnet test tests/Interactions/Interactions.Tests.csproj --configuration Release
+dotnet test tests/Combat/Combat.Tests.csproj --configuration Release
 ```
 
 Workflow `Progression C# tests` kompiluje rdzeń, uruchamia NUnit, sprawdza raport TRX i publikuje go jako artefakt. Test zgodności z JSON porównuje komendy we wszystkich osiągalnych stanach: 29 bez sekretu i 63 z sekretem, łącznie 1472 porównania. Pokrywa również odrzucane komendy. **Nie zastępuje testów komponentu Unity ani fizycznego przejścia poziomu.** Sposób podłączenia komponentu i granice API opisuje [dokument runtime](docs/progression-runtime.md).
@@ -145,17 +153,21 @@ Workflow `Movement C# tests` kompiluje produkcyjny rdzeń ruchu jako .NET Standa
 
 Workflow `Camera C# tests` kompiluje produkcyjną matematykę kamery jako .NET Standard 2.1 i wykonuje 32 wspólne przypadki NUnit, w tym próby 30/60/120 FPS. Nie wykonuje zapytań kolizji, renderowania ani automatycznego odnajdywania celu w Unity.
 
+Workflow `Shared gameplay C# tests` kompiluje produkcyjne rdzenie interakcji i walki. Wymaga niepustych, kompletnie zaliczonych raportów TRX z co najmniej 17 przypadkami interakcji i 31 walki. Raycasty, fizyczne bramy, CharacterController i wejście są weryfikowane osobno w PlayMode.
+
 ## Testy Unity
 
 Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.6.3f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
 
-[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano wspólne testy rdzeni, testy cyklu życia adaptera #10, kontrolera #6, kamery #7 i układu zamku #8. Lokalne uruchomienie przez Windows Unity CLI potwierdziło oba zestawy oraz czysty import; szczegóły i ograniczenia zapisuje [raport](docs/validation/unity-castle-2026-09-30.md). Poprawka dotyczy wyłącznie kierowania syntetycznego wejścia w dwóch fixture'ach testowych, bez zmian produkcyjnego sterowania lub zależności. Aktywacja CI, ręczny odbiór i automatyczny build gry (#24) pozostają osobnymi zadaniami.
+[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano wspólne testy rdzeni, testy cyklu życia adaptera #10, kontrolera #6, kamery #7, układu zamku #8, interakcji #9 i walki #11 oraz zapisanych scen demonstracyjnych. Walidator wymaga wykonania nowych regresji, a nie tylko bazowych przypadków. [Raport blockoutu](docs/validation/unity-castle-2026-09-30.md) zachowuje wyniki 105/105 i 68/68 oraz czysty import; [raport wspólnych mechanik](docs/validation/shared-gameplay-2026-09-30.md) opisuje walidację połączonego zestawu po rebase. Aktywacja CI, ręczny odbiór i automatyczny build gry (#24) pozostają osobnymi zadaniami.
 
 ## Struktura repozytorium
 
 ```text
 Assets/                         Sceny, skrypty, zasoby i powiązane pliki .meta
 Assets/CameraRig/Core/          Matematyka wygładzania i limitów kamery bez Unity
+Assets/Combat/                  Zdrowie, atak, oprawa zastępcza, rdzeń i arena testowa
+Assets/Interactions/            Mechanizmy, fizyczne bramy, rdzeń i scena testowa
 Assets/Movement/Core/           Rdzeń ruchu i blokada wejścia bez zależności Unity
 Assets/Progression/             Rdzeń postępu bez Unity i adapter MonoBehaviour
 Assets/Tests/                   Testy EditMode i PlayMode silnika Unity
@@ -165,6 +177,8 @@ docs/                           Decyzje projektowe, kontrakt poziomu i uruchamia
 tools/                          Walidacja dokumentacji, źródeł i wyników; lokalny runner Unity
 tests/                          Testy narzędzi Pythona i modelu poziomu, nie testy silnika
 tests/Camera/                   Runner NUnit/.NET kompilujący matematykę kamery
+tests/Combat/                   Runner NUnit/.NET kompilujący rdzeń walki
+tests/Interactions/             Runner NUnit/.NET kompilujący reguły interakcji
 tests/Movement/                 Runner NUnit/.NET kompilujący produkcyjny rdzeń ruchu
 tests/Progression/              Runner NUnit/.NET kompilujący produkcyjny rdzeń C#
 .github/workflows/              Automatyzacja CI

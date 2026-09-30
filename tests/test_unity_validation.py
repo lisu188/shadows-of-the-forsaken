@@ -174,7 +174,8 @@ class NUnitEvidenceTests(unittest.TestCase):
         ET.ElementTree(report).write(self.path, encoding="utf-8", xml_declaration=True)
 
     def test_accepts_complete_baseline_reports_for_both_modes(self):
-        for mode, count in [("editmode", 11), ("playmode", 22)]:
+        for mode, expected in validation.EXPECTED_TESTS.items():
+            count = sum(expected.values())
             with self.subTest(mode=mode):
                 self.save(report_for(mode))
                 self.assertEqual(count, validation.validate_results(self.path, mode)["passed"])
@@ -285,6 +286,21 @@ class NUnitEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(validation.ValidationError, "Unknown test mode"):
             validation.validate_results(self.path, "standalone")
 
+    def test_rejects_missing_gameplay_regression_despite_passing_other_tests(self):
+        for mode, method in [
+            ("editmode", "OneShotRejectsRepeatAndStaleTokensAfterReset"),
+            ("editmode", "CompoundTargetsAreHitOncePerActionAndAgainOnNextAction"),
+            ("playmode", "InteractionGateResetWaitsForTeleportedOccupantAndClosesAfterEscape"),
+            ("playmode", "CombatPhysicsEmbeddedWallUsesTheActorsLocalPhysicsScene"),
+        ]:
+            with self.subTest(mode=mode, method=method):
+                report = report_for(mode)
+                case = next(c for c in report.iter("test-case") if f".{method}" in c.get("fullname", ""))
+                case.set("fullname", "Other.Tests.UnrelatedPassingTest")
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, method):
+                    validation.validate_results(self.path, mode)
+
     def test_cli_returns_failure_for_missing_report(self):
         result = subprocess.run(
             [sys.executable, str(ROOT / "tools/unity_validation.py"), "results", "--mode", "editmode", str(self.path)],
@@ -319,7 +335,7 @@ class LocalRunnerCommandTests(unittest.TestCase):
             ET.ElementTree(report_for("editmode")).write(self.output / "editmode-results.xml")
             return subprocess.CompletedProcess(command, 0)
         process.side_effect = execute
-        self.assertEqual(11, self.run_editor()["passed"])
+        self.assertEqual(sum(validation.EXPECTED_TESTS["editmode"].values()), self.run_editor()["passed"])
         project.assert_called_once_with(self.root)
 
     @patch.object(validation, "validate_project")
