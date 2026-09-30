@@ -38,7 +38,9 @@ Projekt .NET Standard 2.1 kompiluje ten sam produkcyjny rdzeń co Unity, a runne
 
 `Assets/Tests/PlayMode/PlayerMovementTests.cs` tworzy rzeczywiste obiekty CharacterController, podłoże, ściany, sufit, stopnie i wąskie przejście oraz urządzenia testowe Input System. Testy obejmują ruch, obrót, skok, kolizje, fokus, pauzę, blokadę, krótkie naciśnięcia, wyłączenie i izolację mapy wejścia. Refleksja służy dostępowi do istniejącej klasy z Assembly-CSharp, bez przenoszenia skryptu i bez atrap CharacterController.
 
-**Dodanie testów PlayMode nie oznacza ich wykonania.** Brak aktywacji Unity z #5 nadal blokuje potwierdzenie kompilacji adaptera, testy fizyczne oraz ręczne przejście. #6 pozostaje otwarte do prawdziwych raportów obu trybów i ręcznej kontroli. Po aktywacji należy potwierdzić `PlayerMotorTests` i `PlayerMovementTests`, nie tylko dawne testy bazowe. Build gry nie został wykonany w ramach tego zadania.
+Dnia 2026-09-30 przez Windows Unity CLI z edytorem `6000.6.3f1` wykonano 36 przypadków `PlayerMotorTests` w EditMode oraz 17 przypadków `PlayerMovementTests` w PlayMode, wszystkie zaliczone w pełnych raportach 105/105 i 68/68. Pierwszy PlayMode ujawnił błąd środowiska testowego: bez fokusu Game View Input System kierował aktualizacje do edytora, mimo wymuszenia fokusu samego komponentu. Fixture zapisuje teraz, ustawia i przywraca `IgnoreFocus` oraz `AllDeviceInputAlwaysGoesToGameView`, a po pierwszej aktualizacji wymaga typu `Manual`. Produkcyjne sterowanie i testy utraty fokusu/pauzy pozostały bez zmian; szczegóły obu prób zawiera [raport](validation/unity-castle-2026-09-30.md).
+
+Lokalny wynik potwierdza kompilację adaptera oraz sprawdzone zachowania fizyki i Input System. Ręczne przejście i build gry nadal nie zostały wykonane; odbiór #6 wymaga osobnej ręcznej kontroli. Brak sekretów aktywacji nadal blokuje workflow Unity w GitHub Actions (#5), niezależnie od lokalnego wyniku.
 
 ## Dokumentacja API
 

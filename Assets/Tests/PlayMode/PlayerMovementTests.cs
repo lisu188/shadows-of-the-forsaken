@@ -20,13 +20,22 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private CharacterController character;
         private Type movementType;
         private InputSettings.UpdateMode previousUpdateMode;
+        private InputSettings.BackgroundBehavior previousBackgroundBehavior;
+        private InputSettings.EditorInputBehaviorInPlayMode previousEditorInputBehavior;
         private float previousTimeScale;
 
         [SetUp]
         public void SetUp()
         {
             previousUpdateMode = InputSystem.settings.updateMode;
+            previousBackgroundBehavior = InputSystem.settings.backgroundBehavior;
+            previousEditorInputBehavior = InputSystem.settings.editorInputBehaviorInPlayMode;
             previousTimeScale = Time.timeScale;
+            // A batch editor has no focused Game View. Route synthetic devices to
+            // player updates while keeping PlayerMovement's own focus gate intact.
+            InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            InputSystem.settings.editorInputBehaviorInPlayMode =
+                InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
             InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsManually;
             Time.timeScale = 1;
             keyboard = InputSystem.AddDevice<Keyboard>();
@@ -61,6 +70,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Call("OnApplicationFocus", true);
             Physics.SyncTransforms();
             Keys();
+            Assert.That(InputState.currentUpdateType, Is.EqualTo(InputUpdateType.Manual),
+                "Synthetic input must reach a player update in an unfocused batch editor.");
             Advance(0.2f);
         }
 
@@ -74,6 +85,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
             if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
             InputSystem.settings.updateMode = previousUpdateMode;
+            InputSystem.settings.backgroundBehavior = previousBackgroundBehavior;
+            InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInputBehavior;
             Time.timeScale = previousTimeScale;
         }
 
