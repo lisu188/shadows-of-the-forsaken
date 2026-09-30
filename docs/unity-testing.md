@@ -2,9 +2,9 @@
 
 ## Stan i granice weryfikacji
 
-W ramach #5 dodano kod **6 przypadków EditMode i 2 PlayMode**, osobne assembly definitions, walidator źródeł i raportów NUnit, lokalny runner oraz workflow `Unity tests`. W tamtym zadaniu istniejące skrypty, sceny, wersje pakietów i GUID-y nie zostały zmienione. Obecna konfiguracja wskazuje Unity `6000.6.3f1` i pakiety wymienione w README po późniejszej aktualizacji na polecenie właściciela; nie potwierdzono jeszcze importu, kompilacji ani testów w tej wersji.
+W ramach #5 dodano kod **6 przypadków EditMode i 2 PlayMode**, osobne assembly definitions, walidator źródeł i raportów NUnit, lokalny runner oraz workflow `Unity tests`. W tamtym zadaniu istniejące skrypty, sceny, wersje pakietów i GUID-y nie zostały zmienione. Obecna konfiguracja wskazuje Unity `6000.6.3f1` i pakiety wymienione w README po późniejszej aktualizacji na polecenie właściciela. Dnia 2026-09-30 rzeczywisty Windows Unity CLI potwierdził czysty import, kompilację i rozszerzony zestaw **105/105 EditMode oraz 68/68 PlayMode**; zob. [raport](validation/unity-castle-2026-09-30.md).
 
-Pierwsza próba CI w [PR #26](https://github.com/lisu188/shadows-of-the-forsaken/pull/26) wykazała **brak konfiguracji aktywacji Unity**. Etap `Unity activation prerequisite (not tests)` zakończył się błędem, a testy edytora nie wystartowały. Nie jest to wynik testów C# ani dowód błędnej kompilacji. Issue #5 pozostaje otwarte do uzyskania rzeczywistych raportów obu trybów i logu czystego importu.
+Pierwsza próba CI w [PR #26](https://github.com/lisu188/shadows-of-the-forsaken/pull/26) wykazała **brak konfiguracji aktywacji Unity**. Etap `Unity activation prerequisite (not tests)` zakończył się błędem, a testy edytora nie wystartowały. Nie jest to wynik testów C# ani dowód błędnej kompilacji. Lokalne raporty obu trybów i log czystego importu są już dostępne; nie konfigurują sekretów GitHub Actions ani nie zamykają automatycznie #5. CI pozostaje zablokowane.
 
 `Validate` sprawdza pliki, dokumentację i narzędzia w Pythonie. Zielony wynik tego workflow **nie potwierdza** importu, kompilacji, działania fizyki, kamery, walki lub grafiki. Syntetyczne XML-e i mock procesu w `tests/test_unity_validation.py` testują tylko zachowanie walidatora/runnera; nie są atrapą uruchomienia gry ani dowodem wykonania testów Unity.
 
@@ -17,7 +17,9 @@ Pierwsza próba CI w [PR #26](https://github.com/lisu188/shadows-of-the-forsaken
 
 Scena bazowa pozostaje sceną szablonową. Testy nie twierdzą, że zawiera gracza albo gotowy poziom zamku. Testy EditMode sprawdzają import istniejących skryptów przez `MonoScript`, bez przenoszenia ich do nowych assemblies. Assembly testowe nie są dołączane do zwykłych buildów gry; PlayMode nie odwołuje się do `UnityEditor`.
 
-Dla [blockoutu #8](castle-layout.md) dodano 5 przypadków EditMode oraz 20 PlayMode: 18 kierunkowych przejść dziewięciu połączeń, skok na dziedzińcu i próba przejścia/skoku przez ścianę zagadki. Walidator wyników wymaga ich obecności oprócz 8 bazowych przypadków (minimum 11 EditMode i 22 PlayMode); raport zawiera również wcześniejsze testy rdzeni i komponentów. Brak nowych testów nie jest zaliczonym odbiorem sceny. Ich wykonanie w Unity pozostaje niepotwierdzone.
+Dla [blockoutu #8](castle-layout.md) dodano 5 przypadków EditMode oraz 20 PlayMode: 18 kierunkowych przejść dziewięciu połączeń, skok na dziedzińcu i próba przejścia/skoku przez ścianę zagadki. Walidator wyników wymaga ich obecności oprócz 8 bazowych przypadków (minimum 11 EditMode i 22 PlayMode); raport zawiera również wcześniejsze testy rdzeni i komponentów. Wszystkie te przypadki zaliczono w rzeczywistym Unity 2026-09-30. Brak nowych testów w przyszłym raporcie nadal jest błędem walidacji.
+
+Pierwsza lokalna próba PlayMode miała 34 zaliczenia i 34 błędy: bez fokusu Game View domyślne `InputSystem.Update()` kierowało wejście do aktualizacji edytora, więc fixture'y nie dostarczały syntetycznego wejścia graczowi. `PlayerMovementTests` i `CastleLayoutTraversalTests` zapisują teraz, ustawiają na czas testu i przywracają `backgroundBehavior = IgnoreFocus` oraz `editorInputBehaviorInPlayMode = AllDeviceInputAlwaysGoesToGameView`; dodatkowo sprawdzają typ aktualizacji `Manual`. Ponowny pełny PlayMode zaliczył 68/68. Produkcyjne blokady fokusu/pauzy, asercje ruchu, geometria i zależności pozostały bez zmian. Pierwotny nieudany raport jest zachowany w dowodach, a nie zastąpiony wynikiem ponowienia.
 
 ## Kontrole bez edytora
 
@@ -65,7 +67,7 @@ Automatyczny build docelowego Windows playera i test całego poziomu pozostają 
 
 ## Źródła techniczne
 
-Poniższe odnośniki pochodzą z implementacji #5. Dokumentacja Test Framework 1.4 jest historycznym odniesieniem; projekt używa obecnie 1.8.0, a zgodność wymaga rzeczywistego uruchomienia testów.
+Poniższe odnośniki pochodzą z implementacji #5. Dokumentacja Test Framework 1.4 jest historycznym odniesieniem; projekt używa obecnie 1.8.0. Dowodem wykonania obecnego zestawu są rzeczywiste raporty z 2026-09-30, nie te odnośniki.
 
 - [Unity Test Framework 1.4: uruchamianie z linii poleceń](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/reference-command-line.html).
 - [Unity Test Framework: assemblies testowe](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/workflow-create-test-assembly.html).

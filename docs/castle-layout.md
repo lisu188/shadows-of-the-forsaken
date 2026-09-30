@@ -8,7 +8,7 @@ Scena zawiera dziewięć obszarów, fizyczne podłoże, ściany, stropy, rampy, 
 
 Nie ma przeciwników, aktywnych zagadek, nagród, zakończenia, restartu ani komponentu `LevelProgressionController`. Scena nie zalicza celów, nie zmienia kontraktu i nie wprowadza drugiego systemu postępu. Późniejsza integracja ma użyć istniejącego kontrolera i jego tokenów sesji. Otwarte skróty są wyłącznie trybem odbioru układu; docelowe wymagania biblioteki, dźwigni i finału nadal obowiązują.
 
-Zapisany YAML powstał małym eksporterem źródeł, bez uruchomienia Unity. Poprawność struktury YAML, referencji i geometrii modelu **nie potwierdza importu, fizyki ani obrazu silnika**. Nie wykonano jeszcze nowej sceny w EditMode/PlayMode, player builda ani ręcznego przejścia. Odbiór #8 pozostaje otwarty.
+Zapisany YAML powstał małym eksporterem źródeł, bez uruchomienia Unity na etapie autorowania. Dnia 2026-09-30 wykonano następnie czysty import i testy przez Windows Unity CLI z edytorem `6000.6.3f1`: 105/105 EditMode i 68/68 PlayMode, w tym wszystkie 25 przypadków zamku. [Raport](validation/unity-castle-2026-09-30.md) rozdziela pierwszą nieudaną próbę PlayMode, poprawkę fixture'ów wejścia i ponowne pełne wykonanie. Player builda, zrzutów z edytora i ręcznego przejścia nadal nie wykonano. Odbiór #8 pozostaje otwarty.
 
 ## Skala i zgodność mapy
 
@@ -51,15 +51,15 @@ Natywny zapis Unity może inaczej uporządkować YAML; porównanie bajtowe ekspo
 
 Testy Pythona niezależnie sprawdzają komórki mapy, zgodność połączeń z kontraktem, nachylenia ramp, podparcie i prześwit w trzech pasach korytarzy oraz referencje i transformacje zapisane w scenie. To kontrole matematyczne źródeł, nie symulacja CharacterController.
 
-Testy EditMode sprawdzają import sceny, Build Settings, brakujące komponenty, przypięcie gracza i kamery, pokoje i połączenia wobec istniejącego modelu oraz zgodność znaczników z JSON. Testy PlayMode prowadzą rzeczywisty CharacterController przez wszystkie dziewięć przejść w obie strony, używając istniejących akcji wejścia; sprawdzają również skok i granicę odnogi zagadki. Ich dodanie nie oznacza wykonania.
+Testy EditMode sprawdzają import sceny, Build Settings, brakujące komponenty, przypięcie gracza i kamery, pokoje i połączenia wobec istniejącego modelu oraz zgodność znaczników z JSON. Testy PlayMode prowadzą rzeczywisty CharacterController przez wszystkie dziewięć przejść w obie strony, używając istniejących akcji wejścia; sprawdzają również skok i granicę odnogi zagadki. Wszystkie zaliczono 2026-09-30. Fixture zapewnia kierowanie syntetycznego wejścia do gry również bez fokusu Game View i przywraca ustawienia Input System po teście; kod produkcyjnego sterowania pozostał bez zmian.
 
-Do odbioru nadal potrzebne są:
+Warunki odbioru:
 
 1. Obowiązkowe testy dokumentacji, kontraktu, integralności źródeł oraz trzy zestawy rdzeni C#.
-2. Rzeczywiste raporty obu trybów Unity `6000.6.3f1`, bez pominiętych nowych testów, oraz log importu/kompilacji.
+2. Rzeczywiste raporty obu trybów Unity `6000.6.3f1`, bez pominiętych nowych testów, oraz log importu/kompilacji — uzyskane lokalnie 2026-09-30; nie zastępują punktów 3–4.
 3. Ręczne przejście zwykłymi W/S, A/D i Spacją przez główną trasę, powrót z zagadki, odnogę bonusu i dolny skrót; próby ścian, narożników, ramp i miejsc przyszłych bram. Kamera ma stale pokazywać postać i przejście.
 4. Rzut z edytora zestawiony z mapą DOCX, kilka reprezentatywnych widoków oraz krótki raport z rewizją, poleceniami i wynikami. Rysunek źródeł lub test modelu nie zastępuje zrzutu Unity.
 
 Czas przejścia samego blockoutu można zanotować pomocniczo. Cel 2–3 minut wymaga późniejszego przejścia z walką i zagadkami.
 
-Podczas implementacji C: przekraczał próg 90%, dlatego nie uruchomiono dużego importu ani player builda. Odbiór w silniku należy wznowić po uzyskaniu miejsca i uzgodnieniu dostępu do aktywnego edytora. Lokalna licencja i aktywacja GitHub Actions są niezależne; brak sekretów CI nadal blokuje tam testy Unity. Przy uruchamianiu Windows Unity z WSL użyć Windows Python lub prawidłowych ścieżek Windows, zamiast przekazywać `/tmp` czy `/mnt/c` jako `-projectPath`.
+Podczas implementacji C: przekraczał próg 90%, dlatego początkowo nie uruchomiono dużego importu ani player builda. Właściciel później jawnie zezwolił na ograniczony lokalny import i testy mimo zajętości dysku; wykonano je w izolowanej kopii z natywną ścieżką Windows, zachowując pierwotny checkout. Ten wyjątek nie znosi ogólnego limitu dla kolejnych zadań. Lokalna licencja i aktywacja GitHub Actions są niezależne; brak sekretów CI nadal blokuje tam testy Unity. Przy uruchamianiu Windows Unity z WSL użyć Windows Python lub prawidłowych ścieżek Windows, zamiast przekazywać `/tmp` czy `/mnt/c` jako `-projectPath`.

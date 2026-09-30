@@ -28,6 +28,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private Keyboard keyboard;
         private Mouse mouse;
         private InputSettings.UpdateMode previousUpdateMode;
+        private InputSettings.BackgroundBehavior previousBackgroundBehavior;
+        private InputSettings.EditorInputBehaviorInPlayMode previousEditorInputBehavior;
         private float previousTimeScale;
         private bool settingsCaptured;
 
@@ -35,8 +37,15 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         public IEnumerator LoadLayout()
         {
             previousUpdateMode = InputSystem.settings.updateMode;
+            previousBackgroundBehavior = InputSystem.settings.backgroundBehavior;
+            previousEditorInputBehavior = InputSystem.settings.editorInputBehaviorInPlayMode;
             previousTimeScale = Time.timeScale;
             settingsCaptured = true;
+            // Batch mode has no focused Game View; synthetic input must still use
+            // player updates. This does not change PlayerMovement's focus handling.
+            InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            InputSystem.settings.editorInputBehaviorInPlayMode =
+                InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
             InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsManually;
             Time.timeScale = 1;
 
@@ -90,6 +99,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             ((Behaviour)movement).enabled = true;
             Call(movement, "OnApplicationFocus", true);
             Keys();
+            Assert.That(InputState.currentUpdateType, Is.EqualTo(InputUpdateType.Manual),
+                "Synthetic input must reach a player update in an unfocused batch editor.");
             Physics.SyncTransforms();
         }
 
@@ -113,6 +124,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             if (settingsCaptured)
             {
                 InputSystem.settings.updateMode = previousUpdateMode;
+                InputSystem.settings.backgroundBehavior = previousBackgroundBehavior;
+                InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInputBehavior;
                 Time.timeScale = previousTimeScale;
             }
             foreach (var collider in suspendedColliders) if (collider != null) collider.enabled = true;

@@ -22,7 +22,7 @@ Zapytania wykonują się w scenie fizyki celu. `obstructionMask` wybiera przeszk
 
 Bufory zapytań rosną po nasyceniu (32 → maksymalnie 1024 wyniki), zamiast uznać niepełny zestaw za najbliższe trafienie. Ich nasycenie przy limicie kończy próbę niepowodzeniem. Typowy przebieg wykorzystuje istniejące tablice; powiększenie bufora i wyszukiwanie brakującego celu mogą alokować pamięć.
 
-Jeżeli nie ma bezpiecznej, widocznej pozycji na sprawdzanych odcinkach, `HasSafePose` jest false i renderowanie tej kamery zostaje czasowo zawieszone z jednym ostrzeżeniem. Po odzyskaniu miejsca przywracany jest wcześniejszy stan `Camera.enabled`; kamera już wcześniej wyłączona nie zostaje samowolnie włączona. Nie jest to system wyszukiwania dowolnej trasy kamery ani gwarancja widoczności całej sylwetki w każdej geometrii. Zbyt ciasny korytarz wymaga poprawy geometrii/parametrów w #8. Nie dodano automatycznej przezroczystości ścian lub postaci. Ustawienia i kolizje muszą zostać sprawdzone w rzeczywistym Unity przed odbiorem #7.
+Jeżeli nie ma bezpiecznej, widocznej pozycji na sprawdzanych odcinkach, `HasSafePose` jest false i renderowanie tej kamery zostaje czasowo zawieszone z jednym ostrzeżeniem. Po odzyskaniu miejsca przywracany jest wcześniejszy stan `Camera.enabled`; kamera już wcześniej wyłączona nie zostaje samowolnie włączona. Nie jest to system wyszukiwania dowolnej trasy kamery ani gwarancja widoczności całej sylwetki w każdej geometrii. Zbyt ciasny korytarz wymaga poprawy geometrii/parametrów w #8. Nie dodano automatycznej przezroczystości ścian lub postaci. Automatyczne testy ustawień i kolizji wykonano w rzeczywistym Unity; ręczny odbiór #7 nadal pozostaje do wykonania.
 
 ## Weryfikacja
 
@@ -32,9 +32,9 @@ Jeżeli nie ma bezpiecznej, widocznej pozycji na sprawdzanych odcinkach, `HasSaf
 dotnet test tests/Camera/Camera.Tests.csproj --configuration Release
 ```
 
-`CameraFollowTests` sprawdza w PlayMode prawdziwe Camera, CharacterController i zapytania fizyki: brak/zmianę celu, tagi, ścianę, sufit, narożnik, near plane, nasycenie bufora, początkowe nakładanie, teleport, cykl życia oraz wyładowanie sceny. Testy korzystają z odbicia dla istniejącej klasy Assembly-CSharp, bez zmiany jej assembly/GUID. Samo dodanie tych testów nie jest wynikiem ich wykonania.
+`CameraFollowTests` sprawdza w PlayMode prawdziwe Camera, CharacterController i zapytania fizyki: brak/zmianę celu, tagi, ścianę, sufit, narożnik, near plane, nasycenie bufora, początkowe nakładanie, teleport, cykl życia oraz wyładowanie sceny. Testy korzystają z odbicia dla istniejącej klasy Assembly-CSharp, bez zmiany jej assembly/GUID. Dnia 2026-09-30 wszystkie 22 przypadki PlayMode oraz 32 przypadki matematyki w EditMode zaliczono przez Windows Unity CLI z edytorem `6000.6.3f1`; zob. [raport pełnych zestawów 105/105 i 68/68](validation/unity-castle-2026-09-30.md).
 
-Odbiór wymaga raportów rzeczywistego Unity 6000.6.3f1 i ręcznego przejścia ciasnych wnętrz. Znana blokada aktywacji #5 nie jest zaliczonym testem. Ten etap nie buduje poziomu, nie zmienia sterowania i nie dostarcza player builda. Sprawdzić osobno testy matematyki C#, testy silnika i ocenę wizualną.
+Raporty rzeczywistego Unity są dostępne; odbiór nadal wymaga ręcznego przejścia ciasnych wnętrz i oceny wizualnej. Brak sekretów aktywacji #5 blokuje GitHub Actions, lecz nie lokalne wykonanie z aktywną licencją. Nie dostarczono player builda ani zrzutów potwierdzających wygląd kamery. Testy matematyki C#, testy silnika i ocena wizualna pozostają oddzielnymi dowodami.
 
 ## Sprawdzone odniesienia API
 
