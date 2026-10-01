@@ -1,0 +1,33 @@
+{
+  "utc_unix": 1790853732.1067793,
+  "frozen_manifest_sha256": "98f5b6161a33fc09c35595e1b35d82c0b6efbe6bde215cd4fa2c101f2b8513db",
+  "restored_materials": [
+    {
+      "path": "Assets/LevelLayout/Materials/Stone.mat",
+      "before": "110d3bcd816fe6dee02e984263eec8b82e4d853aed09cd5ed57292d12698f70d",
+      "after": "911584ee9594439cabee843abd5350566f7864a4558feb207c0b2dfe3bfef05f"
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Wall.mat",
+      "before": "05d9ebd68fdd11113ab69a70ea0c2e52a44563aed3077f46bedf5805abc494d4",
+      "after": "dbc29dfd0d1ee7509c1d3a04f1771d7233ebb82eec31279341bca7a68afb26d5"
+    }
+  ],
+  "removed": [
+    {
+      "path": "Assets/LevelLayout/Editor/CaptureCastleLayout.cs",
+      "bytes": 16601,
+      "sha256": "534c498e8a24c4f6847234a3507c3b4e2b404ef053cbe24aafa9cccd8496c853"
+    },
+    {
+      "path": "Assets/LevelLayout/Editor/CaptureCastleLayout.cs.meta",
+      "bytes": 60,
+      "sha256": "af71206c1034de357f2c75b9116c7ec83f98619ea097371e77f34c3e82bb1418"
+    }
+  ],
+  "removed_bytes": 16661,
+  "baseline_restored_files": 660,
+  "baseline_manifest_sha256": "e7dbd5c449e7ae91405f2457375844d2718d74567935d81d4e3f7a9510eb8b27",
+  "windows_free_bytes": 68605140992,
+  "note": "Only temporary diagnostic helper/meta removed; exact payloads remain archived. Two diagnostic auto-serialized materials restored. Source scene and built player retained unchanged."
+}

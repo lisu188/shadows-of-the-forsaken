@@ -123,21 +123,28 @@ public static class CastleLayoutBuilder
         body.GetComponent<Renderer>().sharedMaterial = materials[materials.ContainsKey("Player") ? "Player" : "Stone"];
 
         var cameraObject = new GameObject("Main Camera") { tag = "MainCamera" };
-        cameraObject.transform.position = data.spawn + new Vector3(0, 2, -5);
-        cameraObject.transform.LookAt(data.spawn + Vector3.up);
         var camera = cameraObject.AddComponent<Camera>();
         camera.nearClipPlane = 0.3f;
         camera.farClipPlane = 1000;
-        camera.fieldOfView = 60;
+        camera.fieldOfView = 75;
         cameraObject.AddComponent<AudioListener>();
         cameraObject.AddComponent<UniversalAdditionalCameraData>().renderPostProcessing = false;
         var follow = cameraObject.AddComponent<CameraFollow>();
         follow.player = player.transform;
         follow.findTaggedPlayer = false;
         follow.obstructionMask = ~0;
-        follow.shoulderOffset = 1.4f;
-        cameraObject.transform.position += player.transform.right * follow.shoulderOffset;
-        cameraObject.transform.LookAt(data.spawn + Vector3.up + player.transform.right * follow.shoulderOffset);
+        // DOCX 1-3: implementation choice for seeing attack preparation past
+        // the knight while keeping the castle skyline in view. Aim independently
+        // of the unchanged collision pivot and near-plane protection.
+        follow.distance = 3f;
+        follow.height = 4f;
+        follow.shoulderOffset = -1.8f;
+        follow.shoulderAimFraction = .5f;
+        follow.lookHeightOffset = 1.5f;
+        cameraObject.transform.position = player.transform.position - player.transform.forward * follow.distance
+            + Vector3.up * follow.height + player.transform.right * follow.shoulderOffset;
+        cameraObject.transform.LookAt(player.transform.position + Vector3.up * (follow.pivotHeight + follow.lookHeightOffset)
+            + player.transform.right * (follow.shoulderOffset * follow.shoulderAimFraction));
 
         var moon = new GameObject("Directional Light");
         moon.transform.SetParent(objects["Lighting"].transform, false);
