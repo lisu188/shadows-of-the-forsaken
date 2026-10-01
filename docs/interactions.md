@@ -1,6 +1,6 @@
 # Interakcje i fizyczne bramy — issue #9
 
-Wymagania: DOCX §3–4 (runy, dźwignie, bramy i ukryte drzwi), warunki przejść z §6–8 oraz `docs/level-contract.json`. To wspólne komponenty mechanik. Nie implementują reguł właściwej zagadki, walk, pełnego zamku ani czasu przejścia.
+Wymagania: DOCX §3–4 (runy, dźwignie, bramy i ukryte drzwi), warunki przejść z §6–8 oraz `docs/level-contract.json`. Te wspólne komponenty obsługują teraz konkretne mechanizmy [pełnej trasy zamku](full-castle-route.md): runiczną dźwignię, księgę biblioteki, dźwignię sekretu i relikt. Reguły pozostają w istniejącym kontrolerze postępu; same komponenty nie dowodzą ukończenia ani czasu przejścia.
 
 ## Podłączenie
 
@@ -14,7 +14,7 @@ Decyzje implementacyjne, nie liczby z DOCX: zasięg 2,5 m od punktu jedną jedno
 
 ## Jednorazowe użycie i sesje
 
-`InteractionTarget.available` pozwala przyszłej zagadce sterować dostępnością bez narzucania jej rozwiązania. `objective = None` emituje tylko jednorazowe zdarzenie `Activated(Guid sessionId)`. Inna pojedyncza wartość `LevelObjective` dodatkowo wymaga `CanComplete` i wywołuje `TryComplete` istniejącego kontrolera. Cel musi więc znajdować się w poprawnym logicznym pokoju; komponent nie teleportuje gracza ani nie zmienia pokoju. Brak kontrolera lub niepoprawna flaga nie pozwala aktywować mechanizmu.
+`InteractionTarget.available` pozwala mechanizmowi sterować dostępnością bez narzucania jej rozwiązania. `objective = None` emituje tylko jednorazowe zdarzenie `Activated(Guid sessionId)`. Inna pojedyncza wartość `LevelObjective` dodatkowo wymaga `CanComplete` i wywołuje `TryComplete` istniejącego kontrolera. Cel musi więc znajdować się w poprawnym logicznym pokoju; komponent nie teleportuje gracza ani nie zmienia pokoju. Brak kontrolera lub niepoprawna flaga nie pozwala aktywować mechanizmu.
 
 Token sesji jest przechwytywany na początku akcji. `TryActivate(Guid)` jest zaufanym API komponentów, a nie alternatywnym wejściem gracza: samo nie sprawdza odległości. UI/sterowanie powinny używać `PlayerInteractor.TryInteract()`. Opóźniony odbiorca zachowuje pierwotny token i przekazuje go dalej; nie pobiera świeżego tokenu w starym callbacku.
 
@@ -24,9 +24,17 @@ Zdarzenie jest emitowane po zaakceptowanym ukończeniu celu, najwyżej raz na se
 
 `ProgressionGate` ma `BoxCollider` na własnym obiekcie, parę istniejących pokoi `from`/`to` oraz renderery ruchomego/znikającego panelu w `closedVisuals`. Nie umieszczać tam stałego obramowania ani ścian. Pusta lista jest wypełniana rendererami hierarchii bramy. Komponent odczytuje `IsPassageOpen` istniejącego kontrolera; nie ma drugiego modelu postępu. Otwarcie jednocześnie wyłącza collider i renderery panelu. Zamknięcie jednocześnie przywraca oba. Obiekt komponentu pozostaje aktywny. To natychmiastowe przełączenie, bez niezamówionego systemu animacji.
 
-Przed zamknięciem sprawdzana jest bryła drzwi powiększona o 0,05 m. Aktywny `CharacterController` lub dynamiczny Rigidbody w otworze utrzymuje już otwartą bramę jako `IsOpen = true`, `ClosePending = true`; panel pozostaje niewidoczny, a przejście fizycznie otwarte. Po wyjściu aktora brama zamyka się w Update. Podejście do już zamkniętej bramy nie odblokowuje jej. Nasycona lista zajętości traktowana jest jako zajęte przejście. Maska zajętości musi zawierać warstwy aktorów. Nie używać ścinających transformacji z obróconymi rodzicami o niejednorodnej skali.
+Przed zamknięciem sprawdzana jest bryła drzwi powiększona o 0,05 m. Aktywny collider `CharacterController`, aktora z `CombatHealth` lub `NavMeshAgent`, albo dynamicznego Rigidbody w otworze utrzymuje już otwartą bramę jako `IsOpen = true`, `ClosePending = true`; panel pozostaje niewidoczny, a przejście fizycznie otwarte. Po wyjściu aktora brama zamyka się w Update. Podejście do już zamkniętej bramy nie odblokowuje jej. Nasycona lista zajętości traktowana jest jako zajęte przejście. Maska zajętości musi zawierać warstwy aktorów. Nie używać ścinających transformacji z obróconymi rodzicami o niejednorodnej skali.
 
-Reset modelu nie jest respawnem gracza. Pełne odtworzenie świata i bezpieczny punkt odrodzenia należą do #18. Brama zapobiega zamknięciu na aktywnym aktorze; nie teleportuje go i nie wybiera za scenę punktu startowego. Koordynator restartu powinien zablokować sterowanie, ustawić gracza poza bramami i dopiero odtworzyć świat. Komponent zachowuje fizyczny stan przy wyłączeniu i ponownie uzgadnia postęp po włączeniu.
+Opcjonalny `NavMeshObstacle` na bramie dostaje wymiary collidera i carving. Jest aktywny tylko przy faktycznym zamknięciu; `ClosePending` pozostawia również nawigację otwartą. Ruch `EnemyEncounter` dodatkowo sprawdza fizyczne przeszkody, więc opóźnienie carvingu nie pozwala przejść przez drzwi.
+
+Reset modelu nie jest respawnem gracza. `LevelSessionController` koordynuje pełne odtworzenie świata i bezpieczny punkt odrodzenia. Brama zapobiega zamknięciu na aktywnym aktorze; nie teleportuje go i nie wybiera za scenę punktu startowego. Koordynator restartu blokuje sterowanie i obrażenia, ustawia gracza poza bramami i dopiero odtwarza świat. Komponent zachowuje fizyczny stan przy wyłączeniu i ponownie uzgadnia postęp po włączeniu.
+
+## Mechanizmy właściwego poziomu
+
+Dźwignia runiczna zalicza `MainPuzzleSolved` dopiero po pierwszym demonie, a księga w bibliotece `LibraryOpened` po strażniku. Uszkodzona dźwignia używa `objective = None` i pokazuje wskazówkę; nie blokuje poprawnego mechanizmu. Nie ma ukrytej sekwencji ani utraty rozwiązania po nieudanej próbie.
+
+Dźwignia katakumb zalicza `SecretLeverPulled`; otwiera tylko opcjonalną odnogę bonusową i dolny skrót. Odkrycie reliktu zalicza `BonusDiscovered`, ukrywa jego model i pokazuje krótki tekst. `MechanismFeedback` obsługuje komunikat, prosty obrót uchwytu/księgi oraz przywrócenie prezentacji po restarcie. Nie przyznaje sam flag ani przedmiotów.
 
 ## Oddzielna scena demonstracyjna
 
@@ -51,4 +59,4 @@ python3 -m unittest discover -s tests -p 'test_*.py' -v
 
 Dodanie testów nie jest potwierdzeniem ich wykonania. Wyniki .NET, Unity EditMode, Unity PlayMode i ręczny odbiór należy raportować osobno. Demo ani testy tych komponentów nie dowodzą grywalności zamku, rozwiązania właściwej zagadki czy osiągnięcia czasu 2–3 minut.
 
-Zapisane sceny i komponenty sprawdzono w rzeczywistym Windows Unity 6000.6.3f1; [raport lokalnej walidacji](validation/shared-gameplay-2026-09-30.md) zawiera wyniki, obrazy oraz niewykonane punkty odbioru.
+[Historyczny raport wspólnych mechanik](validation/shared-gameplay-2026-09-30.md) zawiera wyniki Windows Unity 6000.6.3f1 i obrazy wersji sprzed integracji zamku. Nowe testy sesji, zajętości przez przeciwnika oraz pełnej trasy rozszerzają ten zakres; stan wykonania aktualnej integracji podaje [bieżący raport](validation/full-castle-route-2026-09-30.md).

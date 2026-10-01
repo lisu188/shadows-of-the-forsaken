@@ -4,6 +4,8 @@ import json
 import math
 from pathlib import Path
 import re
+import subprocess
+import sys
 import unittest
 
 
@@ -119,6 +121,10 @@ class CastleLayoutTests(unittest.TestCase):
                 self.assertEqual(vector(room["position"]), ((column - 5) * 8, height, (10 - row) * 8))
                 self.assertEqual(room["objectName"], "Room_" + name)
         self.assertGreater(rooms["Exit"]["position"]["z"], rooms["FinalArena"]["position"]["z"])
+        for x in (13, 19):
+            shoulder = Box(self.objects[f"LibraryExitShoulder_{x}"])
+            self.assertEqual(shoulder.distance((x, -3, 44)), 0,
+                             "The wide library/catacomb junction needs solid sides around its 4 m gate")
 
     def test_only_contract_passages_exist_and_secret_never_connects_to_exit(self):
         actual = [frozenset((snake_case(passage["from"]), snake_case(passage["to"]))) for passage in self.model["passages"]]
@@ -169,7 +175,8 @@ class CastleLayoutTests(unittest.TestCase):
         # Three lanes spanning 3.2 m plus the 0.3 m player radius check the chosen
         # four-metre corridors, including ramp seams. This is a geometric source
         # check only; CharacterController traversal remains a real PlayMode test.
-        for passage in self.model["passages"]:
+        routes = self.model["passages"] + [{"objectName": "ApprovedSouthernApproach", "waypoints": self.model["approachWaypoints"]}]
+        for passage in routes:
             points = [vector(point) for point in passage["waypoints"]]
             for first, second in zip(points, points[1:]):
                 length = math.hypot(second[0] - first[0], second[2] - first[2])
@@ -201,7 +208,7 @@ class CastleLayoutTests(unittest.TestCase):
         self.assertLessEqual(local_references, set(identifiers), "A local scene reference points to a missing object")
         names = [match.group(1).strip().strip('"') for record in records if record.startswith("1 &")
                  for match in [re.search(r"^  m_Name: (.+)$", record, re.MULTILINE)] if match]
-        for name in ("Geometry", "Rooms", "Passages", "Anchors", "Lighting", "Player", "Main Camera", "Layout Preview"):
+        for name in ("Geometry", "Rooms", "Passages", "Anchors", "Lighting", "Player", "Main Camera", "Gameplay"):
             self.assertEqual(names.count(name), 1, name)
         for room in self.model["rooms"]:
             self.assertEqual(names.count(room["objectName"]), 1, room["objectName"])
@@ -258,7 +265,22 @@ class CastleLayoutTests(unittest.TestCase):
         self.assertGreaterEqual(sum(record.startswith("65 &") for record in records), len(self.boxes), "Missing BoxColliders")
         controller_meta = (ROOT / "Assets/Progression/LevelProgressionController.cs.meta").read_text(encoding="utf-8")
         progression_guid = re.search(r"^guid: ([a-f0-9]+)$", controller_meta, re.MULTILINE).group(1)
-        self.assertNotIn("guid: " + progression_guid, scene, "Preview must not fake gameplay progression")
+        self.assertEqual(scene.count("guid: " + progression_guid), 1, "The integrated scene must own exactly one session progression")
+
+    def test_approved_southern_approach_is_one_hundred_metres_without_moving_the_castle(self):
+        self.assertEqual(vector(self.model["spawn"]), (0, .05, -88))
+        points = [vector(point) for point in self.model["approachWaypoints"]]
+        self.assertEqual(points[0], vector(self.model["spawn"]))
+        self.assertEqual(points[-1], (0, .05, 12))
+        self.assertEqual(sum(math.dist(a, b) for a, b in zip(points, points[1:])), 100)
+        self.assertTrue(all(point[0] == 0 and point[1] == .05 for point in points))
+
+    def test_legacy_export_cannot_overwrite_integrated_scene_by_default(self):
+        for arguments in ([], ["--output-root", str(ROOT)]):
+            result = subprocess.run([sys.executable, str(ROOT / "tools/export_castle_scene.py"), *arguments],
+                                    capture_output=True, text=True, check=False)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("error:", result.stderr)
 
     def test_gameplay_anchors_have_agreed_names_and_serialized_transforms(self):
         anchors = self.model["anchors"]

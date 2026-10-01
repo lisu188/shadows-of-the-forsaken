@@ -1,8 +1,8 @@
 """Export the small castle layout as editable Unity assets without starting Unity.
 
-This is a deterministic bootstrap/portability exporter, not an engine validator.
-The native Castle Layout editor command consumes the same JSON and may legitimately
-reserialize its YAML differently. --check only checks this exporter's own output.
+This legacy exporter produces GEOMETRY PREVIEWS ONLY. It cannot serialize the
+integrated session, encounters, gates or baked navigation. An explicit separate
+--output-root is required; use CastleLayoutBuilder.BuildForBatch for the game.
 """
 
 import argparse
@@ -431,24 +431,30 @@ def outputs(root=ROOT):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Check exporter output without writing; a native editor save may differ")
+    parser.add_argument("--output-root", type=Path, help="Isolated preview bundle directory, never the project root or Assets")
+    parser.add_argument("--check", action="store_true", help="Check this exporter's isolated geometry preview without writing")
     args = parser.parse_args()
+    if args.output_root is None:
+        parser.error("The game scene requires native CastleLayoutBuilder.BuildForBatch; geometry previews require --output-root.")
+    destination = args.output_root.resolve()
+    if destination == ROOT.resolve() or (ROOT / "Assets").resolve() == destination or (ROOT / "Assets").resolve() in destination.parents:
+        parser.error("Refusing to overwrite project assets with a geometry-only preview.")
     assets = outputs()
     changed = []
     for name, content in assets.items():
-        path = ROOT / name
+        path = destination / name
         if path.is_file() and path.read_text(encoding="utf-8") == content:
             continue
         changed.append(name)
         if not args.check:
-            if path.is_symlink() or not path.resolve().is_relative_to(ROOT.resolve()):
+            if path.is_symlink() or not path.resolve().is_relative_to(destination):
                 raise ValueError("Unsafe output path: " + name)
             path.parent.mkdir(parents=True, exist_ok=True)
             with path.open("w", encoding="utf-8", newline="\n") as stream:
                 stream.write(content)
     if args.check and changed:
         parser.exit(1, "Exporter output differs: " + ", ".join(changed) + "\n")
-    print(f"Castle exporter: {len(assets)} assets, {sum(len(text.encode('utf-8')) for text in assets.values()):,} bytes; "
+    print(f"Geometry-only preview: {len(assets)} assets, {sum(len(text.encode('utf-8')) for text in assets.values()):,} bytes; "
           + ("matches" if args.check else f"{len(changed)} updated") + ". Unity execution is not verified.")
 
 

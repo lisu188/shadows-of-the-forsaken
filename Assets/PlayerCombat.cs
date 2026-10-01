@@ -48,7 +48,7 @@ public sealed class PlayerCombat : MonoBehaviour
     {
         if (!melee.Health.IsAlive && !disabledForDeath)
         {
-            restoreControlsAfterDeath = movement.ControlsEnabled;
+            restoreControlsAfterDeath = movement.RequestedControlsEnabled;
             disabledForDeath = true;
             movement.SetControlsEnabled(false);
         }

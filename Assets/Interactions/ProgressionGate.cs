@@ -1,7 +1,9 @@
 using System;
+using ShadowsOfTheForsaken.Combat;
 using ShadowsOfTheForsaken.Interactions;
 using ShadowsOfTheForsaken.Progression;
 using UnityEngine;
+using UnityEngine.AI;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(BoxCollider))]
@@ -13,6 +15,7 @@ public sealed class ProgressionGate : MonoBehaviour
     public Renderer[] closedVisuals = Array.Empty<Renderer>();
     public LayerMask occupantMask = ~0;
     private BoxCollider barrier;
+    private NavMeshObstacle navigationBlocker;
     private LevelProgressionController observed;
     private readonly GateClosure state = new GateClosure();
     private Collider[] occupants = new Collider[16];
@@ -20,10 +23,15 @@ public sealed class ProgressionGate : MonoBehaviour
     public bool IsOpen => state.IsOpen;
     public bool ClosePending => state.ClosePending;
 
-    private void Awake() { barrier = GetComponent<BoxCollider>(); }
+    private void Awake()
+    {
+        barrier = GetComponent<BoxCollider>();
+        navigationBlocker = GetComponent<NavMeshObstacle>();
+    }
     private void OnEnable()
     {
         if (barrier == null) barrier = GetComponent<BoxCollider>();
+        if (navigationBlocker == null) navigationBlocker = GetComponent<NavMeshObstacle>();
         if (closedVisuals == null || closedVisuals.Length == 0) closedVisuals = GetComponentsInChildren<Renderer>(true);
         observed = progression;
         if (observed != null) observed.Changed += OnProgressionChanged;
@@ -41,6 +49,17 @@ public sealed class ProgressionGate : MonoBehaviour
         state.Refresh(requestedOpen, IsOccupied());
         barrier.isTrigger = false;
         barrier.enabled = !state.IsOpen;
+        if (navigationBlocker != null)
+        {
+            navigationBlocker.shape = NavMeshObstacleShape.Box;
+            navigationBlocker.center = barrier.center;
+            navigationBlocker.size = barrier.size;
+            navigationBlocker.carving = true;
+            navigationBlocker.carveOnlyStationary = false;
+            // Follow the physical state, including occupancy-delayed closure.
+            // Following the requested progression state would trap an actor.
+            navigationBlocker.enabled = !state.IsOpen;
+        }
         foreach (var visual in closedVisuals) if (visual != null) visual.enabled = !state.IsOpen;
     }
 
@@ -67,6 +86,8 @@ public sealed class ProgressionGate : MonoBehaviour
             var hit = occupants[i];
             if (hit == null || hit == barrier || hit.transform.IsChildOf(transform)) continue;
             if (hit.GetComponentInParent<CharacterController>() != null ||
+                hit.GetComponentInParent<CombatHealth>() != null ||
+                hit.GetComponentInParent<NavMeshAgent>() != null ||
                 (hit.attachedRigidbody != null && !hit.attachedRigidbody.isKinematic)) return true;
         }
         return false;

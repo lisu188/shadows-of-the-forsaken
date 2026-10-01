@@ -11,6 +11,7 @@ public class CameraFollow : MonoBehaviour
     public float distance = 5.0f;
     public float height = 2.0f;
     public float smoothSpeed = 2f;
+    [Range(-2f, 2f)] public float shoulderOffset;
 
     [Min(0.01f)] public float collisionRadius = 0.2f;
     [Min(0f)] public float collisionPadding = 0.05f;
@@ -59,6 +60,7 @@ public class CameraFollow : MonoBehaviour
         distance = Sanitize(distance, 5f, 0.1f);
         height = Sanitize(height, 2f, 0f);
         smoothSpeed = Sanitize(smoothSpeed, 2f, 0f);
+        shoulderOffset = Finite(shoulderOffset) ? Mathf.Clamp(shoulderOffset, -2f, 2f) : 0f;
         collisionRadius = Sanitize(collisionRadius, 0.2f, 0.01f);
         collisionPadding = Sanitize(collisionPadding, 0.05f, 0f);
         pivotHeight = Sanitize(pivotHeight, 1f, 0f);
@@ -113,7 +115,8 @@ public class CameraFollow : MonoBehaviour
         Physics.SyncTransforms();
         physicsScene = player.gameObject.scene.GetPhysicsScene();
         Vector3 pivot = player.position + Vector3.up * pivotHeight;
-        Vector3 desired = player.position - player.forward * distance + Vector3.up * height;
+        Vector3 shoulder = player.right * shoulderOffset;
+        Vector3 desired = player.position - player.forward * distance + Vector3.up * height + shoulder;
         bool snap = !tracking || newTarget || (player.position - previousTargetPosition).sqrMagnitude > teleportDistance * teleportDistance;
         Vector3 candidate = snap ? desired : Vector3.Lerp(transform.position, desired, blend);
         EffectiveCollisionRadius = NearPlaneRadius();
@@ -121,6 +124,12 @@ public class CameraFollow : MonoBehaviour
                     TryResolve(pivot, candidate, out candidate);
         if (!safe && Finite(pivot) && Finite(desired))
             safe = TryResolve(pivot, desired, out candidate);
+        // Turning away while pressed against a gate can put both rearward
+        // candidates inside it. Keep the previous view only after validating
+        // its complete boom again from the current pivot. Never reuse a pose
+        // across a target change, teleport or explicit snap.
+        if (!safe && !snap && Finite(pivot) && Finite(transform.position))
+            safe = TryResolve(pivot, transform.position, out candidate);
         if (!safe)
         {
             tracking = false;
@@ -130,7 +139,9 @@ public class CameraFollow : MonoBehaviour
             warnedBlocked = true;
             return false;
         }
-        Vector3 look = pivot - candidate;
+        // Keep collision sweeps anchored at the actor. Only framing moves to
+        // the shoulder; the conservative near-plane sphere remains unchanged.
+        Vector3 look = pivot + shoulder - candidate;
         Vector3 up = Mathf.Abs(Vector3.Dot(look.normalized, Vector3.up)) > 0.999f ? Vector3.forward : Vector3.up;
         transform.SetPositionAndRotation(candidate, Quaternion.LookRotation(look, up));
         previousTargetPosition = player.position;

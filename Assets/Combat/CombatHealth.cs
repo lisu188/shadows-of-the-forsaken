@@ -11,6 +11,8 @@ namespace ShadowsOfTheForsaken.Combat
         public LevelProgressionController progression;
         private LevelProgressionController observedProgression;
         private HealthState state;
+        private bool damageEnabled = true;
+        private bool encounterDamageEnabled = true;
         public event Action<HealthChange> Changed;
         public event Action<HealthChange> Died;
         public int Current => State.Current;
@@ -18,6 +20,7 @@ namespace ShadowsOfTheForsaken.Combat
         public bool IsAlive => State.IsAlive;
         public Guid LifeId => State.LifeId;
         public Guid SessionId => State.SessionId;
+        public bool DamageEnabled => damageEnabled && encounterDamageEnabled;
         private HealthState State => state ?? (state = new HealthState(SafeMaximum(), CurrentSession));
         private Guid CurrentSession => progression != null ? progression.Snapshot.SessionId : Guid.Empty;
 
@@ -37,9 +40,14 @@ namespace ShadowsOfTheForsaken.Combat
         private int SafeMaximum() => Mathf.Clamp(maximumHealth, 1, 1000000);
         private void OnValidate() { maximumHealth = SafeMaximum(); }
 
+        // Session permission is independent of health/life reset. Restoring health
+        // must not permit a queued hit during defeat, completion or world reset.
+        public void SetDamageEnabled(bool value) => damageEnabled = value;
+        public void SetEncounterDamageEnabled(bool value) => encounterDamageEnabled = value;
+
         public bool TryDamage(int damage, Guid expectedLife, Guid expectedSession)
         {
-            if (!isActiveAndEnabled || (progression != null && !progression.isActiveAndEnabled) ||
+            if (!isActiveAndEnabled || !DamageEnabled || (progression != null && !progression.isActiveAndEnabled) ||
                 expectedSession != CurrentSession) return false;
             int previous = Current;
             var outcome = State.TryDamage(damage, expectedLife, expectedSession);

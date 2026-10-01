@@ -6,6 +6,7 @@ using ShadowsOfTheForsaken.Progression;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.SceneManagement;
 
 namespace ShadowsOfTheForsaken.Tests.EditMode
@@ -62,7 +63,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             foreach (var root in scene.GetRootGameObjects())
                 foreach (var component in root.GetComponentsInChildren<Component>(true))
                     Assert.That(component != null, Is.True, "Missing component under " + root.name);
-            foreach (string name in new[] { "Geometry", "Rooms", "Passages", "Anchors", "Lighting", "Player", "Main Camera", "Layout Preview" })
+            foreach (string name in new[] { "Geometry", "Rooms", "Passages", "Anchors", "Lighting", "Player", "Main Camera", "Gameplay" })
                 Assert.That(scene.GetRootGameObjects().Count(root => root.name == name), Is.EqualTo(1), name);
         }
 
@@ -96,6 +97,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             Assert.That(serializedFollow.FindProperty("player").objectReferenceValue, Is.EqualTo(player.transform));
             Assert.That(serializedFollow.FindProperty("distance").floatValue, Is.EqualTo(5f));
             Assert.That(serializedFollow.FindProperty("height").floatValue, Is.EqualTo(2f));
+            Assert.That(serializedFollow.FindProperty("shoulderOffset").floatValue, Is.EqualTo(1.4f).Within(.001f));
             Assert.That(AssetDatabase.AssetPathToGUID("Assets/CameraFollow.cs"), Is.EqualTo("9191262690f98974abc0076595479fd6"));
             var geometry = Root("Geometry").GetComponentsInChildren<Collider>(true);
             Assert.That(geometry, Is.Not.Empty);
@@ -117,7 +119,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             Assert.That(passageNames.Distinct().Count(), Is.EqualTo(passageNames.Length));
 
             // Unlock a separate pure model only to obtain its authoritative graph.
-            // The preview scene must never complete artificial gameplay objectives.
+            // Do not mutate the saved scene's real progression to inspect topology.
             var progress = UnlockedModel();
             var expectedEdges = new HashSet<string>();
             var enumRooms = Enum.GetValues(typeof(LevelRoom)).Cast<LevelRoom>().ToArray();
@@ -139,7 +141,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             }
             CollectionAssert.AreEquivalent(expectedEdges, actualEdges);
             Assert.That(scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<MonoBehaviour>(true))
-                .Any(component => component != null && component.GetType().Name == "LevelProgressionController"), Is.False);
+                .Count(component => component != null && component.GetType().Name == "LevelProgressionController"), Is.EqualTo(1));
         }
 
         [Test]
@@ -174,7 +176,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
         }
 
         [Test]
-        public void FutureGameplayAnchorsAndSpawnArePresentWithoutActiveGameplay()
+        public void GameplayAnchorsAndSpawnMatchThePlayableScene()
         {
             var anchors = Root("Anchors").transform;
             CollectionAssert.AreEquivalent(new[] { "Spawn", "FirstEnemy", "MainPuzzle", "ThroneMiniboss", "LibraryMechanism",
@@ -183,6 +185,85 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             Assert.That(anchors.GetComponentsInChildren<MonoBehaviour>(true), Is.Empty,
                 "Encounter/interaction anchors must remain markers, not active gameplay.");
         }
+
+        [Test]
+        public void PlayableSceneWiresOneSessionThreeEncountersAndFiveMechanisms()
+        {
+            var progressions = Runtime("ShadowsOfTheForsaken.Progression.LevelProgressionController");
+            var sessions = Runtime("LevelSessionController");
+            var enemies = Runtime("ShadowsOfTheForsaken.Encounters.EnemyEncounter");
+            var mechanisms = Runtime("InteractionTarget");
+            var gates = Runtime("ProgressionGate");
+            Assert.That(progressions, Has.Length.EqualTo(1)); Assert.That(sessions, Has.Length.EqualTo(1));
+            Assert.That(enemies, Has.Length.EqualTo(3)); Assert.That(mechanisms, Has.Length.EqualTo(5));
+            Assert.That(gates, Has.Length.EqualTo(9));
+            var evidence = Runtime("PlayerValidationEvidence");
+            Assert.That(evidence, Has.Length.EqualTo(1));
+            Assert.That(evidence[0].gameObject, Is.EqualTo(sessions[0].gameObject));
+            Assert.That(new SerializedObject(evidence[0]).FindProperty("session").objectReferenceValue, Is.EqualTo(sessions[0]));
+            var progression = progressions[0];
+            var player = Root("Player");
+            var playerHealth = player.GetComponent(Type.GetType("ShadowsOfTheForsaken.Combat.CombatHealth, Assembly-CSharp", true));
+            var session = new SerializedObject(sessions[0]);
+            Assert.That(session.FindProperty("progression").objectReferenceValue, Is.EqualTo(progression));
+            Assert.That(session.FindProperty("playerHealth").objectReferenceValue, Is.EqualTo(playerHealth));
+            Assert.That(((Component)session.FindProperty("player").objectReferenceValue).gameObject, Is.EqualTo(player));
+            Assert.That(((Component)session.FindProperty("follow").objectReferenceValue).gameObject, Is.EqualTo(Root("Main Camera")));
+            Assert.That(session.FindProperty("spawn").objectReferenceValue, Is.EqualTo(Root("Anchors").transform.Find("Spawn")));
+            var assignedEnemies = session.FindProperty("encounters");
+            Assert.That(assignedEnemies.arraySize, Is.EqualTo(3));
+            CollectionAssert.AreEquivalent(enemies, Enumerable.Range(0, 3)
+                .Select(index => assignedEnemies.GetArrayElementAtIndex(index).objectReferenceValue));
+            foreach (var enemy in enemies)
+            {
+                var data = new SerializedObject(enemy);
+                Assert.That(data.FindProperty("progression").objectReferenceValue, Is.EqualTo(progression), enemy.name);
+                Assert.That(data.FindProperty("playerHealth").objectReferenceValue, Is.EqualTo(playerHealth), enemy.name);
+                Assert.That(enemy.GetComponent<NavMeshAgent>(), Is.Not.Null, enemy.name);
+                Assert.That(enemy.GetComponent<NavMeshAgent>().enabled, Is.False,
+                    "Register authored agents only after the scene's navigation surface has enabled.");
+                Assert.That(data.FindProperty("initializeNavigationOnStart").boolValue, Is.True, enemy.name);
+                Assert.That(enemy.GetComponent<CapsuleCollider>(), Is.Not.Null, enemy.name);
+            }
+            CollectionAssert.AreEquivalent(new[] { LevelObjective.None, LevelObjective.MainPuzzleSolved,
+                LevelObjective.LibraryOpened, LevelObjective.SecretLeverPulled, LevelObjective.BonusDiscovered },
+                mechanisms.Select(item => (LevelObjective)new SerializedObject(item).FindProperty("objective").intValue));
+            foreach (var mechanism in mechanisms)
+            {
+                var data = new SerializedObject(mechanism);
+                Assert.That(data.FindProperty("progression").objectReferenceValue, Is.EqualTo(progression), mechanism.name);
+                Assert.That(data.FindProperty("focusCollider").objectReferenceValue, Is.Not.Null, mechanism.name);
+                Assert.That(mechanism.GetComponent(Type.GetType("MechanismFeedback, Assembly-CSharp", true)), Is.Not.Null);
+            }
+            var initial = new LevelProgression();
+            foreach (var gate in gates)
+            {
+                var data = new SerializedObject(gate);
+                Assert.That(data.FindProperty("progression").objectReferenceValue, Is.EqualTo(progression), gate.name);
+                var from = (LevelRoom)data.FindProperty("from").intValue;
+                var to = (LevelRoom)data.FindProperty("to").intValue;
+                bool closed = !initial.IsPassageOpen(from, to);
+                var barrier = gate.GetComponent<BoxCollider>();
+                var obstacle = gate.GetComponent<NavMeshObstacle>();
+                Assert.That(obstacle, Is.Not.Null, gate.name);
+                Assert.That(barrier.enabled, Is.EqualTo(closed), gate.name);
+                Assert.That(obstacle.enabled, Is.EqualTo(closed), gate.name);
+                Assert.That(obstacle.carving, Is.True, gate.name);
+                Assert.That(obstacle.center, Is.EqualTo(barrier.center), gate.name);
+                Assert.That(obstacle.size, Is.EqualTo(barrier.size), gate.name);
+            }
+            var surfaces = Runtime("Unity.AI.Navigation.NavMeshSurface");
+            Assert.That(surfaces, Has.Length.EqualTo(1));
+            var navigation = new SerializedObject(surfaces[0]).FindProperty("m_NavMeshData").objectReferenceValue;
+            Assert.That(navigation, Is.Not.Null, "Commit the real native navigation bake.");
+            Assert.That(AssetDatabase.GetAssetPath(navigation), Is.EqualTo("Assets/LevelLayout/CastleNavigation.asset"));
+            var triggers = Runtime("LevelRoomTrigger"); Assert.That(triggers, Has.Length.EqualTo(9));
+            foreach (var trigger in triggers)
+                Assert.That(new SerializedObject(trigger).FindProperty("session").objectReferenceValue, Is.EqualTo(sessions[0]));
+        }
+
+        private Component[] Runtime(string name) => scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<Component>(true))
+            .Where(component => component != null && component.GetType().FullName == name).ToArray();
 
         private static LevelProgression UnlockedModel()
         {

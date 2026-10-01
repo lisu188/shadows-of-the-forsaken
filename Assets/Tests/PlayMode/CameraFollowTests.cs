@@ -93,6 +93,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Assert.That(followType.GetField("distance").GetValue(follow), Is.EqualTo(5f));
             Assert.That(followType.GetField("height").GetValue(follow), Is.EqualTo(2f));
             Assert.That(followType.GetField("smoothSpeed").GetValue(follow), Is.EqualTo(2f));
+            Assert.That(followType.GetField("shoulderOffset").GetValue(follow), Is.EqualTo(0f));
         }
 
         [Test]
@@ -335,6 +336,87 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             ((Behaviour)follow).enabled = true;
             Assert.That(Step(), Is.True);
             Assert.That(camera.transform.position.x, Is.EqualTo(10f).Within(0.001f));
+        }
+
+        [Test]
+        public void ShoulderFramingRevealsForwardEnemyPastThePlayerCollider()
+        {
+            camera.nearClipPlane = .3f;
+            // Match the authored cylinder silhouette explicitly: visual occlusion
+            // must not depend on CharacterController query registration before movement.
+            var body = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            objects.Add(body);
+            body.transform.SetParent(player.transform, false);
+            body.transform.localPosition = Vector3.up;
+            body.transform.localScale = new Vector3(.6f, 1, .6f);
+            var enemy = Box(new Vector3(0, 1, 1.6f), new Vector3(.8f, 2, .8f)).GetComponent<Collider>();
+            Assert.That(Step(), Is.True);
+            var physics = player.scene.GetPhysicsScene();
+            Vector3 direction = enemy.bounds.center - camera.transform.position;
+            Assert.That(physics.Raycast(camera.transform.position, direction.normalized, out var centeredHit,
+                direction.magnitude + 1, ~0, QueryTriggerInteraction.Ignore), Is.True);
+            Assert.That(centeredHit.collider, Is.EqualTo(body.GetComponent<Collider>()).Or.EqualTo(player.GetComponent<CharacterController>()),
+                "The baseline must reproduce body occlusion.");
+            Set("shoulderOffset", 1.4f);
+            Assert.That((bool)Call("SnapToTarget"), Is.True);
+            direction = enemy.bounds.center - camera.transform.position;
+            Assert.That(physics.Raycast(camera.transform.position, direction.normalized, out var shoulderHit,
+                direction.magnitude + 1, ~0, QueryTriggerInteraction.Ignore), Is.True);
+            Assert.That(shoulderHit.collider, Is.EqualTo(enemy), "A forward enemy must remain visible beside the player.");
+            Assert.That(camera.transform.position.x, Is.EqualTo(1.4f).Within(.001f));
+            Assert.That(camera.WorldToViewportPoint(enemy.bounds.center).x,
+                Is.GreaterThan(camera.WorldToViewportPoint(player.transform.position + Vector3.up).x + .025f));
+        }
+
+        [Test]
+        public void ShoulderFramingRetainsNearPlaneClearanceBesideWallAndDuringTurn()
+        {
+            camera.nearClipPlane = .3f;
+            var rightWall = Box(new Vector3(2.1f, 2, -2), new Vector3(.2f, 6, 20)).GetComponent<Collider>();
+            var leftWall = Box(new Vector3(-2.1f, 2, -2), new Vector3(.2f, 6, 20)).GetComponent<Collider>();
+            Set("shoulderOffset", 1.4f);
+            Assert.That(Step(), Is.True); AssertClear(rightWall); AssertClear(leftWall);
+            Assert.That(camera.transform.position.x, Is.EqualTo(1.4f).Within(.001f),
+                "A centered player must retain the requested framing inside the four-metre corridor.");
+            Assert.That(Get<float>("EffectiveCollisionRadius"), Is.GreaterThan(.46f));
+            player.transform.rotation = Quaternion.Euler(0, -90, 0);
+            for (int i = 0; i < 90; i++)
+            {
+                Assert.That(Step(), Is.True); AssertClear(rightWall); AssertClear(leftWall);
+            }
+            Assert.That(player.GetComponent<CharacterController>().enabled, Is.True);
+            Assert.That(Get<bool>("HasSafePose"), Is.True);
+        }
+
+        [Test]
+        public void LockedGateTurnDuringJumpRetainsAValidatedPreviousCameraPose()
+        {
+            camera.nearClipPlane = .3f;
+            Set("shoulderOffset", 1.4f);
+            var gate = Box(new Vector3(0, 2.2f, .5f), new Vector3(4, 4.4f, .35f)).GetComponent<Collider>();
+            var rightWall = Box(new Vector3(2.2f, 2.25f, -2), new Vector3(.4f, 4.5f, 20)).GetComponent<Collider>();
+            var leftWall = Box(new Vector3(-2.2f, 2.25f, -2), new Vector3(.4f, 4.5f, 20)).GetComponent<Collider>();
+            var ceiling = Box(new Vector3(0, 4.75f, -2), new Vector3(4.8f, .5f, 20)).GetComponent<Collider>();
+            Assert.That(Step(), Is.True);
+            // The real jump peaks at about 1.27 m. Turning at the authored
+            // 120 degrees/second then asks for a rear view beyond the gate.
+            for (int frame = 0; frame <= 90; frame++)
+            {
+                float time = frame / 60f;
+                player.transform.position = new Vector3(0, Mathf.Max(0, 5 * time - 4.905f * time * time), 0);
+                player.transform.rotation = Quaternion.Euler(0, frame * 2, 0);
+                Assert.That(Step(), Is.True, "The ordinary jump/turn must keep a checked view at frame " + frame);
+                Assert.That(camera.enabled, Is.True);
+                foreach (var obstacle in new[] { gate, rightWall, leftWall, ceiling }) AssertClear(obstacle);
+                Assert.That(camera.transform.position.z, Is.LessThan(gate.bounds.min.z),
+                    "A retained view must stay on the player's side of the locked panel.");
+            }
+            player.transform.position = new Vector3(0, 0, -7);
+            Assert.That((bool)Call("SnapToTarget"), Is.True);
+            Assert.That(Vector3.Distance(camera.transform.position, new Vector3(-1.4f, 2, -2)), Is.LessThan(.001f),
+                "Normal framing must recover when the player has room behind them.");
+            foreach (var obstacle in new[] { gate, rightWall, leftWall, ceiling }) AssertClear(obstacle);
+            LogAssert.NoUnexpectedReceived();
         }
     }
 }

@@ -67,7 +67,7 @@ Testy obu trybów są wykonywane kolejno, każdy na świeżym runnerze bez cache
 
 Do zamknięcia #5 należy dołączyć: udany run obu trybów, XML-e, logi importu/kompilacji i potwierdzenie uruchomienia sceny. Przy błędzie aktywacji sprawdzić konfigurację; przy błędzie kompilacji lub asercji poprawić kod. Nie usuwać testów, nie ustawiać `continue-on-error` i nie zmieniać warunku wstępnego na pozorny sukces tylko po to, aby uzyskać zielony status.
 
-Automatyczny build docelowego Windows playera i test całego poziomu pozostają odpowiednio zadaniami #24 i #22.
+Dla Windows x64 istnieje jawny `CastlePlayerBuild.BuildForBatch`, a `FullCastleRouteTests` obejmuje kompletną scenę i reset. Wyniki wykonania oraz pozostały odbiór #24/#22 zapisuje [bieżący raport](validation/full-castle-route-2026-09-30.md); obecność kodu nie jest potwierdzeniem udanego builda ani zaliczonego zestawu.
 
 ## Źródła techniczne
 
@@ -77,3 +77,7 @@ Poniższe odnośniki pochodzą z implementacji #5. Dokumentacja Test Framework 1
 - [Unity Test Framework: assemblies testowe](https://docs.unity3d.com/Packages/com.unity.test-framework@1.4/manual/workflow-create-test-assembly.html).
 - [GameCI Test Runner](https://game.ci/docs/github/test-runner/).
 - [Format raportu NUnit](https://docs.nunit.org/articles/nunit/technical-notes/usage/Test-Result-XML-Format.html).
+
+## Pełna trasa zamku
+
+Nowa integracja dodaje AI trzech starć, sesję, HUD, restart i opcjonalny relikt. `FullCastleRouteTests` używa rzeczywistych W/S, A/D, E, LPM oraz R przez Input System w zapisanej scenie; nie ustawia flag postępu ani nie wstrzykuje obrażeń. Zestaw zawiera główną trasę bez sekretu, trasę z reliktem i skrótem, porażkę w każdym z trzech starć oraz zablokowane przejścia. [Bieżący raport](validation/full-castle-route-2026-09-30.md) oddziela te wyniki od wcześniejszego blockoutu i playera Windows.

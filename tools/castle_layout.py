@@ -3,7 +3,8 @@
 
 The map's cell centres are eight metres apart. Room shapes are implementation
 choices; the occupied cells and the lower dead-end/backtracking are preserved.
-The library occupies the eastern connector as a descent. The below-map return
+The owner-approved southern approach extends the original courtyard without
+moving downstream rooms. The library occupies the eastern connector as a descent. The below-map return
 passage is the explicit design-decision interpretation of section 6's shortcut.
 No gameplay gates, enemies, rewards or progression are generated here.
 """
@@ -32,7 +33,8 @@ def rgba(r, g, b, a=1):
 
 def build_layout():
     data = {
-        "version": 1, "gridSize": GRID_SIZE, "spawn": vec(0, .05, -2),
+        "version": 1, "gridSize": GRID_SIZE, "spawn": vec(0, .05, -88),
+        "approachWaypoints": [vec(0, .05, z) for z in (-88, -64, -40, -16, 0, 12)],
         "materials": [], "objects": [], "rooms": [], "passages": [],
         "anchors": [], "lights": [],
     }
@@ -106,6 +108,9 @@ def build_layout():
             continue
         half_x, half_z = (2, 4) if room_id == "Exit" else (4, 4)
         rectangle(y, x-half_x, z-half_z, x+half_x, z+half_z)
+    # Explicit owner override: an open-sky southern courtyard approach gives
+    # 100 m from spawn to the first encounter boundary, without a timer/maze.
+    rectangle(0, -4, -92, 4, -4)
 
     def corridor(level, points, turn_caps=True):
         for (x0, z0), (x1, z1) in zip(points, points[1:]):
@@ -232,6 +237,9 @@ def build_layout():
     ramp("LibraryDescent", (16, 0, 36), (16, -4, 44), 8)
     for x in (13, 19):
         obj(f"LibraryEntranceShoulder_{x}", (x, 2.25, 35.8), (2, 4.5, .4), "Wall", parent="Ramps")
+        # Both adjoining rooms are eight metres wide here. Permanent shoulders
+        # prevent walking around the four-metre gameplay door after the descent.
+        obj(f"LibraryExitShoulder_{x}", (x, -1.75, 44), (2, 4.5, .4), "Wall", parent="Ramps")
     ramp("SecretDescent", (0, 0, 32), (-24, -12, 32), 4)
     ramp("SecretAscent", (-28, -12, 64), (-12, -4, 64), 4)
 
@@ -249,7 +257,7 @@ def build_layout():
             rotation=(0, yaw, 0), parent="Landmarks")
 
     for name, position in [
-        ("Spawn", (0, .05, -2)), ("FirstEnemy", (0, 0, 18)),
+        ("Spawn", (0, .05, -88)), ("FirstEnemy", (0, 0, 18)),
         ("MainPuzzle", (-9.5, 0, 25.5)), ("ThroneMiniboss", (8, 0, 34)),
         ("LibraryMechanism", (16, -2, 40)), ("SecretLever", (18.5, -4, 49.5)),
         ("BonusDiscovery", (-8, -4, 66)), ("FinalEnemy", (8, -4, 66)),
@@ -261,6 +269,12 @@ def build_layout():
     # reference art. Keep the centre-line routes and four-metre doors clear.
     obj("Courtyard_MonumentBase", (-2.7, .25, 1), (1.2, .5, 1.2), "Trim", parent="Landmarks")
     obj("Courtyard_BrokenMonument", (-2.7, 1.5, 1), (.65, 2, .65), "Wall", parent="Landmarks")
+    for index, z in enumerate((-80, -64, -48, -32, -16)):
+        for side in (-1, 1):
+            obj(f"Approach_Pier_{index}_{side}", (side*3.35, 1.3, z), (.6, 2.6, .8), "Trim", parent="Landmarks")
+        obj(f"Approach_Torch_{index}", (-3.25, 2.85, z), (.15, .3, .15), "Flame", False, parent="Landmarks")
+        data["lights"].append({"name": f"Approach_Light_{index}", "position": vec(-3.25, 2.85, z),
+            "color": rgba(1, .63, .32), "intensity": 2.2, "range": 9})
     obj("Puzzle_RunePlinth", (-10.5, .55, 25.5), (1, 1.1, 1), "DarkStone", parent="Landmarks")
     obj("Puzzle_RuneFace", (-10.5, 1.12, 25.5), (.6, .04, .6), "Rune", False, parent="Landmarks")
     for dx, dz in [(-2.8, -2.8), (2.8, -2.8), (-2.8, 2.8), (2.8, 2.8)]:
