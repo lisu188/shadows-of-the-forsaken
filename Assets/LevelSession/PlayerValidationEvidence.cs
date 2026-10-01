@@ -18,8 +18,9 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     private const int MaximumSnapshotFailures = 10;
     private const double SnapshotInterval = .2;
     private const int MaximumPerformanceSummaries = 256;
+    private const int MaximumRoomSummaries = 256;
     private static readonly UTF8Encoding Encoding = new UTF8Encoding(false);
-    private string statusPath, temporaryPath, eventsPath, performancePath;
+    private string statusPath, temporaryPath, eventsPath, performancePath, roomPerformancePath;
     private LevelSessionController observedSession;
     private LevelProgressionController observedProgression;
     private bool active, failed, quitting;
@@ -35,6 +36,12 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     private int performanceSummaries;
     private bool focused, paused, baselineValid, previouslyEligible;
     private double frameBaseline;
+    private PlayerRoomFrameMetrics roomMetrics;
+    private int roomSummaries;
+    private long roomVisit;
+    private string roomStartedUtc;
+    private RoomConfiguration roomConfiguration;
+    private bool roomConfigurationChanged;
 
     private void Start()
     {
@@ -57,12 +64,17 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
             temporaryPath = Path.Combine(directory, ".status.tmp");
             eventsPath = Path.Combine(directory, "events.jsonl");
             performancePath = Path.Combine(directory, "performance.jsonl");
+            roomPerformancePath = Path.Combine(directory, "room-performance.jsonl");
             if (File.Exists(eventsPath))
                 using (var reader = new StreamReader(eventsPath, Encoding))
                     while (eventCount < MaximumEvents && reader.ReadLine() != null) eventCount++;
             if (File.Exists(performancePath))
                 using (var reader = new StreamReader(performancePath, Encoding))
                     while (performanceSummaries < MaximumPerformanceSummaries && reader.ReadLine() != null) performanceSummaries++;
+            if (File.Exists(roomPerformancePath))
+                using (var reader = new StreamReader(roomPerformancePath, Encoding))
+                    while (roomSummaries < MaximumRoomSummaries && reader.ReadLine() != null) roomSummaries++;
+            roomVisit = roomSummaries;
             observedSession = session;
             observedProgression = session.progression;
             hardware = HardwareEvidence.Read();
@@ -71,6 +83,7 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
             observedSession.StateChanged += SessionChanged;
             observedProgression.Changed += ProgressionChanged;
             active = true;
+            BeginRoomVisit(observedProgression.Snapshot);
             AppendEvent(CurrentEvent("started"));
             WriteSnapshot();
         }
@@ -99,10 +112,19 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
         frameBaseline = now;
         baselineValid = true;
         previouslyEligible = eligible;
+        ObserveRoom(now);
     }
 
-    private void OnApplicationFocus(bool value) { focused = value; baselineValid = false; }
-    private void OnApplicationPause(bool value) { paused = value; baselineValid = false; }
+    private void OnApplicationFocus(bool value)
+    {
+        focused = value; baselineValid = false;
+        roomMetrics?.Invalidate(value ? PlayerFrameExclusion.Transition : PlayerFrameExclusion.Unfocused);
+    }
+    private void OnApplicationPause(bool value)
+    {
+        paused = value; baselineValid = false;
+        roomMetrics?.Invalidate(value ? PlayerFrameExclusion.Paused : PlayerFrameExclusion.Transition);
+    }
 
     private void BeginPerformanceSession(Guid token)
     {
@@ -118,8 +140,23 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
         if (!active) return;
         if (change.Kind == ProgressionChangeKind.SessionReset)
         {
+            if (roomMetrics != null && roomMetrics.SessionId == change.Before.SessionId) EndRoomVisit("reset");
             WritePerformanceSummary("reset"); // Original session token and accumulated frames.
             BeginPerformanceSession(change.After.SessionId);
+        }
+        else if (change.Kind == ProgressionChangeKind.RoomEntered)
+        {
+            var current = observedProgression.Snapshot;
+            // A stale notification cannot close or relabel a later visit. Check
+            // identity, but retain the callback's immutable payload when opening.
+            if (change.After.SessionId == current.SessionId && change.After.Room == current.Room &&
+                (roomMetrics == null || (roomMetrics.SessionId == change.Before.SessionId && roomMetrics.Room == change.Before.Room.ToString())))
+            {
+                double boundary = Time.realtimeSinceStartupAsDouble;
+                string boundaryUtc = Utc();
+                EndRoomVisit(change.After.IsCompleted ? "completion" : "room-exit", boundary, boundaryUtc);
+                BeginRoomVisit(change.After, boundary, boundaryUtc);
+            }
         }
         // Copy the callback's immutable payload now. An event must not acquire a
         // newer token because another observer starts a different session later.
@@ -136,6 +173,10 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
 
     private void SessionChanged(LevelSessionState state)
     {
+        if (!active) return;
+        if (state == LevelSessionState.Running) BeginRoomVisit(observedProgression.Snapshot);
+        else EndRoomVisit(state == LevelSessionState.Defeated ? "defeat" :
+            state == LevelSessionState.Completed ? "completion" : "resetting");
         if (!active) return;
         var milestone = CurrentEvent("session");
         milestone.phase = state.ToString();
@@ -192,6 +233,8 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
                 ioFailureCount = ioFailureCount, lastIoOperation = lastIoOperation, lastIoHResult = lastIoHResult,
                 performanceSummariesWritten = performanceSummaries,
                 performanceSummaryLimitReached = performanceSummaries >= MaximumPerformanceSummaries,
+                roomPerformanceSummariesWritten = roomSummaries,
+                roomPerformanceSummaryLimitReached = roomSummaries >= MaximumRoomSummaries,
                 hardware = hardware, performance = frameMetrics.Snapshot(false), memory = ReadMemory(),
                 player = new PlayerSnapshot
                 {
@@ -249,6 +292,7 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     {
         if (!active) return;
         quitting = true;
+        EndRoomVisit("normal-exit");
         WritePerformanceSummary("normal-exit");
         WriteLifecycleEvent("normal-exit");
         WriteSnapshot();
@@ -259,6 +303,7 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     {
         if (active && !quitting)
         {
+            EndRoomVisit("observer-disabled");
             WritePerformanceSummary("observer-disabled");
             WriteLifecycleEvent("observer-disabled");
             WriteSnapshot();
@@ -308,6 +353,52 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
         catch (Exception error) { DisableAfterFailure(error, "performance-append"); }
     }
 
+    private void BeginRoomVisit(LevelProgressSnapshot snapshot, double? now = null, string utc = null)
+    {
+        if (!active || roomMetrics != null || roomSummaries >= MaximumRoomSummaries || snapshot.IsCompleted ||
+            observedSession == null || observedProgression == null || !observedSession.IsRunning) return;
+        var current = observedProgression.Snapshot;
+        if (snapshot.SessionId != current.SessionId || snapshot.Room != current.Room) return;
+        roomMetrics = new PlayerRoomFrameMetrics(snapshot.SessionId, snapshot.Room.ToString(), ++roomVisit,
+            now ?? Time.realtimeSinceStartupAsDouble);
+        roomStartedUtc = utc ?? Utc(); roomConfiguration = RoomConfiguration.Read(); roomConfigurationChanged = false;
+    }
+
+    private void ObserveRoom(double now)
+    {
+        if (!active || observedProgression == null || observedSession == null) return;
+        var snapshot = observedProgression.Snapshot;
+        if (roomMetrics != null && (roomMetrics.SessionId != snapshot.SessionId || roomMetrics.Room != snapshot.Room.ToString()))
+            EndRoomVisit("identity-mismatch", now); // A missed callback is never charged to the new identity.
+        BeginRoomVisit(snapshot, now);
+        if (roomMetrics == null) return;
+        roomConfigurationChanged |= !roomConfiguration.MatchesCurrent();
+        PlayerFrameExclusion reason = paused || Time.timeScale <= 0 ? PlayerFrameExclusion.Paused :
+            !focused ? PlayerFrameExclusion.Unfocused : !observedSession.IsRunning ? PlayerFrameExclusion.NotRunning : PlayerFrameExclusion.None;
+        roomMetrics.Record(now, snapshot.SessionId, snapshot.Room.ToString(), reason);
+    }
+
+    private void EndRoomVisit(string reason, double? now = null, string utc = null)
+    {
+        if (!active || roomMetrics == null) return;
+        var visit = roomMetrics;
+        roomMetrics = null; // Prevent duplicate output when failure/quit invokes OnDisable.
+        if (roomSummaries >= MaximumRoomSummaries) return;
+        try
+        {
+            var summary = new RoomPerformanceEvidence
+            {
+                reason = reason, startedUtc = roomStartedUtc, endedUtc = utc ?? Utc(),
+                visit = visit.Close(now ?? Time.realtimeSinceStartupAsDouble), hardware = hardware,
+                configurationAtStart = roomConfiguration, configurationAtEnd = RoomConfiguration.Read(),
+                configurationChanged = roomConfigurationChanged || !roomConfiguration.MatchesCurrent()
+            };
+            File.AppendAllText(roomPerformancePath, JsonUtility.ToJson(summary) + "\n", Encoding);
+            roomSummaries++;
+        }
+        catch (Exception error) { DisableAfterFailure(error, "room-performance-append"); }
+    }
+
     private void Unsubscribe()
     {
         if (observedSession != null) observedSession.StateChanged -= SessionChanged;
@@ -336,8 +427,8 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     {
         public string utc, phase, sessionId, room, objectives, lastIoOperation, lastIoHResult;
         public long sequence;
-        public int objectiveFlags, ioFailureCount, performanceSummariesWritten;
-        public bool performanceSummaryLimitReached;
+        public int objectiveFlags, ioFailureCount, performanceSummariesWritten, roomPerformanceSummariesWritten;
+        public bool performanceSummaryLimitReached, roomPerformanceSummaryLimitReached;
         public float elapsedSeconds;
         public PlayerSnapshot player;
         public EnemySnapshot[] enemies;
@@ -383,6 +474,35 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
         public PlayerFrameSummary frameIntervals;
         public HardwareEvidence hardware;
         public MemoryEvidence memory;
+    }
+
+    [Serializable]
+    private sealed class RoomPerformanceEvidence
+    {
+        public int schemaVersion = 1;
+        public string reason, startedUtc, endedUtc;
+        public string measurement = "Per-visit observed realtime frame intervals, not CPU/GPU or per-light profiling. Each visit has its own first-5-eligible-seconds warmup. Only eligible endpoints within one room/session can be measured; boundary intervals are excluded and the final partial interval is reported separately. Empty/short visits are not performance qualification.";
+        public PlayerRoomFrameSummary visit;
+        public HardwareEvidence hardware;
+        public RoomConfiguration configurationAtStart, configurationAtEnd;
+        public bool configurationChanged;
+    }
+
+    [Serializable]
+    private sealed class RoomConfiguration
+    {
+        public int screenWidth, screenHeight, qualityLevel, vSyncCount, targetFrameRate;
+        public string fullScreenMode;
+        private FullScreenMode mode;
+        public static RoomConfiguration Read() => new RoomConfiguration
+        {
+            screenWidth = Screen.width, screenHeight = Screen.height, qualityLevel = QualitySettings.GetQualityLevel(),
+            vSyncCount = QualitySettings.vSyncCount, targetFrameRate = Application.targetFrameRate,
+            fullScreenMode = Screen.fullScreenMode.ToString(), mode = Screen.fullScreenMode
+        };
+        public bool MatchesCurrent() => screenWidth == Screen.width && screenHeight == Screen.height &&
+            qualityLevel == QualitySettings.GetQualityLevel() && vSyncCount == QualitySettings.vSyncCount &&
+            targetFrameRate == Application.targetFrameRate && mode == Screen.fullScreenMode;
     }
 
     [Serializable]
