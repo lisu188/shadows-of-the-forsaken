@@ -155,7 +155,7 @@ def report_for(mode):
     namespace = "ShadowsOfTheForsaken.Tests." + {"editmode": "EditMode", "playmode": "PlayMode"}[mode]
     for name, count in validation.EXPECTED_TESTS[mode].items():
         for index in range(count):
-            full = f"{namespace}.Fixture.{name}" + (f"({index})" if count > 1 else "")
+            full = f"{namespace}.{name}" + (f"({index})" if count > 1 else "")
             ET.SubElement(suite, "test-case", fullname=full, result="Passed")
     total = str(len(list(root.iter("test-case"))))
     root.set("total", total)
@@ -300,6 +300,95 @@ class NUnitEvidenceTests(unittest.TestCase):
                 self.save(report)
                 with self.assertRaisesRegex(validation.ValidationError, method):
                     validation.validate_results(self.path, mode)
+
+    def test_rejects_reports_that_omit_required_regression_families(self):
+        for mode, fixture in [
+            ("editmode", "CameraMotionTests"),
+            ("editmode", "PlayerMotorTests"),
+            ("editmode", "LevelProgressionTests"),
+            ("playmode", "CameraFollowTests"),
+            ("playmode", "PlayerMovementTests"),
+            ("playmode", "ProgressionControllerTests"),
+            ("playmode", "FullCastleRouteTests"),
+        ]:
+            with self.subTest(mode=mode, fixture=fixture):
+                report = report_for(mode)
+                suite = report.find("test-suite")
+                removed = [case for case in suite if f".{fixture}." in case.get("fullname", "")]
+                self.assertTrue(removed, f"The catalog must require {fixture}")
+                for case in removed:
+                    suite.remove(case)
+                count = str(len(list(report.iter("test-case"))))
+                report.set("total", count)
+                report.set("passed", count)
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, fixture):
+                    validation.validate_results(self.path, mode)
+
+    def test_rejects_same_method_name_from_wrong_fixture(self):
+        for mode, required in [
+            ("editmode", "PlayerMotorTests"),
+            ("playmode", "ProgressionControllerTests"),
+            ("playmode", "CameraFollowTests"),
+        ]:
+            with self.subTest(mode=mode, fixture=required):
+                report = report_for(mode)
+                case = next(c for c in report.iter("test-case") if f".{required}." in c.get("fullname", ""))
+                case.set("fullname", case.get("fullname").replace(f".{required}.", ".UnrelatedFixture."))
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, required):
+                    validation.validate_results(self.path, mode)
+
+    def test_rejects_either_missing_authored_or_default_collision_case(self):
+        for method in [
+            "ShoulderFramingRetainsNearPlaneClearanceBesideWallAndDuringTurn",
+            "LockedGateTurnDuringJumpRetainsAValidatedPreviousCameraPose",
+        ]:
+            for removed_index in [0, 1]:
+                with self.subTest(method=method, removed_index=removed_index):
+                    report = report_for("playmode")
+                    suite = report.find("test-suite")
+                    cases = [c for c in suite if f".CameraFollowTests.{method}(" in c.get("fullname", "")]
+                    self.assertEqual(2, len(cases), "Both scene settings must be required")
+                    suite.remove(cases[removed_index])
+                    count = str(len(list(report.iter("test-case"))))
+                    report.set("total", count)
+                    report.set("passed", count)
+                    self.save(report)
+                    with self.assertRaisesRegex(validation.ValidationError, method):
+                        validation.validate_results(self.path, "playmode")
+
+    def test_rejects_missing_aim_or_mesh_ray_regression_case(self):
+        for method in [
+            "CameraFollowTests.LookHeightOffsetChangesOnlyAimAndRetainsTheCollisionPivot",
+            "CameraFollowTests.ShoulderAimFractionChangesOnlyAimAndRetainsTheFullCameraBoom",
+            "FullCastleRouteTests.FramingRayMissesRemainInfiniteInsideAndOutsideMeshBounds",
+            "FullCastleRouteTests.FramingRayRejectsBackfacesAndHitsAtTheExclusiveDistanceLimit",
+            "FullCastleRouteTests.FramingRaySelectsNearestSurfaceIncludingUnlabelledPlayer",
+        ]:
+            with self.subTest(method=method):
+                report = report_for("playmode")
+                case = next(c for c in report.iter("test-case") if f".{method}" in c.get("fullname", ""))
+                # Preserve the root count with an unrelated passing case: the
+                # named regression, not merely the total, must be required.
+                case.set("fullname", "ShadowsOfTheForsaken.Tests.PlayMode.UnrelatedFixture.PassingTest")
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, method):
+                    validation.validate_results(self.path, "playmode")
+
+    def test_historical_193_case_report_cannot_qualify_new_zero_aim_guard(self):
+        method = "MovingTargetAtHeldCameraAimUsesSafeBoomWithoutInvalidRotation"
+        report = report_for("playmode")
+        suite = report.find("test-suite")
+        case = next(c for c in suite if f".CameraFollowTests.{method}" in c.get("fullname", ""))
+        suite.remove(case)
+        count = len(list(report.iter("test-case")))
+        self.assertEqual(193, count)
+        report.set("total", str(count))
+        report.set("passed", str(count))
+        self.save(report)
+        with self.assertRaisesRegex(validation.ValidationError, method):
+            validation.validate_results(self.path, "playmode")
 
     def test_cli_returns_failure_for_missing_report(self):
         result = subprocess.run(

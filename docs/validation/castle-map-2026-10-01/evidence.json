@@ -1,0 +1,60 @@
+{
+  "source_commit": "b2da79d6ac1bed528827a2cf96289e98ff139671",
+  "kind": "Orthographic Editor camera renders of saved scene geometry; not SceneView or game screenshots.",
+  "run": {
+    "command": [
+      "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+      "run",
+      "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project-clean",
+      "--editor-path",
+      "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+      "--timeout",
+      "900",
+      "--no-tail",
+      "--non-interactive",
+      "--no-log-proxy",
+      "--log-file",
+      "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\mapcapture-2\\editor.log",
+      "--",
+      "-executeMethod",
+      "CaptureCastleLayout.Run",
+      "-disableaudio"
+    ],
+    "runner_sha256": "76bd4fdea10edb3e5cd4afa40397155af812962c9a2955fdb7c88c72cef6409a",
+    "exit_code": 0,
+    "stopped": null,
+    "elapsed_seconds": 219.05,
+    "initial_free_bytes": 68929642496,
+    "final_free_bytes": 68769857536,
+    "initial_task_bytes": 2528697822,
+    "final_task_bytes": 2528975242
+  },
+  "capture_receipt_sha256": "4ce0361744d8099fd7331a85e88a5e7629a65597c6008b3d0168a1e288c9fb31",
+  "cleanup_sha256": "3d280b0c25376471e141f37132fb1f50aba0f373b5f09f9aa1c43d7cfb7bc7f6",
+  "frozen_manifest_sha256": "98f5b6161a33fc09c35595e1b35d82c0b6efbe6bde215cd4fa2c101f2b8513db",
+  "delta_archive_sha256": "24771cb9599e642c3108312ebd8231b6bfb88a4d705009d7a61d2d417bf8b72a",
+  "source_files": 662,
+  "base_delta_paths": 62,
+  "delta_bytes": 241295,
+  "material_reserialization": [
+    {
+      "path": "Assets/LevelLayout/Materials/Stone.mat",
+      "before": "911584ee9594439cabee843abd5350566f7864a4558feb207c0b2dfe3bfef05f",
+      "after": "110d3bcd816fe6dee02e984263eec8b82e4d853aed09cd5ed57292d12698f70d"
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Wall.mat",
+      "before": "dbc29dfd0d1ee7509c1d3a04f1771d7233ebb82eec31279341bca7a68afb26d5",
+      "after": "05d9ebd68fdd11113ab69a70ea0c2e52a44563aed3077f46bedf5805abc494d4"
+    }
+  ],
+  "earlier_failure": {
+    "run": "mapcapture-1",
+    "exit_code": 6,
+    "reason": "Invalid empty Editor scene setup in cleanup after rendering; original output retained.",
+    "frozen_manifest_sha256": "1e84d31b3b35a647d9294cb1117b9544027d259faed7eabfb03749ff2b20427a"
+  },
+  "scope": "Saved-scene spatial comparison only. No standalone traversal, human acceptance, or timing claim.",
+  "native_cleanup_sha256": "78cb2c78207c47c9452161c2ad71e75a2e0efc7d8717b4332fa9b485d03e7e76",
+  "cleanup_copy_format": "UTF-8 with LF and final newline; native CRLF receipt retained unchanged."
+}
