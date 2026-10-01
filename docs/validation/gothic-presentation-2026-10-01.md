@@ -2,7 +2,7 @@
 
 DOCX §§2, 4–5 guide this castle art pass; §§3, 6–8 govern the preserved route. The text, flow/map and four visual references were inspected separately. Unity **6000.6.3f1**, package pins and the original DOCX remain unchanged.
 
-**Corrected materials passed authoring, 173 EditMode tests, 172 PlayMode tests and a Windows player build.** Import review found six intended emissive materials carrying `EmissiveIsBlack` (flag 4), which caused URP to remove `_EMISSION`. Both builders now fix the flag; the forced-reimport regression passed. The gallery below contains unchanged captures from passing PlayMode14. Build4 produced the current Windows candidate; it has not been launched.
+**Corrected materials passed authoring, 173 EditMode tests, 172 PlayMode tests and a Windows player build.** Import review found six intended emissive materials carrying `EmissiveIsBlack` (flag 4), which caused URP to remove `_EMISSION`. Both builders now fix the flag; the forced-reimport regression passed. The gallery below contains unchanged captures from passing PlayMode14. Build4 produced the presentation candidate; the separate clean-input build5 receipt below follows it. Neither candidate has been launched.
 
 ## Implemented behavior
 
@@ -19,7 +19,7 @@ Presentation leaves the recorded collider configuration, transforms, parenting, 
 | Corrected native authoring | Author17: **exit 0, 38.2 s; 106,220 environment triangles / 126 renderers / 126 mesh assets**, physics guard passed. |
 | Corrected EditMode | EditMode5: **173/173 passed, 0 failed / skipped**, 1.5735556 s suite, 20.06 s runner, exit 0. The emission reimport regression passed in 0.517974 s. |
 | Corrected PlayMode | PlayMode14: **172/172 passed, 0 failed / skipped**, suite 448.5385036 s. The original native CLI's **exit 0 was observed after wrapper recovery**; 475.39 s spans original start to observed native exit. All six full-route/death/gate cases, nine actor/performance cases and the scene-cleanup regression passed. |
-| Corrected Windows build | Build4: **exit 0, 0 errors / 0 warnings**, 133,693,642 reported bytes; **63.56 s runner**, build duration `00:00:50.6014793`. `player-candidate-final/ShadowsOfTheForsaken.exe` is **unlaunched**. |
+| Presentation Windows build | Historical build4: **exit 0, 0 errors / 0 warnings**, 133,693,642 reported bytes; **63.56 s runner**, build duration `00:00:50.6014793`. `player-candidate-final/ShadowsOfTheForsaken.exe` is **unlaunched**. |
 
 PlayMode14's known-route basic/secret runs took **81.591 s / 121.163 s**, both finishing with **200 HP**. These are automation timings, not first-time human pacing or acceptance of the DOCX's 2–3 minute basic-route target. Earlier timings and exact input traces remain retained.
 
@@ -28,6 +28,16 @@ The editor suites used **`-disableaudio` and a reused native cache**; they do no
 Final build4 review found **461 byte-identical files and 199 reviewed differences** against 659 branch files: 147 whitespace, 35 compatibility `_Color` round-trips, 13 URP material defaults and four profile/runtime/cache/template entries. All **63 C# files match exactly**. Review reused 192 exact native/branch hash pairs and freshly checked the scene plus six emissive materials. Those six preserve flag 2, matching nonzero emission colors and `_EMISSION` in both copies; no unresolved drift remains. The retained `native-build4-asset-review.json` has SHA-256 `27c57ef3260993c530db329af1f63b6557189f16365240503b2aea8def0070ba`.
 
 The retained `author17-scene-semantic-review.json` compares all **3,456 serialized objects** against author12 through a bijection of hierarchy/component identities. It found **zero semantic differences** after mapping local IDs, and the branch scene matches author17. Only five local IDs stayed unchanged, explaining the large YAML diff. This serialized comparison does not replace runtime or visual validation.
+
+## Clean-input Windows build
+
+Build5 starts from a fresh export of **commit `8602b8e38f0f933c01efc00b0f42fd50bf71659a`**: all **659 Unity inputs** match the committed Git blobs before first import. Merged main `c50aba050ae0096e072cce151173eb14e5a90256` has the same project inputs. There was no project `Library`, `Temp`, local editor state or manual scene authoring. Only the installed pinned editor and package-download cache were reused. The existing `CastlePlayerBuild.BuildForBatch` built the committed castle scene; [reproduction commands and launch instructions](../unity-testing.md#build-windows-z-czystego-checkoutu) describe the procedure.
+
+The native build finished with **exit 0, no stop condition, 0 errors / 0 warnings**, **854.16 s** total runner time and BuildReport duration **`00:08:05.7095047`**. Its **198 engine-produced files total 133,693,640 bytes** in `player-candidate-clean`, which remains **unlaunched**. A supplementary `BUILD-INFO.json` identifies the source commit, matching main, editor and original engine-file manifest; its bytes are recorded separately from Unity’s BuildReport total. The [separate clean-build receipt](clean-build-2026-10-01.json) binds the commit, input archive/copy receipts, command, logs, frozen source and every candidate file. The freeze has **659 files, 18 reviewed changed paths, no removals**, with a 33,709-byte delta. The independent audit verified every reconstructed source hash: 641 files remain exact, 13 legacy materials add only URP AssetVersion10 metadata, three URP settings retain reviewed import serialization and two project settings differ only in whitespace. It reports **zero unresolved findings**.
+
+The cold import retains the committed disabled-shader-pass state on 13 legacy blockout materials, while the earlier warm import also serialized shader defaults and disabled `MOTIONVECTORS`. This bounded import-state difference does **not** establish cold-versus-warm rendered parity; gameplay C#, scene, navigation and authored emission values remain unchanged.
+
+The **173 EditMode5 / 172 PlayMode14** passes above are earlier suites on the same **63 C# files**, not new suites executed in the clean project. Build5 establishes a build without an existing project cache; it does not establish standalone gameplay, audio, performance, human readability or pacing. The historical presentation evidence JSON remains unchanged.
 
 ## Rendered evidence
 
