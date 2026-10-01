@@ -164,6 +164,10 @@ public static class CastleLayoutBuilder
         RenderSettings.ambientLight = new Color(0.18f, 0.21f, 0.28f);
         RenderSettings.fog = false;
         var gameplay = BuildGameplay(data, objects, materials, player, movement, follow, body.GetComponent<Renderer>());
+        var physicalLevel = CapturePhysics(scene);
+        CastlePresentationBuilder.Build(objects["Geometry"], gameplay, objects["Lighting"]);
+        CastleActorBuilder.Build(player, gameplay.GetComponentsInChildren<EnemyEncounter>(true));
+        RequireUnchangedPhysics(scene, physicalLevel);
         BakeNavigation(objects["Geometry"]);
         foreach (var agent in gameplay.GetComponentsInChildren<NavMeshAgent>(true))
         {
@@ -182,6 +186,44 @@ public static class CastleLayoutBuilder
         EditorBuildSettings.scenes = scenes.ToArray();
         AssetDatabase.SaveAssets();
         Debug.Log("Saved playable castle scene and baked navigation. Authoring is not gameplay or visual acceptance.");
+    }
+
+    // Art authoring may replace renderers and append visual transforms, but the
+    // proven collision/interaction level must remain the navigation source.
+    private sealed class PhysicalState
+    {
+        public Vector3 position, scale;
+        public Quaternion rotation;
+        public Transform parent;
+        public string collider;
+        public bool active, activeInHierarchy;
+        public int layer;
+    }
+
+    private static Dictionary<Collider, PhysicalState> CapturePhysics(Scene scene)
+    {
+        return scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<Collider>(true))
+            .ToDictionary(item => item, item => new PhysicalState
+            {
+                position = item.transform.position, rotation = item.transform.rotation,
+                scale = item.transform.lossyScale, parent = item.transform.parent,
+                collider = EditorJsonUtility.ToJson(item), active = item.gameObject.activeSelf,
+                activeInHierarchy = item.gameObject.activeInHierarchy, layer = item.gameObject.layer
+            });
+    }
+
+    private static void RequireUnchangedPhysics(Scene scene, Dictionary<Collider, PhysicalState> before)
+    {
+        var after = CapturePhysics(scene);
+        if (after.Count != before.Count) throw new InvalidOperationException("Presentation changed the castle collider count.");
+        foreach (var pair in before)
+        {
+            if (!after.TryGetValue(pair.Key, out var now) || now.position != pair.Value.position ||
+                now.rotation != pair.Value.rotation || now.scale != pair.Value.scale || now.parent != pair.Value.parent ||
+                now.collider != pair.Value.collider || now.active != pair.Value.active ||
+                now.activeInHierarchy != pair.Value.activeInHierarchy || now.layer != pair.Value.layer)
+                throw new InvalidOperationException("Presentation changed a physical level object: " + pair.Key.name);
+        }
     }
 
     private static GameObject BuildGameplay(LayoutData data, Dictionary<string, GameObject> objects,

@@ -58,6 +58,8 @@ Dokument nie określa również wszystkich parametrów implementacyjnych: klawis
 
 Kod i jawny builder sceny `Assets/Scenes/ForsakenCastle.unity` łączą pełną trasę zamku: spokojny dziedziniec, trzy odrębne starcia, runiczną dźwignię, mechanizm biblioteki, opcjonalny relikt i wyjście. [Opis pełnej trasy](docs/full-castle-route.md) podaje sterowanie, parametry AI, połączenia, restart i granice dowodów. Zachowano scenę bazową `SampleScene` oraz oddzielne demonstracje mechanik.
 
+Bieżąca integracja dodaje gotycką architekturę i dekoracje, oryginalne modele postaci z animacją, prezentacje bram/mechanizmów, rozbudowany HUD oraz opcjonalne pomiary wydajności. [Pochodzenie zasobów](docs/art-provenance.md) oddziela wygenerowane tekstury od rzeczywistych ujęć gry. **Po korekcie emisji sześciu materiałów zaliczono 173/173 EditMode oraz 172/172 PlayMode.** Build Windows 4 zakończył się sukcesem bez błędów i ostrzeżeń; kandydat pozostaje nieuruchomiony. [Raport z aktualną galerią PlayMode 14](docs/validation/gothic-presentation-2026-10-01.md#rendered-evidence) zachowuje dotychczasowe dowody, a [macierz DOCX](docs/docx-acceptance.md) wskazuje odroczone testy standalone i oczekujące pierwsze przejście człowieka.
+
 | Obszar | Stan |
 | --- | --- |
 | Specyfikacja i kontrakt (#4) | DOCX i jego hash zachowane; główna trasa oraz opcjonalność sekretu pozostają zgodne z kontraktem. Późniejsze decyzje opisują wydłużone podejście i proste mechanizmy. |
@@ -66,11 +68,12 @@ Kod i jawny builder sceny `Assets/Scenes/ForsakenCastle.unity` łączą pełną 
 | Interakcje i bramy (#9, #13, #15–16, #19) | E uruchamia oznaczoną dźwignię, księgę, dźwignię sekretu i relikt. Uszkodzony mechanizm daje nieszkodliwy komunikat. Bramy synchronizują collider, panel i blokadę nawigacji. |
 | Walka i starcia (#11–12, #14, #17) | Wspólne zdrowie i melee obsługują jednego demona, wytrzymalszego strażnika i szybszego demona finałowego. AI ma ograniczoną arenę, nawigację, kontrolę przeszkód i zachowuje tokeny oczekującego zaliczenia śmierci. |
 | Geometria zamku (#8) | Zachowano dziewięć obszarów, zejście biblioteki i osobny dolny skrót. Podejście wydłużono do 100 m; brak przejścia przez ścianę między zagadką a tronem. |
-| HUD i zakończenie (#18) | Zdrowie, cel, interakcja, komunikaty, oddzielna porażka i ukończenie. R/przycisk resetuje poziom tylko po stanie terminalnym; sekret nie jest wymagany do wyjścia. |
-| Walidacja rdzeni | 160 testów .NET zaliczonych, w tym 46 reguł walki i starć. Te testy nie uruchamiają MonoBehaviour ani nawigacji. |
-| Walidacja integracji Unity (#22) | Zaliczono 169 EditMode i 162 PlayMode (ostatni zestaw z wyłączonym audio); PlayMode obejmuje realne komponenty, oba pełne przejścia, trzy porażki/restarty i zamknięte bramy. Końcowy wynik i zachowane nieudane próby opisuje [raport](docs/validation/full-castle-route-2026-09-30.md). |
-| Windows player i ręczny odbiór (#23–24) | Zbudowano i uruchomiono Windows x64. Pilot dotarł do walki; pełne pomiary standalone są zablokowane przez zablokowany pulpit Windows. Ręczny odbiór pozostaje otwarty. |
-| Finalna oprawa i 2–3 minuty (#20–21, #23) | Wciąż wymagają odbioru; blockout i testy automatyczne nie zatwierdzają jakości wizualnej ani tempa. |
+| HUD i zakończenie (#18) | Nazwa obszaru, pasek zdrowia, osobne panele podpowiedzi/komunikatów i terminalny restart. Ujęcia PlayMode 14 pokazują proporcje HUD i cele w bieżącym pokoju; zaliczono obie trasy oraz porażki/restarty po korekcie emisji materiałów. |
+| Walidacja rdzeni i narzędzi | 160 testów .NET zaliczonych; korekta emisji dotyczy edytora i nie zmienia tych rdzeni. Po najnowszej poprawce zaliczono 84 Python. Te testy nie zastępują weryfikacji sceny w Unity. |
+| Walidacja integracji Unity (#22) | Author 17 poprawionej rewizji: sukces w 38,2 s, kontrola niezmienionej fizyki zaliczona. EditMode 5: 173/173, bez błędów i pominięć, z regresją emisji po ponownym imporcie. PlayMode 14: 172/172 bez pominięć; oryginalny natywny CLI zakończył się kodem 0, zaobserwowanym po utracie wrappera (kod 143). Build 4 zaliczono; pełne rozróżnienie wyników i błędy infrastruktury zachowano w raporcie. Użycie `-disableaudio` i cache nie kwalifikuje audio ani świeżego checkoutu. |
+| Windows player i ręczny odbiór (#23–24) | Build 4 po korekcie emisji: sukces, 0 błędów/ostrzeżeń, 133 693 642 B, 63,56 s procesu wykonawczego. Kandydat `player-candidate-final` pozostaje nieuruchomiony. Użyto cache/importu natywnego projektu; różnice zasobów pozostają jawne. Po utracie fokusu wcześniejszego pilota właściciel odroczył standalone; pierwsza próba człowieka pozostaje oczekująca. |
+| Oprawa zamku i postaci (#20–21) | Author 17 zapisał 106 220 trójkątów środowiska / 126 rendererów / 126 siatek bez zmian fizyki. Ujęcia PlayMode 14 i testy trójkątów wspierają poprawkę szczelin podłoga–ściana; widoczna jest poprawiona emisja runy, płomieni i oczu. Test ponownego importu zaliczono. Końcowy odbiór człowieka pozostaje otwarty, w tym częściowe zasłanianie wrogów przez gracza w bliskiej walce. |
+| Tempo i wydajność (#23–24) | Znane automatyzacji trasy w PlayMode 14 zajęły 81,591 s bez sekretu i 121,163 s z sekretem, kończąc z 200 HP. Nie potwierdza to tempa pierwszej próby ani celu 2–3 minut. Regresje liczników zaliczono; pomiary aktualnego playera na wskazanym sprzęcie pozostają odroczone. |
 | Aktywacja Unity w CI (#5) | Brak sekretów GitHub Actions nadal blokuje testy silnika w CI; lokalna aktywacja i wyniki .NET nie usuwają tego ograniczenia. |
 
 Historyczny [raport blockoutu](docs/validation/unity-castle-2026-09-30.md) zawiera 105 EditMode i 68 PlayMode, a [raport wspólnych mechanik i rzeczywistych obrazów](docs/validation/shared-gameplay-2026-09-30.md) — 145 .NET, 153 EditMode, 109 PlayMode oraz 82 Python. Te wyniki opisują wcześniejsze rewizje i nie są deklaracją zaliczenia nowych starć, pełnej trasy ani player builda.
@@ -102,7 +105,7 @@ Wersje zapisane w repozytorium:
 
 Źródła wersji: [ProjectVersion.txt](ProjectSettings/ProjectVersion.txt) i [manifest.json](Packages/manifest.json). Nie aktualizować edytora ani pakietów przypadkowo podczas otwierania projektu.
 
-Na polecenie właściciela zapisano aktualizację do Unity `6000.6.3f1` oraz pakietów z manifestu i lockfile; dostosowano przypięcia walidatora, testu wersji i CI. Import, kompilację oraz testy EditMode/PlayMode potwierdzono lokalnie na Windows 2026-09-30. Ta walidacja nie obejmuje player builda ani ręcznego odbioru gry.
+Na polecenie właściciela zapisano aktualizację do Unity `6000.6.3f1` oraz pakietów z manifestu i lockfile; dostosowano przypięcia walidatora, testu wersji i CI. Import, kompilację oraz testy wcześniejszej integracji potwierdzono lokalnie na Windows 2026-09-30. Raport z 2026-10-01 zapisuje 173 EditMode i 172 PlayMode po korekcie emisji. Build 4 także zakończył się sukcesem, bez błędów i ostrzeżeń. Kandydat nie został uruchomiony, a ręczny odbiór pozostaje otwarty.
 
 ```sh
 git clone https://github.com/lisu188/shadows-of-the-forsaken.git

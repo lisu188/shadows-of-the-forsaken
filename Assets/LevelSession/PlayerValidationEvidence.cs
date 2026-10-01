@@ -4,6 +4,7 @@ using System.Text;
 using ShadowsOfTheForsaken.Combat;
 using ShadowsOfTheForsaken.Progression;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 // Opt-in observation for a locally driven Windows player. This component never
 // sends gameplay commands, changes progression, controls time, or reads input.
@@ -16,8 +17,9 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     private const int MaximumEnemies = 64;
     private const int MaximumSnapshotFailures = 10;
     private const double SnapshotInterval = .2;
+    private const int MaximumPerformanceSummaries = 256;
     private static readonly UTF8Encoding Encoding = new UTF8Encoding(false);
-    private string statusPath, temporaryPath, eventsPath;
+    private string statusPath, temporaryPath, eventsPath, performancePath;
     private LevelSessionController observedSession;
     private LevelProgressionController observedProgression;
     private bool active, failed, quitting;
@@ -26,6 +28,13 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     private string lastIoOperation = "", lastIoHResult = "";
     private long sequence;
     private double nextSnapshot;
+    private PlayerFrameMetrics frameMetrics;
+    private HardwareEvidence hardware;
+    private MemoryEvidence memory;
+    private string performanceSessionId;
+    private int performanceSummaries;
+    private bool focused, paused, baselineValid, previouslyEligible;
+    private double frameBaseline;
 
     private void Start()
     {
@@ -47,11 +56,18 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
             statusPath = Path.Combine(directory, "status.json");
             temporaryPath = Path.Combine(directory, ".status.tmp");
             eventsPath = Path.Combine(directory, "events.jsonl");
+            performancePath = Path.Combine(directory, "performance.jsonl");
             if (File.Exists(eventsPath))
                 using (var reader = new StreamReader(eventsPath, Encoding))
                     while (eventCount < MaximumEvents && reader.ReadLine() != null) eventCount++;
+            if (File.Exists(performancePath))
+                using (var reader = new StreamReader(performancePath, Encoding))
+                    while (performanceSummaries < MaximumPerformanceSummaries && reader.ReadLine() != null) performanceSummaries++;
             observedSession = session;
             observedProgression = session.progression;
+            hardware = HardwareEvidence.Read();
+            focused = Application.isFocused;
+            BeginPerformanceSession(observedProgression.Snapshot.SessionId);
             observedSession.StateChanged += SessionChanged;
             observedProgression.Changed += ProgressionChanged;
             active = true;
@@ -67,9 +83,44 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
         WriteSnapshot();
     }
 
+    private void LateUpdate()
+    {
+        if (!active) return;
+        double now = Time.realtimeSinceStartupAsDouble;
+        bool eligible = focused && !paused && Time.timeScale > 0 && observedSession != null && observedSession.IsRunning;
+        PlayerFrameExclusion reason = paused || Time.timeScale <= 0 ? PlayerFrameExclusion.Paused :
+            !focused ? PlayerFrameExclusion.Unfocused :
+            observedSession == null || !observedSession.IsRunning ? PlayerFrameExclusion.NotRunning :
+            !baselineValid || !previouslyEligible ? PlayerFrameExclusion.Transition : PlayerFrameExclusion.None;
+        // A frame is eligible only when both boundaries are focused, unpaused,
+        // Running. Focus/pause callbacks invalidate the baseline even when no
+        // frames ran while suspended, excluding that unobservable interval.
+        frameMetrics.Record(baselineValid ? now - frameBaseline : 0, reason);
+        frameBaseline = now;
+        baselineValid = true;
+        previouslyEligible = eligible;
+    }
+
+    private void OnApplicationFocus(bool value) { focused = value; baselineValid = false; }
+    private void OnApplicationPause(bool value) { paused = value; baselineValid = false; }
+
+    private void BeginPerformanceSession(Guid token)
+    {
+        performanceSessionId = token.ToString();
+        frameMetrics = new PlayerFrameMetrics();
+        memory = new MemoryEvidence();
+        baselineValid = false;
+        previouslyEligible = false;
+    }
+
     private void ProgressionChanged(ProgressionChange change)
     {
         if (!active) return;
+        if (change.Kind == ProgressionChangeKind.SessionReset)
+        {
+            WritePerformanceSummary("reset"); // Original session token and accumulated frames.
+            BeginPerformanceSession(change.After.SessionId);
+        }
         // Copy the callback's immutable payload now. An event must not acquire a
         // newer token because another observer starts a different session later.
         AppendEvent(new Milestone
@@ -89,6 +140,8 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
         var milestone = CurrentEvent("session");
         milestone.phase = state.ToString();
         AppendEvent(milestone);
+        if (state == LevelSessionState.Defeated) WritePerformanceSummary("defeat");
+        else if (state == LevelSessionState.Completed) WritePerformanceSummary("completion");
     }
 
     private Milestone CurrentEvent(string kind)
@@ -137,6 +190,9 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
                 objectives = progress.CompletedObjectives.ToString(), objectiveFlags = (int)progress.CompletedObjectives,
                 elapsedSeconds = observedSession.ElapsedSeconds,
                 ioFailureCount = ioFailureCount, lastIoOperation = lastIoOperation, lastIoHResult = lastIoHResult,
+                performanceSummariesWritten = performanceSummaries,
+                performanceSummaryLimitReached = performanceSummaries >= MaximumPerformanceSummaries,
+                hardware = hardware, performance = frameMetrics.Snapshot(false), memory = ReadMemory(),
                 player = new PlayerSnapshot
                 {
                     position = player.transform.position, yaw = player.transform.eulerAngles.y,
@@ -193,6 +249,7 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     {
         if (!active) return;
         quitting = true;
+        WritePerformanceSummary("normal-exit");
         WriteLifecycleEvent("normal-exit");
         WriteSnapshot();
         Unsubscribe();
@@ -202,6 +259,7 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     {
         if (active && !quitting)
         {
+            WritePerformanceSummary("observer-disabled");
             WriteLifecycleEvent("observer-disabled");
             WriteSnapshot();
         }
@@ -215,6 +273,39 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
         if (!active || observedProgression == null || observedSession == null) return;
         try { AppendEvent(CurrentEvent(kind)); }
         catch (Exception error) { DisableAfterFailure(error, "lifecycle-event"); }
+    }
+
+    private MemoryEvidence ReadMemory()
+    {
+        memory.managedEstimatedBytes = GC.GetTotalMemory(false); // Never force a collection.
+        memory.unityAllocatorUsedBytes = Profiler.GetTotalAllocatedMemoryLong();
+        memory.unityAllocatorReservedBytes = Profiler.GetTotalReservedMemoryLong();
+        memory.unityAllocatorUnusedReservedBytes = Profiler.GetTotalUnusedReservedMemoryLong();
+        memory.unityAllocatorAvailable = memory.unityAllocatorReservedBytes > 0;
+        memory.peakSampledManagedEstimatedBytes = Math.Max(memory.peakSampledManagedEstimatedBytes, memory.managedEstimatedBytes);
+        memory.peakSampledUnityAllocatorUsedBytes = Math.Max(memory.peakSampledUnityAllocatorUsedBytes, memory.unityAllocatorUsedBytes);
+        memory.samples++;
+        return memory;
+    }
+
+    private void WritePerformanceSummary(string reason)
+    {
+        if (!active || frameMetrics == null || performanceSummaries >= MaximumPerformanceSummaries) return;
+        try
+        {
+            var summary = new PerformanceEvidence
+            {
+                utc = Utc(), reason = reason, sessionId = performanceSessionId,
+                frameIntervals = frameMetrics.Snapshot(true), hardware = hardware, memory = ReadMemory(),
+                screenWidth = Screen.width, screenHeight = Screen.height, fullScreenMode = Screen.fullScreenMode.ToString(),
+                qualityLevel = QualitySettings.GetQualityLevel(), vSyncCount = QualitySettings.vSyncCount,
+                targetFrameRate = Application.targetFrameRate,
+                provisionalResolutionMatches = Screen.width == 1280 && Screen.height == 720
+            };
+            File.AppendAllText(performancePath, JsonUtility.ToJson(summary) + "\n", Encoding);
+            performanceSummaries++;
+        }
+        catch (Exception error) { DisableAfterFailure(error, "performance-append"); }
     }
 
     private void Unsubscribe()
@@ -245,10 +336,14 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
     {
         public string utc, phase, sessionId, room, objectives, lastIoOperation, lastIoHResult;
         public long sequence;
-        public int objectiveFlags, ioFailureCount;
+        public int objectiveFlags, ioFailureCount, performanceSummariesWritten;
+        public bool performanceSummaryLimitReached;
         public float elapsedSeconds;
         public PlayerSnapshot player;
         public EnemySnapshot[] enemies;
+        public HardwareEvidence hardware;
+        public PlayerFrameSummary performance;
+        public MemoryEvidence memory;
     }
     [Serializable]
     private sealed class PlayerSnapshot
@@ -275,5 +370,44 @@ public sealed class PlayerValidationEvidence : MonoBehaviour
         public long sequence;
         public int objectiveFlags;
         public float elapsedSeconds;
+    }
+
+    [Serializable]
+    private sealed class PerformanceEvidence
+    {
+        public string utc, reason, sessionId, fullScreenMode;
+        public int screenWidth, screenHeight, qualityLevel, vSyncCount, targetFrameRate;
+        public bool provisionalResolutionMatches;
+        public string measurement = "Observed realtime frame intervals, not CPU/GPU profiling. Warmup: first 5 eligible seconds; boundary-crossing warmup frame excluded in full. No eligible outliers trimmed.";
+        public string provisionalBudget = "Implementation choice: 60 FPS intent at 1280x720; mean and conservative approximate p95 <=33.3 ms. Memory reported without a pass threshold. Not a DOCX requirement or human-playtest result.";
+        public PlayerFrameSummary frameIntervals;
+        public HardwareEvidence hardware;
+        public MemoryEvidence memory;
+    }
+
+    [Serializable]
+    private sealed class HardwareEvidence
+    {
+        public string unityVersion, platform, operatingSystem, processor, graphicsDevice, graphicsVendor, graphicsApi;
+        public int processorCount, processorFrequencyMHz, systemMemoryMB, graphicsMemoryMB;
+        public bool isEditor;
+        public static HardwareEvidence Read() => new HardwareEvidence
+        {
+            unityVersion = Application.unityVersion, platform = Application.platform.ToString(), isEditor = Application.isEditor,
+            operatingSystem = SystemInfo.operatingSystem, processor = SystemInfo.processorType,
+            processorCount = SystemInfo.processorCount, processorFrequencyMHz = SystemInfo.processorFrequency,
+            systemMemoryMB = SystemInfo.systemMemorySize, graphicsDevice = SystemInfo.graphicsDeviceName,
+            graphicsVendor = SystemInfo.graphicsDeviceVendor, graphicsApi = SystemInfo.graphicsDeviceType.ToString(),
+            graphicsMemoryMB = SystemInfo.graphicsMemorySize
+        };
+    }
+
+    [Serializable]
+    private sealed class MemoryEvidence
+    {
+        public string meaning = "GC.GetTotalMemory(false) managed estimate; Unity internal allocator used/reserved/unused bytes (0 can mean unavailable), not process working set, complete native memory, GPU usage, or allocation-per-frame. Sampled every snapshot/lifecycle event; peaks may miss shorter spikes.";
+        public long samples, managedEstimatedBytes, unityAllocatorUsedBytes, unityAllocatorReservedBytes, unityAllocatorUnusedReservedBytes;
+        public long peakSampledManagedEstimatedBytes, peakSampledUnityAllocatorUsedBytes;
+        public bool unityAllocatorAvailable;
     }
 }

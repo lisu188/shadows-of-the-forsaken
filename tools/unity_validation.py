@@ -17,6 +17,10 @@ PACKAGES = {
 }
 EXPECTED_TESTS = {
     "editmode": {
+        "GothicEnvironmentUsesSavedDetailedMeshesWithinItsBudget": 1,
+        "GothicStoneSurfacesUseRepeatableMipmappedOriginalAlbedos": 1,
+        "GothicEmissiveMaterialsRetainTheirKeywordsAfterReimport": 1,
+        "GothicGateAndRelicMeshesRemainBoundToTheirExistingStateComponents": 1,
         "EditorVersionMatchesPin": 1,
         "BaselineSceneIsEnabledInBuildSettings": 1,
         "RuntimeScriptImportsWithOriginalGuid": 2,
@@ -64,6 +68,17 @@ EXPECTED_TESTS = {
         "EncounterLosesTargetSafelyWithoutLeavingArena": 3
     },
     "playmode": {
+        "TimedOutRealSceneLoadIsDrainedWithoutUnloadingPreexistingScenes": 1,
+        "ActorPresentationReadsRealAttackDeathAndResetWithoutChangingColliders": 1,
+        "ActorPresentationDisableRestoresBindPoseAndRejectsActorRootReference": 1,
+        "PerformanceHistogramRetainsOverflowFramesAndConservativePercentile": 1,
+        "PerformanceExclusionsPreserveWarmupAndEmptyMetricsCannotPassBudget": 1,
+        "PerformanceObserverCreatesNoOutputWithoutOptIn": 1,
+        "PerformanceObserverMeasuresActualFramesAndExcludesFocusPauseAndTimeScale": 1,
+        "PerformanceLifecycleKeepsOriginalTokenAndResetsCountersAfterDeath": 1,
+        "PerformanceCompletionWritesBoundedHistogramAndConfiguration": 1,
+        "PerformanceSummaryCapLeavesRollingStatusOperational": 1,
+
         "BaselineSceneRunsWithoutMissingComponents": 1,
         "BaselineCameraAndDirectionalLightAreActive": 1,
         "EveryPassageIsWalkableInBothDirections": 18,

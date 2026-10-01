@@ -26,6 +26,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private readonly List<Behaviour> suspendedBehaviours = new List<Behaviour>();
         private readonly List<Collider> suspendedColliders = new List<Collider>();
         private Scene scene;
+        private OwnedSceneLoad sceneLoad;
         private Component movement;
         private Component follow;
         private CharacterController character;
@@ -41,6 +42,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [UnitySetUp]
         public IEnumerator LoadLayout()
         {
+            sceneLoad = null;
+            scene = default;
             previousUpdateMode = InputSystem.settings.updateMode;
             previousBackgroundBehavior = InputSystem.settings.backgroundBehavior;
             previousEditorInputBehavior = InputSystem.settings.editorInputBehaviorInPlayMode;
@@ -70,19 +73,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                     collider.enabled = false;
                 }
 
-            var previousScenes = new HashSet<Scene>();
-            for (int i = 0; i < SceneManager.sceneCount; i++) previousScenes.Add(SceneManager.GetSceneAt(i));
-            var operation = SceneManager.LoadSceneAsync(ScenePath, LoadSceneMode.Additive);
-            Assert.That(operation, Is.Not.Null);
-            float deadline = Time.realtimeSinceStartup + 30;
-            while (!operation.isDone && Time.realtimeSinceStartup < deadline) yield return null;
-            Assert.That(operation.isDone, Is.True, "Castle scene load timed out.");
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                var candidate = SceneManager.GetSceneAt(i);
-                if (candidate.path == ScenePath && !previousScenes.Contains(candidate)) scene = candidate;
-            }
-            Assert.That(scene.IsValid() && scene.isLoaded, Is.True);
+            sceneLoad = new OwnedSceneLoad();
+            yield return sceneLoad.Load(ScenePath, () => SceneManager.LoadSceneAsync(ScenePath, LoadSceneMode.Additive));
+            scene = sceneLoad.Scene;
+            Assert.That(sceneLoad.LoadedWithinDeadline && scene.IsValid() && scene.isLoaded, Is.True, "Castle scene load timed out.");
             var player = Root("Player");
             character = player.GetComponent<CharacterController>();
             Assert.That(character, Is.Not.Null);
@@ -121,32 +115,28 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator UnloadLayout()
         {
-            bool unloaded = true;
-            if (scene.IsValid() && scene.isLoaded)
+            try
             {
-                var operation = SceneManager.UnloadSceneAsync(scene);
-                if (operation != null)
+                if (sceneLoad != null) yield return sceneLoad.Cleanup();
+            }
+            finally
+            {
+                if (input != null) Object.DestroyImmediate(input);
+                if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
+                if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
+                if (settingsCaptured)
                 {
-                    float deadline = Time.realtimeSinceStartup + 30;
-                    while (!operation.isDone && Time.realtimeSinceStartup < deadline) yield return null;
-                    unloaded = operation.isDone;
+                    InputSystem.settings.updateMode = previousUpdateMode;
+                    InputSystem.settings.backgroundBehavior = previousBackgroundBehavior;
+                    InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInputBehavior;
+                    Time.timeScale = previousTimeScale;
                 }
+                foreach (var collider in suspendedColliders) if (collider != null) collider.enabled = true;
+                foreach (var behaviour in suspendedBehaviours) if (behaviour != null) behaviour.enabled = true;
+                suspendedColliders.Clear();
+                suspendedBehaviours.Clear();
             }
-            if (input != null) Object.DestroyImmediate(input);
-            if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
-            if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
-            if (settingsCaptured)
-            {
-                InputSystem.settings.updateMode = previousUpdateMode;
-                InputSystem.settings.backgroundBehavior = previousBackgroundBehavior;
-                InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInputBehavior;
-                Time.timeScale = previousTimeScale;
-            }
-            foreach (var collider in suspendedColliders) if (collider != null) collider.enabled = true;
-            foreach (var behaviour in suspendedBehaviours) if (behaviour != null) behaviour.enabled = true;
-            suspendedColliders.Clear();
-            suspendedBehaviours.Clear();
-            Assert.That(unloaded, Is.True, "Castle scene unload timed out.");
+            Assert.That(sceneLoad?.CleanupFailure, Is.Null, "Castle scene cleanup failed.");
         }
 
         [TestCase("Courtyard", "FirstEncounter", false)]

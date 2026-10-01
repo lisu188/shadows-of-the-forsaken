@@ -28,6 +28,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private readonly List<Collider> suspendedColliders = new List<Collider>();
         private readonly List<Renderer> suspendedRenderers = new List<Renderer>();
         private Scene scene, previousScene;
+        private OwnedSceneLoad sceneLoad;
         private Component movement, follow;
         private Camera camera;
         private InputActionAsset input;
@@ -41,6 +42,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [SetUp]
         public void Prepare()
         {
+            sceneLoad = null; scene = default;
             routeTrace.Clear(); inputTrace.Clear(); recordingInputs = false; lastInput = null;
             previousScene = SceneManager.GetActiveScene();
             previousMode = InputSystem.settings.updateMode;
@@ -70,27 +72,26 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator Restore()
         {
-            bool unloaded = true;
-            if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
-            if (scene.IsValid() && scene.isLoaded)
+            try
             {
-                var operation = SceneManager.UnloadSceneAsync(scene);
-                float deadline = Time.realtimeSinceStartup + 30;
-                while (operation != null && !operation.isDone && Time.realtimeSinceStartup < deadline) yield return null;
-                unloaded = operation == null || operation.isDone;
+                if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
+                if (sceneLoad != null) yield return sceneLoad.Cleanup();
             }
-            if (input != null) Object.DestroyImmediate(input);
-            if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
-            if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
-            InputSystem.settings.updateMode = previousMode;
-            InputSystem.settings.backgroundBehavior = previousBackground;
-            InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInput;
-            Time.timeScale = previousTimeScale;
-            foreach (var item in suspendedColliders) if (item != null) item.enabled = true;
-            foreach (var item in suspendedRenderers) if (item != null) item.enabled = true;
-            foreach (var item in suspendedBehaviours) if (item != null) item.enabled = true;
-            suspendedColliders.Clear(); suspendedRenderers.Clear(); suspendedBehaviours.Clear();
-            Assert.That(unloaded, Is.True, "Demo unload timed out.");
+            finally
+            {
+                if (input != null) Object.DestroyImmediate(input);
+                if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
+                if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
+                InputSystem.settings.updateMode = previousMode;
+                InputSystem.settings.backgroundBehavior = previousBackground;
+                InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInput;
+                Time.timeScale = previousTimeScale;
+                foreach (var item in suspendedColliders) if (item != null) item.enabled = true;
+                foreach (var item in suspendedRenderers) if (item != null) item.enabled = true;
+                foreach (var item in suspendedBehaviours) if (item != null) item.enabled = true;
+                suspendedColliders.Clear(); suspendedRenderers.Clear(); suspendedBehaviours.Clear();
+            }
+            Assert.That(sceneLoad?.CleanupFailure, Is.Null);
         }
 
         private LevelProgressionController progression;
@@ -356,6 +357,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             }
             float deadline = Time.realtimeSinceStartup + 70;
             bool pressedLastFrame = false, capturedTelegraph = false;
+            float windupObservedAt = -1f;
+            float telegraphDelay = Mathf.Min(.12f, Mathf.Max(0f, Field<float>(enemyMelee, "windup")) * .3f);
             while (!Has(objective))
             {
                 Assert.That(Time.realtimeSinceStartup, Is.LessThan(deadline), Diagnostic("Fight " + objective + " enemyHP=" + Get<int>(enemyHealth,"Current")));
@@ -365,8 +368,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 float angle = Vector3.SignedAngle(movement.transform.forward, offset, Vector3.up);
                 var phase = Get<AttackPhase>(playerMelee, "Phase");
                 var enemyPhase = Get<AttackPhase>(enemyMelee, "Phase");
-                if (!capturedTelegraph && enemyPhase == AttackPhase.Windup)
+                if (enemyPhase != AttackPhase.Windup) windupObservedAt = -1f;
+                else if (windupObservedAt < 0f) windupObservedAt = Time.time;
+                if (!capturedTelegraph && windupObservedAt >= 0f && Time.time - windupObservedAt >= telegraphDelay)
                 {
+                    // Observe ordinary updates long enough for the actor's
+                    // LateUpdate windup pose; never advance combat for a capture.
                     Capture("route-fight-" + objective);
                     capturedTelegraph = true;
                 }
@@ -430,18 +437,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         private IEnumerator Load(string path)
         {
-            var before = new HashSet<Scene>();
-            for (int i = 0; i < SceneManager.sceneCount; i++) before.Add(SceneManager.GetSceneAt(i));
-            var operation = EditorSceneManager.LoadSceneAsyncInPlayMode(path, new LoadSceneParameters(LoadSceneMode.Additive));
-            Assert.That(operation, Is.Not.Null);
-            float deadline = Time.realtimeSinceStartup + 30;
-            while (!operation.isDone && Time.realtimeSinceStartup < deadline) yield return null;
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                var candidate = SceneManager.GetSceneAt(i);
-                if (candidate.path == path && !before.Contains(candidate)) scene = candidate;
-            }
-            Assert.That(operation.isDone && scene.IsValid() && scene.isLoaded, Is.True, "Saved demo did not load: " + path);
+            sceneLoad = new OwnedSceneLoad();
+            yield return sceneLoad.Load(path, () => EditorSceneManager.LoadSceneAsyncInPlayMode(path,
+                new LoadSceneParameters(LoadSceneMode.Additive)));
+            scene = sceneLoad.Scene;
+            Assert.That(sceneLoad.LoadedWithinDeadline && scene.IsValid() && scene.isLoaded, Is.True,
+                "Saved castle did not load within 30 s: " + path);
             SceneManager.SetActiveScene(scene);
             yield return null; // Let the saved demo's Start initialize its session.
             foreach (var root in scene.GetRootGameObjects())
@@ -488,14 +489,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             string directory = Environment.GetEnvironmentVariable("SHADOWS_CAPTURE_DIR");
             if (string.IsNullOrWhiteSpace(directory)) return;
             Assert.That(SystemInfo.graphicsDeviceType, Is.Not.EqualTo(GraphicsDeviceType.Null), "Optional captures require graphics; omit SHADOWS_CAPTURE_DIR for -nographics runs.");
-            Assert.That((bool)Call(follow, "SnapToTarget"), Is.True, "Capture requires the scene camera's safe follow pose.");
             // Refresh presentation for the manually advanced action without adding
             // an uncontrolled Update frame or advancing the combat clock twice.
             foreach (var root in scene.GetRootGameObjects())
                 foreach (var feedback in root.GetComponentsInChildren(RuntimeType("ShadowsOfTheForsaken.Combat.CombatFeedback")))
                     Call(feedback, "Apply");
             var occlusion = follow.GetComponent(RuntimeType("CameraPlayerOcclusion"));
-            if (occlusion != null) Call(occlusion, "RefreshVisibility");
             var originalTarget = camera.targetTexture;
             var originalActive = RenderTexture.active;
             bool originalAsyncCompilation = ShaderUtil.allowAsyncCompilation;
@@ -512,6 +511,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 // for this render only; preserve the editor's surrounding policy.
                 ShaderUtil.allowAsyncCompilation = false;
                 texture.Create();
+                // Establish the destination before camera clearance and UI layout.
+                // URP otherwise assigns it only inside SubmitRenderRequest, after
+                // a 4:3 editor canvas has already been sized for this 16:9 image.
+                camera.targetTexture = texture;
+                Assert.That((bool)Call(follow, "SnapToTarget"), Is.True, "Capture requires the scene camera's safe follow pose.");
+                if (occlusion != null) Call(occlusion, "RefreshVisibility");
                 for (int i = 0; i < canvases.Length; i++)
                 {
                     canvases[i].renderMode = RenderMode.ScreenSpaceCamera;
@@ -536,6 +541,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 }
                 ShaderUtil.allowAsyncCompilation = originalAsyncCompilation;
                 camera.targetTexture = originalTarget;
+                Call(follow, "SnapToTarget");
+                if (occlusion != null) Call(occlusion, "RefreshVisibility");
+                Canvas.ForceUpdateCanvases();
                 RenderTexture.active = originalActive;
                 if (pixels != null) Object.DestroyImmediate(pixels);
                 texture.Release(); Object.DestroyImmediate(texture);

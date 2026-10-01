@@ -29,6 +29,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private readonly List<Collider> suspendedColliders = new List<Collider>();
         private readonly List<Renderer> suspendedRenderers = new List<Renderer>();
         private Scene scene, previousScene;
+        private OwnedSceneLoad sceneLoad;
         private Component movement, follow;
         private Camera camera;
         private InputActionAsset input;
@@ -42,6 +43,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [SetUp]
         public void Prepare()
         {
+            sceneLoad = null;
+            scene = default;
             previousScene = SceneManager.GetActiveScene();
             previousMode = InputSystem.settings.updateMode;
             previousBackground = InputSystem.settings.backgroundBehavior;
@@ -70,27 +73,26 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator Restore()
         {
-            bool unloaded = true;
-            if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
-            if (scene.IsValid() && scene.isLoaded)
+            try
             {
-                var operation = SceneManager.UnloadSceneAsync(scene);
-                float deadline = Time.realtimeSinceStartup + 30;
-                while (operation != null && !operation.isDone && Time.realtimeSinceStartup < deadline) yield return null;
-                unloaded = operation == null || operation.isDone;
+                if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
+                if (sceneLoad != null) yield return sceneLoad.Cleanup();
             }
-            if (input != null) Object.DestroyImmediate(input);
-            if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
-            if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
-            InputSystem.settings.updateMode = previousMode;
-            InputSystem.settings.backgroundBehavior = previousBackground;
-            InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInput;
-            Time.timeScale = previousTimeScale;
-            foreach (var item in suspendedColliders) if (item != null) item.enabled = true;
-            foreach (var item in suspendedRenderers) if (item != null) item.enabled = true;
-            foreach (var item in suspendedBehaviours) if (item != null) item.enabled = true;
-            suspendedColliders.Clear(); suspendedRenderers.Clear(); suspendedBehaviours.Clear();
-            Assert.That(unloaded, Is.True, "Demo unload timed out.");
+            finally
+            {
+                if (input != null) Object.DestroyImmediate(input);
+                if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
+                if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
+                InputSystem.settings.updateMode = previousMode;
+                InputSystem.settings.backgroundBehavior = previousBackground;
+                InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInput;
+                Time.timeScale = previousTimeScale;
+                foreach (var item in suspendedColliders) if (item != null) item.enabled = true;
+                foreach (var item in suspendedRenderers) if (item != null) item.enabled = true;
+                foreach (var item in suspendedBehaviours) if (item != null) item.enabled = true;
+                suspendedColliders.Clear(); suspendedRenderers.Clear(); suspendedBehaviours.Clear();
+            }
+            Assert.That(sceneLoad?.CleanupFailure, Is.Null, "Demo scene cleanup failed.");
         }
 
         [UnityTest]
@@ -181,18 +183,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         private IEnumerator Load(string path)
         {
-            var before = new HashSet<Scene>();
-            for (int i = 0; i < SceneManager.sceneCount; i++) before.Add(SceneManager.GetSceneAt(i));
-            var operation = EditorSceneManager.LoadSceneAsyncInPlayMode(path, new LoadSceneParameters(LoadSceneMode.Additive));
-            Assert.That(operation, Is.Not.Null);
-            float deadline = Time.realtimeSinceStartup + 30;
-            while (!operation.isDone && Time.realtimeSinceStartup < deadline) yield return null;
-            for (int i = 0; i < SceneManager.sceneCount; i++)
-            {
-                var candidate = SceneManager.GetSceneAt(i);
-                if (candidate.path == path && !before.Contains(candidate)) scene = candidate;
-            }
-            Assert.That(operation.isDone && scene.IsValid() && scene.isLoaded, Is.True, "Saved demo did not load: " + path);
+            sceneLoad = new OwnedSceneLoad();
+            yield return sceneLoad.Load(path, () => EditorSceneManager.LoadSceneAsyncInPlayMode(path, new LoadSceneParameters(LoadSceneMode.Additive)));
+            scene = sceneLoad.Scene;
+            Assert.That(sceneLoad.LoadedWithinDeadline && scene.IsValid() && scene.isLoaded, Is.True, "Saved demo did not load: " + path);
             SceneManager.SetActiveScene(scene);
             yield return null; // Let the saved demo's Start initialize its session.
             foreach (var root in scene.GetRootGameObjects())
