@@ -1,0 +1,42 @@
+{
+  "run": "playmode-43",
+  "exit_code": 8,
+  "runner_seconds": 524.06,
+  "nunit": {
+    "result": "Failed(Child)",
+    "total": "202",
+    "passed": "200",
+    "failed": "2",
+    "skipped": "0",
+    "duration": "434.774694"
+  },
+  "failures": [
+    {
+      "name": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleLockedMainGatesRejectWalkingAndJumping",
+      "seconds": "32.232436",
+      "message": "  Saved castle did not load within 30 s: Assets/Scenes/ForsakenCastle.unity\n  Expected: True\n  But was:  False\n"
+    },
+    {
+      "name": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "seconds": "31.723585",
+      "message": "  Saved castle did not load within 30 s: Assets/Scenes/ForsakenCastle.unity\n  Expected: True\n  But was:  False\n"
+    }
+  ],
+  "performance_fixture_passed": 15,
+  "unchanged_native_source_files": 662,
+  "castle_slow_load_total_ms": [
+    32206.4,
+    31704.621
+  ],
+  "castle_slow_load_deserialize_ms": [
+    32135.555,
+    31656.324
+  ],
+  "evidence": {
+    "results.xml": "5dfda7b38d76798210553540c0fcb7269dee971902e5b3743ce8756ff9f10b77",
+    "execution.json": "b0649b9f1a2164a9a3e182b70cd5657325cfeead3901951f2a68ac17d20bafbf",
+    "frozen-inputs.json": "f98659ef8b69d57aa2b81aea4458a67987f4109648b954c7d235cf709276edf8",
+    "editor.log": "f1429dcb4f68d32a59fcc3356ad0dc9639a9defa8a292b0b06dd7e05cc603125"
+  },
+  "note": "Failure retained. Scene-load deadline remains30seconds; no assertion/source changes for full retry44. No causal resource conclusion inferred."
+}

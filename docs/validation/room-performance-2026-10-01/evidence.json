@@ -1,0 +1,220 @@
+{
+  "schema_version": 1,
+  "status": "stamped",
+  "source_commit": "8cdba0197532e8e6fea5b711c30152b837d8e5d6",
+  "source_files": 661,
+  "native_files": 662,
+  "reviewed_import_pairs": 54,
+  "sync": {
+    "path": "/tmp/shadows-room-performance/artifacts/validation/room-native-sync.json",
+    "bytes": 174223,
+    "sha256": "3d37791b2da27aef4356eb852ed56c91aa90c351417a7e289febc7f7aa9db8df"
+  },
+  "runner": {
+    "path": "/tmp/shadows-room-performance/artifacts/validation/run-room-budgeted.py",
+    "bytes": 6059,
+    "sha256": "af4a56ecb1177db924b006552c31622052014efdee71880f6b128bb176795ed6"
+  },
+  "tools": [
+    {
+      "path": "/tmp/shadows-room-performance/tools/player_build_manifest.py",
+      "bytes": 22030,
+      "sha256": "69100fc364df03a577cec23052be06f8bec7b8a699c725c40a312512340c9370"
+    },
+    {
+      "path": "/tmp/shadows-room-performance/tools/unity_validation.py",
+      "bytes": 31569,
+      "sha256": "089de8d6c6e6c4da15d39d8201a53c4350368e71d2b3399d1aaab8df5e274b54"
+    }
+  ],
+  "runs": [
+    {
+      "run": "editmode-10",
+      "mode": "editmode",
+      "exit_code": 0,
+      "stop_condition": null,
+      "runner_seconds": 153.25,
+      "source_files": 662,
+      "changed_during_run": [],
+      "evidence": [
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/editmode-10/execution.json",
+          "bytes": 88643,
+          "sha256": "f114d5e8a522688cc16f13a2e8bf14cb50c5479efbd6a7c31bf375a4750b4b9b"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/editmode-10/source-before.json",
+          "bytes": 88482,
+          "sha256": "319a2b025f0f81f6857184b3e05139209fcf58b24a56f0ab0947f64920cd6822"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/editmode-10/frozen-inputs.json",
+          "bytes": 91044,
+          "sha256": "f98659ef8b69d57aa2b81aea4458a67987f4109648b954c7d235cf709276edf8"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/editmode-10/frozen-inputs-delta.zip",
+          "bytes": 249232,
+          "sha256": "802d68269d2b3871e842d0f8c87efdc59baf11502e03539e198a6f7350a01a1b"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/editmode-10/editor.log",
+          "bytes": 55405,
+          "sha256": "d34df3bae8464e098e12434224b17713ada575558e65a1bce0df5b43808c7929"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/editmode-10/cli.log",
+          "bytes": 157,
+          "sha256": "05de869ddec735039fbd40875578b9fb70f28f22efcf72d158a9b0f8a91cdfb2"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/editmode-10/results.xml",
+          "bytes": 147034,
+          "sha256": "546595e89b79efa448aa8e8d3032de212972d41f5df0921888a1a53893798f01"
+        }
+      ],
+      "nunit": {
+        "passed": 173,
+        "failed": 0,
+        "skipped": 0,
+        "suite_seconds": "3.0085722"
+      }
+    },
+    {
+      "run": "playmode-44",
+      "mode": "playmode",
+      "exit_code": 0,
+      "stop_condition": null,
+      "runner_seconds": 619.03,
+      "source_files": 662,
+      "changed_during_run": [],
+      "evidence": [
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/playmode-44/execution.json",
+          "bytes": 88641,
+          "sha256": "36c04070fa8318dd9afb1710d33f254cb19fa6779b15ef9f396d874c76e0d115"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/playmode-44/source-before.json",
+          "bytes": 88481,
+          "sha256": "33c2a35e91850ea002fea49cc4497c441bd377040361228be6afb8afa012d0b0"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/playmode-44/frozen-inputs.json",
+          "bytes": 91044,
+          "sha256": "f98659ef8b69d57aa2b81aea4458a67987f4109648b954c7d235cf709276edf8"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/playmode-44/frozen-inputs-delta.zip",
+          "bytes": 249232,
+          "sha256": "802d68269d2b3871e842d0f8c87efdc59baf11502e03539e198a6f7350a01a1b"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/playmode-44/editor.log",
+          "bytes": 152875,
+          "sha256": "b401b8225d0ff35f88d9de1b3db790f71a6d50ffb14ff29bfb4e52b71862819c"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/playmode-44/cli.log",
+          "bytes": 155,
+          "sha256": "26d4c4f9f811c31217bf836a89ef42968bd76dd525d7c7e9c0fe0f598f958aa9"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/playmode-44/results.xml",
+          "bytes": 192699,
+          "sha256": "929505174f8b97e487cc7dc6ce6db0e140d8dfc555fe3b709ac146dc6d366216"
+        }
+      ],
+      "nunit": {
+        "passed": 202,
+        "failed": 0,
+        "skipped": 0,
+        "suite_seconds": "540.658514"
+      }
+    },
+    {
+      "run": "build-7",
+      "mode": "build",
+      "exit_code": 0,
+      "stop_condition": null,
+      "runner_seconds": 158.17,
+      "source_files": 662,
+      "changed_during_run": [],
+      "evidence": [
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/build-7/execution.json",
+          "bytes": 88622,
+          "sha256": "033ae5a6c3e42b749e057043343f928d50ae998d2376ef9d45d856b459f7f612"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/build-7/source-before.json",
+          "bytes": 88461,
+          "sha256": "bf6b5154518611ac07b7587f1f90c13f285a73f7009747118345c9a1ea4a997a"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/build-7/frozen-inputs.json",
+          "bytes": 91044,
+          "sha256": "6da6e0e2d7a71109b010aea5a288a2bbbc7f3ab241a051a924cc9e42adcecb05"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/build-7/frozen-inputs-delta.zip",
+          "bytes": 249232,
+          "sha256": "c409f39a8b788fb97705f35878a33ac5b19b46e910688a5b2f95be701558f340"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/build-7/editor.log",
+          "bytes": 791998,
+          "sha256": "0647bc07a4fc00c2ec6e44bcb47a85a938d92d3d13dee1eb114aaa98c13cc07c"
+        },
+        {
+          "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/build-7/cli.log",
+          "bytes": 155,
+          "sha256": "24b9e7602487ed6654154ff63f6f92d19546618979cc1432f34a1d3f353151dc"
+        }
+      ],
+      "build": {
+        "result": "Succeeded",
+        "errors": 0,
+        "warnings": 0,
+        "bytes": 133699472,
+        "duration": "00:01:30.5031540"
+      }
+    }
+  ],
+  "source_archive": {
+    "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/room7-identity/source.zip",
+    "bytes": 18144638,
+    "sha256": "b2939e34aa3ce882bbf800843cfc4b01ac297105584c83c2284d174d9849acb7"
+  },
+  "imported_archive": {
+    "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/room7-identity/imported-source.zip",
+    "bytes": 18130138,
+    "sha256": "edeb47f7bc57a8a08d70d4f1094281bad64f635bc2b7a9a1a38906045466a569"
+  },
+  "import_review": {
+    "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/room7-identity/import-review.json",
+    "bytes": 45499,
+    "sha256": "3b20c85a28078edcd211e7a36e0c2ce13876610b8619da3b0c3595746fadcf1a"
+  },
+  "completion": {
+    "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/room7-identity/completion.json",
+    "bytes": 212690,
+    "sha256": "ccd2d8bb96f13f31c5a1505879542389a8a8af1b96389a1cd9dd2d6fc8823899"
+  },
+  "candidate": {
+    "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/room7-identity/BUILD-INFO.candidate.json",
+    "bytes": 259675,
+    "sha256": "ffa73a1761e5899b20dd27986c7e0661343cdf18dd44440e7234fd5d6ed158ac"
+  },
+  "receipt_sha256": "ffa73a1761e5899b20dd27986c7e0661343cdf18dd44440e7234fd5d6ed158ac",
+  "player_directory": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/player-room-performance-7",
+  "engine_file_count": 198,
+  "engine_bytes": 133699472,
+  "player_receipt_written": true,
+  "standalone_launched": false,
+  "limitations": [
+    "Incremental native build; no cold-cache or standalone launch qualification.",
+    "Room tests establish instrumentation behavior, not actual hardware, room/light cost or human pacing acceptance.",
+    "Camera results retain their original revision and scope; no historical result is relabelled."
+  ]
+}
