@@ -51,6 +51,31 @@ Domyślny limit wynosi 900 sekund (`--timeout`); `--output` pozwala zmienić kat
 
 Czysty import należy sprawdzić na **osobnym świeżym checkoutcie**, bez otwierania go wcześniej w Hubie; nie trzeba usuwać `Library` z używanej kopii roboczej. Sam runner lokalny nie kasuje cache i nie deklaruje automatycznie, że uruchomienie było czystym importem.
 
+## Build Windows z czystego checkoutu
+
+Użyj aktywowanego Unity **6000.6.3f1** z modułem Windows Build Support. Poniższy przykład wybiera dokładny commit; nowego checkoutu nie otwieraj wcześniej w edytorze. `CastlePlayerBuild.BuildForBatch` buduje zapisaną scenę `Assets/Scenes/ForsakenCastle.unity` bez uruchamiania buildera sceny.
+
+```powershell
+git clone --config core.autocrlf=false --config core.eol=lf --no-checkout https://github.com/lisu188/shadows-of-the-forsaken.git castle-clean
+if ($LASTEXITCODE -ne 0) { throw "Nie utworzono świeżego checkoutu." }
+git -C castle-clean checkout --detach 8602b8e38f0f933c01efc00b0f42fd50bf71659a
+if ($LASTEXITCODE -ne 0) { throw "Nie wybrano wymaganego commita." }
+$castleCommit = git -C castle-clean rev-parse HEAD
+if ($LASTEXITCODE -ne 0 -or $castleCommit -ne "8602b8e38f0f933c01efc00b0f42fd50bf71659a") { throw "Niezgodny commit wejściowy." }
+$castleProject = (Resolve-Path .\castle-clean).Path
+foreach ($cache in @("Library", "Temp", "UserSettings")) {
+    if (Test-Path (Join-Path $castleProject $cache)) { throw "Checkout zawiera lokalny stan Unity: $cache" }
+}
+$castleOutput = Join-Path (Get-Location).Path "castle-build-8602b8e"
+New-Item -ItemType Directory -Path $castleOutput -ErrorAction Stop
+$env:SHADOWS_PLAYER_OUTPUT = Join-Path $castleOutput "ShadowsOfTheForsaken.exe"
+& "C:\Program Files\Unity Hub\resources\unity.exe" run $castleProject --editor-path "C:\Program Files\Unity\Hub\Editor\6000.6.3f1\Editor\Unity.exe" --timeout 3600 --no-tail --non-interactive --no-log-proxy --log-file "$castleOutput\editor.log" -- -executeMethod CastlePlayerBuild.BuildForBatch -disableaudio
+if ($LASTEXITCODE -ne 0) { throw "Build Unity nie został zaliczony." }
+```
+
+Przed pierwszym importem sprawdź brak `Library`, `Temp` i `UserSettings`; zachowaj commit, hash wejść, polecenie i log. Sukces musi potwierdzać wpis `Castle Windows build: Succeeded` z zerową liczbą błędów, nie tylko obecność pliku `.exe`. Zachowaj cały katalog wynikowy wraz z `ShadowsOfTheForsaken_Data` i bibliotekami; uruchamia się `ShadowsOfTheForsaken.exe`. Samo zbudowanie nie oznacza wykonania tego uruchomienia ani odbioru rozgrywki. `-disableaudio` ogranicza tę walidację edytora; audio wymaga osobnego odbioru.
+
+
 ## Aktywacja GitHub Actions
 
 Postępuj według [instrukcji aktywacji GameCI](https://game.ci/docs/github/activation/) odpowiedniej dla posiadanej licencji. W repozytorium otwórz **Settings → Secrets and variables → Actions**. Skonfiguruj `UNITY_EMAIL`, `UNITY_PASSWORD` oraz **jeden** z sekretów: `UNITY_LICENSE` dla Personal albo `UNITY_SERIAL` dla Pro. Nie wklejaj wartości do README, issue, komentarza PR, pliku repozytorium ani rozmowy.
@@ -67,7 +92,7 @@ Testy obu trybów są wykonywane kolejno, każdy na świeżym runnerze bez cache
 
 Do zamknięcia #5 należy dołączyć: udany run obu trybów, XML-e, logi importu/kompilacji i potwierdzenie uruchomienia sceny. Przy błędzie aktywacji sprawdzić konfigurację; przy błędzie kompilacji lub asercji poprawić kod. Nie usuwać testów, nie ustawiać `continue-on-error` i nie zmieniać warunku wstępnego na pozorny sukces tylko po to, aby uzyskać zielony status.
 
-Dla Windows x64 istnieje jawny `CastlePlayerBuild.BuildForBatch`, a `FullCastleRouteTests` obejmuje kompletną scenę i reset. Wyniki wykonania oraz pozostały odbiór #24/#22 zapisuje [bieżący raport](validation/full-castle-route-2026-09-30.md); obecność kodu nie jest potwierdzeniem udanego builda ani zaliczonego zestawu.
+Dla Windows x64 istnieje jawny `CastlePlayerBuild.BuildForBatch`, a `FullCastleRouteTests` obejmuje kompletną scenę i reset. Wyniki wykonania oraz pozostały odbiór #24/#22 zapisuje [bieżący raport](validation/gothic-presentation-2026-10-01.md); obecność kodu nie jest potwierdzeniem udanego builda ani zaliczonego zestawu.
 
 ## Źródła techniczne
 

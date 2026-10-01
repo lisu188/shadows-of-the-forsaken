@@ -1,0 +1,1539 @@
+{
+  "schema_version": 1,
+  "collected_utc": "2026-10-01T06:28:13.463350+00:00",
+  "scope": "Cold-project Windows build from exact committed inputs; no standalone execution or repeated engine suites",
+  "source_commit": "8602b8e38f0f933c01efc00b0f42fd50bf71659a",
+  "merged_main_with_identical_unity_inputs": "c50aba050ae0096e072cce151173eb14e5a90256",
+  "unity": "6000.6.3f1",
+  "target": "StandaloneWindows64",
+  "scene": "Assets/Scenes/ForsakenCastle.unity",
+  "input_provenance": {
+    "receipt": {
+      "root": "native_artifacts",
+      "path": "clean-inputs-8602b8e.json",
+      "sha256": "a8d5b9452125e0fc55aaab44c814bde973e2ae774cbf71efac2fc0acd834035a",
+      "bytes": 86756
+    },
+    "archive": {
+      "root": "native_artifacts",
+      "path": "clean-inputs-8602b8e.zip",
+      "sha256": "87ea848845f38015bd69e04f1784a171fbcbb14d016ae9c7defc7db9560a8cee",
+      "bytes": 18135562
+    },
+    "source_before": {
+      "root": "native_artifacts",
+      "path": "results/build-5/source-before.json",
+      "sha256": "934891b8d754740f327296d09e88016f0d410eda2cd0f3eb2bb478875a5576f0",
+      "bytes": 87782
+    },
+    "committed_file_count": 659,
+    "source_bytes": 36266300,
+    "all_input_sha256_match_git_blobs": true,
+    "source_before_and_execution_inputs_match_commit": true,
+    "project_cache_and_local_editor_state_absent": true,
+    "manual_scene_authoring": false,
+    "reuse_scope": "Installed pinned editor and shared package-download cache; no existing project Library or imported native source"
+  },
+  "execution": {
+    "report": {
+      "root": "native_artifacts",
+      "path": "results/build-5/execution.json",
+      "sha256": "86a64aec99defdaa8b4c06dd1ede5be9efcc92f85925fdbeb0c7f4115a7f57a9",
+      "bytes": 87943
+    },
+    "command": [
+      "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+      "run",
+      "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project-clean",
+      "--editor-path",
+      "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+      "--timeout",
+      "3600",
+      "--no-tail",
+      "--non-interactive",
+      "--no-log-proxy",
+      "--log-file",
+      "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\build-5\\editor.log",
+      "--",
+      "-executeMethod",
+      "CastlePlayerBuild.BuildForBatch",
+      "-disableaudio"
+    ],
+    "runner_sha256": "2d0e45141093c787e25d308c7d7ec3b637e532b6be8b3d7060945e35ccd9c00a",
+    "exit_code": 0,
+    "stopped": null,
+    "elapsed_seconds": 854.16,
+    "minimum_free_bytes": 64424509440,
+    "maximum_task_bytes": 5368709120,
+    "initial_free_bytes": 68388757504,
+    "final_free_bytes": 66558062592,
+    "editor_log": {
+      "root": "native_artifacts",
+      "path": "results/build-5/editor.log",
+      "sha256": "b5c943734857376e8482e40ef41bc8d9daee7664b2ea5f4b9f84f6a3fa72138f",
+      "bytes": 3126657
+    },
+    "cli_log": {
+      "root": "native_artifacts",
+      "path": "results/build-5/cli.log",
+      "sha256": "5219bb20d734d2f85e893c8016e489dd258fd507e5bc81ffb4597b4927214035",
+      "bytes": 155
+    }
+  },
+  "build": {
+    "result": "Succeeded",
+    "errors": 0,
+    "warnings": 0,
+    "reported_bytes": 133693640,
+    "duration": "00:08:05.7095047",
+    "recorded_player_output": "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\player-candidate-clean\\ShadowsOfTheForsaken.exe"
+  },
+  "post_import": {
+    "manifest": {
+      "root": "native_artifacts",
+      "path": "results/build-5/source-after.json",
+      "sha256": "2fe440215a8035cc6208c00376687a9c679c4cfe614af270a3e00bae9a56e161",
+      "bytes": 87959
+    },
+    "delta_archive": {
+      "root": "native_artifacts",
+      "path": "results/build-5/source-after-delta.zip",
+      "sha256": "587011ab39b0afc71bf6dc4b94bda47cde37c70710a9a4082ce31ec30afa8947",
+      "bytes": 33709
+    },
+    "file_count": 659,
+    "changed_paths": [
+      "Assets/LevelLayout/Materials/Blood.mat",
+      "Assets/LevelLayout/Materials/BookGold.mat",
+      "Assets/LevelLayout/Materials/BookRed.mat",
+      "Assets/LevelLayout/Materials/DarkStone.mat",
+      "Assets/LevelLayout/Materials/Flame.mat",
+      "Assets/LevelLayout/Materials/Glass.mat",
+      "Assets/LevelLayout/Materials/Iron.mat",
+      "Assets/LevelLayout/Materials/Player.mat",
+      "Assets/LevelLayout/Materials/Rune.mat",
+      "Assets/LevelLayout/Materials/Stone.mat",
+      "Assets/LevelLayout/Materials/Trim.mat",
+      "Assets/LevelLayout/Materials/Wall.mat",
+      "Assets/LevelLayout/Materials/Wood.mat",
+      "Assets/Settings/DefaultVolumeProfile.asset",
+      "Assets/Settings/PC_RPAsset.asset",
+      "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+      "ProjectSettings/ProjectAuditorSettings.asset",
+      "ProjectSettings/ProjectSettings.asset"
+    ],
+    "removed": [],
+    "all_frozen_payload_hashes_verified": true,
+    "unchanged_csharp_files": 63,
+    "asset_review": {
+      "status": "passed",
+      "report": {
+        "root": "branch",
+        "path": "artifacts/validation/cold-build5-asset-review.json",
+        "sha256": "9db6b76212ab6eeb95592c18c50960429b2fbad5387b2335e391d6fcf69ec876",
+        "bytes": 20097
+      },
+      "details": {
+        "comparison": "Frozen cold build5 vs exact committed Unity inputs, with a separate bounded warm-build4 comparison.",
+        "source_commit": "8602b8e38f0f933c01efc00b0f42fd50bf71659a",
+        "changed_since_evidence": [],
+        "provenance": {
+          "clean_input_manifest": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/clean-inputs-8602b8e.json",
+          "clean_input_manifest_sha256": "a8d5b9452125e0fc55aaab44c814bde973e2ae774cbf71efac2fc0acd834035a",
+          "source_after_manifest": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/build-5/source-after.json",
+          "source_after_manifest_sha256": "2fe440215a8035cc6208c00376687a9c679c4cfe614af270a3e00bae9a56e161",
+          "base_archive": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/clean-inputs-8602b8e.zip",
+          "base_archive_sha256": "87ea848845f38015bd69e04f1784a171fbcbb14d016ae9c7defc7db9560a8cee",
+          "delta_archive": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/results/build-5/source-after-delta.zip",
+          "delta_archive_sha256": "587011ab39b0afc71bf6dc4b94bda47cde37c70710a9a4082ce31ec30afa8947",
+          "build4_review_sha256": "27c57ef3260993c530db329af1f63b6557189f16365240503b2aea8def0070ba",
+          "all659_archive_payload_hashes_verified": true
+        },
+        "source_files": 659,
+        "exact_files": 641,
+        "changed_files": 18,
+        "removed_files": 0,
+        "classification_counts": {
+          "urp_assetversion10_metadata": 13,
+          "default_volume_profile_serialization": 1,
+          "urp_shader_prefilter_cache": 1,
+          "urp_runtime_settings_reference_population": 1,
+          "whitespace": 2
+        },
+        "csharp_files_exact": 63,
+        "meta_files_exact": 335,
+        "scene_files_exact": 4,
+        "mesh_assets_exact": 14,
+        "navigation_asset_sha256": "40b64dca08e51dbe3bcecc57be73a7cb70bc11cac2ae6dcd281a953a9e16777b",
+        "corrected_emission_materials": [
+          {
+            "path": "Assets/LevelPresentation/Actors/Materials/Cursed violet.mat",
+            "sha256": "7451cec6715f41afe75e0aa7ddb1ec350204d33eafc06139b52810106a0710db",
+            "matches_commit": true,
+            "global_illumination_flags": 2,
+            "emission_color": {
+              "r": 0.55,
+              "g": 0.025,
+              "b": 0.8,
+              "a": 1
+            },
+            "emission_keyword_enabled": true,
+            "matches_build4_authored_emission": true
+          },
+          {
+            "path": "Assets/LevelPresentation/Actors/Materials/Ember eyes.mat",
+            "sha256": "dadb44de8462355cc929b145404d4bf7925ab1c63a80325d9285e3f053ffcda0",
+            "matches_commit": true,
+            "global_illumination_flags": 2,
+            "emission_color": {
+              "r": 2,
+              "g": 0.3,
+              "b": 0.015,
+              "a": 1
+            },
+            "emission_keyword_enabled": true,
+            "matches_build4_authored_emission": true
+          },
+          {
+            "path": "Assets/LevelPresentation/Environment/Flame.mat",
+            "sha256": "fc1341afac4c31090d95b65c54078976c72c371066eec891d2f6b9c8c8e49ba0",
+            "matches_commit": true,
+            "global_illumination_flags": 2,
+            "emission_color": {
+              "r": 4,
+              "g": 1.6,
+              "b": 0.22,
+              "a": 1
+            },
+            "emission_keyword_enabled": true,
+            "matches_build4_authored_emission": true
+          },
+          {
+            "path": "Assets/LevelPresentation/Environment/GlassBlue.mat",
+            "sha256": "94309d35306f0ff358e3dd13ed0fe1e20e453266a227ffeb0815f6d121311b3f",
+            "matches_commit": true,
+            "global_illumination_flags": 2,
+            "emission_color": {
+              "r": 0.12,
+              "g": 0.24,
+              "b": 0.43,
+              "a": 1
+            },
+            "emission_keyword_enabled": true,
+            "matches_build4_authored_emission": true
+          },
+          {
+            "path": "Assets/LevelPresentation/Environment/GlassWine.mat",
+            "sha256": "8eb0e79b4cb9f3d3b76f396e3968fb336ac15b0bd0ed0070f61b3cbd7ccb2c2a",
+            "matches_commit": true,
+            "global_illumination_flags": 2,
+            "emission_color": {
+              "r": 0.28,
+              "g": 0.08,
+              "b": 0.17,
+              "a": 1
+            },
+            "emission_keyword_enabled": true,
+            "matches_build4_authored_emission": true
+          },
+          {
+            "path": "Assets/LevelPresentation/Environment/Rune.mat",
+            "sha256": "12522d9b6cb80c74065fde8407cad9c92e8bd76ec52d74c7e821783201ca076d",
+            "matches_commit": true,
+            "global_illumination_flags": 2,
+            "emission_color": {
+              "r": 0.16,
+              "g": 1.5,
+              "b": 1.8,
+              "a": 1
+            },
+            "emission_keyword_enabled": true,
+            "matches_build4_authored_emission": true
+          }
+        ],
+        "differences": [
+          {
+            "path": "Assets/LevelLayout/Materials/Blood.mat",
+            "native_sha256": "b9501e72b85dc6b6d703b6a525c7d3f8b184ec4535cc31fdbf72d01234c01c18",
+            "branch_sha256": "cff60fc9fc4576233ffcb0b6c68f62eabd71a37dd853cb09fa8661727f94fcd0",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/BookGold.mat",
+            "native_sha256": "5acd0cce185324d0f73d3245d66e5bfbd71e71779a88eef38dc2d3f3ae4b7ac2",
+            "branch_sha256": "5a1f7b3b3b8fd7ea124ebced20c339b50dd16c147293fb9193d1a7d85c548afa",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/BookRed.mat",
+            "native_sha256": "73984ac32a7697e0ef3dda47a5ff5030a02926b9956e1574510e0352d44536ef",
+            "branch_sha256": "a74b08d390bbc8883b5a8614c2329350bd9cf83cbdea54701fba5d4d0b176611",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/DarkStone.mat",
+            "native_sha256": "65b1dbbfa998eb58520cb72addd2fa88e1de6dfcce42038b33c8d252d6398b1a",
+            "branch_sha256": "71568f8c70114342f24989d3f008be024f8c2b3f33ac0b835092bf44b86af90b",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Flame.mat",
+            "native_sha256": "55ac5604d3ad5c62e63b0dcfd427d90b95f02525c64a220f2811235a11ce8c71",
+            "branch_sha256": "caef4f69e47b8c15edd1d5cf8630f4760d2a7da61e7fce93184f95c7864a5efd",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Glass.mat",
+            "native_sha256": "47a9d5d246c94091bf1baa3d0bc1bf247934a2179ba7735137aef1dd1221976b",
+            "branch_sha256": "e58bcee2e473c1fe75f6f49d8583e023dae3ec2a45b728dd411095e486b4507d",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Iron.mat",
+            "native_sha256": "9e0bc760a0f301dafeba0e74e55348ea6855e6e77cfdac7a3812dfd6e8ac914d",
+            "branch_sha256": "783b268f0810fb8d93ade96cf1b3b61694425276ad8e647c0e3ad78e8f7eb7ce",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Player.mat",
+            "native_sha256": "d4988761bb172c91aacccfc97710ead44f9987a2219f9c5bc23691c50f0cb170",
+            "branch_sha256": "9e2251b4e66620d645808f7f7317e322f3e41a6fe3f64871147df1042cd3aae8",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Rune.mat",
+            "native_sha256": "267f2865370e65e1310d26924a5e7a20c03514bd8780f54641cf1c73b0c1b683",
+            "branch_sha256": "40588a5589d48401361923c82171895ff8c054ad1dd70b914b211c0e4a8c769a",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Stone.mat",
+            "native_sha256": "66cdee56128e7c2999e8438c897d108af52a74c1d75bc1f59226f095165fe7a4",
+            "branch_sha256": "f4c378b3bf5b887b63386351a55b32c7595ae5c711c3854b208e4a64f0593516",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Trim.mat",
+            "native_sha256": "dd4186a0339771786565778ff5ad8854464f28a486bd0806cf41e5f0dc578b2e",
+            "branch_sha256": "58e7af2587b431841120512c96ebd69a4f2d9a359bc3073abb710402e54e000b",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Wall.mat",
+            "native_sha256": "25c60228b56212c7a00d0ebaa0fb03cb1e852ac11f2f2fe248ac89b6772c7d23",
+            "branch_sha256": "e33203a9a3bf16e509497f2582e25b1427e83344e207ffc64cda84791c482c8f",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/LevelLayout/Materials/Wood.mat",
+            "native_sha256": "c019ee83ec6b8df3782d4623ed793e30350468c21d385084cd5a937927c04867",
+            "branch_sha256": "6b48c1ba8aae65a8130e8b75d120593bc966c14f22d45d3ae6979db9e033c566",
+            "classification": "reviewed editor import metadata",
+            "category": "urp_assetversion10_metadata",
+            "review": "Adds only a URP AssetVersion10 editor subasset. Parsed Material fields, shader GUID, properties, keyword lists and pass settings exactly match committed source; other differences are YAML formatting."
+          },
+          {
+            "path": "Assets/Settings/DefaultVolumeProfile.asset",
+            "native_sha256": "463776c51ae49d4fef980e8fd268081b2f505610d79315003faae1acff8f4115",
+            "branch_sha256": "3a6f825e8d07fe8b9f3b52e7d4e2dfa0e22c555b22335adb19f0ecc66dfa38dd",
+            "classification": "reviewed semantic/import difference",
+            "category": "default_volume_profile_serialization",
+            "review": "Default zero ProbeVolume worldOffset and Gaussian Bloom filter serialized; two legacy custom components removed from active reference list (Outline Enabled=false, OasisFog Density=0; their GUIDs do not resolve in project Assets).",
+            "review_provenance": "Exact native and committed-source SHA-256 pair matches retained build4 review"
+          },
+          {
+            "path": "Assets/Settings/PC_RPAsset.asset",
+            "native_sha256": "362f427deb9e767720ed0ec3eb1284e93ddf2042c7ddd22d31e9678e5f16bdf4",
+            "branch_sha256": "684af083c0c3f025cdc9a9ea2287a8cc05df4e2137572b7781ca0f3b17a1e51a",
+            "classification": "reviewed semantic/import difference",
+            "category": "urp_shader_prefilter_cache",
+            "review": "Serialized shader keyword prefilter cache recalculated by URP build preprocessing; configured rendering quality/features unchanged.",
+            "review_provenance": "Exact native and committed-source SHA-256 pair matches retained build4 review"
+          },
+          {
+            "path": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+            "native_sha256": "9035df085c3de1c069aa254cce96789fc5764c5d79da92cdb45a5ce65e30027f",
+            "branch_sha256": "6cbc535caaf1b4f83e68f8f98661ab2281115cfbd8697413e053caa555e7acae",
+            "classification": "reviewed semantic/import difference",
+            "category": "urp_runtime_settings_reference_population",
+            "review": "Runtime-settings reference list populated from existing serialized settings; no setting values changed.",
+            "review_provenance": "Exact native and committed-source SHA-256 pair matches retained build4 review"
+          },
+          {
+            "path": "ProjectSettings/ProjectAuditorSettings.asset",
+            "native_sha256": "9e68444b9bda981e2927a98df9edf69ea88362f0c6b7f3c81b39b9d515d2a416",
+            "branch_sha256": "7b96b4b637e0ff3513edbe878c6375e8d0f8eb6b2f5b4e3202dcbd52aa55897d",
+            "classification": "whitespace only",
+            "category": "whitespace",
+            "review": "Trailing whitespace/line endings only; verified against frozen build4 archive bytes.",
+            "review_provenance": "Exact native and committed-source SHA-256 pair matches retained build4 review"
+          },
+          {
+            "path": "ProjectSettings/ProjectSettings.asset",
+            "native_sha256": "200dc70efa535d919f553bd136cc41dfb9b2d2d756abb8e32f3c7c26af70ae92",
+            "branch_sha256": "03ce1b99777646dbe853ba6c477febe166a15e409e96023e86006f93c6645a69",
+            "classification": "whitespace only",
+            "category": "whitespace",
+            "review": "Trailing whitespace/line endings only; verified against frozen build4 archive bytes.",
+            "review_provenance": "Exact native and committed-source SHA-256 pair matches retained build4 review"
+          }
+        ],
+        "warm_build4_comparison": {
+          "counts": {
+            "exact": 466,
+            "compatibility_color_roundtrip_only": 35,
+            "legacy_material_editor_validation_state": 13,
+            "whitespace_only": 145
+          },
+          "warm_only_files": [
+            "ProjectSettings/SceneTemplateSettings.json"
+          ],
+          "legacy_material_paths": [
+            "Assets/LevelLayout/Materials/Blood.mat",
+            "Assets/LevelLayout/Materials/BookGold.mat",
+            "Assets/LevelLayout/Materials/BookRed.mat",
+            "Assets/LevelLayout/Materials/DarkStone.mat",
+            "Assets/LevelLayout/Materials/Flame.mat",
+            "Assets/LevelLayout/Materials/Glass.mat",
+            "Assets/LevelLayout/Materials/Iron.mat",
+            "Assets/LevelLayout/Materials/Player.mat",
+            "Assets/LevelLayout/Materials/Rune.mat",
+            "Assets/LevelLayout/Materials/Stone.mat",
+            "Assets/LevelLayout/Materials/Trim.mat",
+            "Assets/LevelLayout/Materials/Wall.mat",
+            "Assets/LevelLayout/Materials/Wood.mat"
+          ],
+          "legacy_difference": "Warm build4 serialized15 declared Lit shader defaults, null texture slots and disabled MOTIONVECTORS. Cold build5 preserves committed shader properties and empty disabledShaderPasses. Authored shader/color/emission values match; rendered parity is not claimed.",
+          "legacy_scene_renderer_reference_counts": {
+            "disabled": 321,
+            "enabled": 3
+          },
+          "lit_shader_sha256": "1ec00dad6eb08102ef586e693a5cad6f27443143a0c881667e6305e61bb08628",
+          "extra_float_values_match_pinned_lit_shader_defaults": true,
+          "maximum_compatibility_color_delta": 1.01e-07,
+          "scenes_meshes_metas_match_after_whitespace_normalization": true,
+          "navigation_and_csharp_byte_exact": true
+        },
+        "performance_generated_resources": {
+          "package": "com.unity.test-framework.performance@6.6.0",
+          "source_hashes": {
+            "Editor/TestRunBuilder.cs": "a4c7da5e73122b4483d5decd26fd4752af6fbfd1f1f3230f6b1e10cc077f98b4",
+            "Runtime/ResourcesLoader.cs": "d061d8c571febce07fe16e7a293e7ea2f3a70579121012e0031e099d0dfe741a",
+            "Runtime/Utils.cs": "bceb1028ab6e8da6917b3ba72e88a40cf5a2222e9dcee8f08fdf5284bc6e41d1",
+            "Runtime/Metadata.cs": "18b98a27c4de51f0bc95731f57a3c7021af08a595cf7eaea9c760d4b9c24e6ef",
+            "Runtime/Data/Run.cs": "b4df5c92a3294f1d218244178498490ec132c34fa70ab89ee7444a5606051d4b",
+            "Runtime/Data/RunSettings.cs": "28b66c615a25b7cb5655c7831eaf31ec7a6350148056cc0addd22152842da986",
+            "Runtime/Data/Hardware.cs": "c6103bbfca3f0df090de5a5ea7447e1e26504faab7640b0d7a78532cbfb43778",
+            "Runtime/Data/Player.cs": "00c1ef5429394ae2b5d4d5a95a1b9fd0cb4c88dc2255b116a1610cf74f87e4f6"
+          },
+          "installed_sources_matched_build_package_cache_before_cleanup": true,
+          "generator": "TestRunBuilder.OnPreprocessBuild creates build-info and measurement-settings Resources JSON. OnPostprocessBuild removes JSON/meta and temporary Resources folder. CreateBuildInfo records editor/build/package metadata; runtime Hardware collection is a separate test path.",
+          "container_path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/player-candidate-clean/ShadowsOfTheForsaken_Data/resources.assets",
+          "container_sha256": "fb7dd67984962fff0fcf5e66f741645dacfeb03285e241db7d2a5c3ea179f5c4",
+          "container_bytes": 3292,
+          "embedded_jsons": [
+            {
+              "sha256": "1c6458cbd805b2833be8735523ea40abbaa5a6b24e346b8472873a569ede6c2d",
+              "bytes": 3028,
+              "keys": [
+                "TestSuite",
+                "Date",
+                "Player",
+                "Hardware",
+                "Editor",
+                "Dependencies",
+                "Results"
+              ],
+              "kind": "run_info",
+              "hardware_fields": [
+                "OperatingSystem",
+                "DeviceModel",
+                "DeviceName",
+                "ProcessorType",
+                "ProcessorCount",
+                "GraphicsDeviceName",
+                "SystemMemorySizeMB"
+              ],
+              "all_hardware_values_empty_or_zero": true,
+              "test_suite_empty": true,
+              "date_zero": true,
+              "results_count": 0,
+              "package_dependency_count": 60,
+              "package_names_and_versions_only": true
+            },
+            {
+              "sha256": "600c5c3dab7e18e51c28aad096457da91fcf60a3eedd908b6bf30194dae2b55b",
+              "bytes": 23,
+              "keys": [
+                "MeasurementCount"
+              ],
+              "kind": "run_settings",
+              "measurement_count": -1
+            }
+          ],
+          "absent_from_postbuild_source": true,
+          "performance_testing_managed_assembly_absent": true,
+          "project_csharp_no_performance_api_or_resource_references": true,
+          "privacy_finding": "Embedded run-info hardware fields are empty/default and results are empty; settings contain only MeasurementCount=-1. No populated machine/device identifiers or credential/raw-command-line data found. Only schemas, hashes and neutral defaults retained here."
+        },
+        "unreviewed_pairs": 0,
+        "unresolved_findings": 0,
+        "unresolved_commit_to_cold_source_drift": false,
+        "limitations": "Build/import evidence only; cold player unlaunched. Human gameplay, visual and performance checks remain deferred. Warm/cold legacy render-pass serialization differs; visual parity is not claimed."
+      }
+    }
+  },
+  "player": {
+    "directory": "player-candidate-clean",
+    "engine_files": [
+      {
+        "path": "D3D12/D3D12Core.dll",
+        "sha256": "625bd40005b1c3708695d5256ecf230d278e6b8edba5a88af70f3d91324f3052",
+        "bytes": 4725304
+      },
+      {
+        "path": "MonoBleedingEdge/EmbedRuntime/MonoPosixHelper.dll",
+        "sha256": "3b411bbffc7aee3e98532ef62d37e8d719d8719a86385e95ec446af04062c490",
+        "bytes": 611240
+      },
+      {
+        "path": "MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll",
+        "sha256": "bc946390a8037185424650369390b0ff8bea3af709ea640c0bcbe291b02c8b06",
+        "bytes": 7834536
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/2.0/Browsers/Compat.browser",
+        "sha256": "8a1082057ac5681dcd4e9c227ed7fb8eb42ac1618963b5de3b65739dd77e2741",
+        "bytes": 1605
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/2.0/DefaultWsdlHelpGenerator.aspx",
+        "sha256": "751861040b69ea63a3827507b7c8da9c7f549dc181c1c8af4b7ca78cc97d710a",
+        "bytes": 60575
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/2.0/machine.config",
+        "sha256": "e91782a27fa39fc6c1d6ee8b08529f5d35052310d0006034b878eb04b8f2af30",
+        "bytes": 29066
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/2.0/settings.map",
+        "sha256": "49c6160f9d54af4270a3b4e997fc4a8301f79b9e2070118fa46ddbcbbc44f9a2",
+        "bytes": 2622
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/2.0/web.config",
+        "sha256": "cf2b54339e069b9e42f7d6795eecbf562c50c1011f4ca8f65f578fe52d97ff92",
+        "bytes": 11635
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.0/Browsers/Compat.browser",
+        "sha256": "8a1082057ac5681dcd4e9c227ed7fb8eb42ac1618963b5de3b65739dd77e2741",
+        "bytes": 1605
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.0/DefaultWsdlHelpGenerator.aspx",
+        "sha256": "751861040b69ea63a3827507b7c8da9c7f549dc181c1c8af4b7ca78cc97d710a",
+        "bytes": 60575
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.0/machine.config",
+        "sha256": "e60aec2c5115d65b3acb3c55ea21576dbd770f579166c017125571e46ae560ed",
+        "bytes": 33598
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.0/settings.map",
+        "sha256": "ce1db1ad8a9512073164e3eccdc193f7eda036e1a9733caec4635de21b2865c8",
+        "bytes": 2622
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.0/web.config",
+        "sha256": "e38bb8cc68fe5b4edecdfd288d094b9e8ced7629039b2a347682aba0d8bd7492",
+        "bytes": 18802
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.5/Browsers/Compat.browser",
+        "sha256": "8a1082057ac5681dcd4e9c227ed7fb8eb42ac1618963b5de3b65739dd77e2741",
+        "bytes": 1605
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.5/DefaultWsdlHelpGenerator.aspx",
+        "sha256": "751861040b69ea63a3827507b7c8da9c7f549dc181c1c8af4b7ca78cc97d710a",
+        "bytes": 60575
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.5/machine.config",
+        "sha256": "ee950004b576fb28dc85f4b0435ed04bf96612de2e8b53be84d07afe85a0de6c",
+        "bytes": 34056
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.5/settings.map",
+        "sha256": "ce1db1ad8a9512073164e3eccdc193f7eda036e1a9733caec4635de21b2865c8",
+        "bytes": 2622
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/4.5/web.config",
+        "sha256": "c4cbddd4fd9347b58cc5a72b36dc4ba1ad2bb699e65869d05cd3fb9865f0d824",
+        "bytes": 18811
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/browscap.ini",
+        "sha256": "4ddd50f31fb968f30bedefc253a46dc3f2890192d05cdaa9e0a64a056eee807e",
+        "bytes": 311984
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/config",
+        "sha256": "5776169973a26a387b8b3e5c0f2301a7ab9a6dd7c7d3efa22a96abc47fbf8662",
+        "bytes": 3815
+      },
+      {
+        "path": "MonoBleedingEdge/etc/mono/mconfig/config.xml",
+        "sha256": "0c56e34c69124510fa8c19e7b4c2ca6c1c4ff460ae19f798dd0ca035809e396d",
+        "bytes": 25817
+      },
+      {
+        "path": "ShadowsOfTheForsaken.exe",
+        "sha256": "96b492cb271111251fe42b8646e65370a1b7b566773a1e35b34c3f2d1ae70873",
+        "bytes": 667136
+      },
+      {
+        "path": "ShadowsOfTheForsaken_BackUpThisFolder_ButDontShipItWithYourGame/x86_64/lib_burst_generated.txt",
+        "sha256": "ee232ffe64f9b44c3538319604b20868cf391e74b7e80bd4e6de0026b60378fc",
+        "bytes": 230595
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Assembly-CSharp.dll",
+        "sha256": "f272fc35ee084cdd17238e8cb1cef75f259f2c7e13143f80a9f2387b466b3757",
+        "bytes": 84992
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Mono.Security.dll",
+        "sha256": "a7128a85c5ce748cfcc64be97b7fab4119f4636c917a0303bfa2582f86282ed8",
+        "bytes": 241152
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Shadows.Camera.Core.dll",
+        "sha256": "2dfbc5baec69ddf29b357d8c0f8e1e7354b76b8733fbe3510b01faa322d5d8b5",
+        "bytes": 4096
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Shadows.Combat.Core.dll",
+        "sha256": "f726c9f8a65c083df0cb17646bc316fb109f95d33f7cde3c0de4f1d9a0ce8167",
+        "bytes": 10240
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Shadows.Interactions.Core.dll",
+        "sha256": "c5ff642e1be283973a96ef735b20568b8ac3bf3ae0b2de2653d0c9ee323cc577",
+        "bytes": 6144
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Shadows.Movement.Core.dll",
+        "sha256": "eed9e73ea28913528d12be453d5c57398b80b2cf60ba55118198147cc86f7c77",
+        "bytes": 6656
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Shadows.Progression.Core.dll",
+        "sha256": "867ecd77ead929e5a9b2f46b619d8102391c7ec0b14d0d5732d0c5d317f06b8c",
+        "bytes": 8704
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Shadows.Progression.Unity.dll",
+        "sha256": "41ab4c85b11188cd152d899dde6047cb5af11db8107a41cb27cb7df51a28b1cf",
+        "bytes": 5632
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Buffers.dll",
+        "sha256": "762f8fdbe975e05b76be5fe996c53ce7c75e4a2830f2f50b02a5948ef6ba0aeb",
+        "bytes": 4608
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Collections.Immutable.dll",
+        "sha256": "5b1b1c83ba3d135c2fdfe425842fbe9c7432878b7e468623acb554c69b4c130f",
+        "bytes": 252680
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.ComponentModel.Composition.dll",
+        "sha256": "d949bd6214c26b38a190e66fe976038e3845aea6c6980d3eb58e78b75edf98a5",
+        "bytes": 257024
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Configuration.dll",
+        "sha256": "7170a8fa3363a8ebd59e8b9931509f595df009f11e1885707a3c3bc0a3ff5648",
+        "bytes": 124928
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Core.dll",
+        "sha256": "15081eac9f71fd7817a7d42a963651c89c666a4c21499f2076fb3ab7aacd9b9a",
+        "bytes": 1113088
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Data.DataSetExtensions.dll",
+        "sha256": "da75ceebbef879968aaa721090df162e7a6fe1c7ba32f4bb5d05523385c53e8c",
+        "bytes": 29696
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Data.dll",
+        "sha256": "557bd378caa400c4de52bd73225a948f1a1e41586c52e307aaa042f77b33d648",
+        "bytes": 2125312
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Drawing.dll",
+        "sha256": "1657e6eb247364cd232fc6c80df1ab6804732b6644639f18c80e48af1174fd63",
+        "bytes": 489984
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.EnterpriseServices.dll",
+        "sha256": "7fcc7078f244ab3a5e8549a8acd2905b71aa8a31dda917ab60817c5b13924d64",
+        "bytes": 44544
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.IO.Compression.FileSystem.dll",
+        "sha256": "e7f2784c57088326f8de52a79426102a2250c2f31922030e9fed0cb64740e242",
+        "bytes": 18432
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.IO.Compression.dll",
+        "sha256": "35242ddc40f673d10767e3ab3381718864170cffbc710501374e911df700fda0",
+        "bytes": 114688
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Memory.dll",
+        "sha256": "c4f030a2cba7da7cdcf493257c24560e203d355904aee490d645a935842f834a",
+        "bytes": 4608
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Net.Http.dll",
+        "sha256": "a6227de2834bc7019a10e69a7ca0bb0908d5092b8bc279ed428b27ecf583a681",
+        "bytes": 122880
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Numerics.dll",
+        "sha256": "711616207139cfbf471f4f344a32ade842077314f03c19a0846a98ecace3fc5d",
+        "bytes": 119296
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Reflection.Metadata.dll",
+        "sha256": "afcfd6c166fe0d59f45cc6363082806f6a7ea8ceed9dc6c75eec9fd79ccb5717",
+        "bytes": 487584
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Runtime.CompilerServices.Unsafe.dll",
+        "sha256": "fd67abc4c4af10affbcd42fd68a2a7bc361b26714afe6965d4d0d139459d8297",
+        "bytes": 19256
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Runtime.Serialization.dll",
+        "sha256": "aa96283b3009b39c4ed8dfcde146b0e0bcafa09f9be24a959d0c16dd6f54ae8a",
+        "bytes": 934400
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Security.dll",
+        "sha256": "21c2cc73f1cecc8b5bfc42171a22412dfd8e04ac42978de90c00ecb507583d62",
+        "bytes": 320000
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.ServiceModel.Internals.dll",
+        "sha256": "c90168f6f28b2355c6c11d38ee39fa18f44ea839c877ccce8934bee50e7fb479",
+        "bytes": 215040
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Transactions.dll",
+        "sha256": "e5ff61cc9163810aa4c1fd9a00e929070e6733eca6d6669b7ece5169ec3739ef",
+        "bytes": 35328
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Xml.Linq.dll",
+        "sha256": "638f8c5f44aab1fd5755fdf2873683f3ca0f0fb0a3aaecfdbf1d2c2280c5983e",
+        "bytes": 136704
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.Xml.dll",
+        "sha256": "ee620f038a3a2589a118f0e7a030fe398b082015fbf83ac1474fb55b521d0bd7",
+        "bytes": 3160064
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/System.dll",
+        "sha256": "0c49d192fc91f2eade9c12c3960d8b90161560507d96ebcc9d878a2390a2cac6",
+        "bytes": 2641920
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.AI.Navigation.dll",
+        "sha256": "cebf872ae47645e03ad231d91ce4f2d077520d16a3f4ceb233a6f5ea60394947",
+        "bytes": 23040
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Burst.dll",
+        "sha256": "e800041a0bc909c76e4e39eb112afc5e1f820089d2602d2ddffd1c7aee2cc42a",
+        "bytes": 5120
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Collections.LowLevel.ILSupport.dll",
+        "sha256": "ff50383f807f9692e4913b97e47d86fefcb8faa33d6d48cd3e3fd6fc7ffb448d",
+        "bytes": 5120
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Collections.Tests.CoreCLR.InternalJobNestedPrivate.dll",
+        "sha256": "deab7c6f14bf7e43dc1a78835a88fccede96fff14b57faf47ad5c0e2bd2c90c3",
+        "bytes": 4608
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Collections.Tests.CoreCLR.PrivateJobNested.dll",
+        "sha256": "f62430c4e0ed478c8962d1684ede6bcd879bc5fa4d48ba41c961946c5d72cb9e",
+        "bytes": 4096
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Collections.Tests.CoreCLR.ProtectedJobNested.dll",
+        "sha256": "bf1bf053df8c5b1bfa96b58be33f81aaf2533a0894c7cf02be00cd33e70a5dc2",
+        "bytes": 4096
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Collections.Tests.CoreCLR.PublicJobPrivateGeneric.dll",
+        "sha256": "afc60989625a351926753bbff5513d383dfdb2afe98435d41cd470563d928086",
+        "bytes": 4608
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Collections.dll",
+        "sha256": "2c74849ebd59ff16da69a157cb6f5af5bff4307b6e4e8cbf10d323492a2f5e7d",
+        "bytes": 442368
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.InputSystem.ForUI.dll",
+        "sha256": "c74c797569aa146106e57fe42b5ccc4ae43d22707900ca079238ab388fb52c4d",
+        "bytes": 15360
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.InputSystem.dll",
+        "sha256": "50e85755f1a50fd56248cc5bd9b1abe4c4aa92d51db6900517b86715dbdb7e55",
+        "bytes": 1094656
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.InternalAPIEngineBridge.004.dll",
+        "sha256": "fe2dcddfc97c03e04615b8fbee603c6501dbe27e0a4e882c7671dbf695c1451b",
+        "bytes": 4096
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.InternalAPIEngineBridge.ObjectDispatcher.Runtime.dll",
+        "sha256": "ba2695a9329cfa8ea3266dfbd28b72185fffdd7866eb4034c75e89fcca7d62c1",
+        "bytes": 5632
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.InternalAPIEngineBridge.RenderPipelines.Core.Runtime.Shared.dll",
+        "sha256": "8d780dc87455880f9ac6c48a4319e60e3d36fe84cb6751d99d2b695e2f2ffe38",
+        "bytes": 3584
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.PathTracing.Runtime.dll",
+        "sha256": "53db51efad9df9dbf9cfc442535b65f0f70ac26b734997113cff9e10d4afae31",
+        "bytes": 152576
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Profiling.Core.dll",
+        "sha256": "dc22b30bc5423da7152ce1c83be3df7b3e403bc71c91e7175a214507cf63b84c",
+        "bytes": 8192
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipeline.Universal.ShaderLibrary.dll",
+        "sha256": "f54df8ba376bee6a5ca587ceb246c84dad47cd4b03a0da68e77ae98bef4525b3",
+        "bytes": 7680
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.Core.Runtime.Shared.dll",
+        "sha256": "69f762644402dd6476d93747eff803a8fe7ce109f0b8382ae749c164b2db634f",
+        "bytes": 11264
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.Core.Runtime.dll",
+        "sha256": "84b47ec79f8f244ee3a85c70f9671a45070d9d86d27936b091be06ee397f8220",
+        "bytes": 1084928
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.Core.ShaderLibrary.dll",
+        "sha256": "c5d526d189efa36c5f1c4440e21aed4de8f004332e51d51e5e7c7b70111b9adc",
+        "bytes": 3584
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.GPUDriven.Runtime.dll",
+        "sha256": "fa2c538e2bda88598b4d67ee14cff405d22f25f6b4dd2f4deb59f4fb7dc36a3d",
+        "bytes": 274944
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll",
+        "sha256": "2254c379649e9d457d16b50211cfd0cec85154beca50724379b1024dd193c61f",
+        "bytes": 3584
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.Universal.2D.Runtime.dll",
+        "sha256": "f32751bbfe1ae95117de313bd93ff4a1a8c92fdcfd2d799c3b211b40ed7b184d",
+        "bytes": 215040
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.Universal.Config.Runtime.dll",
+        "sha256": "3bec3f400f1dec3688cffddbfaa9b760b7283260dfd9afead53b054bc77bb623",
+        "bytes": 4096
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.Universal.Runtime.dll",
+        "sha256": "591be0f54aab838d6f5d444a47e9c3bc6a094d22fc9af0b875f90c01784632bd",
+        "bytes": 752128
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.RenderPipelines.Universal.Shaders.dll",
+        "sha256": "250c8b0dedd14c4dd7b780ae81182d3ff3515ecfb8888612e8674d71dce02d4d",
+        "bytes": 3584
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Scripting.dll",
+        "sha256": "e30e40501b9a23ab92e6f8fe37ed9490deadf7864f81590743e5f37397fd7e4a",
+        "bytes": 70568
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.SurfaceCache.Runtime.dll",
+        "sha256": "eb07578bbf0d27cb39ca69b7a3872ee9e8a2cc7c7691336b33f7bc615c9a4024",
+        "bytes": 35840
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.TextMeshPro.dll",
+        "sha256": "3e8fc001993156d16e5f88c8387f2eb15d27583a474595c5021ce2b076598737",
+        "bytes": 438784
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.Timeline.dll",
+        "sha256": "55b127ac47731605f160ec94d0443c9ccfb9c9cb7914951c2c25d59060bb6e62",
+        "bytes": 120832
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.UnifiedRayTracing.Runtime.dll",
+        "sha256": "ad1f68ed05ba62078984515a735347d8b5e84cd8a0f46c6d76d380f0e81c1387",
+        "bytes": 101376
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.VisualScripting.Antlr3.Runtime.dll",
+        "sha256": "ed7ce205f66eafe39bbb5d084d42e7fe11cb4b386ff208e5d5110891be0b7b37",
+        "bytes": 86016
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.VisualScripting.Core.dll",
+        "sha256": "00fe10a487ab0c3a2a74ade9d6bff93a6c92910e92e23b844bbfa7c46bf103bf",
+        "bytes": 550400
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.VisualScripting.DocCodeExamples.dll",
+        "sha256": "e9ee6022dc509abf9d85e670b1443b26d2bb614a6001bfa2c9446d32b51d77bc",
+        "bytes": 6144
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.VisualScripting.Flow.dll",
+        "sha256": "704b2722b5d89cf540eeda7ead1d6bf9dc65658ef1c030285bec38da3e40e037",
+        "bytes": 335872
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/Unity.VisualScripting.State.dll",
+        "sha256": "8971019d64819a8e964a10b11f5831e6c3f6d38868a004f669448d8f904d3c2d",
+        "bytes": 27136
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.AIModule.dll",
+        "sha256": "798ac98b1aa47b49384bae42b85ef6944cd32f8688f77fab824d48d62d1b0c3b",
+        "bytes": 87464
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.AMDModule.dll",
+        "sha256": "7c93756210b0e86d1819b8e295198edd782fceffd6e4c4510e7239a818bf11b0",
+        "bytes": 21928
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ARModule.dll",
+        "sha256": "6ba59a414c5926881ebc3d3b7d26fea88a3dce4430bce8ebd891d390129d51b6",
+        "bytes": 27568
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.AccessibilityModule.dll",
+        "sha256": "8aab55ab07da905880ffaee111b22549afc5d6a675b1428ddf16fd48afa5b90a",
+        "bytes": 49576
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.AdaptivePerformanceModule.dll",
+        "sha256": "b4c53df1e27f36374f46becc24cac03f35db7a53e37f8a05503911d71f9da357",
+        "bytes": 122288
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.AndroidJNIModule.dll",
+        "sha256": "d39de6763531587061f126b92fd17b28a0045c70bc2ddd5047f6be4098893f66",
+        "bytes": 121264
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.AnimationModule.dll",
+        "sha256": "d82afc0f9de5eb51ab9d923b00d84d33cb910f5a545ed130c3d5b111ebc44ff2",
+        "bytes": 218032
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.AssetBundleModule.dll",
+        "sha256": "2ea807048e94b8b407333a8a8919c62f041c177e8cd68f00b42239a8a3509b85",
+        "bytes": 42920
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.AudioModule.dll",
+        "sha256": "281dad10eaa02f2f5e535d3484849945973d08fbf4188d9310311648a2ff5d8e",
+        "bytes": 142248
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.BurstModule.dll",
+        "sha256": "c1b743e7b48e0114e99cb90e8e261b7b48a79cae0e62fe07f472ab09e7ade7de",
+        "bytes": 337832
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ClothModule.dll",
+        "sha256": "0c4195d80db467e289c8396d0620d4101e0d3293ba8376dcc33bf9e2c363e089",
+        "bytes": 38312
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ClusterInputModule.dll",
+        "sha256": "9001ceeb820015bfec5400ce637e3db7b799ceb3981bcb6c46ca0c49eadcb3e3",
+        "bytes": 30120
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ClusterRendererModule.dll",
+        "sha256": "8ce2137f3700074a877590cad42c8dceb27a0475cec728c23c455c68e38b3131",
+        "bytes": 28584
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ContentLoadModule.dll",
+        "sha256": "b1b156f7ddb052215cfcf34c7832832baf45b829d84b3a4bc52ce7858b967360",
+        "bytes": 56232
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.CoreModule.dll",
+        "sha256": "7b2283fdf618b930c48fae5876d5193f569a6afcb8b96d3f550708545e3bed7d",
+        "bytes": 2030504
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.CrashReportingModule.dll",
+        "sha256": "3c4d0a712bd4a5a3ecb4a517effd22cc72a94e95c2be50c2dab97189c2d91394",
+        "bytes": 28584
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.DSPGraphModule.dll",
+        "sha256": "1173b49f604b95f2c342636db3e4ab3b4a638389629f31913d785c0bff9e29ca",
+        "bytes": 33712
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.DirectorModule.dll",
+        "sha256": "c03498db689c4eea8597ca81020fcbeaf1d0a71045db98d33a98f9967ed2e4bc",
+        "bytes": 42928
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.GIModule.dll",
+        "sha256": "fdddfe49e7b44560c959cb255f3f162fd2f2375e5b8b3c05d2548e9743c1327e",
+        "bytes": 26024
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.GameCenterModule.dll",
+        "sha256": "5415ba480a6453fa8b667ddc51c9cbd163b4e2e24ba6f1bc81f147a7078f7aa8",
+        "bytes": 46512
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.GraphicsStateCollectionSerializerModule.dll",
+        "sha256": "21624fd3d0d5618dd3ddb91010d0d30905720af83855329817cf1ba2999a17c8",
+        "bytes": 14256
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.GridModule.dll",
+        "sha256": "a14e0933aa28484b9aa0186135228566484a4b627bbe88f45b18cf59f1b1b061",
+        "bytes": 32688
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.HierarchyCoreModule.dll",
+        "sha256": "4c570923b6336e598b167d42d65bd109be312cece000ccf955d1b67516173e6c",
+        "bytes": 111528
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.HierarchyModule.dll",
+        "sha256": "0ccfb7541c665d1572b78dc31c495ebb501ad12d980a46e974725a9769152eb3",
+        "bytes": 114088
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.HotReloadModule.dll",
+        "sha256": "2b9ae23a6fd152389badd33f02fcc2621e1a1b81b9112162d99c3d4e5176fafe",
+        "bytes": 26032
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.IMGUIModule.dll",
+        "sha256": "f2a247e3f235b553bfc9f7eb92cca0a6b1b19846947dd0eec918f66bd5fd5356",
+        "bytes": 190888
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.IdentifiersModule.dll",
+        "sha256": "f316ff0831916464de9e3665340a63590b3ef551b0d2e950dbf551277cb7a9b2",
+        "bytes": 16808
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ImageConversionModule.dll",
+        "sha256": "213f2dc4e3bfafdb35b775775e6eb28fb8358c5ced2dde324be6d7214f6b30fb",
+        "bytes": 34224
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.InputForUIModule.dll",
+        "sha256": "e4584049f501d85ad6f12c377716b0cd37fc72b6b3904a692c5e20dcfbf39a0f",
+        "bytes": 56744
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.InputLegacyModule.dll",
+        "sha256": "565ea2b501e42c3479a4d7503e55601e80a95f220304caa6b387246d0de9ad5b",
+        "bytes": 42920
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.InputModule.dll",
+        "sha256": "d0c4eb6c0b70212f84ec8b160d54f5df22942b6a57ee207398d3c0eb0e9b0944",
+        "bytes": 32688
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.InsightsModule.dll",
+        "sha256": "1d6a1516d540c547dba02ed678002f318df8693c2476af9bdf4c2ccef1b98db6",
+        "bytes": 15792
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.JSONSerializeModule.dll",
+        "sha256": "2e72d20aa0ae632e5bbc60228a519113a01d3cac4be6385723ec462cb80e2e2f",
+        "bytes": 29104
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.LocalizationModule.dll",
+        "sha256": "53b4947d0cbbc257c90cd2a1798af97c0e4e96a0ba4c03fa0d00272ae7519ccf",
+        "bytes": 29096
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ManagedKernelModule.dll",
+        "sha256": "301da71f4798c9185c0c1e1900cc857754a334d800778914b8212d44b6b1ee89",
+        "bytes": 14256
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.MarshallingModule.dll",
+        "sha256": "e59073784ec03748832ab56f2717ca94f988777d6232bbfb68331e9d75a1b1c3",
+        "bytes": 100776
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.MathematicsModule.dll",
+        "sha256": "26bc98b7fdff36e227d3a021d12bba5fd47092914f58a261b87f08d5e8aa93b0",
+        "bytes": 740776
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.MultiplayerModule.dll",
+        "sha256": "1a10748475241d870c6cf59a4f281b7c91a37c00443f86d912cc231a063d6a04",
+        "bytes": 18344
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.NVIDIAModule.dll",
+        "sha256": "0c4466c864da36ac349e2099e2500127654294e8525958586a1cc9f102490fd2",
+        "bytes": 41392
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ParticleSystemModule.dll",
+        "sha256": "0863da581edbed488daf68a210611182db3c8c2d796eeab3b01b3d5d335ffe62",
+        "bytes": 169392
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.PerformanceReportingModule.dll",
+        "sha256": "a3d6ea2e6044b4d68e7b32c04d364a219f22535c8ea802f5b21cbf07fbe36adc",
+        "bytes": 27056
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.Physics2DModule.dll",
+        "sha256": "e0ed1c5f7a4e9cd38b4471860dca0def2d6dc90898cd8740bacfcf107f4f720b",
+        "bytes": 222640
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.PhysicsBackendPhysXModule.dll",
+        "sha256": "45cf7df81df08aa5c487ef1b3b7f640158cfb65acc610fb05666d0b35ec2ea12",
+        "bytes": 14248
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.PhysicsCore2DModule.dll",
+        "sha256": "2112a9f48000c401b650bea035f65da96ff64f65e3dbb3a1b3d4de8b9e4508fc",
+        "bytes": 482736
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.PhysicsModule.dll",
+        "sha256": "b86d032fea09cd377304602615815e1315550de88f63d612eb0e276bc959aeea",
+        "bytes": 181680
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.PropertiesModule.dll",
+        "sha256": "06871fbe818537ac90ade5bc8674b3868bae31017d7254eb7794c8ad209eb638",
+        "bytes": 124848
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.RenderAs2DModule.dll",
+        "sha256": "97bba7a08b158f532ccda6a8d65b3613515e1306c8cf9b4fee50180a51e180df",
+        "bytes": 27560
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll",
+        "sha256": "de6d02033acf1d2913f22b443e1f6970d52917d0678bc66e599509cb0a78c528",
+        "bytes": 26024
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ScreenCaptureModule.dll",
+        "sha256": "698092d0ca9b6cff2268185dc9a78aa101e35e6c3ada49212e4838ed12594184",
+        "bytes": 28072
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ScriptingModule.dll",
+        "sha256": "066830fd4b0a68992bada2b2472fd000586dbb8f3f63e15881c9890a5cbd6b3e",
+        "bytes": 65968
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.ShaderVariantAnalyticsModule.dll",
+        "sha256": "9645ce10f1f67cb659d579a41d649977d9f93df4f523ecaf644a1477e6299eaf",
+        "bytes": 26024
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.SpriteMaskModule.dll",
+        "sha256": "00dd4357690b1c9fe1c7fa485d091cb6e003094f84f2104637cc90584b9bfa77",
+        "bytes": 30632
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.SpriteShapeModule.dll",
+        "sha256": "1975a308b5db041c78dda13ba6545b017eeaa36d3b025c23559060f6fa2ba992",
+        "bytes": 34224
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.StreamingModule.dll",
+        "sha256": "edf6380384d3eaf70ece7ffd65d2e35134e34ec5cbd139046bb01cbca28d3c99",
+        "bytes": 28072
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.SubstanceModule.dll",
+        "sha256": "447cbc81ae404f99f38d327c679530228c152153bfeb337d84e2af526168e355",
+        "bytes": 31152
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.SubsystemsModule.dll",
+        "sha256": "538d879aafff2bd461bfafef85530a4a7f7830973e119d96f1d1725c610984c8",
+        "bytes": 42928
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TLSModule.dll",
+        "sha256": "4f840bf93d54df12974f09f269e3a93ddc78512cd59d8b3e6221ce6c8466bd8a",
+        "bytes": 34224
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TerrainModule.dll",
+        "sha256": "25d0aba7a68c337a161acc2a73f1e65f93b53b3a2c5dd21cc8740ffbca689808",
+        "bytes": 132528
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TerrainPhysicsModule.dll",
+        "sha256": "2acd0bd19b4687c0840f09a76237b8006fa0c0f0482fa2faae4990da8e97ddb3",
+        "bytes": 27568
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TetgenModule.dll",
+        "sha256": "f6127b84e25d4a41b993a40dd7e34e68924d37b2c3639bb2aa499e6c5298f2f4",
+        "bytes": 26032
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TextCoreFontEngineModule.dll",
+        "sha256": "fce588ce89d54a23b214339e4017a5e69bbd3b90e3deac52d3afba9d2aaa0f8f",
+        "bytes": 86440
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TextCoreTextEngineModule.dll",
+        "sha256": "c7a069c2675b9861a3c343f2a0db3860a403de8f5afbfbdd73cfb535907ff9d5",
+        "bytes": 314280
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TextRenderingModule.dll",
+        "sha256": "479681567e7cf794edeabf941aa657ab250a981f0f978e98580b77225b6b562c",
+        "bytes": 39336
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TilemapModule.dll",
+        "sha256": "8d3a54f09ad12945b963ee0b6b38741696d3437f9ec560c21b985e48753799a7",
+        "bytes": 75696
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.TimelineFoundationModule.dll",
+        "sha256": "7180a76e964c2ac1a05d38d9c49320ee1e8fa59e2b79822faed50f590c6d2791",
+        "bytes": 167344
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.U2DRuntimeModule.dll",
+        "sha256": "9370c327260a9be956837f3742dea98104553e5dadaebae7a743b76b139732d9",
+        "bytes": 73640
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UI.dll",
+        "sha256": "11a1de320e9a4a89b8e61594bdd1a3f974bfec359acd88c2055061064782f14d",
+        "bytes": 269312
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UIElementsModule.dll",
+        "sha256": "8e193423f7c728f77233846583441ec4a06a3647b20a6faa9ef7153dd26a52d9",
+        "bytes": 2538416
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UIModule.dll",
+        "sha256": "88b5916316f7496b93f63b469a6e5283496710c1952b9e13095e719f95f0e8df",
+        "bytes": 57264
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UmbraModule.dll",
+        "sha256": "a291ff437ad1eb922b76aeb2a1ab3bc85d1b081fd5a0de13daedd1bc698be3ea",
+        "bytes": 26024
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityAnalyticsCommonModule.dll",
+        "sha256": "2a98c11cd5e18002899e55ca4bac1657ff42a9a5418f7c604c751ca283e3977d",
+        "bytes": 36784
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityAnalyticsModule.dll",
+        "sha256": "4790301e2c6a80989e777154d53e4249bca83a772f1cb48af48e679e59346eb7",
+        "bytes": 61864
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityConnectModule.dll",
+        "sha256": "4a698afc79d1ffdc895fb03d24dbb13d1f713796028e96a81d7d65c23ae6f335",
+        "bytes": 29616
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityConsentModule.dll",
+        "sha256": "e081eecbce244b54cff000a1f20e232673400b5fd405c4848e18d839ed539ebc",
+        "bytes": 16296
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityCurlModule.dll",
+        "sha256": "780a70298a6efc341927057080fed69b3ef613f5da03718d0ce88e9393168ec8",
+        "bytes": 28072
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityWebRequestAssetBundleModule.dll",
+        "sha256": "81183bb508f88b05da71b963b8a5f78030a18dcb9706fe4e869027065c522993",
+        "bytes": 30632
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityWebRequestAudioModule.dll",
+        "sha256": "579d323f6c0610016f716718c280ded9cebb65faaa342200bb186443db5ddfac",
+        "bytes": 30632
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityWebRequestModule.dll",
+        "sha256": "a7108ba8ddc87c745f183f6220953ec849b4df46ab2f66afd8099cdabf67bd35",
+        "bytes": 81328
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityWebRequestTextureModule.dll",
+        "sha256": "d853ad2ec9ba864668ecc257e5767ca87adda426f02ce775691b7d888d314663",
+        "bytes": 29616
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.UnityWebRequestWWWModule.dll",
+        "sha256": "5844fea03c2cce221815cff13a34903e36471fc81446e9b2dd792a569c55392b",
+        "bytes": 35240
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.VFXModule.dll",
+        "sha256": "e66f3a16889bbb3d5a99b68c32d30131116efd39e6f42dbc608f4fbd232fc74f",
+        "bytes": 82352
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.VectorGraphicsModule.dll",
+        "sha256": "4e01dc9a0b7a8dd6be5a2a550d706d8d3118c6de6fe5d13b0e4463754a6aca83",
+        "bytes": 229296
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.VehiclesModule.dll",
+        "sha256": "c5f67cecddc4504b7b79b293cd63b6f38d958c1186ad373a9afc59b795f006a4",
+        "bytes": 33192
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.VideoModule.dll",
+        "sha256": "285ab32c35e17147a4ae85c6625db6755fa61e029eda332eaf5ab899a41543f1",
+        "bytes": 48560
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.VirtualTexturingModule.dll",
+        "sha256": "5c48208df5ad73b4655efd51783956da4768803df481c46c4efb6a0c7b0e46a0",
+        "bytes": 43944
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.WindModule.dll",
+        "sha256": "e5b193c5cc405c7c5608019fb69e06f6ab992bea8f5812e394fcaee5015981a8",
+        "bytes": 28592
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.XRModule.dll",
+        "sha256": "4bc6aac3cf88df66e87d844e7ff788215830360bd398f864cb4808fccb5d964c",
+        "bytes": 96176
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/UnityEngine.dll",
+        "sha256": "c36cda9694a93b41379a00b89c72176ead2d429d97bec46cdabbe433e8ec07a3",
+        "bytes": 225704
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/mscorlib.dll",
+        "sha256": "acbfa8295da5b5e5a2c68c7b2dbc9cd7a5829c0ae031af22be4f6a49fd626f8f",
+        "bytes": 4632064
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Managed/netstandard.dll",
+        "sha256": "6ae62e082dc494a2433984177f60ca4db5fae69b1f360a8b33754172b310b8c5",
+        "bytes": 90112
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Plugins/x86_64/lib_burst_generated.dll",
+        "sha256": "aa4670aa82786c482136b85a90f5990e53a0953dca5154525f44880a45692237",
+        "bytes": 530944
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Plugins/x86_64/libonigwrap.dll",
+        "sha256": "c22db1e7be04c50eb47e67362bf705830bb95df30c02c22dd7add835ee777583",
+        "bytes": 551336
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Resources/unity default resources",
+        "sha256": "696b9afaee02b5d45978634f1450ef18423c19177933b997fd8ee364d70cdd61",
+        "bytes": 5919584
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/Resources/unity_builtin_extra",
+        "sha256": "7db111c8c0fa177cc4f1eb480373d86f09920c664a26dcdcffc9883f5e0cd732",
+        "bytes": 534516
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/RuntimeInitializeOnLoads.json",
+        "sha256": "4c6530de1268d9f43beb5fb0ed54cb7d4d09244f78a0767db763d9fdd73ad4a7",
+        "bytes": 5390
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/ScriptingAssemblies.json",
+        "sha256": "52f0dd94278fd74d66e1b06d3ec03328f3a45dd09c2620f3b1fada0dddd01043",
+        "bytes": 5119
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/app.info",
+        "sha256": "2c5cb73def50c326572facba7555a59e6eba986c3977964bfa8b7e4e4890cc60",
+        "bytes": 38
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/boot.config",
+        "sha256": "8b43b172e812fc2a3e5bb408f381ca4f684325a6a9e8fea20829e62c540d121f",
+        "bytes": 156
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/globalgamemanagers",
+        "sha256": "81419f65e08ffe0645cadbbe67befc0654f80d74a32548ca5e23c9b458340b95",
+        "bytes": 120340
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/globalgamemanagers.assets",
+        "sha256": "f154dc613ee7aa23d5bef57b8620efc9abe96707d76ec20dfac09542564d6c17",
+        "bytes": 1193032
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/globalgamemanagers.assets.resS",
+        "sha256": "d39bc2dc060377debd226e7a96002e7d9a37f7dd6a2aeaa324b085972564d143",
+        "bytes": 3553504
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/level0",
+        "sha256": "e8bdef1ac0811f440f1bb1783312291bb376b4e1e18752c283d79e91a017453d",
+        "bytes": 408744
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/resources.assets",
+        "sha256": "fb7dd67984962fff0fcf5e66f741645dacfeb03285e241db7d2a5c3ea179f5c4",
+        "bytes": 3292
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/sharedassets0.assets",
+        "sha256": "b98d13660c5e494c594c7c315a4c8ebcb3435443c157b5b620ee2c809e93e3ba",
+        "bytes": 9690428
+      },
+      {
+        "path": "ShadowsOfTheForsaken_Data/sharedassets0.assets.resS",
+        "sha256": "4c720101eaefd64bf8970deb5d8357f5d7208a6ba0b12561b8f906893a9c05bd",
+        "bytes": 18699776
+      },
+      {
+        "path": "UnityCrashHandler64.exe",
+        "sha256": "4c2d5f9cbbab38382c39c69f2ccada2beac336b466813df8e2db4e75112aa673",
+        "bytes": 1773488
+      },
+      {
+        "path": "UnityPlayer.dll",
+        "sha256": "7c8127007131559a3daa04aa3a3e8d1477975fe449f59917c5c75d86fa1f904f",
+        "bytes": 38696368
+      },
+      {
+        "path": "dstorage.dll",
+        "sha256": "cae65787f61514bec6f012f44546e68b19e39d8854a9ab52af813370d44b272a",
+        "bytes": 206904
+      },
+      {
+        "path": "dstoragecore.dll",
+        "sha256": "cf85b19a92a8276f8baca0db9bbcd60735bad50768deb303d310e84d5f4fdd11",
+        "bytes": 1482784
+      }
+    ],
+    "engine_file_count": 198,
+    "engine_bytes": 133693640,
+    "engine_manifest_sha256": "73ed9aa3c9c89e72319afbf4bf90badb4f33d78e5d6127b95a65376d5ef0ee3b",
+    "engine_manifest_encoding": "UTF-8 JSON array, keys sorted, compact separators, one final newline",
+    "supplementary_files": [
+      {
+        "path": "BUILD-INFO.json",
+        "bytes": 838,
+        "sha256": "2adb9173364e7ec97e957a3365cb5fced800f11dfdd0f30e14f8a157fd009243",
+        "kind": "Supplementary identity receipt; not emitted by Unity"
+      }
+    ],
+    "supplementary_file_count": 1,
+    "supplementary_bytes": 838,
+    "launched": false,
+    "instructions": "Keep the complete directory, including ShadowsOfTheForsaken_Data and DLLs; launch ShadowsOfTheForsaken.exe on Windows x64."
+  },
+  "prior_tests": {
+    "record": {
+      "root": "branch",
+      "path": "docs/validation/gothic-presentation-2026-10-01/evidence.json",
+      "sha256": "c632e959856b47bb7ea48a13bee8a94afccfd98cc05a04abb73c01732d6f9c79",
+      "bytes": 288725
+    },
+    "editmode_passed": 173,
+    "playmode_passed": 172,
+    "rerun_for_this_build": false,
+    "scope": "Earlier engine suites on identical C#; cold build does not repeat gameplay acceptance."
+  },
+  "remaining_acceptance": {
+    "standalone": "Deferred by owner; this candidate was not launched",
+    "human_first_attempt": "pending",
+    "hardware_performance_and_pacing": "pending",
+    "audio": "Not qualified; editor build used -disableaudio"
+  }
+}
