@@ -12,6 +12,17 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import unity_validation as validation
 
+ROOM_PERFORMANCE_METHODS = (
+    "RoomPerformanceTransitionsKeepVisitIdentityAndSessionCounters",
+    "RoomPerformanceDefeatRestartAndQuitKeepOriginalTokens",
+    "RoomPerformanceExternalResetWaitsForNewRunningSession",
+    "RoomPerformanceStaleRoomCallbackCannotCloseTheNewSessionVisit",
+    "RoomPerformanceCapLeavesExistingSessionEvidenceOperational",
+    "RoomPerformanceDisableFlushesOnceAndDoesNotResume",
+    "RoomPerformanceWriteFailureStopsObservationWithoutMutatingGameplay",
+    "RoomPerformanceMarksConfigurationChangesEvenAfterRestoration",
+)
+
 
 class ProjectValidationTests(unittest.TestCase):
     def setUp(self):
@@ -382,6 +393,12 @@ class NUnitEvidenceTests(unittest.TestCase):
         suite = report.find("test-suite")
         case = next(c for c in suite if f".CameraFollowTests.{method}" in c.get("fullname", ""))
         suite.remove(case)
+        # This is the historical camera suite, before both the zero-aim guard
+        # and the eight later room-observer cases; do not relabel 201 as 193.
+        for room_method in ROOM_PERFORMANCE_METHODS:
+            case = next(c for c in suite if
+                        f".PlayerValidationPerformanceTests.{room_method}" in c.get("fullname", ""))
+            suite.remove(case)
         count = len(list(report.iter("test-case")))
         self.assertEqual(193, count)
         report.set("total", str(count))
@@ -389,6 +406,20 @@ class NUnitEvidenceTests(unittest.TestCase):
         self.save(report)
         with self.assertRaisesRegex(validation.ValidationError, method):
             validation.validate_results(self.path, "playmode")
+
+    def test_room_observer_cases_cannot_be_omitted_or_satisfied_by_another_fixture(self):
+        for method in ROOM_PERFORMANCE_METHODS:
+            for substitute in ("PassingUnrelatedCase", method):
+                with self.subTest(method=method, substitute=substitute):
+                    report = report_for("playmode")
+                    case = next(c for c in report.iter("test-case") if
+                                f".PlayerValidationPerformanceTests.{method}" in c.get("fullname", ""))
+                    # Keep the total and passing count: only the required named
+                    # method in the correct fixture can satisfy this regression.
+                    case.set("fullname", f"ShadowsOfTheForsaken.Tests.PlayMode.UnrelatedFixture.{substitute}")
+                    self.save(report)
+                    with self.assertRaisesRegex(validation.ValidationError, method):
+                        validation.validate_results(self.path, "playmode")
 
     def test_cli_returns_failure_for_missing_report(self):
         result = subprocess.run(

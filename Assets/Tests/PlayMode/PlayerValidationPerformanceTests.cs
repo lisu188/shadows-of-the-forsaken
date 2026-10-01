@@ -3,6 +3,7 @@ using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using ShadowsOfTheForsaken.Progression;
 using UnityEngine;
@@ -161,6 +162,13 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Assert.That(progression.Snapshot.CompletedObjectives, Is.EqualTo(LevelObjective.None));
             Assert.That(Get<int>(health, "Current"), Is.EqualTo(initialHealth));
             Assert.That(Time.timeScale, Is.EqualTo(1));
+            Call(observer, "OnApplicationQuit");
+            var room = ReadRooms().Single().visit;
+            Assert.That(room.room, Is.EqualTo("Courtyard"));
+            Assert.That(room.frameIntervals.measuredFrames, Is.GreaterThan(0));
+            Assert.That(room.frameIntervals.excluded.Single(item => item.reason == "Unfocused").frames, Is.GreaterThan(0));
+            Assert.That(room.frameIntervals.excluded.Single(item => item.reason == "Paused").frames, Is.GreaterThan(0));
+            Assert.That(room.frameIntervals.histogram.Sum(), Is.EqualTo(room.frameIntervals.measuredFrames));
         }
 
         [UnityTest]
@@ -219,6 +227,14 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             StringAssert.Contains("not CPU/GPU profiling", summary.measurement);
             Assert.That(Get<int>(health, "Current"), Is.EqualTo(Get<int>(health, "Maximum")));
             Assert.That(progression.Snapshot.IsCompleted, Is.True);
+            var finalVisit = ReadRooms().Single(item => item.reason == "completion");
+            Assert.That(finalVisit.visit.room, Is.EqualTo("FinalArena"));
+            Assert.That(finalVisit.visit.sessionId, Is.EqualTo(token.ToString()));
+            Assert.That(ReadRooms().Any(item => item.visit.room == "Exit"), Is.False,
+                "Completion precedes Exit RoomEntered; no fabricated Running Exit visit.");
+            int rows = ReadRooms().Length;
+            Call(observer, "OnApplicationQuit");
+            Assert.That(ReadRooms().Length, Is.EqualTo(rows));
         }
 
         [UnityTest]
@@ -236,6 +252,159 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Assert.That(ReadStatus().performanceSummaryLimitReached, Is.True);
         }
 
+        [UnityTest]
+        public IEnumerator RoomPerformanceTransitionsKeepVisitIdentityAndSessionCounters()
+        {
+            yield return StartObserver();
+            Guid token = progression.Snapshot.SessionId;
+            var metrics = Field<object>(observer, "frameMetrics");
+            long frames = Metrics(metrics, true).observedFrames;
+            bool baseline = Field<bool>(observer, "baselineValid");
+            Assert.That((bool)Call(session, "TryEnterRoom", LevelRoom.FirstEncounter), Is.True);
+            Assert.That((bool)Call(session, "TryEnterRoom", LevelRoom.Courtyard), Is.True);
+            var rows = ReadRooms();
+            Assert.That(rows.Select(row => row.visit.room), Is.EqualTo(new[] { "Courtyard", "FirstEncounter" }));
+            Assert.That(rows.All(row => row.visit.sessionId == token.ToString()), Is.True);
+            Assert.That(rows[1].visit.frameIntervals.observedFrames, Is.Zero,
+                "A room entered and left between frames has no fabricated samples.");
+            Assert.That(rows[1].visit.unobservedTailSeconds, Is.GreaterThanOrEqualTo(0));
+            Assert.That(Metrics(metrics, true).observedFrames, Is.EqualTo(frames));
+            Assert.That(Field<bool>(observer, "baselineValid"), Is.EqualTo(baseline));
+            Assert.That(rows[1].configurationAtStart.screenWidth, Is.EqualTo(Screen.width));
+            Assert.That(rows[1].configurationChanged, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator RoomPerformanceDefeatRestartAndQuitKeepOriginalTokens()
+        {
+            yield return StartObserver();
+            Guid before = progression.Snapshot.SessionId;
+            Assert.That((bool)Call(session, "TryEnterRoom", LevelRoom.FirstEncounter), Is.True);
+            Assert.That((bool)Call(health, "TryDamage", Get<int>(health, "Maximum"), Get<Guid>(health, "LifeId"), before), Is.True);
+            var defeat = ReadRooms().Single(row => row.reason == "defeat");
+            Assert.That(defeat.visit.room, Is.EqualTo("FirstEncounter"));
+            Assert.That(defeat.visit.sessionId, Is.EqualTo(before.ToString()));
+            Assert.That((bool)Call(session, "RestartSession"), Is.True);
+            Guid after = progression.Snapshot.SessionId;
+            Assert.That(after, Is.Not.EqualTo(before));
+            Call(observer, "OnApplicationQuit");
+            var quit = ReadRooms().Single(row => row.reason == "normal-exit");
+            Assert.That(quit.visit.sessionId, Is.EqualTo(after.ToString()));
+            Assert.That(quit.visit.room, Is.EqualTo("Courtyard"));
+            int count = ReadRooms().Length;
+            ((Behaviour)observer).enabled = false;
+            Assert.That(ReadRooms().Length, Is.EqualTo(count));
+            Assert.That(Get<int>(health, "Current"), Is.EqualTo(Get<int>(health, "Maximum")));
+        }
+
+        [UnityTest]
+        public IEnumerator RoomPerformanceExternalResetWaitsForNewRunningSession()
+        {
+            yield return StartObserver();
+            Guid before = progression.Snapshot.SessionId;
+            Assert.That((bool)Call(session, "TryEnterRoom", LevelRoom.FirstEncounter), Is.True);
+            Assert.That(progression.TryResetSession(), Is.True);
+            Guid after = progression.Snapshot.SessionId;
+            var reset = ReadRooms().Single(row => row.reason == "resetting");
+            Assert.That(reset.visit.sessionId, Is.EqualTo(before.ToString()));
+            Assert.That(reset.visit.room, Is.EqualTo("FirstEncounter"));
+            Assert.That(ReadRooms().Any(row => row.visit.sessionId == after.ToString()), Is.False);
+            yield return null;
+            Assert.That(Get<object>(session, "State").ToString(), Is.EqualTo("Running"));
+            Call(observer, "OnApplicationQuit");
+            Assert.That(ReadRooms().Single(row => row.reason == "normal-exit").visit.sessionId, Is.EqualTo(after.ToString()));
+        }
+
+        [UnityTest]
+        public IEnumerator RoomPerformanceStaleRoomCallbackCannotCloseTheNewSessionVisit()
+        {
+            yield return StartObserver();
+            ProgressionChange saved = default;
+            Action<ProgressionChange> retain = change => saved = change;
+            progression.Changed += retain;
+            Assert.That((bool)Call(session, "TryEnterRoom", LevelRoom.FirstEncounter), Is.True);
+            progression.Changed -= retain;
+            Assert.That(progression.TryResetSession(), Is.True);
+            yield return null;
+            Guid current = progression.Snapshot.SessionId;
+            int count = ReadRooms().Length;
+            Call(observer, "ProgressionChanged", saved);
+            Assert.That(ReadRooms().Length, Is.EqualTo(count));
+            Call(observer, "OnApplicationQuit");
+            var final = ReadRooms().Last();
+            Assert.That(final.visit.sessionId, Is.EqualTo(current.ToString()));
+            Assert.That(final.visit.room, Is.EqualTo("Courtyard"));
+        }
+
+        [UnityTest]
+        public IEnumerator RoomPerformanceCapLeavesExistingSessionEvidenceOperational()
+        {
+            Directory.CreateDirectory(directory);
+            string path = Path.Combine(directory, "room-performance.jsonl");
+            File.WriteAllText(path, string.Concat(Enumerable.Repeat("{}\n", 256)));
+            yield return StartObserver();
+            string original = File.ReadAllText(path);
+            Assert.That((bool)Call(session, "TryEnterRoom", LevelRoom.FirstEncounter), Is.True);
+            Call(observer, "OnApplicationQuit");
+            Assert.That(File.ReadAllText(path), Is.EqualTo(original));
+            var status = ReadStatus();
+            Assert.That(status.roomPerformanceSummariesWritten, Is.EqualTo(256));
+            Assert.That(status.roomPerformanceSummaryLimitReached, Is.True);
+            Assert.That(status.performanceSummaryLimitReached, Is.False);
+            Assert.That(ReadSummaries().Any(row => row.reason == "normal-exit"), Is.True);
+            Assert.That(File.ReadAllText(Path.Combine(directory, "events.jsonl")), Does.Contain("normal-exit"));
+        }
+
+        [UnityTest]
+        public IEnumerator RoomPerformanceDisableFlushesOnceAndDoesNotResume()
+        {
+            yield return StartObserver();
+            ((Behaviour)observer).enabled = false;
+            Assert.That(ReadRooms().Single().reason, Is.EqualTo("observer-disabled"));
+            string original = File.ReadAllText(Path.Combine(directory, "room-performance.jsonl"));
+            ((Behaviour)observer).enabled = true;
+            yield return null;
+            Assert.That((bool)Call(session, "TryEnterRoom", LevelRoom.FirstEncounter), Is.True);
+            Call(observer, "OnApplicationQuit");
+            Assert.That(File.ReadAllText(Path.Combine(directory, "room-performance.jsonl")), Is.EqualTo(original));
+        }
+
+        [UnityTest]
+        public IEnumerator RoomPerformanceWriteFailureStopsObservationWithoutMutatingGameplay()
+        {
+            yield return StartObserver();
+            Guid token = progression.Snapshot.SessionId;
+            int initialHealth = Get<int>(health, "Current");
+            Directory.CreateDirectory(Path.Combine(directory, "room-performance.jsonl"));
+            LogAssert.Expect(LogType.Warning, new Regex("^Local player validation evidence disabled after room-performance-append:"));
+            Assert.That((bool)Call(session, "TryEnterRoom", LevelRoom.FirstEncounter), Is.True);
+            Assert.That(((Behaviour)observer).enabled, Is.False);
+            Assert.That(progression.Snapshot.SessionId, Is.EqualTo(token));
+            Assert.That(progression.Snapshot.Room, Is.EqualTo(LevelRoom.FirstEncounter));
+            Assert.That(progression.Snapshot.CompletedObjectives, Is.EqualTo(LevelObjective.None));
+            Assert.That(Get<int>(health, "Current"), Is.EqualTo(initialHealth));
+            Assert.That(Get<object>(session, "State").ToString(), Is.EqualTo("Running"));
+            Assert.That(Time.timeScale, Is.EqualTo(1));
+        }
+
+        [UnityTest]
+        public IEnumerator RoomPerformanceMarksConfigurationChangesEvenAfterRestoration()
+        {
+            yield return StartObserver();
+            int original = Application.targetFrameRate;
+            try
+            {
+                Application.targetFrameRate = original == 61 ? 62 : 61;
+                Call(observer, "LateUpdate");
+            }
+            finally { Application.targetFrameRate = original; }
+            Call(observer, "OnApplicationQuit");
+            var row = ReadRooms().Single();
+            Assert.That(row.configurationChanged, Is.True);
+            Assert.That(row.configurationAtStart.targetFrameRate, Is.EqualTo(original));
+            Assert.That(row.configurationAtEnd.targetFrameRate, Is.EqualTo(original));
+        }
+
         private IEnumerator StartObserver()
         {
             Environment.SetEnvironmentVariable(Variable, directory);
@@ -245,12 +414,14 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Assert.That(File.Exists(Path.Combine(directory, "status.json")), Is.True);
         }
         private Status ReadStatus() => JsonUtility.FromJson<Status>(File.ReadAllText(Path.Combine(directory, "status.json")));
+        private RoomSummary[] ReadRooms() => File.ReadAllLines(Path.Combine(directory, "room-performance.jsonl")).Select(JsonUtility.FromJson<RoomSummary>).ToArray();
         private Summary[] ReadSummaries() => File.ReadAllLines(Path.Combine(directory, "performance.jsonl")).Select(JsonUtility.FromJson<Summary>).ToArray();
         private static FrameSummary Metrics(object metrics, bool histogram) => JsonUtility.FromJson<FrameSummary>(JsonUtility.ToJson(Call(metrics, "Snapshot", histogram)));
         private static void Record(object metrics, double seconds, string reason) => Call(metrics, "Record", seconds, Enum.Parse(RuntimeType("PlayerFrameExclusion"), reason));
         private GameObject Make(string name) { var go = new GameObject(name); SceneManager.MoveGameObjectToScene(go, scene); return go; }
         private static Type RuntimeType(string name) => Type.GetType(name + ", Assembly-CSharp", true);
         private static void Set(object target, string field, object value) => target.GetType().GetField(field).SetValue(target, value);
+        private static T Field<T>(object target, string field) => (T)target.GetType().GetField(field, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(target);
         private static T Get<T>(object target, string property) => (T)target.GetType().GetProperty(property).GetValue(target);
         private static object Call(object target, string method, params object[] values)
         {
@@ -260,11 +431,26 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [Serializable] private sealed class Status
         {
             public string sessionId;
-            public bool performanceSummaryLimitReached;
+            public bool performanceSummaryLimitReached, roomPerformanceSummaryLimitReached;
+            public int roomPerformanceSummariesWritten;
             public FrameSummary performance;
             public Hardware hardware;
             public Memory memory;
         }
+        [Serializable] private sealed class RoomSummary
+        {
+            public string reason;
+            public RoomVisit visit;
+            public Configuration configurationAtStart, configurationAtEnd;
+            public bool configurationChanged;
+        }
+        [Serializable] private sealed class RoomVisit
+        {
+            public string sessionId, room;
+            public double unobservedTailSeconds;
+            public FrameSummary frameIntervals;
+        }
+        [Serializable] private sealed class Configuration { public int screenWidth, targetFrameRate; }
         [Serializable] private sealed class Hardware { public string unityVersion; public int processorCount; }
         [Serializable] private sealed class Memory { public long samples, managedEstimatedBytes; }
         [Serializable] private sealed class Summary

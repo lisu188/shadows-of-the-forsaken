@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-01T11:48:25.7000469Z",
+  "scope": "One Windows snapshot around retry44 startup; not samples during failed Play43 and not causal evidence.",
+  "totalPhysicalKiB": 33380396,
+  "freePhysicalKiB": 8980496,
+  "totalVirtualKiB": 82216280,
+  "freeVirtualKiB": 12162428
+}
