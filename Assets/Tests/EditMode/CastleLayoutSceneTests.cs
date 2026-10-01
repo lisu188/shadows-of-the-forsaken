@@ -95,9 +95,20 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             Assert.That(follow, Is.Not.Null);
             var serializedFollow = new SerializedObject(follow);
             Assert.That(serializedFollow.FindProperty("player").objectReferenceValue, Is.EqualTo(player.transform));
-            Assert.That(serializedFollow.FindProperty("distance").floatValue, Is.EqualTo(5f));
-            Assert.That(serializedFollow.FindProperty("height").floatValue, Is.EqualTo(2f));
-            Assert.That(serializedFollow.FindProperty("shoulderOffset").floatValue, Is.EqualTo(1.4f).Within(.001f));
+            Assert.That(serializedFollow.FindProperty("distance").floatValue, Is.EqualTo(3f));
+            Assert.That(serializedFollow.FindProperty("height").floatValue, Is.EqualTo(4f));
+            Assert.That(serializedFollow.FindProperty("shoulderOffset").floatValue, Is.EqualTo(-1.8f).Within(.001f));
+            Assert.That(serializedFollow.FindProperty("shoulderAimFraction").floatValue, Is.EqualTo(.5f));
+            Assert.That(serializedFollow.FindProperty("lookHeightOffset").floatValue, Is.EqualTo(1.5f));
+            Assert.That(serializedFollow.FindProperty("pivotHeight").floatValue, Is.EqualTo(1f));
+            Assert.That(cameraObject.GetComponent<Camera>().nearClipPlane, Is.EqualTo(.3f).Within(.001f));
+            Assert.That(cameraObject.GetComponent<Camera>().fieldOfView, Is.EqualTo(75f).Within(.001f));
+            Vector3 expectedPosition = player.transform.position - player.transform.forward * 3f
+                + Vector3.up * 4f - player.transform.right * 1.8f;
+            Vector3 expectedLook = player.transform.position + Vector3.up * 2.5f - player.transform.right * .9f;
+            Assert.That(Vector3.Distance(cameraObject.transform.position, expectedPosition), Is.LessThan(.001f));
+            Assert.That(Vector3.Distance(cameraObject.transform.forward, (expectedLook - expectedPosition).normalized),
+                Is.LessThan(.001f), "The saved camera pose must match its authored follow settings.");
             Assert.That(AssetDatabase.AssetPathToGUID("Assets/CameraFollow.cs"), Is.EqualTo("9191262690f98974abc0076595479fd6"));
             var geometry = Root("Geometry").GetComponentsInChildren<Collider>(true);
             Assert.That(geometry, Is.Not.Empty);

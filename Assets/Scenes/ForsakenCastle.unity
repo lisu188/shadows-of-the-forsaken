@@ -17717,10 +17717,12 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
   player: {fileID: 1526788354}
-  distance: 5
-  height: 2
+  distance: 3
+  height: 4
   smoothSpeed: 2
-  shoulderOffset: 1.4
+  shoulderOffset: -1.8
+  shoulderAimFraction: 0.5
+  lookHeightOffset: 1.5
   collisionRadius: 0.2
   collisionPadding: 0.05
   pivotHeight: 1
@@ -17866,7 +17868,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 75
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -17892,8 +17894,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 498243601}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.09853762, y: 0, z: 0, w: 0.99513334}
-  m_LocalPosition: {x: 1.4, y: 2.05, z: -93}
+  m_LocalRotation: {x: 0.21911912, y: 0.14160721, z: -0.032159857, w: 0.9648316}
+  m_LocalPosition: {x: -1.8, y: 4.05, z: -91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

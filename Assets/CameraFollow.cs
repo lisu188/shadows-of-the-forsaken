@@ -12,6 +12,8 @@ public class CameraFollow : MonoBehaviour
     public float height = 2.0f;
     public float smoothSpeed = 2f;
     [Range(-2f, 2f)] public float shoulderOffset;
+    [Range(0f, 1f)] public float shoulderAimFraction = 1f;
+    [Range(0f, 2f)] public float lookHeightOffset;
 
     [Min(0.01f)] public float collisionRadius = 0.2f;
     [Min(0f)] public float collisionPadding = 0.05f;
@@ -61,6 +63,8 @@ public class CameraFollow : MonoBehaviour
         height = Sanitize(height, 2f, 0f);
         smoothSpeed = Sanitize(smoothSpeed, 2f, 0f);
         shoulderOffset = Finite(shoulderOffset) ? Mathf.Clamp(shoulderOffset, -2f, 2f) : 0f;
+        shoulderAimFraction = Finite(shoulderAimFraction) ? Mathf.Clamp01(shoulderAimFraction) : 1f;
+        lookHeightOffset = Finite(lookHeightOffset) ? Mathf.Clamp(lookHeightOffset, 0f, 2f) : 0f;
         collisionRadius = Sanitize(collisionRadius, 0.2f, 0.01f);
         collisionPadding = Sanitize(collisionPadding, 0.05f, 0f);
         pivotHeight = Sanitize(pivotHeight, 1f, 0f);
@@ -139,9 +143,12 @@ public class CameraFollow : MonoBehaviour
             warnedBlocked = true;
             return false;
         }
-        // Keep collision sweeps anchored at the actor. Only framing moves to
-        // the shoulder; the conservative near-plane sphere remains unchanged.
-        Vector3 look = pivot + shoulder - candidate;
+        // Keep collision sweeps anchored at the actor. Shoulder and look height
+        // frame the view; the conservative near-plane sphere remains unchanged.
+        Vector3 look = pivot + shoulder * shoulderAimFraction + Vector3.up * lookHeightOffset - candidate;
+        // A held/smoothed camera can coincide with the shifted aim point.
+        // The collision-resolved boom still provides a nonzero view direction.
+        if (look.sqrMagnitude < 0.00000001f) look = pivot - candidate;
         Vector3 up = Mathf.Abs(Vector3.Dot(look.normalized, Vector3.up)) > 0.999f ? Vector3.forward : Vector3.up;
         transform.SetPositionAndRotation(candidate, Quaternion.LookRotation(look, up));
         previousTargetPosition = player.position;

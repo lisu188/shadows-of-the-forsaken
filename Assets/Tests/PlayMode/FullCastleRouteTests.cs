@@ -374,7 +374,20 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 {
                     // Observe ordinary updates long enough for the actor's
                     // LateUpdate windup pose; never advance combat for a capture.
-                    Capture("route-fight-" + objective);
+                    var framing = Capture("route-fight-" + objective, enemy);
+                    // An implementation floor against a mostly hidden attacker,
+                    // not a claim about lighting, animation quality or human play.
+                    // Sample the real windup meshes before making assertions so
+                    // a failed view retains the same PNG and numeric diagnosis.
+                    Assert.That(framing.geometryFailure, Is.Null, Diagnostic(framing.geometryFailure));
+                    foreach (var region in framing.regions)
+                    {
+                        Assert.That(region.silhouetteSamples, Is.GreaterThanOrEqualTo(12),
+                            Diagnostic(objective + " has insufficient visible-mesh samples for " + region.name));
+                        Assert.That(region.visibleFraction, Is.GreaterThanOrEqualTo(.5f),
+                            Diagnostic(objective + " player obscures most of the " + region.name +
+                                "; framing=" + JsonUtility.ToJson(framing)));
+                    }
                     capturedTelegraph = true;
                 }
                 bool attack = false;
@@ -399,6 +412,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             }
             Input(); yield return null;
             Assert.That(Get<bool>(enemy, "DeathCredited"), Is.True);
+            Assert.That(capturedTelegraph, Is.True, "The normal fight must expose a windup for combat-framing regression: " + objective);
         }
 
         private IEnumerator AssertDeathRestart(Guid previousSession)
@@ -484,11 +498,13 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Assert.That(InputState.currentUpdateType, Is.EqualTo(InputUpdateType.Manual));
         }
 
-        private void Capture(string name)
+        private FramingEvidence Capture(string name, Component framingEnemy = null)
         {
             string directory = Environment.GetEnvironmentVariable("SHADOWS_CAPTURE_DIR");
-            if (string.IsNullOrWhiteSpace(directory)) return;
-            Assert.That(SystemInfo.graphicsDeviceType, Is.Not.EqualTo(GraphicsDeviceType.Null), "Optional captures require graphics; omit SHADOWS_CAPTURE_DIR for -nographics runs.");
+            bool saveImage = !string.IsNullOrWhiteSpace(directory);
+            if (!saveImage && framingEnemy == null) return null;
+            if (saveImage)
+                Assert.That(SystemInfo.graphicsDeviceType, Is.Not.EqualTo(GraphicsDeviceType.Null), "Optional captures require graphics; omit SHADOWS_CAPTURE_DIR for -nographics runs.");
             // Refresh presentation for the manually advanced action without adding
             // an uncontrolled Update frame or advancing the combat clock twice.
             foreach (var root in scene.GetRootGameObjects())
@@ -504,19 +520,35 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             var distances = canvases.Select(c => c.planeDistance).ToArray();
             var texture = new RenderTexture(960, 540, 24, RenderTextureFormat.ARGB32);
             Texture2D pixels = null;
+            FramingEvidence framing = null;
             try
             {
                 // A first-use asynchronous shader placeholder is not material or
                 // combat-feedback evidence. Compile needed variants synchronously
                 // for this render only; preserve the editor's surrounding policy.
-                ShaderUtil.allowAsyncCompilation = false;
-                texture.Create();
+                if (saveImage)
+                {
+                    ShaderUtil.allowAsyncCompilation = false;
+                    texture.Create();
+                }
                 // Establish the destination before camera clearance and UI layout.
                 // URP otherwise assigns it only inside SubmitRenderRequest, after
                 // a 4:3 editor canvas has already been sized for this 16:9 image.
                 camera.targetTexture = texture;
                 Assert.That((bool)Call(follow, "SnapToTarget"), Is.True, "Capture requires the scene camera's safe follow pose.");
                 if (occlusion != null) Call(occlusion, "RefreshVisibility");
+                if (framingEnemy != null)
+                {
+                    framing = MeasureFraming(framingEnemy);
+                    string json = JsonUtility.ToJson(framing, true);
+                    TestContext.WriteLine("Combat framing: " + JsonUtility.ToJson(framing));
+                    if (saveImage)
+                    {
+                        Directory.CreateDirectory(directory);
+                        File.WriteAllText(Path.Combine(directory, TestContext.CurrentContext.Test.Name + "-" + name + "-framing.json"), json);
+                    }
+                }
+                if (!saveImage) return framing;
                 for (int i = 0; i < canvases.Length; i++)
                 {
                     canvases[i].renderMode = RenderMode.ScreenSpaceCamera;
@@ -548,7 +580,211 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 if (pixels != null) Object.DestroyImmediate(pixels);
                 texture.Release(); Object.DestroyImmediate(texture);
             }
+            return framing;
         }
+
+        [Serializable] private sealed class FramingRegion
+        {
+            public string name;
+            public int silhouetteSamples, visibleSamples, playerBlockedSamples, outsideViewSamples;
+            public float visibleFraction;
+        }
+        [Serializable] private sealed class FramingEvidence
+        {
+            public string scope = "Actual front-facing actor triangles at the observed windup; player obscuration and viewport only. Not environment, lighting or human acceptance.";
+            public string encounter, test;
+            public string geometryFailure;
+            public Vector3 playerPosition, enemyPosition, cameraPosition;
+            public Quaternion cameraRotation;
+            public float cameraDistance, cameraHeight, cameraPivotHeight, lookHeightOffset, shoulderOffset, shoulderAimFraction, fieldOfView, aspect;
+            public double measurementMilliseconds;
+            public int columns = 48, rows = 64, sampledRays, playerMeshes, enemyMeshes;
+            public FramingRegion[] regions;
+        }
+        private sealed class FramingMesh
+        {
+            public Bounds bounds;
+            public Vector3[] vertices;
+            public int[] indices;
+            public int region;
+        }
+
+        private FramingEvidence MeasureFraming(Component enemy)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var presentation = enemy.GetComponent(RuntimeType("CastleActorPresentation"));
+            var head = Field<Transform>(presentation, "head");
+            var torso = Field<Transform>(presentation, "torso");
+            var rightArm = Field<Transform>(presentation, "rightArm");
+            var leftArm = Field<Transform>(presentation, "leftArm");
+            var cloak = Field<Transform>(presentation, "cloak");
+            bool demon = Field<bool>(presentation, "demonic");
+            var names = demon ? new[] { "head", "torso", "right attack arm", "left attack arm" }
+                : new[] { "head", "torso", "right attack arm" };
+            var result = new FramingEvidence
+            {
+                encounter = enemy.name, test = TestContext.CurrentContext.Test.Name,
+                playerPosition = movement.transform.position, enemyPosition = enemy.transform.position,
+                cameraPosition = camera.transform.position, cameraRotation = camera.transform.rotation,
+                cameraDistance = Field<float>(follow, "distance"), cameraHeight = Field<float>(follow, "height"),
+                cameraPivotHeight = Field<float>(follow, "pivotHeight"), lookHeightOffset = Field<float>(follow, "lookHeightOffset"),
+                shoulderOffset = Field<float>(follow, "shoulderOffset"), shoulderAimFraction = Field<float>(follow, "shoulderAimFraction"),
+                fieldOfView = camera.fieldOfView, aspect = camera.aspect,
+                regions = names.Select(value => new FramingRegion { name = value }).ToArray()
+            };
+            // Assign by the articulated hierarchy, excluding nested arms/head
+            // and cloak from torso. Other enemy meshes still self-occlude.
+            int Region(Transform part)
+            {
+                if (part.IsChildOf(head)) return 0;
+                if (part.IsChildOf(rightArm)) return 2;
+                if (part.IsChildOf(leftArm)) return demon ? 3 : -1;
+                if (cloak != null && part.IsChildOf(cloak)) return -1;
+                return part.IsChildOf(torso) ? 1 : -1;
+            }
+            var enemies = FramingMeshes(enemy.transform, Region);
+            var players = FramingMeshes(movement.transform, _ => -1);
+            result.enemyMeshes = enemies.Length; result.playerMeshes = players.Length;
+            if (enemies.Length == 0)
+            {
+                result.geometryFailure = "No rendered enemy meshes to measure.";
+                result.measurementMilliseconds = watch.Elapsed.TotalMilliseconds;
+                return result;
+            }
+            Vector2 lower = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+            Vector2 upper = new Vector2(float.NegativeInfinity, float.NegativeInfinity);
+            foreach (var mesh in enemies)
+                foreach (var vertex in mesh.vertices)
+                {
+                    Vector3 point = camera.WorldToViewportPoint(vertex);
+                    if (point.z <= camera.nearClipPlane)
+                    {
+                        result.geometryFailure = "The windup actor intersects the camera near plane.";
+                        result.measurementMilliseconds = watch.Elapsed.TotalMilliseconds;
+                        return result;
+                    }
+                    lower = Vector2.Min(lower, point); upper = Vector2.Max(upper, point);
+                }
+            // Uniform projected-area samples avoid triangle-count bias between
+            // the cape, armour and detailed horns. Frontmost enemy intersections
+            // supply the unoccluded silhouette; no capsules or bounds stand in
+            // for visible surfaces. Bounds only accelerate exact triangle rays.
+            for (int y = 0; y < result.rows; y++)
+                for (int x = 0; x < result.columns; x++)
+                {
+                    var point = new Vector2(Mathf.Lerp(lower.x, upper.x, (x + .5f) / result.columns),
+                        Mathf.Lerp(lower.y, upper.y, (y + .5f) / result.rows));
+                    var ray = camera.ViewportPointToRay(point);
+                    result.sampledRays++;
+                    float distance = NearestFramingSurface(enemies, ray, camera.farClipPlane, out int regionIndex);
+                    if (regionIndex < 0) continue;
+                    var region = result.regions[regionIndex]; region.silhouetteSamples++;
+                    if (point.x < 0 || point.x > 1 || point.y < 0 || point.y > 1) region.outsideViewSamples++;
+                    else if (!float.IsPositiveInfinity(NearestFramingSurface(players, ray, distance - .0001f, out _)))
+                        region.playerBlockedSamples++;
+                    else region.visibleSamples++;
+                }
+            foreach (var region in result.regions)
+                region.visibleFraction = region.silhouetteSamples == 0 ? 0 : (float)region.visibleSamples / region.silhouetteSamples;
+            result.measurementMilliseconds = watch.Elapsed.TotalMilliseconds;
+            return result;
+        }
+
+        private FramingMesh[] FramingMeshes(Transform actor, Func<Transform, int> region)
+        {
+            var result = new List<FramingMesh>();
+            foreach (var filter in actor.GetComponentsInChildren<MeshFilter>())
+            {
+                var renderer = filter.GetComponent<Renderer>();
+                if (filter.sharedMesh == null || renderer == null || !renderer.enabled || renderer.forceRenderingOff ||
+                    (camera.cullingMask & (1 << filter.gameObject.layer)) == 0) continue;
+                var matrix = filter.transform.localToWorldMatrix;
+                result.Add(new FramingMesh { bounds = renderer.bounds, region = region(filter.transform),
+                    vertices = filter.sharedMesh.vertices.Select(matrix.MultiplyPoint3x4).ToArray(),
+                    indices = filter.sharedMesh.triangles });
+            }
+            return result.ToArray();
+        }
+
+        private static float NearestFramingSurface(FramingMesh[] meshes, Ray ray, float maximum, out int region)
+        {
+            float closest = maximum; region = -1;
+            bool found = false;
+            foreach (var mesh in meshes)
+            {
+                if (!mesh.bounds.IntersectRay(ray, out float near) || near > closest) continue;
+                for (int i = 0; i < mesh.indices.Length; i += 3)
+                {
+                    Vector3 a = mesh.vertices[mesh.indices[i]];
+                    Vector3 edge1 = mesh.vertices[mesh.indices[i + 1]] - a;
+                    Vector3 edge2 = mesh.vertices[mesh.indices[i + 2]] - a;
+                    Vector3 p = Vector3.Cross(ray.direction, edge2);
+                    float determinant = Vector3.Dot(edge1, p);
+                    if (determinant <= .0000001f) continue; // Match opaque actor materials' backface culling.
+                    Vector3 relative = ray.origin - a;
+                    float u = Vector3.Dot(relative, p) / determinant;
+                    if (u < 0 || u > 1) continue;
+                    Vector3 q = Vector3.Cross(relative, edge1);
+                    float v = Vector3.Dot(ray.direction, q) / determinant;
+                    if (v < 0 || u + v > 1) continue;
+                    float distance = Vector3.Dot(edge2, q) / determinant;
+                    if (distance < 0 || distance >= closest) continue;
+                    closest = distance; region = mesh.region; found = true;
+                }
+            }
+            // A finite maximum is a search bound, never evidence of a hit.
+            // Comparing that rounded return value with a repeated subtraction
+            // can misclassify a miss when Mono keeps the latter at higher precision.
+            // Region -1 is also a legitimate unlabelled/player surface.
+            return found ? closest : float.PositiveInfinity;
+        }
+
+        [Test]
+        public void FramingRayMissesRemainInfiniteInsideAndOutsideMeshBounds()
+        {
+            var mesh = FramingTriangle(5.123456f, -1);
+            foreach (var meshes in new[] { Array.Empty<FramingMesh>(), new[] { mesh } })
+                foreach (var origin in new[] { new Vector3(2, 0, 0), new Vector3(.9f, .9f, 0) })
+                {
+                    // The second ray crosses the bounds but misses the triangle.
+                    float distance = NearestFramingSurface(meshes, new Ray(origin, Vector3.forward), 5.223456f - .0001f, out int region);
+                    Assert.That(float.IsPositiveInfinity(distance), Is.True, "A miss must not return the finite search limit.");
+                    Assert.That(region, Is.EqualTo(-1));
+                }
+        }
+
+        [Test]
+        public void FramingRayRejectsBackfacesAndHitsAtTheExclusiveDistanceLimit()
+        {
+            var mesh = FramingTriangle(5.123456f, 2);
+            var ray = new Ray(Vector3.zero, Vector3.forward);
+            Assert.That(float.IsPositiveInfinity(NearestFramingSurface(new[] { mesh }, ray, 5.123456f, out _)), Is.True);
+            Assert.That(NearestFramingSurface(new[] { mesh }, ray, 5.123556f, out int region), Is.EqualTo(5.123456f).Within(.000001f));
+            Assert.That(region, Is.EqualTo(2));
+            mesh.indices = new[] { 0, 2, 1 };
+            Assert.That(float.IsPositiveInfinity(NearestFramingSurface(new[] { mesh }, ray, 6, out _)), Is.True,
+                "The opaque actor material does not render the reverse triangle face.");
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void FramingRaySelectsNearestSurfaceIncludingUnlabelledPlayer(bool nearFirst)
+        {
+            var near = FramingTriangle(3.25f, -1);
+            var far = FramingTriangle(5.125f, 2);
+            var meshes = nearFirst ? new[] { near, far } : new[] { far, near };
+            float distance = NearestFramingSurface(meshes, new Ray(Vector3.zero, Vector3.forward), 6, out int region);
+            Assert.That(distance, Is.EqualTo(3.25f).Within(.000001f));
+            Assert.That(region, Is.EqualTo(-1), "Player meshes are unlabelled but still count as real occluders.");
+            Assert.That(float.IsPositiveInfinity(distance), Is.False);
+        }
+
+        private static FramingMesh FramingTriangle(float depth, int region) => new FramingMesh
+        {
+            bounds = new Bounds(new Vector3(0, 0, depth), new Vector3(2, 2, .01f)),
+            vertices = new[] { new Vector3(-1, -1, depth), new Vector3(0, 1, depth), new Vector3(1, -1, depth) },
+            indices = new[] { 0, 1, 2 }, region = region
+        };
 
         private Component Find(string typeName)
         {
