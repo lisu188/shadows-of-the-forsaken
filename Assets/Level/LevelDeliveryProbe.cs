@@ -49,16 +49,19 @@ namespace ShadowsOfTheForsaken.Level
         }
         private bool CaptureCamera(string path, StartupEvidence evidence)
         {
-            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null || Camera.main == null) return false;
-            Canvas.ForceUpdateCanvases();
+            var camera = level.Follow.GetComponent<Camera>();
+            if (SystemInfo.graphicsDeviceType == GraphicsDeviceType.Null || camera == null) return false;
             var target = RenderTexture.GetTemporary(Mathf.Max(1, Screen.width), Mathf.Max(1, Screen.height), 24);
             var previous = RenderTexture.active;
+            var previousTarget = camera.targetTexture;
             Texture2D capture = null;
             try
             {
                 var request = new UniversalRenderPipeline.SingleCameraRequest { destination = target };
-                if (!RenderPipeline.SupportsRenderRequest(Camera.main, request)) return false;
-                RenderPipeline.SubmitRenderRequest(Camera.main, request);
+                if (!RenderPipeline.SupportsRenderRequest(camera, request)) return false;
+                camera.targetTexture = target;
+                Canvas.ForceUpdateCanvases();
+                RenderPipeline.SubmitRenderRequest(camera, request);
                 RenderTexture.active = target;
                 capture = new Texture2D(target.width, target.height, TextureFormat.RGB24, false);
                 capture.ReadPixels(new Rect(0, 0, target.width, target.height), 0, 0);
@@ -85,8 +88,10 @@ namespace ShadowsOfTheForsaken.Level
             }
             finally
             {
+                camera.targetTexture = previousTarget;
                 RenderTexture.active = previous;
                 RenderTexture.ReleaseTemporary(target);
+                Canvas.ForceUpdateCanvases();
                 if (capture != null) Destroy(capture);
             }
         }
