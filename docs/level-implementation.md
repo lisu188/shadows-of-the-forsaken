@@ -8,7 +8,7 @@ Scena gry to `Assets/Scenes/ForsakenCastle.unity`. `ForsakenLevel` tworzy geomet
 
 Jedna komórka mapy §8 odpowiada 12 m. Kolumna 5 jest osią X=0, wiersz 10 osią Z=0. Wyższe wiersze mają większe Z. Jest to wybór skali, nie pomiar z DOCX. Dziedziniec ma wydłużone dojście od Z=-51: spokojne wprowadzenie wynika z drogi i widoków, bez obowiązkowego oczekiwania.
 
-Prędkość chodu w tej scenie wynosi 2 m/s, obrót 110 stopni/s. Samo dojście do pierwszej bramy ma około 69 m; docelowo daje kilkadziesiąt sekund bez walki. Szacowany dystans głównej trasy około 249 m sugeruje czas w zakresie 2–3 minut po dodaniu starć i interakcji. To uzasadnienie doboru parametrów, nie wynik pomiaru; rzeczywisty czas wymaga przejścia w Unity/playerze.
+Prędkość chodu w tej scenie wynosi 2 m/s, obrót 110 stopni/s. Samo dojście do pierwszej bramy ma około 69 m; daje kilkadziesiąt sekund bez walki. Automatyczne przejście rzeczywistej sceny Unity zmierzyło 255,44 m i 134,19 s, w tym walki oraz interakcje, przy skonfigurowanej prędkości bez przymusowych pauz. Wynik mieści się w 2–3 minutach dla tej automatycznej trasy; nie zastępuje ręcznego przejścia człowieka lub pomiaru całej trasy w playerze. Metodę i granice dowodu opisuje [raport weryfikacji](level-verification.md).
 
 | DOCX | Realizacja | Przyjęte współrzędne X,Z |
 | --- | --- | --- |

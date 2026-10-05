@@ -62,27 +62,23 @@ Implementacja sceny gry znajduje się w Assets/Scenes/ForsakenCastle.unity. Scen
 | --- | --- |
 | Specyfikacja i kontrakt (#4) | DOCX i jego hash zachowane; decyzje i warunki postępu bez zmian. |
 | Runtime postępu (#10), ruch (#6), kamera (#7) | Istniejące rdzenie i GUID-y wykorzystane w scenie gry. |
-| Układ zamku (#8) | Geometria, collidery, osobna lewa odnoga zagadki, obowiązkowa biblioteka, dolny skrót do bonusu. Odbiór fizyczny wymaga testów Unity. |
+| Układ zamku (#8) | Geometria, collidery, osobna lewa odnoga zagadki, obowiązkowa biblioteka, dolny skrót do bonusu. Fizyczna trasa główna i opcjonalna przeszły testy rzeczywistej sceny Unity. |
 | Walka i obsada (#11–12, #14, #17) | Rzeczywiste ataki, obrażenia, zdrowie, pojedynczy demon, strażnik miniboss i demon finałowy. [Balans i mechanika](docs/combat.md). |
 | Interakcje, runy, biblioteka, sekret (#9, #13, #15–16, #19) | E wybiera jeden widoczny cel; sekwencja run, księga, dźwignia i relikt; fizyczne bramy według jednego runtime postępu. [Opis](docs/interaction.md). |
-| HUD i restart (#18) | Zdrowie, cel, interakcja, telegraph, wynik i czas; pełny reset sesji po porażce albo zwycięstwie. |
-| Oprawa i atmosfera (#20–21) | Stylizowana gotycka geometria, kolumny, krew, księgi, sarkofagi, witraże, księżyc, góry, mgła, pochodnie i syntetyzowany wiatr. Odbiór wizualny pozostaje oddzielny. |
+| HUD i restart (#18) | Canvas z własnym wejściem UI: zdrowie, cel, interakcja, telegraph, wynik i czas. Testy potwierdziły reset fizycznej sceny przez przycisk i R oraz odrzucanie starych sesji. |
+| Oprawa i atmosfera (#20–21) | Stylizowana gotycka geometria, kolumny, krew, księgi, sarkofagi, witraże, księżyc, góry, mgła, pochodnie i syntetyzowany wiatr. Obejrzano obrazy rzeczywistej kamery z HUD-em; odbiór wizualny właściciela pozostaje oddzielny. |
 | Dokumentacja i testy rdzeni | Bazowe: Python 73/73 w WSL, postęp 29/29, ruch 36/36, kamera 32/32. Nowe: walka 13/13, runy 5/5; testują rzeczywiste źródła rdzeni. |
-| Unity EditMode/PlayMode (#5, #22) | Testy komponentów i całej trasy dodane; przypięty edytor działa. EditMode 113/113; pełny PlayMode i pomiar trasy są w trakcie weryfikacji. |
-| Player Windows x64 (#24) | Dodany powtarzalny builder jednej sceny; wykonanie i uruchomienie playera jeszcze wymagają potwierdzenia. |
-| Tempo 2–3 minut i odbiór (#23–24) | Niezweryfikowane. Licznik HUD i testy nie zastępują pomiaru przejścia ani ręcznego odbioru. |
+| Unity EditMode/PlayMode (#5, #22) | Rzeczywisty przypięty edytor: czysty import i EditMode 113/113; pełny PlayMode 67/67, bez pominięć. [Raport i identyfikacja źródeł](docs/level-verification.md). |
+| Player Windows x64 (#24) | Build Windows x64 Mono zaliczony, 0 błędów. Natywny start zaliczony: rzeczywiste GPU, kamera i Canvas HUD, exit 0. Gotowy lokalny ZIP z wymaganymi plikami runtime; pełny benchmark playera niewykonany. |
+| Tempo 2–3 minut i odbiór (#23–24) | Automatyczne przejście głównej trasy rzeczywistej sceny: 134,19 s, 255,44 m, prędkość 2 m/s, bez sekretu i przymusowych pauz. To pomiar automatyczny, nie ręczny playtest lub benchmark playera. |
 
 Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings` nie należą do źródeł; usunięcie ich z bieżącego drzewa Git nie usuwa ich ze starej historii.
 
-## Plan realizacji
+## Zakres dostawy i dalszy odbiór
 
-1. **Fundamenty techniczne:** kontroler gracza, kamera, niezawodne wejście i testy. Zachować istniejące GUID-y skryptów oraz przypiętą wersję Unity.
-2. **Blokowy poziom zamku:** dziedziniec, pierwsze starcie, zagadka, sala tronowa, biblioteka, sekretne przejście, katakumby, finał i wyjście. Odwzorować mapę z rozstrzygnięciami zapisanymi w `docs/design-decisions.md`. Geometria zastępcza nie jest finalną oprawą.
-3. **Pełny przebieg rozgrywki:** spokojne wejście, pojedynczy pierwszy przeciwnik, zagadka, miniboss, katakumby, finałowa walka i osiągalne zakończenie. Oddzielić opcjonalny sekret od wymaganej ścieżki.
-4. **Atmosfera i czytelność:** ruiny, kolumny, księgi, ślady kultu, gotyckie okna, światło księżyca i pochodni, mgła oraz czytelna prezentacja zagrożeń.
-5. **Weryfikacja:** testy logiki, testy w Unity i ręczne przejście poziomu. Sprawdzić brak blokad postępu, możliwość ukończenia bez opcjonalnego sekretu oraz dodatkową zawartość sekretnej trasy. Dopiero po pomiarach deklarować osiągnięcie czasu 2–3 minut.
+Poziom implementuje obowiązkowy przebieg i opcjonalną zawartość z DOCX, z rozstrzygnięciami zapisanymi w `docs/design-decisions.md`. Oprawa jest autorską stylizacją z geometrii proceduralnej, a nie importem fotografii referencyjnych. Testy sceny sprawdzają rzeczywistą fizykę, ataki, mechanizmy, oba warianty ukończenia oraz reset; testy samych rdzeni nie są ich zamiennikiem.
 
-Każda zmiana powinna wskazywać realizowane wymaganie i aktualizować stan implementacji. Nie dodajemy rozbudowanych systemów niezwiązanych ze specyfikacją zamiast realizować opisany poziom. Zasady dla narzędzi i agentów znajdują się w [AGENTS.md](AGENTS.md).
+[Raport weryfikacji](docs/level-verification.md) rozdziela wykonane kontrole od niewykonanych: ręczna rozgrywka człowieka, odbiór podobieństwa do referencji, pomiar pełnej trasy w playerze i nowy run zdalnego CI pozostają osobnymi etapami. Nie dodano rozbudowanych systemów poza specyfikacją. Zasady pracy znajdują się w [AGENTS.md](AGENTS.md).
 
 ## Uruchomienie projektu
 
@@ -103,6 +99,8 @@ cd shadows-of-the-forsaken
 ```
 
 Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/ForsakenCastle.unity` i uruchom Play. Geometria jest składana deterministycznie w `Awake`, dlatego przed Play scena pokazuje obiekt właściciela poziomu. `SampleScene` pozostaje bazową fixture testów.
+
+Dostawa lokalna Windows znajduje się w `Builds/ShadowsOfTheForsaken-Windows-x64.zip`. Rozpakuj całe archiwum i uruchom `ShadowsOfTheForsaken.exe`; zachowaj towarzyszący folder Data, DLL-e, `MonoBleedingEdge` i `D3D12`. Builder można ponowić przez menu `Forsaken/Build Windows player`. Sterowanie: **W/S** ruch, **A/D** obrót, **Spacja** skok, **LPM** atak, **E** interakcja; po zakończeniu lub śmierci **R** albo przycisk rozpoczyna nową sesję. Build i archiwum są ignorowanymi wynikami lokalnymi, nie śledzonymi źródłami repozytorium.
 
 [Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Scena zamku tworzy gracza, wiąże ten kontroler z istniejącym assetem wejścia i dodaje akcję Restart; SampleScene pozostaje fixture bazową.
 
@@ -145,7 +143,7 @@ Workflow `Camera C# tests` kompiluje produkcyjną matematykę kamery jako .NET S
 
 Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.0.24f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
 
-[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano wspólne testy rdzeni, testy cyklu życia adaptera #10, testy kontrolera #6 i kamery #7. Dopóki nie ma udanych wyników obu trybów i logu importu, odbiór Unity pozostaje niepotwierdzony. Automatyczny build gry pozostaje osobnym zadaniem #24.
+[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, pełny zakres 113 EditMode / 67 PlayMode, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. [Raport poziomu](docs/level-verification.md) dokumentuje zaliczone lokalne zestawy, czysty import i osobne dowody builda oraz jego uruchomienia. Nie jest deklaracją wyniku niewykonanego zdalnego CI.
 
 ## Struktura repozytorium
 
