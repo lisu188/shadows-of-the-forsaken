@@ -50,31 +50,27 @@ Mapa z §8 rozwija układ przestrzenny: start znajduje się na dole, pierwsze st
 - **Sekret:** jedna sala bonusowa z dojściem od katakumb oraz ukrytym skrótem od sali tronowej. Oba połączenia odblokowuje dźwignia w katakumbach, dopiero po otwarciu biblioteki. Skrót jest jawną interpretacją połączenia flow chartu, nie korytarzem narysowanym na mapie. Bonus nie jest wymagany do ukończenia.
 - **Finał:** górna komnata należy do katakumb; po walce otwiera się wyjście kończące scenariusz. Bez obowiązkowej cutscenki i bez ładowania nieistniejącego następnego poziomu.
 
-[Kontrakt poziomu w JSON](docs/level-contract.json) zapisuje obszary, połączenia i warunki postępu. Walidator sprawdza osiągalność i brak przedwczesnego ukończenia w modelu, z sekretem i bez niego. JSON pozostaje kontraktem projektowym; [runtime C# dla #10](docs/progression-runtime.md) implementuje te reguły osobno i jest porównywany z nim w testach. **Testy modelu ani C# nie potwierdzają jeszcze działania sceny w Unity.**
+[Kontrakt poziomu w JSON](docs/level-contract.json) zapisuje obszary, połączenia i warunki postępu. Walidator sprawdza osiągalność i brak przedwczesnego ukończenia w modelu, z sekretem i bez niego. JSON pozostaje kontraktem projektowym; [runtime C# dla #10](docs/progression-runtime.md) implementuje te reguły osobno i jest porównywany z nim w testach. **Same testy modelu ani rdzeni C# nie potwierdzają działania sceny w Unity.**
 
 Dokument nie określa również wszystkich parametrów implementacyjnych: klawiszy, statystyk przeciwników, obrażeń, szczegółowych zasad walki czy wymiarów geometrii. Takie decyzje należy oznaczać jako decyzje projektowe / techniczne, a nie dosłowne wymagania DOCX.
 
 ## Aktualny stan
 
-Repozytorium jest na początkowym etapie. Zawiera projekt Unity, scenę szablonową `Assets/Scenes/SampleScene.unity`, skrypty `PlayerMovement` i `CameraFollow`, konfigurację Input System oraz zasoby nocnego nieba. Sama obecność skryptów i zasobów **nie oznacza**, że opisany w dokumencie poziom jest grywalny.
+Implementacja sceny gry znajduje się w Assets/Scenes/ForsakenCastle.unity. Scena składa poziom zgodny z mapą i zapisanymi decyzjami: wszystkie obowiązkowe obszary, trzy starcia, zagadka run, biblioteka, katakumby, opcjonalna sala i osobny skrót oraz zakończenie. [Opis implementacji i mapowania do DOCX](docs/level-implementation.md) rozdziela wymagania od wybranej skali, balansu i stylizacji.
 
 | Obszar | Stan |
 | --- | --- |
-| Specyfikacja, README i zasady pracy | Opisane; DOCX zachowany jako źródło wymagań. |
-| Decyzje i kontrakt pierwszego poziomu (#4) | Zapisane; automatycznie sprawdzane osiągalność, warunki bram, opcjonalność sekretu i niezmienność DOCX. |
-| Runtime postępu (#10) | Dostarczony rdzeń C#, migawki stanu, tokeny sesji, zdarzenia i reset. Adapter MonoBehaviour oraz 7 testów PlayMode są dodane; odbiór integracyjny czeka na rzeczywiste wykonanie Unity (#5). |
-| Kontroler gracza (#6) | Istniejący PlayerMovement przełączony na Input System; dodano rdzeń ruchu, obsługę sufitu/lądowania i blokadę wejścia. 36 testów rdzenia C# oraz 17 przypadków PlayMode; testy silnika i ręczny odbiór nadal blokuje #5. |
-| Kamera (#7) | CameraFollow rozszerzony o kolizje uwzględniające near plane, wygładzanie, odnajdywanie celu i reset po teleporcie. 32 przypadki matematyki C# oraz 22 przypadki PlayMode; wykonanie fizyki i odbiór wizualny nadal wymagają Unity (#5). |
-| Projekt Unity, skrypty i zasoby nieba | Istnieją w repozytorium; nie stanowią kompletnego poziomu. |
-| Dziedziniec, sala tronowa, biblioteka i katakumby | Do zbudowania jako spójny poziom zgodny z dokumentem. |
-| Pierwsze starcie, miniboss i finałowa walka | Do zaimplementowania; sygnał wejścia AttackRequested z #6 nie jest jeszcze mechaniką walki. |
-| Runy / dźwignie, ukryte drzwi i sekrety | Do zaimplementowania; reguły odblokowań są w rdzeniu postępu, nie w colliderach sceny. |
-| Wyjście / zakończenie poziomu | Reguła zakończenia jest w runtime #10; fizyczne wyjście i finał pozostają do implementacji. |
-| Docelowa oprawa i czas 2–3 minut | Niezweryfikowane; wymagają realizacji i testów rozgrywki. |
-| Walidacja dokumentacji i źródeł | Eksport DOCX, odnośniki README, kontrakt poziomu, integralność `.meta`/GUID i testy narzędzi w GitHub Actions. |
-| Testy C# postępu | Osobne CI kompiluje produkcyjny rdzeń jako .NET Standard 2.1; 26 wspólnych przypadków NUnit i 3 testy kontraktu. Nie uruchamia MonoBehaviour. |
-| Testy bazowe Unity (#5) | Dodano 6 przypadków EditMode i 2 PlayMode oraz osobny workflow. Pierwszy run zablokowany brakiem konfiguracji aktywacji; nie potwierdzono importu ani kompilacji. |
-| Build playera i testy ręczne | Nie zostały wykonane; testy narzędzi nie zastępują odbioru gry. |
+| Specyfikacja i kontrakt (#4) | DOCX i jego hash zachowane; decyzje i warunki postępu bez zmian. |
+| Runtime postępu (#10), ruch (#6), kamera (#7) | Istniejące rdzenie i GUID-y wykorzystane w scenie gry. |
+| Układ zamku (#8) | Geometria, collidery, osobna lewa odnoga zagadki, obowiązkowa biblioteka, dolny skrót do bonusu. Odbiór fizyczny wymaga testów Unity. |
+| Walka i obsada (#11–12, #14, #17) | Rzeczywiste ataki, obrażenia, zdrowie, pojedynczy demon, strażnik miniboss i demon finałowy. [Balans i mechanika](docs/combat.md). |
+| Interakcje, runy, biblioteka, sekret (#9, #13, #15–16, #19) | E wybiera jeden widoczny cel; sekwencja run, księga, dźwignia i relikt; fizyczne bramy według jednego runtime postępu. [Opis](docs/interaction.md). |
+| HUD i restart (#18) | Zdrowie, cel, interakcja, telegraph, wynik i czas; pełny reset sesji po porażce albo zwycięstwie. |
+| Oprawa i atmosfera (#20–21) | Stylizowana gotycka geometria, kolumny, krew, księgi, sarkofagi, witraże, księżyc, góry, mgła, pochodnie i syntetyzowany wiatr. Odbiór wizualny pozostaje oddzielny. |
+| Dokumentacja i testy rdzeni | Bazowe: Python 73/73 w WSL, postęp 29/29, ruch 36/36, kamera 32/32. Nowe: walka 13/13, runy 5/5; testują rzeczywiste źródła rdzeni. |
+| Unity EditMode/PlayMode (#5, #22) | Testy komponentów i całej trasy dodane; przypięty edytor działa. EditMode 113/113; pełny PlayMode i pomiar trasy są w trakcie weryfikacji. |
+| Player Windows x64 (#24) | Dodany powtarzalny builder jednej sceny; wykonanie i uruchomienie playera jeszcze wymagają potwierdzenia. |
+| Tempo 2–3 minut i odbiór (#23–24) | Niezweryfikowane. Licznik HUD i testy nie zastępują pomiaru przejścia ani ręcznego odbioru. |
 
 Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings` nie należą do źródeł; usunięcie ich z bieżącego drzewa Git nie usuwa ich ze starej historii.
 
@@ -106,9 +102,9 @@ git clone https://github.com/lisu188/shadows-of-the-forsaken.git
 cd shadows-of-the-forsaken
 ```
 
-Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/SampleScene.unity`. To obecnie scena bazowa, a nie gotowy poziom z dokumentu.
+Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/ForsakenCastle.unity` i uruchom Play. Geometria jest składana deterministycznie w `Awake`, dlatego przed Play scena pokazuje obiekt właściciela poziomu. `SampleScene` pozostaje bazową fixture testów.
 
-[Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Nie dodano automatycznie gracza ani gotowego zamku do SampleScene; składanie poziomu pozostaje w #8.
+[Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Scena zamku tworzy gracza, wiąże ten kontroler z istniejącym assetem wejścia i dodaje akcję Restart; SampleScene pozostaje fixture bazową.
 
 [Instrukcja kamery #7](docs/camera-follow.md) opisuje przypisanie celu, tag Player, maskę przeszkód, parametry kolizji, `SetTarget` i `SnapToTarget`. Ściany muszą mieć collidery na uwzględnianych warstwach. Przy braku bezpiecznej pozycji kamera czasowo wstrzymuje renderowanie zamiast pokazywać wnętrze geometrii; ograniczenia i wymagany odbiór są opisane w instrukcji.
 
@@ -129,12 +125,14 @@ Workflow `Validate` sprawdza dokumentację, kontrakt poziomu, śledzone źródł
 
 ## Testy runtime C# bez edytora
 
-Wymagany jest .NET SDK 8.0. Projekty testów odwołują się do rzeczywistego kodu w `Assets/Progression/Core`, `Assets/Movement/Core` i `Assets/CameraRig/Core`, nie do kopii lub atrap Unity:
+Wymagany jest .NET SDK 8.0. Projekty testów odwołują się do rzeczywistego kodu w `Assets/Progression/Core`, `Assets/Movement/Core`, `Assets/CameraRig/Core`, `Assets/Combat/Core` i `Assets/Puzzles/Core`, nie do kopii lub atrap Unity:
 
 ```sh
 dotnet test tests/Progression/Progression.Tests.csproj --configuration Release
 dotnet test tests/Movement/Movement.Tests.csproj --configuration Release
 dotnet test tests/Camera/Camera.Tests.csproj --configuration Release
+dotnet test tests/Combat/Combat.Tests.csproj --configuration Release
+dotnet test tests/Puzzles/Puzzles.Tests.csproj --configuration Release
 ```
 
 Workflow `Progression C# tests` kompiluje rdzeń, uruchamia NUnit, sprawdza raport TRX i publikuje go jako artefakt. Test zgodności z JSON porównuje komendy we wszystkich osiągalnych stanach: 29 bez sekretu i 63 z sekretem, łącznie 1472 porównania. Pokrywa również odrzucane komendy. **Nie zastępuje testów komponentu Unity ani fizycznego przejścia poziomu.** Sposób podłączenia komponentu i granice API opisuje [dokument runtime](docs/progression-runtime.md).
@@ -154,6 +152,9 @@ Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.0.24f1
 ```text
 Assets/                         Sceny, skrypty, zasoby i powiązane pliki .meta
 Assets/CameraRig/Core/          Matematyka wygładzania i limitów kamery bez Unity
+Assets/Combat/                 Testowalna walka, przeciwnicy i prezentacja
+Assets/Level/                  Scena zamku, architektura, HUD, atmosfera i interakcje
+Assets/Puzzles/Core/           Sekwencja run bez zależności Unity
 Assets/Movement/Core/           Rdzeń ruchu i blokada wejścia bez zależności Unity
 Assets/Progression/             Rdzeń postępu bez Unity i adapter MonoBehaviour
 Assets/Tests/                   Testy EditMode i PlayMode silnika Unity

@@ -2,20 +2,40 @@
 
 ## Stan i granice weryfikacji
 
-Dodano kod **6 przypadków EditMode i 2 PlayMode**, osobne assembly definitions, walidator źródeł i raportów NUnit, lokalny runner oraz workflow `Unity tests`. Istniejące skrypty, sceny, wersje pakietów i GUID-y nie zostały zmienione.
+Aktualny komplet źródłowy obejmuje **113 przypadków EditMode i 67 PlayMode**, osobne assembly definitions, walidator źródeł i pełnych raportów NUnit, lokalny runner oraz workflow `Unity tests`. Liczby obejmują rozwinięte warianty `[TestCase]`, a nie tylko nazwy metod. Są to oczekiwane rozmiary zestawów, nie samodzielna deklaracja zaliczenia. Unity `6000.0.24f1`, Input System `1.11.1`, URP `17.0.3`, Test Framework `1.4.5` i oryginalne GUID-y istniejących skryptów pozostają przypięte.
 
-Pierwsza próba CI w [PR #26](https://github.com/lisu188/shadows-of-the-forsaken/pull/26) wykazała **brak konfiguracji aktywacji Unity**. Etap `Unity activation prerequisite (not tests)` zakończył się błędem, a testy edytora nie wystartowały. Nie jest to wynik testów C# ani dowód błędnej kompilacji. Issue #5 pozostaje otwarte do uzyskania rzeczywistych raportów obu trybów i logu czystego importu.
+Historyczna pierwsza próba CI w [PR #26](https://github.com/lisu188/shadows-of-the-forsaken/pull/26) wykazała **brak konfiguracji aktywacji Unity**. Etap `Unity activation prerequisite (not tests)` zakończył się błędem, a testy edytora nie wystartowały. Nie był to wynik testów C# ani dowód błędnej kompilacji. Tego historycznego wyniku nie należy przedstawiać jako obecnego wyniku lokalnego importu lub aktywacji. Bieżący zdalny workflow CI nie został wykonany w ramach tej dostawy; lokalne wyniki muszą mieć własne raporty, logi i identyfikację sprawdzonych źródeł.
+
+Integracyjna weryfikacja końcowego poziomu jest w toku. Sam wcześniejszy zielony zestaw, wynik 64/65 albo kod zakończenia procesu nie potwierdzają pełnego zaliczenia bieżących 113/67 przypadków. Po ukończeniu odbioru rzeczywiste wyniki, identyfikację źródeł i pozostałe granice weryfikacji należy zapisać w raporcie poziomu i README; niniejsza instrukcja opisuje zakres i wymagania, nie zastępuje dowodów wykonania.
 
 `Validate` sprawdza pliki, dokumentację i narzędzia w Pythonie. Zielony wynik tego workflow **nie potwierdza** importu, kompilacji, działania fizyki, kamery, walki lub grafiki. Syntetyczne XML-e i mock procesu w `tests/test_unity_validation.py` testują tylko zachowanie walidatora/runnera; nie są atrapą uruchomienia gry ani dowodem wykonania testów Unity.
 
 ## Zakres testów silnika
 
-| Assembly | Przypadki | Sprawdzane elementy |
+| Assembly / fixture | Przypadki | Sprawdzane elementy |
 | --- | ---: | --- |
-| `Shadows.EditMode.Tests` | 6 | Wersja edytora; obecność sceny w Build Settings; import obu skryptów z oryginalnymi GUID-ami; brak Missing Script w scenie; rozwiązywalne shadery materiałów. |
-| `Shadows.PlayMode.Tests` | 2 | Załadowanie rzeczywistego `SampleScene.unity`, kilka klatek bez nieoczekiwanych błędów, aktywna główna kamera z AudioListener oraz światło kierunkowe. |
+| EditMode: `ProjectBaselineTests` | 6 | Wersja edytora; scena bazowa w Build Settings; import obu istniejących skryptów z oryginalnymi GUID-ami; brak Missing Script; rozwiązywalne shadery materiałów. |
+| EditMode: `LevelProgressionTests` | 26 | Wymagana i opcjonalna trasa, bramy, kolejność celów, terminalne wyjście, reset, izolacja sesji, niezmienne migawki i bezpieczeństwo obserwatorów. |
+| EditMode: `PlayerMotorTests` | 36 | Ruch i obrót, skok, grawitacja, kolizje jako reguły rdzenia, niezależność od częstotliwości klatek, neutralizacja wejścia i pojedyncze naciśnięcia. |
+| EditMode: `CameraMotionTests` | 32 | Tłumienie, ograniczenie dystansu przy przeszkodzie, niezależność czasowa, zakresy i odrzucanie niepoprawnych danych. Nie zastępuje fizyki kamery. |
+| EditMode: `CombatRulesTests` | 13 | Zdrowie, śmierć/reset, token sesji ataku, przygotowanie/aktywne okno/odstęp, jeden trafiony cel na zamach i kierunkowy zasięg. |
+| **EditMode razem: `Shadows.EditMode.Tests`** | **113** | Pełny zestaw powyższych przypadków. |
+| PlayMode: `BaselineSceneTests` | 2 | Rzeczywista `SampleScene.unity`, brak Missing Script, aktywna kamera z AudioListener i światło kierunkowe. |
+| PlayMode: `ProgressionControllerTests` | 7 | Rzeczywisty adapter MonoBehaviour: komendy, zdarzenia, wyłączenie/włączenie, reset, stare sesje, zniszczenie i wyładowanie sceny. |
+| PlayMode: `PlayerMovementTests` | 18 | Rzeczywisty CharacterController i Input System: podłoże, ściany, schody, skok/sufit, wąskie przejście, utrata fokusu, pauza, wyłączenie, pojedyncze E i LMB. |
+| PlayMode: `CameraFollowTests` | 22 | Rzeczywiste zapytania fizyczne kamery, przeszkody, bezpieczna pozycja/frustum, odzyskanie widoku, brak celu, teleport i cykl życia. |
+| PlayMode: `CombatControllerTests` | 10 | Rzeczywista walka: okna ataku, compound colliders, ściany/kierunek, LMB jako dostarczona akcja, AI w granicach areny, śmierć, reset i stare tokeny; dwa testy zwykłego Update potwierdzają pościg i obrażenia przy 60 FPS oraz bez limitu klatek. |
+| PlayMode: `LevelInteractionTests` | 4 | Runy i ponowienie po błędzie/reset, stan fizycznej bramy, pojedyncza widoczna interakcja E oraz przyjęte/odrzucone callbacki przejścia. |
+| PlayMode: `ForsakenLevelTests` | 4 | Rzeczywista `ForsakenCastle.unity`: pełna trasa bez sekretu, opcjonalna sala i fizyczny skrót przez rampy, porażka/reset oraz próba skoku przez zamkniętą bramę. |
+| **PlayMode razem: `Shadows.PlayMode.Tests`** | **67** | Pełny zestaw powyższych przypadków. |
 
-Scena bazowa pozostaje sceną szablonową. Testy nie twierdzą, że zawiera gracza albo gotowy poziom zamku. Testy EditMode sprawdzają import istniejących skryptów przez `MonoScript`, bez przenoszenia ich do nowych assemblies. Assembly testowe nie są dołączane do zwykłych buildów gry; PlayMode nie odwołuje się do `UnityEditor`.
+Scena bazowa pozostaje sceną szablonową; końcowy poziom jest w `ForsakenCastle.unity`. Testy EditMode sprawdzają import istniejących skryptów przez `MonoScript`, bez przenoszenia ich do nowych assemblies. Rdzenie reguł nie zależą od Unity; osobne testy .NET kompilują te same źródła, ale nie uruchamiają MonoBehaviour, CharacterControllera, renderera ani cyklu życia sceny. Assembly testowe nie są dołączane do zwykłych buildów gry; kod PlayMode nie odwołuje się bezpośrednio do `UnityEditor`.
+
+Fixture'y ruchu, walki, interakcji i całej sceny osadzają oficjalny `InputTestFixture` z przypiętego pakietu. Zapisuje on bieżący Input System, instaluje izolowany runtime i wirtualne urządzenia, a w `TearDown` odtwarza pierwotny stan. W batch mode domyślne `InputSystem.Update()` może oznaczać aktualizację edytora, a brak fokusu Game View może odłożyć zdarzenia klawiatury lub myszy do bufora Editor. Dlatego testy wykonują jawny update `Manual` przez refleksję do wewnętrznego overloadu z wersji 1.11.1, po neutralnym wejściu sprawdzają rzeczywiste dostarczenie do konsumenta i ustawiają fokus wyłącznie dla testowego komponentu. To izolacja testów; produkcyjne warunki fokusu, pauzy, kontroli i odrzucania aktualizacji Editor/BeforeRender pozostają aktywne.
+
+Fixture pełnej sceny porusza rzeczywisty CharacterController przez fizyczne bramy i triggery, zabija przeciwników przez prawdziwe zamachy i wybiera mechanizmy przez zasięg oraz line of sight; nie przyznaje flag przez bezpośrednie `TryComplete`. Podstawowa trasa używa skonfigurowanej prędkości i rzeczywistych klatek, wymaga przeżycia zwykłego podatnego na obrażenia gracza oraz 120–180 sekund czasu gry. Jest to automatyczny pomiar trasy, odrębny od ręcznego playtestu. Szybsza regresja opcjonalnego odgałęzienia nie potwierdza czasu przejścia.
+
+Dowody wizualne testów całej sceny wymagają działającego urządzenia graficznego; nie uruchamiać ich z `-nographics`. Przypięty URP obsługuje `RenderPipeline.SubmitRenderRequest` z `UniversalRenderPipeline.SingleCameraRequest`, renderowanie do `RenderTexture` i odczyt `ReadPixels`. Ten transport zapisuje PNG 1280 × 720, nie używa niedostępnego w batch mode `WaitForEndOfFrame` ani przedwczesnego `ScreenCapture.CaptureScreenshotAsTexture`. Jednolite obrazy są odrzucane. Zrzuty końcowej sceny pokazują kamerę świata wraz z jej rzeczywistym HUD-em Canvas; wcześniejsze zrzuty wersji OnGUI nie obejmowały interfejsu. JSON zapisuje metodę, trasę, czas, zdrowie i listę obrazów. Same zrzuty nie dowodzą ręcznej obsługi interfejsu ani wydajności pełnej trasy w playerze.
 
 ## Kontrole bez edytora
 
@@ -55,11 +75,11 @@ Testy obu trybów są wykonywane kolejno, każdy na świeżym runnerze bez cache
 
 ## Zasady odbioru
 
-`tools/unity_validation.py results --mode editmode <raport.xml>` wymaga rzeczywistego raportu NUnit z wynikiem `Passed`, poprawnymi licznikami i wszystkimi oczekiwanymi przypadkami bazowymi. Sam kod wyjścia zero, pusty raport, brak wyników, częściowy zestaw testów lub wyłącznie testy innego trybu nie wystarczają. Zmieniając nazwy/liczbę testów bazowych, utrzymać spójność `EXPECTED_TESTS`, testów walidatora i tej dokumentacji.
+`tools/unity_validation.py results --mode editmode <raport.xml>` i odpowiednik `--mode playmode` wymagają rzeczywistego raportu NUnit z wynikiem `Passed`, zgodnymi licznikami, zerową liczbą failed/skipped/inconclusive i **całym oczekiwanym zestawem danego trybu**. `EXPECTED_TESTS` zawiera jawne nazwy `Fixture.Metoda` oraz liczby wariantów: obecnie 113 EditMode i 67 PlayMode. Walidator nie wylicza wymagań z właśnie ocenianego raportu, więc zielony stary zestaw bazowy nie może zastąpić pełnej integracji końcowego poziomu. Sam kod wyjścia zero, pusty raport, brak wyników, częściowy zestaw lub wyłącznie testy innego trybu nie wystarczają. Przy uzasadnionej zmianie źródłowych nazw/liczb utrzymać spójność `EXPECTED_TESTS`, testów walidatora i dokumentacji; nie zmniejszać wymagań, aby zaakceptować niepełny wynik.
 
 Do zamknięcia #5 należy dołączyć: udany run obu trybów, XML-e, logi importu/kompilacji i potwierdzenie uruchomienia sceny. Przy błędzie aktywacji sprawdzić konfigurację; przy błędzie kompilacji lub asercji poprawić kod. Nie usuwać testów, nie ustawiać `continue-on-error` i nie zmieniać warunku wstępnego na pozorny sukces tylko po to, aby uzyskać zielony status.
 
-Automatyczny build docelowego Windows playera i test całego poziomu pozostają odpowiednio zadaniami #24 i #22.
+Wykonanie pełnych fixture'ów sceny nie zastępuje osobnego builda Windows x64 ani jego uruchomienia. Test startu natywnego playera i FPS na dziedzińcu nie jest benchmarkiem całego poziomu; automatyczny czas przejścia w edytorze nie jest ręcznym playtestem. Aktualny raport musi osobno wskazywać: dokumentację/kontrakt, testy .NET, EditMode, PlayMode, kompilację playera, jego rzeczywisty start, automatyczny pomiar trasy, przegląd obrazów oraz niewykonane kontrole człowieka i pełnej wydajności playera. Nie oznaczać tych ostatnich jako zaliczone tylko na podstawie testów automatycznych.
 
 ## Źródła techniczne
 

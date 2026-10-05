@@ -1,0 +1,66 @@
+name: Combat and puzzle C# tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: combat-puzzles-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  core:
+    name: C# ${{ matrix.suite }} (not Unity)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: combat
+            project: tests/Combat/Combat.Tests.csproj
+            minimum: 13
+          - suite: puzzles
+            project: tests/Puzzles/Puzzles.Tests.csproj
+            minimum: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile production core and run shared tests
+        run: dotnet test '${{ matrix.project }}' --configuration Release --logger 'trx;LogFileName=${{ matrix.suite }}.trx' --results-directory 'artifacts/${{ matrix.suite }}'
+      - name: Require all discovered tests executed and passed
+        env:
+          SUITE: ${{ matrix.suite }}
+          MINIMUM: ${{ matrix.minimum }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+          suite = os.environ['SUITE']
+          root = ET.parse(f'artifacts/{suite}/{suite}.trx').getroot()
+          ns = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+          counts = root.find('.//t:Counters', ns)
+          assert counts is not None, 'Missing counters'
+          total = int(counts.attrib['total'])
+          assert total >= int(os.environ['MINIMUM']), f'{suite} tests not discovered'
+          assert int(counts.attrib['executed']) == int(counts.attrib['passed']) == total
+          assert int(counts.attrib['failed']) == 0
+          assert int(counts.attrib.get('notExecuted', '0')) == 0, 'Skipped tests are not accepted'
+          results = root.findall('.//t:UnitTestResult', ns)
+          assert len(results) == total and all(r.get('outcome') == 'Passed' for r in results)
+          if suite == 'combat':
+              for fps in (30, 60, 120):
+                  assert any(r.get('testName') == f'SwingHitsExactlyOnceAtRepresentativeFrameRates({fps})' for r in results), fps
+          print(f'Verified executed C# {suite} tests: {total}; zero skipped')
+          PY
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.suite }}-test-results
+          path: artifacts/${{ matrix.suite }}/
+          if-no-files-found: error
+          retention-days: 14

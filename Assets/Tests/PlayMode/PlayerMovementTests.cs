@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using ShadowsOfTheForsaken.Movement;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,6 +14,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
     public class PlayerMovementTests
     {
         private readonly List<GameObject> objects = new List<GameObject>();
+        private readonly InputTestFixture inputFixture = new InputTestFixture();
         private InputActionAsset asset;
         private Keyboard keyboard;
         private Mouse mouse;
@@ -21,10 +23,15 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private Type movementType;
         private InputSettings.UpdateMode previousUpdateMode;
         private float previousTimeScale;
+        private static readonly MethodInfo ManualInputUpdate = typeof(InputSystem).GetMethod("Update",
+            BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
 
         [SetUp]
         public void SetUp()
         {
+            // Isolate virtual devices from host GameView focus and hardware discovery. The fixture
+            // snapshots and restores the real Input System; MonoBehaviour and physics remain real Unity.
+            inputFixture.Setup();
             previousUpdateMode = InputSystem.settings.updateMode;
             previousTimeScale = Time.timeScale;
             InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsManually;
@@ -61,20 +68,29 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Call("OnApplicationFocus", true);
             Physics.SyncTransforms();
             Keys();
+            Assert.That(InputState.currentUpdateType, Is.EqualTo(InputUpdateType.Manual), "Virtual-device pump must use player state buffers");
+            Assert.That((bool)movementType.GetField("inputUpdated", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(movement),
+                Is.True, "Neutral input after focus must reach PlayerMovement.SampleInput");
+            var gate = (PlayerInputGate)movementType.GetField("inputGate", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(movement);
+            Assert.That(gate.AwaitingNeutral, Is.False, "The neutral pump must release the suspended input gate");
             Advance(0.2f);
         }
 
         [TearDown]
         public void TearDown()
         {
-            for (int i = objects.Count - 1; i >= 0; i--)
-                if (objects[i] != null) Object.DestroyImmediate(objects[i]);
-            objects.Clear();
-            if (asset != null) Object.DestroyImmediate(asset);
-            if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
-            if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
-            InputSystem.settings.updateMode = previousUpdateMode;
-            Time.timeScale = previousTimeScale;
+            try
+            {
+                for (int i = objects.Count - 1; i >= 0; i--)
+                    if (objects[i] != null) Object.DestroyImmediate(objects[i]);
+                objects.Clear();
+                if (asset != null) Object.DestroyImmediate(asset);
+                if (keyboard != null && keyboard.added) InputSystem.RemoveDevice(keyboard);
+                if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
+                InputSystem.settings.updateMode = previousUpdateMode;
+                Time.timeScale = previousTimeScale;
+            }
+            finally { inputFixture.TearDown(); }
         }
 
         private void Call(string method, params object[] args)
@@ -86,7 +102,17 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private void Keys(params Key[] keys)
         {
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(keys));
-            InputSystem.Update();
+            PumpInput();
+        }
+
+        // The parameterless overload chooses Editor updates in an unfocused batch-mode GameView.
+        // Editor updates deliberately do not dispatch player onAfterUpdate callbacks in PlayMode.
+        private static void PumpInput()
+        {
+            // Input System 1.11.1 exposes the typed pump internally; keep this reflection in the fixture.
+            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its internal typed update pump");
+            try { ManualInputUpdate.Invoke(null, new object[] { InputUpdateType.Manual }); }
+            catch (TargetInvocationException error) { throw error.InnerException; }
         }
 
         private void Advance(float seconds, int fps = 60)
@@ -194,7 +220,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Advance(0.2f);
             Assert.That(movement.transform.position, Is.EqualTo(start));
             Call("OnApplicationFocus", true);
-            InputSystem.Update();
+            PumpInput();
             Advance(0.2f);
             Assert.That(movement.transform.position.z, Is.EqualTo(start.z));
             Keys();
@@ -210,14 +236,14 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             movementType.GetEvent("AttackRequested").AddEventHandler(movement, (Action)(() => attacks++));
             Keys(Key.Space);
             InputSystem.QueueStateEvent(mouse, new MouseState().WithButton(MouseButton.Left));
-            InputSystem.Update();
+            PumpInput();
             Call("SetControlsEnabled", false);
             var start = movement.transform.position;
             Advance(0.2f);
             Assert.That(movement.transform.position, Is.EqualTo(start));
             Assert.That(attacks, Is.Zero);
             Call("SetControlsEnabled", true);
-            InputSystem.Update();
+            PumpInput();
             Advance(0.2f);
             Assert.That(attacks, Is.Zero);
             Assert.That(Velocity, Is.LessThanOrEqualTo(0));
@@ -231,7 +257,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Keys(Key.E);
             Advance(0.1f);
             Assert.That(interactions, Is.EqualTo(1));
-            InputSystem.Update();
+            PumpInput();
             Advance(0.1f);
             Assert.That(interactions, Is.EqualTo(1));
             Keys();
@@ -247,7 +273,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             movementType.GetEvent("InteractRequested").AddEventHandler(movement, (Action)(() => interactions++));
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.E));
             InputSystem.QueueStateEvent(keyboard, new KeyboardState());
-            InputSystem.Update();
+            PumpInput();
             Advance(0.1f);
             Assert.That(interactions, Is.EqualTo(1));
         }
@@ -290,7 +316,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Advance(0.1f);
             Assert.That(movement.transform.position, Is.EqualTo(start));
             Call("OnApplicationPause", false);
-            InputSystem.Update();
+            PumpInput();
             Advance(0.1f);
             Assert.That(Velocity, Is.LessThanOrEqualTo(0));
         }
@@ -308,6 +334,26 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Keys(Key.W);
             Advance(0.1f);
             Assert.That(movement.transform.position.z, Is.GreaterThan(start.z));
+        }
+
+        [Test]
+        public void MouseAttackFiresOncePerPressThroughOwnedActionMap()
+        {
+            int attacks = 0;
+            movementType.GetEvent("AttackRequested").AddEventHandler(movement, (Action)(() => attacks++));
+            InputSystem.QueueStateEvent(mouse, new MouseState().WithButton(MouseButton.Left));
+            PumpInput();
+            Advance(0.1f);
+            Assert.That(attacks, Is.EqualTo(1));
+            PumpInput();
+            Advance(0.1f);
+            Assert.That(attacks, Is.EqualTo(1), "Holding the mouse must not produce a second attack");
+            InputSystem.QueueStateEvent(mouse, new MouseState());
+            PumpInput();
+            InputSystem.QueueStateEvent(mouse, new MouseState().WithButton(MouseButton.Left));
+            PumpInput();
+            Advance(0.1f);
+            Assert.That(attacks, Is.EqualTo(2));
         }
     }
 }

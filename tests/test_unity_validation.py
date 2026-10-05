@@ -155,7 +155,7 @@ def report_for(mode):
     namespace = "ShadowsOfTheForsaken.Tests." + {"editmode": "EditMode", "playmode": "PlayMode"}[mode]
     for name, count in validation.EXPECTED_TESTS[mode].items():
         for index in range(count):
-            full = f"{namespace}.Fixture.{name}" + (f"({index})" if count > 1 else "")
+            full = f"{namespace}.{name}" + (f"({index})" if count > 1 else "")
             ET.SubElement(suite, "test-case", fullname=full, result="Passed")
     total = str(len(list(root.iter("test-case"))))
     root.set("total", total)
@@ -173,8 +173,8 @@ class NUnitEvidenceTests(unittest.TestCase):
     def save(self, report):
         ET.ElementTree(report).write(self.path, encoding="utf-8", xml_declaration=True)
 
-    def test_accepts_complete_baseline_reports_for_both_modes(self):
-        for mode, count in [("editmode", 6), ("playmode", 2)]:
+    def test_accepts_complete_required_reports_for_both_modes(self):
+        for mode, count in [("editmode", 113), ("playmode", 67)]:
             with self.subTest(mode=mode):
                 self.save(report_for(mode))
                 self.assertEqual(count, validation.validate_results(self.path, mode)["passed"])
@@ -265,6 +265,18 @@ class NUnitEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(validation.ValidationError, "Expected baseline"):
             validation.validate_results(self.path, "editmode")
 
+    def test_rejects_missing_full_level_route_despite_all_executed_cases_passing(self):
+        report = report_for("playmode")
+        suite = report.find("test-suite")
+        missing = next(case for case in suite if "MainRouteWinsWithoutSecret" in case.get("fullname", ""))
+        suite.remove(missing)
+        count = str(len(list(report.iter("test-case"))))
+        report.set("total", count)
+        report.set("passed", count)
+        self.save(report)
+        with self.assertRaisesRegex(validation.ValidationError, "MainRouteWinsWithoutSecret"):
+            validation.validate_results(self.path, "playmode")
+
     def test_rejects_unknown_mode(self):
         with self.assertRaisesRegex(validation.ValidationError, "Unknown test mode"):
             validation.validate_results(self.path, "standalone")
@@ -303,7 +315,7 @@ class LocalRunnerCommandTests(unittest.TestCase):
             ET.ElementTree(report_for("editmode")).write(self.output / "editmode-results.xml")
             return subprocess.CompletedProcess(command, 0)
         process.side_effect = execute
-        self.assertEqual(6, self.run_editor()["passed"])
+        self.assertEqual(113, self.run_editor()["passed"])
         project.assert_called_once_with(self.root)
 
     @patch.object(validation, "validate_project")

@@ -1,0 +1,27 @@
+# Walka poziomu
+
+Źródło: DOCX §1 (walka z demonami i skażonymi ludźmi), §3 (pojedynczy początkowy demon), §6–8 (miniboss w sali tronowej i finał), oraz przyjęte [decyzje](design-decisions.md). Jedna postać gracza ma pojedynczy kierunkowy atak wręcz. Poziom zawiera jednego początkowego demona, jednego skażonego strażnika i jednego demona finałowego. Śmierć rzeczywistego przeciwnika zgłasza właściwy cel do jednego scenowego kontrolera postępu.
+
+## Jawne wybory implementacyjne
+
+Liczby poniżej służą pierwszemu grywalnemu poziomowi; DOCX nie podaje zdrowia, obrażeń ani okien czasowych. Gracz ma 100 zdrowia, zadaje 25 obrażeń, zasięg 2,25 jednostki i frontalny stożek (minimalny iloczyn skalarny 0,45). Zamach ma 0,16 s przygotowania, 0,15 s aktywnego kontaktu i 0,26 s odpoczynku. Każdy przeciwnik otrzymuje obrażenia najwyżej raz na zamach, także przy wielu colliderach. Kierunek zostaje zapisany na początku zamachu. Przeszkody i różnica wysokości powyżej 1,6 jednostki blokują trafienie.
+
+Domyślne wartości przeciwnika: 60 zdrowia, 15 obrażeń, ruch 2,2 jednostki/s, zasięg 1,85 jednostki, przygotowanie 0,68 s, kontakt 0,16 s, odpoczynek 0,85 s. Scena może podać wyższe zdrowie i obrażenia strażnika/finałowego demona w `EnemyCombat.Configure`; rzeczywiste wartości sceny należy raportować wraz z playtestem. Pomarańczowy korpus oznacza przygotowanie, czerwony kontakt. Przeciwnik nie śledzi gracza poza swoim logicznym pokojem lub poziomymi granicami areny. Ruch korzysta z CharacterController i colliderów sceny. Gracz może odejść od przygotowywanego ciosu; dodatkowy unik, stamina, blokowanie i ekwipunek nie są potrzebne do tej trasy.
+
+Scena `ForsakenLevel` podaje początkowemu demonowi 45 zdrowia / 10 obrażeń / 1,8 jednostki/s, strażnikowi 100 / 16 / 2,1, a finałowemu demonowi 120 / 20 / 2,3. Są to wartości do ręcznego dostrojenia, nie dowód trudności ani 2–3 minut. Utrata fokusu, pauza, terminalny stan i zablokowane wejście gracza wstrzymują walkę oraz odrzucają trwający zamach.
+
+`EnemyCombat.Configure` ustawia `CharacterController.minMoveDistance = 0`; scena ustawia ten sam próg kontrolera gracza. To wybór adaptera fizyki, nie mechanika z DOCX. Domyślne 0,001 m w przypiętym silniku odrzucało większość drobnych przesunięć przy bardzo wysokim FPS: prawdziwy test nieograniczonego `Update` wykonał 48 473 klatki w 8 s, lecz przeciwnik przeszedł tylko 0,097 m i nie zadał obrażeń; przy 60 FPS doszedł do gracza i trafił. Zerowy próg zachowuje małe przesunięcia bez sztucznego przyspieszania czasu, zgodnie z [zaleceniem Unity 6](https://docs.unity3d.com/6000.0/ScriptReference/CharacterController-minMoveDistance.html).
+
+Po poprawce niezmieniony test przy nieograniczonym FPS wykonał 20 885 klatek w 3,41 s: przeciwnik przeszedł z odległości 4 m na 1,70 m i obniżył zdrowie gracza ze 100 do 85. Przypadek 60 FPS również zadał rzeczywiste obrażenia. Cały skupiony zestaw `CombatControllerTests` przeszedł 10/10 bez pominięć w Unity 6000.0.24f1; zapis znajduje się w lokalnym `artifacts/level-completion/focused-native-pursuit-retry-1/results.xml`. Ten wynik dotyczy adaptera walki, nie zastępuje testu całej sceny ani ręcznej akceptacji.
+
+## Integracja i sesja
+
+`Assets/Combat/Core/CombatRules.cs` przechowuje zdrowie, deterministyczne okna ataku oraz rejestr trafionych celów. Ten sam plik kompiluje projekt .NET Standard 2.1. `PlayerCombat` i `EnemyCombat` są adapterami Unity w istniejącym Assembly-CSharp, aby zachować odwołanie do PlayerMovement. `PlayerCombat` subskrybuje AttackRequested podczas aktywności komponentu, bez drugiego odczytu wejścia. `Configure` wiąże kontroler sceny; renderery i collidery powinny istnieć przed jego wywołaniem.
+
+Zdrowie i rozpoczęty atak przechowują SessionId. Trafienie z poprzedniej sesji jest odrzucane; callback nie podmienia starego tokena. Zmiana sesji resetuje zdrowie, pozycję/obrót, aktywny zamach, włączone collidery i widoczność przeciwnika. Śmierć przeciwnika ukrywa renderery i wyłącza collidery, zachowując żywy komponent do odbioru resetu. Wyłączenie komponentu odłącza obserwatorów, a ponowne włączenie nadrabia reset wykonany w przerwie. Obserwator Changed resetuje własny świat i nie zmienia synchronicznie postępu. Śmierć gracza zatrzymuje jego wejście i emituje Died do scenowego UI/restartera.
+
+## Weryfikacja i granice
+
+`dotnet test tests/Combat/Combat.Tests.csproj --configuration Release` uruchamia wspólne testy EditMode rdzenia: jednorazowe obrażenia, śmierć/reset, kierunek/zasięg, przejście przez aktywne okno przy wolnej klatce, reprezentatywne FPS i stare tokeny. PlayMode `CombatControllerTests` wymaga prawdziwego Unity i sprawdza kolizje, przeszkodę, tylny cel, telegraph, zgłoszenie zwycięstwa, ograniczenie areny i odtworzenie świata po resecie. Dwie korutyny obserwują wyłącznie normalne `MonoBehaviour.Update` przy nieograniczonym FPS i przy 60 FPS; wymagają pościgu oraz rzeczywistych obrażeń bez ręcznego wywoływania `Simulate` albo `Move` podczas obserwacji.
+
+Testy .NET nie kompilują MonoBehaviour ani nie dowodzą widoczności, animacji, zachowania colliderów czy czasu ukończenia. Wyniki Unity, builda i ręcznego pomiaru podstawowej trasy muszą zostać raportowane osobno. Ta dokumentacja nie deklaruje osiągnięcia docelowych 2–3 minut.
