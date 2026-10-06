@@ -1,4 +1,42 @@
-# Weryfikacja dostarczonego poziomu — 2026-10-05
+# Weryfikacja poziomu zamku
+
+## Poprawki po przeglądzie — 2026-10-06
+
+Naprawiono cztery zgłoszone defekty: zawieszony zamach przeciwnika po pauzie `Time.timeScale=0`, inskrypcje widoczne przez nieprzezroczyste ściany, ucięty timer HUD w proporcjach 4:3/16:10 oraz akceptowanie raportów NUnit ze zmienionymi argumentami. Topologia, obowiązkowa biblioteka i finał, opcjonalny sekret, DOCX i przypięte pakiety pozostają zgodne z wcześniejszymi decyzjami. Są to poprawki walki (§3, §6), oprawy i czytelności (§4, §7–8) oraz narzędzi weryfikacji.
+
+| Kontrola | Rzeczywisty wynik | Dowód w `artifacts/review-fixes-20261006` |
+| --- | --- | --- |
+| Kontrakt i źródłowy DOCX | PASS; 29/63 stanów, hash niezmieniony | `tools/validate_level_contract.py` |
+| Python | 76/76 PASS w WSL; regresje odrzucania zmienionych parametrów | `validation-summary.json`; polecenie unittest |
+| Integralność źródeł Unity | PASS; 77 assetów, 102 unikalne GUID-y, komplet `.meta` | `validation-summary.json`; source validator |
+| Rdzenie C# / NUnit | 115/115 PASS, 0 skipped: postęp 29, ruch 36, kamera 32, walka 13, runy 5 | `headless/<zestaw>/*.trx` |
+| Unity EditMode po czystym imporcie | 113/113 PASS, 0 failed/skipped | `editmode/results.xml`, `editor.log`, `source-snapshot.json` |
+| Unity PlayMode | 74/74 PASS, 0 failed/skipped; pełne tożsamości przypadków | `playmode/results.xml`, `editor.log`, `source-snapshot.json` |
+| Pauza walki | Rzeczywista klatka Update z zerową skalą czasu odrzuca poprzedni zamach; powrót wymaga nowego przygotowania. Zero, ujemny czas, NaN i ±Infinity również anulują zamach | Dwa nowe `CombatControllerTests` w pełnym XML |
+| Głębia tekstu świata | 0 zmienionych pikseli za zamkniętymi drzwiami biblioteki; 3531 z bliska | `playmode/world-text-render/world-text.json` i 4 PNG |
+| HUD w czterech proporcjach | Timer w viewportach 1024×768, 1280×800, 1280×720, 2560×1080; potwierdzone renderowanie, margines i odstęp od sterowania | `playmode/review-fixes-20261006/hud-layout/*.png`; log i 4 nowe testy |
+| Główna trasa, sekret i restart | Pełne przypadki rzeczywistej sceny PASS; trasa podstawowa 134.1712 s gry / 134.1741 s rzeczywiste, 255.44 m | `playmode/traversal/*.json` i PNG |
+| Windows x64 Mono | SUCCEEDED; 114 705 503 B, 56.77 s według BuildPipeline, 0 błędów, 2 wcześniejsze ostrzeżenia URP | `build/build-summary.json`, `editor.log`, `execution.json` |
+| Natywny player | PASS, exit 0 w 1024×768 i 1280×720; GPU, kamera i piksele Canvas, zdrowie 100, 3 przeciwników i 9 przejść | `player-1024x768`, `player-1280x720`; obrazy obejrzane |
+| Paczka Windows | 169 wymaganych plików, ZIP 36 620 441 B, zweryfikowane CRC i SHA-256 całej zawartości | `package-summary.json` |
+
+Zestaw PlayMode powiększył się z 67 do 74. Walidator wymaga pełnej nazwy NUnit z dokładnym sufiksem wszystkich argumentów zgodnym z deklaracjami źródłowymi. Warianty `(31)`, `(32)`, `(33)` nie zastępują wymaganych `(30)`, `(60)`, `(120)` przy tej samej liczbie testów. Syntetyczne XML-e służą wyłącznie testom narzędzia; powyższe wyniki silnika pochodzą z rzeczywistego edytora.
+
+Commit poprawki: `5008313c842cf4e5b864fca6ad30256ae756e700`. Wszystkie nowe testy i build korzystały z niezmiennego drzewa `89d78f8126bdf0618ce160661088af1ff62a699a`, subtree Assets `5ef6c73f5c565ee9cb7ce24704dadfa63ec84777`. Osobny projekt `C:\Users\andrz\AppData\Local\Temp\shadows-review-fixes-cold-20261006` nie miał przed pierwszym importem Library, Temp, Logs, Obj ani UserSettings. Późniejszy commit dokumentacji opisuje te wyniki i nie zmienia sprawdzonych assetów ani pakietów.
+
+Aktualna paczka to `Builds/ShadowsOfTheForsaken-Windows-x64-review-fixes-20261006.zip`. Player jest w `Builds/Windows-review-fixes-20261006`; poprzedni build, ZIP i wszystkie dowody z 2026-10-05 zachowano. SHA-256 nowego ZIP:
+
+```text
+cfb85f923f66f26a0b89efb543a10d1dd88685d97fd3f33e0d8a673392d4beae
+```
+
+SHA-256 `Assembly-CSharp.dll`: `6cfdafc1ff99ce569f83936b41e1dea145d115ce845ad1969afb66b2c27a5076`. Build log potwierdza skompilowanie i serializację `Shadows/WorldText`; scena zawiera referencję jego materiału. Dwa ostrzeżenia dotyczą niejawnego skrócenia wektora w przypiętym URP SSAO (wiersze 167/211), bez zmiany wersji pakietu.
+
+Rzeczywiste zrzuty GPU obejrzano, w tym timer w natywnym 1024×768. Natywne okno było ukryte i uruchamiało jawny opt-in probe; częstotliwość Update nie jest prezentowanym FPS. Automatyczna główna trasa około 2:14 pozostaje oddzielna od ręcznej rozgrywki człowieka. Ręczne przejścia, odbiór oprawy przez właściciela, benchmark pełnej trasy playera i nowy zdalny CI nadal są **niewykonane**.
+
+Poniżej zachowano wyniki wcześniejszej dostawy z ich oryginalnymi hashami, licznikami i ograniczeniami; nie zastępują one weryfikacji nowych poprawek.
+
+## Historyczna dostawa — 2026-10-05
 
 Scena `Assets/Scenes/ForsakenCastle.unity` implementuje jeden grywalny poziom: spokojny dziedziniec → pojedynczy demon → lewa zagadka i powrót do węzła → miniboss w sali tronowej → obowiązkowa biblioteka → katakumby → finałowa walka → wyjście. Dźwignia, sala bonusowa, relikt i ukryty powrót do tronu pozostają opcjonalne. Źródłowy DOCX, jego flow chart, mapa i referencje zostały przeczytane/obejrzane; oryginalny blob `8c5b63bdf8f054a60b024407641921caa8055e75` oraz wcześniejsze decyzje i kontrakt pozostały bez zmian.
 
@@ -25,7 +63,7 @@ Wyniki lokalne znajdują się w ignorowanym `artifacts/level-completion`. Nie do
 | Natywny player i HUD | PASS, exit 0: Unity 6000.0.24f1, RTX 4060 Ti / D3D11, 1280 × 720, dziedziniec, 3 przeciwników, 9 przejść, zdrowie 100, bezpieczna kamera oraz rzeczywiste piksele Canvas | `player-smoke-final/startup.json`, `courtyard.png`, `player.log`, `execution.json` |
 | Paczka Windows | 169 wymaganych plików playera; ZIP 36 619 044 B, wszystkie CRC oraz SHA-256 zawartości zweryfikowane | `package-summary.json`, `Builds/ShadowsOfTheForsaken-Windows-x64.zip` |
 
-Rdzenie .NET kompilują te same produkcyjne źródła co Unity. Nie symulują MonoBehaviour. XML-e Unity zostały sprawdzone bieżącym walidatorem, który wymaga jawnie zapisanych nazw `Fixture.Metoda`, wszystkich wariantów oraz zerowej liczby pominiętych przypadków; samo exit 0 lub wcześniejszy mniejszy zestaw nie wystarcza.
+Rdzenie .NET kompilują te same produkcyjne źródła co Unity. Nie symulują MonoBehaviour. XML-e tej dostawy zostały sprawdzone ówczesnym walidatorem, który wymagał jawnie zapisanych nazw `Fixture.Metoda`, liczby wariantów oraz zerowej liczby pominiętych przypadków; samo exit 0 lub wcześniejszy mniejszy zestaw nie wystarcza.
 
 ## Tożsamość źródeł i środowiska
 

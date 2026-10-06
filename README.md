@@ -67,14 +67,16 @@ Implementacja sceny gry znajduje się w Assets/Scenes/ForsakenCastle.unity. Scen
 | Interakcje, runy, biblioteka, sekret (#9, #13, #15–16, #19) | E wybiera jeden widoczny cel; sekwencja run, księga, dźwignia i relikt; fizyczne bramy według jednego runtime postępu. [Opis](docs/interaction.md). |
 | HUD i restart (#18) | Canvas z własnym wejściem UI: zdrowie, cel, interakcja, telegraph, wynik i czas. Testy potwierdziły reset fizycznej sceny przez przycisk i R oraz odrzucanie starych sesji. |
 | Oprawa i atmosfera (#20–21) | Stylizowana gotycka geometria, kolumny, krew, księgi, sarkofagi, witraże, księżyc, góry, mgła, pochodnie i syntetyzowany wiatr. Obejrzano obrazy rzeczywistej kamery z HUD-em; odbiór wizualny właściciela pozostaje oddzielny. |
-| Dokumentacja i testy rdzeni | Bazowe: Python 73/73 w WSL, postęp 29/29, ruch 36/36, kamera 32/32. Nowe: walka 13/13, runy 5/5; testują rzeczywiste źródła rdzeni. |
-| Unity EditMode/PlayMode (#5, #22) | Rzeczywisty przypięty edytor: czysty import i EditMode 113/113; pełny PlayMode 67/67, bez pominięć. [Raport i identyfikacja źródeł](docs/level-verification.md). |
+| Dokumentacja i testy rdzeni | Bazowe: Python 76/76 w WSL, postęp 29/29, ruch 36/36, kamera 32/32. Nowe: walka 13/13, runy 5/5; testują rzeczywiste źródła rdzeni. |
+| Unity EditMode/PlayMode (#5, #22) | Rzeczywisty przypięty edytor: czysty import i EditMode 113/113; pełny PlayMode 74/74, bez pominięć. [Raport i identyfikacja źródeł](docs/level-verification.md). |
 | Player Windows x64 (#24) | Build Windows x64 Mono zaliczony, 0 błędów. Natywny start zaliczony: rzeczywiste GPU, kamera i Canvas HUD, exit 0. Gotowy lokalny ZIP z wymaganymi plikami runtime; pełny benchmark playera niewykonany. |
-| Tempo 2–3 minut i odbiór (#23–24) | Automatyczne przejście głównej trasy rzeczywistej sceny: 134,19 s, 255,44 m, prędkość 2 m/s, bez sekretu i przymusowych pauz. To pomiar automatyczny, nie ręczny playtest lub benchmark playera. |
+| Tempo 2–3 minut i odbiór (#23–24) | Automatyczne przejście głównej trasy rzeczywistej sceny: 134,17 s, 255,44 m, prędkość 2 m/s, bez sekretu i przymusowych pauz. To pomiar automatyczny, nie ręczny playtest lub benchmark playera. |
 
 Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings` nie należą do źródeł; usunięcie ich z bieżącego drzewa Git nie usuwa ich ze starej historii.
 
 ## Zakres dostawy i dalszy odbiór
+
+Poprawki przeglądu z 2026-10-06 anulują zamach przeciwnika podczas pauzy, zasłaniają napisy świata przez ściany, utrzymują timer HUD wewnątrz viewportu oraz wymagają dokładnych argumentów przypadków NUnit. Siedem nowych regresji PlayMode zaliczono w przypiętym edytorze; natywny player sprawdzono w 1024 × 768 i 1280 × 720. Szczegóły i hashe zawiera [raport weryfikacji](docs/level-verification.md).
 
 Poziom implementuje obowiązkowy przebieg i opcjonalną zawartość z DOCX, z rozstrzygnięciami zapisanymi w `docs/design-decisions.md`. Oprawa jest autorską stylizacją z geometrii proceduralnej, a nie importem fotografii referencyjnych. Testy sceny sprawdzają rzeczywistą fizykę, ataki, mechanizmy, oba warianty ukończenia oraz reset; testy samych rdzeni nie są ich zamiennikiem.
 
@@ -100,7 +102,7 @@ cd shadows-of-the-forsaken
 
 Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/ForsakenCastle.unity` i uruchom Play. Geometria jest składana deterministycznie w `Awake`, dlatego przed Play scena pokazuje obiekt właściciela poziomu. `SampleScene` pozostaje bazową fixture testów.
 
-Dostawa lokalna Windows znajduje się w `Builds/ShadowsOfTheForsaken-Windows-x64.zip`. Rozpakuj całe archiwum i uruchom `ShadowsOfTheForsaken.exe`; zachowaj towarzyszący folder Data, DLL-e, `MonoBleedingEdge` i `D3D12`. Builder można ponowić przez menu `Forsaken/Build Windows player`. Sterowanie: **W/S** ruch, **A/D** obrót, **Spacja** skok, **LPM** atak, **E** interakcja; po zakończeniu lub śmierci **R** albo przycisk rozpoczyna nową sesję. Build i archiwum są ignorowanymi wynikami lokalnymi, nie śledzonymi źródłami repozytorium.
+Dostawa Windows po poprawkach przeglądu z 2026-10-06 znajduje się w `Builds/ShadowsOfTheForsaken-Windows-x64-review-fixes-20261006.zip`; odpowiadający player jest w `Builds/Windows-review-fixes-20261006`. Wcześniejsza paczka i build z 2026-10-05 pozostają zachowane. Rozpakuj całe archiwum i uruchom `ShadowsOfTheForsaken.exe`; zachowaj towarzyszący folder Data, DLL-e, `MonoBleedingEdge` i `D3D12`. Builder można ponowić przez menu `Forsaken/Build Windows player`. Sterowanie: **W/S** ruch, **A/D** obrót, **Spacja** skok, **LPM** atak, **E** interakcja; po zakończeniu lub śmierci **R** albo przycisk rozpoczyna nową sesję. Build i archiwum są ignorowanymi wynikami lokalnymi, nie śledzonymi źródłami repozytorium.
 
 [Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Scena zamku tworzy gracza, wiąże ten kontroler z istniejącym assetem wejścia i dodaje akcję Restart; SampleScene pozostaje fixture bazową.
 
@@ -143,7 +145,7 @@ Workflow `Camera C# tests` kompiluje produkcyjną matematykę kamery jako .NET S
 
 Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.0.24f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
 
-[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, pełny zakres 113 EditMode / 67 PlayMode, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. [Raport poziomu](docs/level-verification.md) dokumentuje zaliczone lokalne zestawy, czysty import i osobne dowody builda oraz jego uruchomienia. Nie jest deklaracją wyniku niewykonanego zdalnego CI.
+[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, pełny zakres 113 EditMode / 74 PlayMode, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. [Raport poziomu](docs/level-verification.md) dokumentuje zaliczone lokalne zestawy, czysty import i osobne dowody builda oraz jego uruchomienia. Nie jest deklaracją wyniku niewykonanego zdalnego CI.
 
 ## Struktura repozytorium
 

@@ -8,7 +8,7 @@ Scena gry to `Assets/Scenes/ForsakenCastle.unity`. `ForsakenLevel` tworzy geomet
 
 Jedna komórka mapy §8 odpowiada 12 m. Kolumna 5 jest osią X=0, wiersz 10 osią Z=0. Wyższe wiersze mają większe Z. Jest to wybór skali, nie pomiar z DOCX. Dziedziniec ma wydłużone dojście od Z=-51: spokojne wprowadzenie wynika z drogi i widoków, bez obowiązkowego oczekiwania.
 
-Prędkość chodu w tej scenie wynosi 2 m/s, obrót 110 stopni/s. Samo dojście do pierwszej bramy ma około 69 m; daje kilkadziesiąt sekund bez walki. Automatyczne przejście rzeczywistej sceny Unity zmierzyło 255,44 m i 134,19 s, w tym walki oraz interakcje, przy skonfigurowanej prędkości bez przymusowych pauz. Wynik mieści się w 2–3 minutach dla tej automatycznej trasy; nie zastępuje ręcznego przejścia człowieka lub pomiaru całej trasy w playerze. Metodę i granice dowodu opisuje [raport weryfikacji](level-verification.md).
+Prędkość chodu w tej scenie wynosi 2 m/s, obrót 110 stopni/s. Samo dojście do pierwszej bramy ma około 69 m; daje kilkadziesiąt sekund bez walki. Automatyczne przejście rzeczywistej sceny Unity zmierzyło 255,44 m i 134,17 s, w tym walki oraz interakcje, przy skonfigurowanej prędkości bez przymusowych pauz. Wynik mieści się w 2–3 minutach dla tej automatycznej trasy; nie zastępuje ręcznego przejścia człowieka lub pomiaru całej trasy w playerze. Metodę i granice dowodu opisuje [raport weryfikacji](level-verification.md).
 
 | DOCX | Realizacja | Przyjęte współrzędne X,Z |
 | --- | --- | --- |
@@ -26,7 +26,7 @@ Skrót tron–bonus ma własne zejście do Y=-6 i powrót na Y=0. Nie przecina �
 
 Podziemne położenie katakumb (§4) realizuje skalny nadkład wznoszącego się zbocza ponad ich sklepieniem. Korytarz grobowców ma niższe sklepienie 4,8 m, odróżniające go od sal zamku i większej areny. Posadzka obowiązkowej trasy pozostaje na wysokości biblioteki; droga wchodzi pod wzgórze, bez obowiązkowych schodów. Jest to decyzja przestrzenna implementacji, której mapa 2D nie określa. Osobne zejście do Y=-6 należy wyłącznie do opcjonalnego skrótu.
 
-Geometria wykorzystuje oryginalne, składane z brył detale: ostrołukowe żebra, kolumny, gzymsy, okna, regały, sarkofagi, humanoidalne sylwetki i demoniczne rogi. `CastleSurface.shader` daje kamienną fakturę, oświetlenie URP i mgłę. Nie importowano ilustracji referencyjnych jako gotowej grafiki gry. Stylizacja i skala nie oznaczają automatycznie odbioru podobieństwa do referencji; wymagają obejrzenia działającej sceny.
+Geometria wykorzystuje oryginalne, składane z brył detale: ostrołukowe żebra, kolumny, gzymsy, okna, regały, sarkofagi, humanoidalne sylwetki i demoniczne rogi. `CastleSurface.shader` daje kamienną fakturę, oświetlenie URP i mgłę. `WorldText.shader` renderuje inskrypcje z testem głębokości `LEqual`, dzięki czemu nie zdradzają zawartości za ścianami (§4, §7–8). Scena zapisuje referencję materiału, a jej własna kopia śledzi dynamiczny atlas fontu i jest niszczona razem z poziomem. Nie importowano ilustracji referencyjnych jako gotowej grafiki gry. Stylizacja i skala nie oznaczają automatycznie odbioru podobieństwa do referencji; wymagają obejrzenia działającej sceny.
 
 ## Sterowanie i sesja
 
@@ -34,7 +34,7 @@ W/S porusza, A/D obraca postać, Spacja skacze, LPM atakuje, E wybiera jedną wi
 
 Restart przywraca dziedziniec, zdrowie, położenie gracza i przeciwników, bramy, runy, bibliotekę, sekret, czas oraz kamerę. Komponenty sceny obserwują reset i odtwarzają stan fizyczny; żaden obserwator nie wywołuje kolejnej komendy postępu synchronicznie. Stare ataki, przejścia i oczekujący restart zachowują poprzedni token i są odrzucane. Restart klawiaturą wymaga fokusu, braku pauzy i terminalnego stanu; utrata fokusu/pauza usuwa oczekującą komendę. Przycisk terminalny przechwytuje token swojej sesji.
 
-HUD Canvas w przestrzeni kamery skaluje interfejs względem 1280 × 720, ma własny EventSystem i kopię akcji UI, bez wyłączania wejścia gracza. Pokazuje zdrowie, bieżący obszar/cel, podpowiedź interakcji, informację o przygotowaniu ataku przeciwnika, wynik końcowy, opcjonalny relikt i czas sesji. Dźwięk wiatru i rezonansu jest oryginalnie syntetyzowany; pochodnie delikatnie migoczą.
+HUD Canvas w przestrzeni kamery skaluje interfejs względem 1280 × 720, ma własny EventSystem i kopię akcji UI, bez wyłączania wejścia gracza. Dolny panel rozciąga się do szerokości Canvas, timer zachowuje prawy margines, a podpowiedzi sterowania pozostawiają osobne miejsce na czas. Rzeczywiste renderowanie sprawdzono w proporcjach 4:3, 16:10, 16:9 i ultrawide. Pokazuje zdrowie, bieżący obszar/cel, podpowiedź interakcji, informację o przygotowaniu ataku przeciwnika, wynik końcowy, opcjonalny relikt i czas sesji. Dźwięk wiatru i rezonansu jest oryginalnie syntetyzowany; pochodnie delikatnie migoczą.
 
 ## Build i odbiór
 
