@@ -153,10 +153,8 @@ def report_for(mode):
     root = ET.Element("test-run", result="Passed", failed="0", skipped="0", inconclusive="0")
     suite = ET.SubElement(root, "test-suite", type="Assembly", result="Passed")
     namespace = "ShadowsOfTheForsaken.Tests." + {"editmode": "EditMode", "playmode": "PlayMode"}[mode]
-    for name, count in validation.EXPECTED_TESTS[mode].items():
-        for index in range(count):
-            full = f"{namespace}.{name}" + (f"({index})" if count > 1 else "")
-            ET.SubElement(suite, "test-case", fullname=full, result="Passed")
+    for name in sorted(validation.EXPECTED_CASES[mode]):
+        ET.SubElement(suite, "test-case", fullname=f"{namespace}.{name}", result="Passed")
     total = str(len(list(root.iter("test-case"))))
     root.set("total", total)
     root.set("passed", total)
@@ -174,7 +172,8 @@ class NUnitEvidenceTests(unittest.TestCase):
         ET.ElementTree(report).write(self.path, encoding="utf-8", xml_declaration=True)
 
     def test_accepts_complete_required_reports_for_both_modes(self):
-        for mode, count in [("editmode", 113), ("playmode", 67)]:
+        for mode in ("editmode", "playmode"):
+            count = len(validation.EXPECTED_CASES[mode])
             with self.subTest(mode=mode):
                 self.save(report_for(mode))
                 self.assertEqual(count, validation.validate_results(self.path, mode)["passed"])
@@ -275,6 +274,54 @@ class NUnitEvidenceTests(unittest.TestCase):
         report.set("passed", count)
         self.save(report)
         with self.assertRaisesRegex(validation.ValidationError, "MainRouteWinsWithoutSecret"):
+            validation.validate_results(self.path, "playmode")
+
+    def test_rejects_changed_frame_rate_arguments_without_changing_case_counts(self):
+        for mode, method in [
+            ("editmode", "CombatRulesTests.SwingHitsExactlyOnceAtRepresentativeFrameRates"),
+            ("playmode", "PlayerMovementTests.GroundMovementAtRepresentativeFrameRates"),
+        ]:
+            with self.subTest(mode=mode):
+                report = report_for(mode)
+                wrong_rates = {"30": "31", "60": "32", "120": "33"}
+                for case in report.iter("test-case"):
+                    name = case.get("fullname")
+                    if method + "(" in name:
+                        prefix, argument = name.split("(", 1)
+                        case.set("fullname", prefix + "(" + wrong_rates[argument[:-1]] + ")")
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, method + r"\(30\)"):
+                    validation.validate_results(self.path, mode)
+
+    def test_rejects_changed_string_enum_boolean_and_nonfinite_arguments(self):
+        replacements = [
+            ('"Assets/PlayerMovement.cs"', '"Assets/Other.cs"'),
+            ("(Jump)", "(Unknown)"),
+            ("(False)", "(0)"),
+            ("(float.NaN)", "(0.0f)"),
+            ("(int.MaxValue)", "(8)"),
+        ]
+        for old, new in replacements:
+            with self.subTest(argument=old):
+                report = report_for("editmode")
+                case = next(case for case in report.iter("test-case") if old in case.get("fullname"))
+                original = case.get("fullname")
+                case.set("fullname", original.replace(old, new))
+                self.save(report)
+                with self.assertRaises(validation.ValidationError):
+                    validation.validate_results(self.path, "editmode")
+
+    def test_extra_passed_case_cannot_replace_a_required_parameter_identity(self):
+        report = report_for("playmode")
+        suite = report.find("test-suite")
+        case = next(case for case in suite if "GroundMovementAtRepresentativeFrameRates(30)" in case.get("fullname"))
+        case.set("fullname", case.get("fullname").replace("(30)", "(31)"))
+        ET.SubElement(suite, "test-case", fullname="Other.Tests.ExtraPassingTest", result="Passed")
+        count = str(len(list(report.iter("test-case"))))
+        report.set("total", count)
+        report.set("passed", count)
+        self.save(report)
+        with self.assertRaisesRegex(validation.ValidationError, r"GroundMovementAtRepresentativeFrameRates\(30\)"):
             validation.validate_results(self.path, "playmode")
 
     def test_rejects_unknown_mode(self):

@@ -107,9 +107,14 @@ namespace ShadowsOfTheForsaken.Level
             objective = Label(status.transform, "Objective", new Rect(18, 104, 394, 43), 16, Parchment);
 
             var controls = Panel(uiRoot.transform, "Controls", new Vector2(0, 0), new Rect(0, -62, 1280, 62));
-            Label(controls.transform, "Keys", new Rect(22, 16, 1045, 30), 16, Muted).text =
+            StretchHorizontal(controls.rectTransform, 0, 0);
+            var keys = Label(controls.transform, "Keys", new Rect(22, 16, 1045, 30), 16, Muted);
+            StretchHorizontal(keys.rectTransform, 22, 214); // Timer width, right margin and a 24-unit gap.
+            keys.text =
                 "W/S move   A/D turn   Space jump   LMB attack   E interact";
             timer = Label(controls.transform, "Elapsed time", new Rect(1090, 16, 166, 30), 16, Gold);
+            timer.rectTransform.anchorMin = timer.rectTransform.anchorMax = Vector2.one;
+            timer.rectTransform.anchoredPosition = new Vector2(-190, -16);
             timer.alignment = TextAnchor.MiddleRight;
 
             interactionPanel = Panel(uiRoot.transform, "Interaction", new Vector2(.5f, 0), new Rect(-390, -170, 780, 90)).gameObject;
@@ -298,8 +303,17 @@ namespace ShadowsOfTheForsaken.Level
             var panel = Rectangle(parent, name, anchor, area).gameObject.AddComponent<Image>();
             panel.color = PanelColor;
             panel.raycastTarget = false;
-            Graphic(panel.transform, "Gilt edge", new Rect(0, 0, area.width, 2), new Color(Gold.r, Gold.g, Gold.b, .55f));
+            var edge = Graphic(panel.transform, "Gilt edge", new Rect(0, 0, area.width, 2), new Color(Gold.r, Gold.g, Gold.b, .55f));
+            StretchHorizontal(edge.rectTransform, 0, 0);
             return panel;
+        }
+
+        private static void StretchHorizontal(RectTransform rect, float left, float right)
+        {
+            rect.anchorMin = new Vector2(0, rect.anchorMin.y);
+            rect.anchorMax = new Vector2(1, rect.anchorMax.y);
+            rect.offsetMin = new Vector2(left, rect.offsetMin.y);
+            rect.offsetMax = new Vector2(-right, rect.offsetMax.y);
         }
 
         private Image Graphic(Transform parent, string name, Rect area, Color color)

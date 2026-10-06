@@ -61,6 +61,45 @@ Material:
   m_BuildTextureStacks: []
 """, encoding="utf-8")
     material_guid = ensure_meta(material)
+    text_shader_guid = ensure_meta(assets / "Level/WorldText.shader")
+    text_material = assets / "Level/WorldText.mat"
+    if not text_material.exists():
+        text_material.write_text(f"""%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {{fileID: 0}}
+  m_PrefabInstance: {{fileID: 0}}
+  m_PrefabAsset: {{fileID: 0}}
+  m_Name: WorldText
+  m_Shader: {{fileID: 4800000, guid: {text_shader_guid}, type: 3}}
+  m_Parent: {{fileID: 0}}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {{}}
+  disabledShaderPasses: []
+  m_LockedProperties:
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {{fileID: 0}}
+        m_Scale: {{x: 1, y: 1}}
+        m_Offset: {{x: 0, y: 0}}
+    m_Ints: []
+    m_Floats: []
+    m_Colors:
+    - _Color: {{r: 1, g: 1, b: 1, a: 1}}
+  m_BuildTextureStacks: []
+""", encoding="utf-8")
+    text_material_guid = ensure_meta(text_material)
     script_guid = ensure_meta(assets / "Level/ForsakenLevel.cs")
     scene = assets / "Scenes/ForsakenCastle.unity"
     if not scene.exists():
@@ -113,6 +152,7 @@ MonoBehaviour:
   inputActions: {{fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}}
   surfaceMaterial: {{fileID: 2100000, guid: {material_guid}, type: 2}}
   nightSky: {{fileID: 2100000, guid: 7e1e5781d39549148abcbf66c428df00, type: 2}}
+  worldTextMaterial: {{fileID: 2100000, guid: {text_material_guid}, type: 2}}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

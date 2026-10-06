@@ -211,6 +211,65 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Assert.That(Read<int>(player, "Health"), Is.EqualTo(85));
         }
 
+        [UnityTest]
+        public IEnumerator TimeScalePauseCancelsWindupBeforeResume()
+        {
+            float previousTimeScale = Time.timeScale;
+            try
+            {
+                Time.timeScale = 1;
+                Advance(enemy, 0.65f);
+                Assert.That(Read<object>(enemy, "Phase").ToString(), Is.EqualTo("Windup"));
+                Assert.That(Read<int>(player, "Health"), Is.EqualTo(100));
+
+                Time.timeScale = 0;
+                // Ordinary Update receives a zero delta while paused and must discard the old swing.
+                yield return null;
+                Assert.That(Read<object>(enemy, "Phase").ToString(), Is.EqualTo("Ready"));
+                Assert.That(Read<int>(player, "Health"), Is.EqualTo(100));
+
+                Time.timeScale = 1;
+                Call(enemy, "Simulate", 0.05f);
+                Assert.That(Read<object>(enemy, "Phase").ToString(), Is.EqualTo("Windup"),
+                    "Resuming must start a fresh windup rather than complete the pre-pause swing.");
+                Assert.That(Read<int>(player, "Health"), Is.EqualTo(100));
+                Advance(enemy, 0.65f);
+                Assert.That(Read<int>(player, "Health"), Is.EqualTo(85),
+                    "A fresh, fully telegraphed attack must still hit after resuming.");
+            }
+            finally { Time.timeScale = previousTimeScale; }
+        }
+
+        [Test]
+        public void InvalidSimulationDeltaCancelsWindupBeforeResume()
+        {
+            float previousTimeScale = Time.timeScale;
+            try
+            {
+                Time.timeScale = 1;
+                foreach (float seconds in new[] { 0f, -0.1f, float.NaN, float.PositiveInfinity, float.NegativeInfinity })
+                {
+                    progression.TryResetSession();
+                    progression.TryEnter(LevelRoom.FirstEncounter, progression.Snapshot.SessionId);
+                    Advance(enemy, 0.65f);
+                    Assert.That(Read<object>(enemy, "Phase").ToString(), Is.EqualTo("Windup"));
+
+                    Call(enemy, "Simulate", seconds);
+                    Assert.That(Read<object>(enemy, "Phase").ToString(), Is.EqualTo("Ready"),
+                        "Invalid delta " + seconds + " must discard the ongoing swing.");
+                    Assert.That(Read<int>(player, "Health"), Is.EqualTo(100));
+
+                    Call(enemy, "Simulate", 0.05f);
+                    Assert.That(Read<object>(enemy, "Phase").ToString(), Is.EqualTo("Windup"));
+                    Assert.That(Read<int>(player, "Health"), Is.EqualTo(100),
+                        "A valid update after an invalid delta must not deliver the discarded attack.");
+                    Advance(enemy, 0.65f);
+                    Assert.That(Read<int>(player, "Health"), Is.EqualTo(85));
+                }
+            }
+            finally { Time.timeScale = previousTimeScale; }
+        }
+
         [Test]
         public void LeavingEncounterBoundsStopsPursuitAndDamage()
         {

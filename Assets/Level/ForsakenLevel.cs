@@ -12,6 +12,7 @@ namespace ShadowsOfTheForsaken.Level
         public InputActionAsset inputActions;
         public Material surfaceMaterial;
         public Material nightSky;
+        public Material worldTextMaterial;
         public LevelProgressionController Progression { get; private set; }
         public PlayerMovement Movement { get; private set; }
         public PlayerCombat Combat { get; private set; }
@@ -31,11 +32,19 @@ namespace ShadowsOfTheForsaken.Level
         private bool paused;
         private Vector3 spawn = new Vector3(0, 0.08f, -51);
         private readonly List<Material> materials = new List<Material>();
+        private Font inscriptionFont;
+        private Material inscriptions;
 
         private void Awake()
         {
             Progression = gameObject.AddComponent<LevelProgressionController>();
-            var architecture = new CastleArchitecture(transform, surfaceMaterial, materials);
+            if (worldTextMaterial == null)
+                throw new System.InvalidOperationException("Assign the WorldText material to the level scene.");
+            inscriptionFont = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            inscriptions = new Material(worldTextMaterial) { name = "Castle inscriptions" };
+            materials.Add(inscriptions);
+            RefreshInscriptionTexture(inscriptionFont);
+            var architecture = new CastleArchitecture(transform, surfaceMaterial, inscriptions, materials);
             architecture.BuildShell(nightSky);
             BuildPlayer(architecture);
             BuildConnections(architecture);
@@ -54,6 +63,8 @@ namespace ShadowsOfTheForsaken.Level
 
         private void OnEnable()
         {
+            Font.textureRebuilt += RefreshInscriptionTexture;
+            RefreshInscriptionTexture(inscriptionFont);
             focused = Application.isFocused;
             Progression.Changed += ProgressChanged;
             Combat.Died += PlayerDied;
@@ -69,6 +80,7 @@ namespace ShadowsOfTheForsaken.Level
 
         private void OnDisable()
         {
+            Font.textureRebuilt -= RefreshInscriptionTexture;
             if (Progression != null) Progression.Changed -= ProgressChanged;
             if (Combat != null) Combat.Died -= PlayerDied;
             if (restart != null)
@@ -95,7 +107,15 @@ namespace ShadowsOfTheForsaken.Level
 
         private void OnDestroy()
         {
+            Font.textureRebuilt -= RefreshInscriptionTexture;
             foreach (var material in materials) if (material != null) Destroy(material);
+        }
+
+        private void RefreshInscriptionTexture(Font font)
+        {
+            // LegacyRuntime has a dynamic atlas; glyph requests can replace its texture.
+            if (font == inscriptionFont && inscriptions != null)
+                inscriptions.mainTexture = font.material.mainTexture;
         }
 
         private void Update()

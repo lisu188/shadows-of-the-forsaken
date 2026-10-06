@@ -20,6 +20,8 @@ Configure hooks are provided for scene assembly: `RunePuzzle.Configure`, `LevelI
 
 `LevelHud` renders a scene-owned UGUI `ScreenSpaceCamera` Canvas through the actual follow camera. Its 1280 × 720 reference layout displays health, current objective, controls, elapsed time, interaction prompt/feedback, enemy health and attack cues, and the defeat/victory message with optional relic status. A real restart `Button` and R input are available only at a terminal state. The Canvas and one scene-owned `EventSystem`/`InputSystemUIInputModule` are configured while inactive; UI actions use an owned copy of the existing asset and are disabled/released with their lifecycle. Button listeners capture the terminal SessionId. R callbacks capture their session before queueing, and the scene rejects an old token, focus loss, pause or a nonterminal state before resetting. The UI updates presentation without issuing progression commands from `Changed` observers. Font, colours and panel layout are implementation choices rather than DOCX requirements.
 
+The bottom controls panel and its gilt edge stretch across the actual Canvas width. Elapsed time keeps a right margin, while key hints use the remaining width with a separate gap, so the reference resolution does not clip the timer on 4:3 or 16:10 screens. `LevelHudLayoutTests` loads the real scene and renders its camera-space Canvas at 1024 × 768, 1280 × 800, 1280 × 720 and 2560 × 1080. It checks the projected UI bounds, the gap between hints and timer, and a same-frame rendered-pixel difference with only the actual timer graphic disabled. These regression cases require graphics; their source alone is not a passing engine result.
+
 Verification commands:
 
 ```sh

@@ -100,7 +100,12 @@ public sealed class EnemyCombat : MonoBehaviour
                 reportedDefeat = progression.TryComplete(objective, health.SessionId);
             return;
         }
-        if (float.IsNaN(seconds) || float.IsInfinity(seconds) || seconds <= 0 || Time.timeScale <= 0 || !focused || paused) return;
+        if (float.IsNaN(seconds) || float.IsInfinity(seconds) || seconds <= 0 || Time.timeScale <= 0 || !focused || paused)
+        {
+            attack.Cancel();
+            if (presentation != null) presentation.Tint(Color.white, 0);
+            return;
+        }
         if (progression.Snapshot.Room != room || target == null || !target.CanFight ||
             target.SessionId != health.SessionId || !target.isActiveAndEnabled ||
             progression.Snapshot.IsCompleted || !PlayerInsideArena())

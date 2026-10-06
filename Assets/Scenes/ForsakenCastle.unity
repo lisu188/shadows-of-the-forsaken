@@ -47,6 +47,7 @@ MonoBehaviour:
   inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   surfaceMaterial: {fileID: 2100000, guid: b9368d0489754a1f80dde00b8b45219f, type: 2}
   nightSky: {fileID: 2100000, guid: 7e1e5781d39549148abcbf66c428df00, type: 2}
+  worldTextMaterial: {fileID: 2100000, guid: 290247ad07bd4ef2b88407b83c749c37, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

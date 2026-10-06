@@ -9,13 +9,15 @@ namespace ShadowsOfTheForsaken.Level
     internal sealed class CastleArchitecture
     {
         private readonly Transform root;
+        private readonly Material worldText;
         private readonly Material stone, floor, trim, iron, blood, bone, gold, glass, glow, cloth;
         private readonly HashSet<Vector2Int> cells = new HashSet<Vector2Int>();
         public readonly List<Light> TorchLights = new List<Light>();
 
-        public CastleArchitecture(Transform owner, Material seed, List<Material> lifetime)
+        public CastleArchitecture(Transform owner, Material seed, Material inscriptions, List<Material> lifetime)
         {
             root = owner;
+            worldText = inscriptions;
             stone = Material(seed, "Weathered basalt", new Color(.20f, .23f, .25f), lifetime);
             floor = Material(seed, "Flagstone", new Color(.27f, .29f, .30f), lifetime);
             trim = Material(seed, "Carved limestone", new Color(.37f, .39f, .39f), lifetime);
@@ -317,7 +319,8 @@ namespace ShadowsOfTheForsaken.Level
             label.alignment = TextAlignment.Center; label.fontSize = 48; label.characterSize = .035f;
             label.color = new Color(.82f, .76f, .60f);
             label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            sign.GetComponent<Renderer>().sharedMaterial = label.font.material;
+            // The built-in GUI font material ignores scene depth and reveals labels through stone.
+            sign.GetComponent<Renderer>().sharedMaterial = worldText;
         }
 
         private GameObject Box(string name, Vector3 position, Vector3 size, Material material, bool solid = true)
