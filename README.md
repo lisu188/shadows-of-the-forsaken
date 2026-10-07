@@ -60,7 +60,7 @@ Dokument nie określa również wszystkich parametrów implementacyjnych: klawis
 
 Main zachowuje Unity `6000.6.3f1`, pakiety z aktualnego lockfile i autorską scenę `ForsakenCastle` jako podstawowy poziom. Ukończona gałąź runtime jest zachowana w osobnej scenie `Assets/Scenes/ForsakenRuntimeCastle.unity`, z własnym kontrolerem sesji i dotychczasowymi GUID-ami assetów. Menu `Forsaken/Build runtime castle Windows player` buduje tę alternatywną scenę; podstawowy builder `CastlePlayerBuild` pozostaje bez zmian.
 
-Integracja zachowuje cztery poprawki przeglądu: anulowanie zamachu w pauzie, test głębokości napisów świata, skalowanie dolnego HUD-u i walidację dokładnych argumentów NUnit. Połączony katalog wymaga 187 EditMode i 228 PlayMode; [raport integracji](docs/validation/main-merge-2026-10-07.md) rozdziela nowe wykonanie od historycznych wyników gałęzi i main. Starsze paczki runtime z Unity6000.0.24f1 pozostają dowodami tej wersji, opisanymi w [raporcie gałęzi](docs/level-verification.md).
+Integracja zachowuje cztery poprawki przeglądu: anulowanie zamachu w pauzie, test głębokości napisów świata, skalowanie dolnego HUD-u i walidację dokładnych argumentów NUnit. Bieżąca lokalna weryfikacja zaliczyła 147 testów Python, 186 testów rdzeni C#, 187/187 Unity EditMode i 228/228 Unity PlayMode bez pominięć; [raport integracji](docs/validation/main-merge-2026-10-07.md) rozdziela nowe wykonanie od historycznych wyników gałęzi i main. Starsze paczki runtime z Unity6000.0.24f1 pozostają dowodami tej wersji, opisanymi w [raporcie gałęzi](docs/level-verification.md).
 
 ## Podstawowa scena i historyczne wyniki main
 
