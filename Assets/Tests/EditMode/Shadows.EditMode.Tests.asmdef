@@ -1,14 +1,29 @@
 {
   "name": "Shadows.EditMode.Tests",
   "rootNamespace": "ShadowsOfTheForsaken.Tests.EditMode",
-  "references": ["UnityEngine.TestRunner", "UnityEditor.TestRunner", "Shadows.Progression.Core", "Shadows.Movement.Core", "Shadows.Camera.Core", "Shadows.Interactions.Core", "Shadows.Combat.Core"],
-  "includePlatforms": ["Editor"],
+  "references": [
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner",
+    "Shadows.Progression.Core",
+    "Shadows.Movement.Core",
+    "Shadows.Camera.Core",
+    "Shadows.Combat.Core",
+    "Shadows.Puzzles.Core",
+    "Shadows.Interactions.Core"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": true,
-  "precompiledReferences": ["nunit.framework.dll"],
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
   "autoReferenced": false,
-  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
   "versionDefines": [],
   "noEngineReferences": false
 }

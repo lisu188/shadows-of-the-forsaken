@@ -22,7 +22,7 @@ możliwy po całym cyklu 0.70 s. Zasięg jest odległością do najbliższego pu
 collidera; kierunek i widoczność sprawdzane są w chwili rozstrzygnięcia trafienia.
 Parametry czasu, obrażeń i geometrii są przechwytywane przy rozpoczęciu akcji.
 
-Scena zamku nadpisuje początkowy profil gracza na 200 zdrowia i 10 obrażeń;
+Podstawowa scena `ForsakenCastle` nadpisuje początkowy profil gracza na 200 zdrowia i 10 obrażeń;
 domyślne komponenty i demonstracje pozostają przy 100/25. To wybór balansu
 pełnej trasy, wymagający pomiaru i ręcznego odbioru. Profile trzech wrogów
 są zestawione w [opisie integracji](full-castle-route.md).
@@ -95,11 +95,15 @@ odtwarza sesję i pozycję gracza wyłącznie w tym technicznym przykładzie.
 dotnet test tests/Combat/Combat.Tests.csproj --configuration Release
 ```
 
-Projekt kompiluje produkcyjne `CombatState.cs` i `EncounterState.cs` jako
-.NET Standard 2.1. Zestaw obejmuje 31 przypadków `CombatStateTests` i 15
-`EncounterStateTests`; wszystkie 46 zaliczono w bieżącym przebiegu .NET. Obejmują
-zdrowie, śmierć, tokeny, okna, odstęp, duży krok, duplikaty, przerwanie,
-reset i 30/60/120 FPS. Nie symulują fizyki Unity.
+Projekt kompiluje produkcyjne `CombatRules.cs`, `CombatState.cs` i
+`EncounterState.cs` jako .NET Standard 2.1. Połączony zestaw obejmuje 31 przypadków
+`CombatStateTests`, 15 `EncounterStateTests` i 14 `CombatRulesTests`; wszystkie
+60 zaliczono w przebiegu .NET integracji z 2026-10-07. Wcześniejsze 46 przypadków
+pozostaje wynikiem historycznego zestawu main. Testy obejmują zdrowie, śmierć,
+tokeny, okna, odstęp, duży krok, duplikaty, przerwanie, reset, 30/60/120 FPS
+oraz rozróżnianie pełnych kluczy celu mimo kolizji hashy. Nie symulują fizyki Unity.
+Tożsamość połączonych źródeł i dalsze wyniki zapisuje
+[raport integracji](validation/main-merge-2026-10-07.md).
 
 `CombatPhysicsTests` zawiera 24 przypadki prawdziwego PlayMode: zasięg i łuk,
 ściana i punkt wewnątrz ściany, izolacja lokalnej sceny fizyki, wiele colliderów,
@@ -114,8 +118,16 @@ od testów rdzenia; arena nie dowodzi ukończenia poziomu ani celu 2–3 minut.
 blokadę fizycznej bramy przed aktualizacją carvingu, utratę celu, odwrót,
 odłożone zaliczenie trzech walk i reset. `FullCastleRouteTests` używa zapisanej
 sceny i zwykłych akcji gracza. Ich wykonanie należy raportować osobno;
-stan walidacji nowej integracji Unity opisuje [bieżący raport](validation/full-castle-route-2026-09-30.md).
+historyczne wyniki tych fixture’ów zachowuje [raport pełnej trasy](validation/full-castle-route-2026-09-30.md). Weryfikację po połączeniu obu poziomów opisuje [raport integracji z main](validation/main-merge-2026-10-07.md).
 
 [Historyczny raport wspólnych mechanik](validation/shared-gameplay-2026-09-30.md)
 zachowuje wyniki Windows Unity 6000.6.3f1, obrazy i niewykonane punkty odbioru
 wersji sprzed integracji starć.
+
+## Runtime castle scene merged from the verified branch
+
+`Assets/Scenes/ForsakenRuntimeCastle.unity` retains the branch runtime route. Its scene-owned `ForsakenLevel` uses the same progression core with `EnemyCombat` and `ShadowsOfTheForsaken.LevelCombat.PlayerCombat`. The deterministic rules live in `ShadowsOfTheForsaken.Combat.CastleRules` alongside the authored level's existing combat API in the shared core assembly. Files and asset GUIDs remain stable; the namespace migration resolves the incoming public type collisions.
+
+The time-scale pause fix cancels an enemy swing and restores its tint before returning from an invalid or suspended update. `CombatControllerTests` requires a fresh windup after pause or zero/negative/nonfinite delta. The branch's previous Unity6000.0.24f1 results remain historical evidence in [its delivery report](level-verification.md); the combined Unity6000.6.3f1 verification is recorded in the [main integration report](validation/main-merge-2026-10-07.md).
+
+Runtime używa pełnego `EntityId` z Unity 6000.6.3 w `MeleeAttack<EntityId>`. Rdzeń zachowuje całe klucze w zbiorze, a test kolizji hashy potwierdza niezależne trafienie dwóch różnych celów. Wariant `MeleeAttack` zachowuje dotychczasowe API z kluczem integer dla deterministycznych klientów.

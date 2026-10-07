@@ -80,5 +80,7 @@ jobs:
           path: |
             artifacts/unity/${{ matrix.mode }}/*.xml
             artifacts/unity/${{ matrix.mode }}/*.log
+            artifacts/level-completion/traversal/*.json
+            artifacts/level-completion/traversal/*.png
           if-no-files-found: warn
           retention-days: 14

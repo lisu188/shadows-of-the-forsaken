@@ -1,14 +1,29 @@
 {
   "name": "Shadows.PlayMode.Tests",
   "rootNamespace": "ShadowsOfTheForsaken.Tests.PlayMode",
-  "references": ["UnityEngine.TestRunner", "Shadows.Progression.Core", "Shadows.Progression.Unity", "Shadows.Movement.Core", "Shadows.Combat.Core", "Unity.InputSystem"],
+  "references": [
+    "UnityEngine.TestRunner",
+    "Shadows.Progression.Core",
+    "Shadows.Progression.Unity",
+    "Shadows.Movement.Core",
+    "Unity.InputSystem",
+    "Shadows.Combat.Core",
+    "Shadows.Puzzles.Core",
+    "Unity.InputSystem.TestFramework",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.Universal.Runtime"
+  ],
   "includePlatforms": [],
   "excludePlatforms": [],
   "allowUnsafeCode": false,
   "overrideReferences": true,
-  "precompiledReferences": ["nunit.framework.dll"],
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
   "autoReferenced": false,
-  "defineConstraints": ["UNITY_INCLUDE_TESTS"],
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
   "versionDefines": [],
   "noEngineReferences": false
 }
