@@ -1,0 +1,56 @@
+name: Shared gameplay C# tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: shared-gameplay-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  gameplay:
+    name: C# ${{ matrix.suite }} (not Unity)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [Interactions, Combat, Performance]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile production core and run shared NUnit tests
+        run: dotnet test tests/${{ matrix.suite }}/${{ matrix.suite }}.Tests.csproj --configuration Release --logger 'trx;LogFileName=results.trx' --results-directory artifacts/${{ matrix.suite }}
+      - name: Require executed passing tests
+        env:
+          GAMEPLAY_SUITE: ${{ matrix.suite }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+          suite = os.environ['GAMEPLAY_SUITE']
+          root = ET.parse(f'artifacts/{suite}/results.trx').getroot()
+          ns = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+          counts = root.find('.//t:Counters', ns)
+          assert counts is not None, 'Missing counters'
+          total = int(counts.attrib['total'])
+          minimum = {'Interactions': 17, 'Combat': 46, 'Performance': 7}[suite]
+          assert total >= minimum, f'{suite} regression cases not discovered'
+          assert int(counts.attrib['executed']) == int(counts.attrib['passed']) == total
+          assert int(counts.attrib['failed']) == 0
+          results = root.findall('.//t:UnitTestResult', ns)
+          assert len(results) == total and all(r.get('outcome') == 'Passed' for r in results)
+          print(f'Verified {suite} C# tests: {total}; Unity integration is checked separately.')
+          PY
+      - name: Upload test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.suite }}-test-results
+          path: artifacts/${{ matrix.suite }}/
+          if-no-files-found: error
+          retention-days: 14

@@ -17,7 +17,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
     /// <summary>Actual scene-owned Canvas layout and rendered timer at supported viewport shapes.</summary>
     public sealed class LevelHudLayoutTests
     {
-        private const string ScenePath = "Assets/Scenes/ForsakenCastle.unity";
+        private const string ScenePath = "Assets/Scenes/ForsakenRuntimeCastle.unity";
         private readonly List<GameObject> suspendedRoots = new List<GameObject>();
         private readonly InputTestFixture inputFixture = new InputTestFixture();
         private InputSettings.UpdateMode previousInputMode;
@@ -33,13 +33,13 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             for (int index = 0; index < SceneManager.sceneCount; index++)
             {
                 var otherScene = SceneManager.GetSceneAt(index);
-                if (!otherScene.isLoaded || (otherScene.path != ScenePath && otherScene.path != "Assets/Scenes/SampleScene.unity")) continue;
+                if (!otherScene.isLoaded || (otherScene.path != ScenePath && otherScene.path != "Assets/Scenes/ForsakenCastle.unity" && otherScene.path != "Assets/Scenes/SampleScene.unity")) continue;
                 foreach (var root in otherScene.GetRootGameObjects())
                 {
                     if (root.name.IndexOf("TestRunner", StringComparison.OrdinalIgnoreCase) >= 0) continue;
                     bool isLevelRoot = root.GetComponent(levelType) != null || root.name == "Shadows of the Forsaken";
                     bool isGeometryRoot = root.GetComponent<Camera>() != null || root.GetComponent<Light>() != null || root.GetComponent<Collider>() != null;
-                    if (root.activeSelf && (isLevelRoot || isGeometryRoot))
+                    if (root.activeSelf && (otherScene.path == "Assets/Scenes/ForsakenCastle.unity" || isLevelRoot || isGeometryRoot))
                     {
                         suspendedRoots.Add(root);
                         root.SetActive(false);

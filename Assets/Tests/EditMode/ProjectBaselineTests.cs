@@ -14,7 +14,7 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
         [Test]
         public void EditorVersionMatchesPin()
         {
-            Assert.That(Application.unityVersion, Is.EqualTo("6000.0.24f1"));
+            Assert.That(Application.unityVersion, Is.EqualTo("6000.6.3f1"));
         }
 
         [Test]

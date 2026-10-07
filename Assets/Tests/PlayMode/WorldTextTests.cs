@@ -144,7 +144,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         {
             public string unityVersion, graphicsDevice;
             public int occludedLabelChangedPixels, nearbyLabelChangedPixels;
-            public string method = "Actual ForsakenCastle scene and closed library door. Paired same-frame URP GPU render requests differ only by the concealed lever TextMesh renderer. Test-only direct progression setup and camera viewpoints; no progression or timing acceptance claim.";
+            public string method = "Actual ForsakenRuntimeCastle scene and closed library door. Paired same-frame URP GPU render requests differ only by the concealed lever TextMesh renderer. Test-only direct progression setup and camera viewpoints; no progression or timing acceptance claim.";
         }
     }
 }

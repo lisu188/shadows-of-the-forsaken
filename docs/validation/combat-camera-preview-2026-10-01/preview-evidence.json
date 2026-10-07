@@ -1,0 +1,712 @@
+{
+  "schema_version": 1,
+  "collected_utc": "2026-10-01T08:48:19.330108+00:00",
+  "status": "PREVIEW ONLY \u2014 final guarded PlayMode is NOT VERIFIED",
+  "scope": "Four actual pre-guard PlayMode25 images. Current guard has EditMode9 only; failed reruns remain failed. No final delivery or merge qualification.",
+  "collector": {
+    "path": "artifacts/validation/collect_camera_preview.py",
+    "bytes": 19488,
+    "sha256": "276066cfa954318c565955a6a8f139db118e99570c2bc1e4cb1368e93f876349"
+  },
+  "shared_helpers": {
+    "path": "artifacts/validation/collect_camera_evidence.py",
+    "function_names": [
+      "require",
+      "payload",
+      "sha",
+      "read",
+      "reference",
+      "source_name",
+      "win_path",
+      "zip_hashes",
+      "validate_xml",
+      "finite",
+      "close",
+      "verify_framing"
+    ],
+    "source_encoding": "UTF-8 concatenated inspect.getsource in the listed order",
+    "function_source_sha256": "136a65f2d43c263c51cde344510878643f20b91e7c8d58d2bd92a1bb59445c50"
+  },
+  "current_guard_source": {
+    "input_audit": {
+      "path": "inputs.json",
+      "bytes": 143407,
+      "sha256": "deb2c4ddfc3a64466ad81382a038e8832714025e2cc928cbb15aee2dbdb34426"
+    },
+    "worktree_files": 659,
+    "native_files": 660,
+    "reviewed_import_pairs": 51,
+    "all_current_tracked_and_actual_input_hashes_match_audit": true,
+    "all_guard_audit_provenance_hashes_verified": true,
+    "playmode_status": "NOT VERIFIED; current 194-case suite never completed"
+  },
+  "successful_runs": [
+    {
+      "run": "playmode-25",
+      "mode": "playmode",
+      "exit_code": 0,
+      "stopped": null,
+      "runner_seconds": 471.72,
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "test",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project-clean",
+        "--mode",
+        "PlayMode",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "1800",
+        "--output",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-25\\results.xml",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--",
+        "-assemblyNames",
+        "Shadows.PlayMode.Tests",
+        "-logFile",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-25\\editor.log",
+        "-disableaudio"
+      ],
+      "runner": {
+        "path": "run-camera.py",
+        "bytes": 4837,
+        "sha256": "9a4430fff99a4d386a27ee82f8620b1b081e8e620d834f04b513715332aac1e9"
+      },
+      "frozen_payloads_verified": true,
+      "starting_source_count": 660,
+      "frozen_source_count": 660,
+      "changed_during_run": [],
+      "removed_during_run": [],
+      "evidence": [
+        {
+          "path": "results/playmode-25/execution.json",
+          "bytes": 88087,
+          "sha256": "b1cdd6e2f86f506b9ebc495fc7ab3cacb8ff03c37201c63ba193d69cf7feefb9"
+        },
+        {
+          "path": "results/playmode-25/source-before.json",
+          "bytes": 87926,
+          "sha256": "7770817d7c7776b421ff815d249ff32c0a9a8eef5710b70350bfa520ef32329e"
+        },
+        {
+          "path": "results/playmode-25/frozen-inputs.json",
+          "bytes": 89669,
+          "sha256": "f91432c3161f173105d0cd58bdd13f3d7718e6ca7123ddc16f2e90d805cfa859"
+        },
+        {
+          "path": "results/playmode-25/frozen-inputs-delta.zip",
+          "bytes": 222467,
+          "sha256": "ba14ee70da130bf6d2acfd40d124618846ebfd896dea2a2faf9c1069ebba26cf"
+        },
+        {
+          "path": "results/playmode-25/editor.log",
+          "bytes": 145587,
+          "sha256": "2407fad40f3fbf35d3814bf339f3bf8c89357602f9b5e297dd48275daa0976cf"
+        },
+        {
+          "path": "results/playmode-25/cli.log",
+          "bytes": 155,
+          "sha256": "fff27ea3a5e217305edd35e8269e3829f9ef414c6b573676c4c8703d46e00315"
+        },
+        {
+          "path": "results/playmode-25/results.xml",
+          "bytes": 185093,
+          "sha256": "af0ea961d983850d9e96cd198e09dcefe2fd5a31a4e16e406c2349135e44e986"
+        }
+      ],
+      "nunit": {
+        "id": "2",
+        "testcasecount": "193",
+        "result": "Passed",
+        "total": "193",
+        "passed": "193",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-01 08:22:09Z",
+        "end-time": "2026-10-01 08:29:37Z",
+        "duration": "447.5501954"
+      },
+      "scope": "PRE-GUARD PlayMode; does not verify current guarded source"
+    },
+    {
+      "run": "editmode-9",
+      "mode": "editmode",
+      "exit_code": 0,
+      "stopped": null,
+      "runner_seconds": 27.66,
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "test",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project-clean",
+        "--mode",
+        "EditMode",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "900",
+        "--output",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\editmode-9\\results.xml",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--",
+        "-assemblyNames",
+        "Shadows.EditMode.Tests",
+        "-logFile",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\editmode-9\\editor.log",
+        "-disableaudio"
+      ],
+      "runner": {
+        "path": "run-camera.py",
+        "bytes": 4837,
+        "sha256": "9a4430fff99a4d386a27ee82f8620b1b081e8e620d834f04b513715332aac1e9"
+      },
+      "frozen_payloads_verified": true,
+      "starting_source_count": 660,
+      "frozen_source_count": 660,
+      "changed_during_run": [],
+      "removed_during_run": [],
+      "evidence": [
+        {
+          "path": "results/editmode-9/execution.json",
+          "bytes": 88083,
+          "sha256": "75a7ac798f2e33898c54a5eeff4c5c38de041c433014c680a093d197e536cab0"
+        },
+        {
+          "path": "results/editmode-9/source-before.json",
+          "bytes": 87923,
+          "sha256": "6178331a412867c7fa488bb662925b80ad74ad08e639a1d30d5b68b687b42d30"
+        },
+        {
+          "path": "results/editmode-9/frozen-inputs.json",
+          "bytes": 89669,
+          "sha256": "01904d2e94c43d3acb1a3fdaeb489b490cd3dab25cdae1cf010acf95b431ceab"
+        },
+        {
+          "path": "results/editmode-9/frozen-inputs-delta.zip",
+          "bytes": 222672,
+          "sha256": "d2418ec7e766027748bac554d8b5262d9c3410c4eeec9de0345bd26f68da8020"
+        },
+        {
+          "path": "results/editmode-9/editor.log",
+          "bytes": 51750,
+          "sha256": "d5a817d524f25e4d5c3ae57e15f156925a7fde3a4b5623905bfa8bb7cdd436d1"
+        },
+        {
+          "path": "results/editmode-9/cli.log",
+          "bytes": 155,
+          "sha256": "4002f5a9b4c7c598975659e3ffb031664f681ed92a947043c84feb966705d605"
+        },
+        {
+          "path": "results/editmode-9/results.xml",
+          "bytes": 147017,
+          "sha256": "276bc5a4dc777a76034f586f7a8c3bad1828cb52be7b01246a6c7ba38cfed478"
+        }
+      ],
+      "nunit": {
+        "id": "2",
+        "testcasecount": "173",
+        "result": "Passed",
+        "total": "173",
+        "passed": "173",
+        "failed": "0",
+        "inconclusive": "0",
+        "skipped": "0",
+        "asserts": "0",
+        "engine-version": "3.5.0.0",
+        "clr-version": "4.0.30319.42000",
+        "start-time": "2026-10-01 08:31:08Z",
+        "end-time": "2026-10-01 08:31:10Z",
+        "duration": "1.5310216"
+      },
+      "scope": "Current guarded source EditMode only"
+    }
+  ],
+  "preguard_to_guard": {
+    "different_paths": [
+      "Assets/CameraFollow.cs",
+      "Assets/Tests/PlayMode/CameraFollowTests.cs"
+    ],
+    "exact_diffs": [
+      {
+        "path": "Assets/CameraFollow.cs",
+        "playmode25_sha256": "38fa483dfba83cdae03403961bcf1572811d25ad1a25541acd241131f3dbf08f",
+        "editmode9_sha256": "87e06067db7bdb743b892e1bff099f89e43ebc2689684b090d8363bc256a8bed",
+        "added_lines": 3,
+        "removed_lines": 0,
+        "unified_diff": "--- Play25/Assets/CameraFollow.cs\n+++ Edit9/Assets/CameraFollow.cs\n@@ -146,6 +146,9 @@\n         // Keep collision sweeps anchored at the actor. Shoulder and look height\n         // frame the view; the conservative near-plane sphere remains unchanged.\n         Vector3 look = pivot + shoulder * shoulderAimFraction + Vector3.up * lookHeightOffset - candidate;\n+        // A held/smoothed camera can coincide with the shifted aim point.\n+        // The collision-resolved boom still provides a nonzero view direction.\n+        if (look.sqrMagnitude < 0.00000001f) look = pivot - candidate;\n         Vector3 up = Mathf.Abs(Vector3.Dot(look.normalized, Vector3.up)) > 0.999f ? Vector3.forward : Vector3.up;\n         transform.SetPositionAndRotation(candidate, Quaternion.LookRotation(look, up));\n         previousTargetPosition = player.position;\n"
+      },
+      {
+        "path": "Assets/Tests/PlayMode/CameraFollowTests.cs",
+        "playmode25_sha256": "eee5f21c6279c444457d52838970ffc6c717c5345b70993a8b6a897bbee3fce8",
+        "editmode9_sha256": "e1335840d99a75dc1386faa041c51b11240f58ccdef9f6e44b8ced3d600a141a",
+        "added_lines": 19,
+        "removed_lines": 0,
+        "unified_diff": "--- Play25/Assets/Tests/PlayMode/CameraFollowTests.cs\n+++ Edit9/Assets/Tests/PlayMode/CameraFollowTests.cs\n@@ -450,6 +450,25 @@\n             LogAssert.NoUnexpectedReceived();\n         }\n \n+        [Test]\n+        public void MovingTargetAtHeldCameraAimUsesSafeBoomWithoutInvalidRotation()\n+        {\n+            Set(\"distance\", 1f);\n+            Set(\"height\", 2f);\n+            Set(\"pivotHeight\", 1f);\n+            Set(\"lookHeightOffset\", 1f);\n+            Set(\"smoothSpeed\", 0f);\n+            Assert.That((bool)Call(\"SnapToTarget\"), Is.True);\n+            Vector3 heldPosition = camera.transform.position;\n+            player.transform.position = Vector3.back;\n+            Assert.That(Step(), Is.True);\n+            Assert.That(Vector3.Distance(camera.transform.position, heldPosition), Is.LessThan(.001f));\n+            Assert.That(Vector3.Distance(camera.transform.forward, Vector3.down), Is.LessThan(.001f));\n+            Assert.That(Get<bool>(\"HasSafePose\"), Is.True);\n+            Assert.That(camera.enabled, Is.True);\n+            LogAssert.NoUnexpectedReceived();\n+        }\n+\n         [TestCase(0f, 0f)]\n         [TestCase(1.3f, 1.3f)]\n         [TestCase(-1f, 0f)]\n"
+      }
+    ],
+    "all_other_native_payloads_identical": true,
+    "identical_native_file_count": 658,
+    "all_saved_scenes_and_rendered_framing_fixture_unchanged": true,
+    "guard_behavior_exercised_by_Play25": false
+  },
+  "disk_aborted_runs": [
+    {
+      "run": "playmode-27",
+      "mode": "playmode",
+      "exit_code": 1,
+      "stopped": "Disk reserve/cap reached",
+      "runner_seconds": 198.36,
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "test",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project-clean",
+        "--mode",
+        "PlayMode",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "1800",
+        "--output",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-27\\results.xml",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--",
+        "-assemblyNames",
+        "Shadows.PlayMode.Tests",
+        "-logFile",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-27\\editor.log",
+        "-disableaudio"
+      ],
+      "runner": {
+        "path": "run-camera.py",
+        "bytes": 4837,
+        "sha256": "9a4430fff99a4d386a27ee82f8620b1b081e8e620d834f04b513715332aac1e9"
+      },
+      "frozen_payloads_verified": true,
+      "starting_source_count": 660,
+      "frozen_source_count": 662,
+      "changed_during_run": [
+        "Assets/InitTestScene04638dfb-ec28-4308-bad0-2ba881dc1322.unity",
+        "Assets/InitTestScene04638dfb-ec28-4308-bad0-2ba881dc1322.unity.meta"
+      ],
+      "removed_during_run": [],
+      "evidence": [
+        {
+          "path": "results/playmode-27/execution.json",
+          "bytes": 88109,
+          "sha256": "fcc9feef219e63cb83497a68c9a3d3cae7d021aff79ac4b53caac4c3b75cd340"
+        },
+        {
+          "path": "results/playmode-27/source-before.json",
+          "bytes": 87926,
+          "sha256": "bea17661b603ee76d357e2f1c4ad33cca32aa86f8627503ad9d19c0c1b92978c"
+        },
+        {
+          "path": "results/playmode-27/frozen-inputs.json",
+          "bytes": 90242,
+          "sha256": "e3be49d41c4c336ca2ea3e6db8810a5e0996442623d61266cc9120563b2471bd"
+        },
+        {
+          "path": "results/playmode-27/frozen-inputs-delta.zip",
+          "bytes": 225140,
+          "sha256": "ccd2506577833529efd1c71103e643cfacd4d8d007383299daabee996bbebc7d"
+        },
+        {
+          "path": "results/playmode-27/editor.log",
+          "bytes": 112895,
+          "sha256": "84c3f84f3200840c3a50d7804ce870b9cc48b2709af36cfbb6f7c7982fa65fd2"
+        },
+        {
+          "path": "results/playmode-27/cli.log",
+          "bytes": 1974,
+          "sha256": "5a392c59710933b472a44d886c4a7fcba7eb573ecb284bbc83b07bb5513ae4c0"
+        }
+      ],
+      "status": "NOT VERIFIED: disk-aborted, no complete NUnit XML",
+      "complete_xml_present": false,
+      "starting_map_matches_current_guard": true,
+      "additional_frozen_files": [
+        "Assets/InitTestScene04638dfb-ec28-4308-bad0-2ba881dc1322.unity",
+        "Assets/InitTestScene04638dfb-ec28-4308-bad0-2ba881dc1322.unity.meta"
+      ],
+      "additional_frozen_files_note": "Generated Unity test initialization scene retained in failed-run evidence; not part of the guarded source map"
+    },
+    {
+      "run": "playmode-29",
+      "mode": "playmode",
+      "exit_code": 1,
+      "stopped": "Disk reserve/cap reached",
+      "runner_seconds": 57.77,
+      "command": [
+        "C:\\Program Files\\Unity Hub\\resources\\unity.exe",
+        "test",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\project-clean",
+        "--mode",
+        "PlayMode",
+        "--editor-path",
+        "C:\\Program Files\\Unity\\Hub\\Editor\\6000.6.3f1\\Editor\\Unity.exe",
+        "--timeout",
+        "1800",
+        "--output",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-29\\results.xml",
+        "--non-interactive",
+        "--no-log-proxy",
+        "--",
+        "-assemblyNames",
+        "Shadows.PlayMode.Tests",
+        "-logFile",
+        "C:\\Users\\andrz\\shadows-of-the-forsaken\\artifacts\\full-route-unity\\results\\playmode-29\\editor.log",
+        "-disableaudio"
+      ],
+      "runner": {
+        "path": "run-camera.py",
+        "bytes": 4837,
+        "sha256": "9a4430fff99a4d386a27ee82f8620b1b081e8e620d834f04b513715332aac1e9"
+      },
+      "frozen_payloads_verified": true,
+      "starting_source_count": 660,
+      "frozen_source_count": 660,
+      "changed_during_run": [],
+      "removed_during_run": [],
+      "evidence": [
+        {
+          "path": "results/playmode-29/execution.json",
+          "bytes": 88108,
+          "sha256": "737de6866ee4f77befbdc3e259f367b6e1d2e21c0304976cb41ca0f887a622e2"
+        },
+        {
+          "path": "results/playmode-29/source-before.json",
+          "bytes": 87926,
+          "sha256": "796eb5bae757174764d7264464481796bf46644722df329eba5872085da631b3"
+        },
+        {
+          "path": "results/playmode-29/frozen-inputs.json",
+          "bytes": 89669,
+          "sha256": "01904d2e94c43d3acb1a3fdaeb489b490cd3dab25cdae1cf010acf95b431ceab"
+        },
+        {
+          "path": "results/playmode-29/frozen-inputs-delta.zip",
+          "bytes": 222672,
+          "sha256": "d2418ec7e766027748bac554d8b5262d9c3410c4eeec9de0345bd26f68da8020"
+        },
+        {
+          "path": "results/playmode-29/editor.log",
+          "bytes": 24035,
+          "sha256": "07648430edb937f540d147e8b753a54884d06fa48f3c76ce0fd6a11fee377fcc"
+        },
+        {
+          "path": "results/playmode-29/cli.log",
+          "bytes": 1460,
+          "sha256": "ece66289741864bdd9c186d41727928e99de1b587f4a68934d99419fe80c0bc0"
+        }
+      ],
+      "status": "NOT VERIFIED: disk-aborted, no complete NUnit XML",
+      "complete_xml_present": false,
+      "starting_map_matches_current_guard": true,
+      "additional_frozen_files": [],
+      "additional_frozen_files_note": "None; frozen inputs match the guarded source map."
+    }
+  ],
+  "not_run_at_collection": [
+    "playmode-26",
+    "playmode-28",
+    "playmode-30",
+    "build-6"
+  ],
+  "gallery": [
+    {
+      "file": "01-courtyard.png",
+      "source": {
+        "path": "results/playmode-25/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-courtyard.png",
+        "bytes": 521536,
+        "sha256": "91541cb44ef95c69a0a9236e3f2004b261284c5597a1dfe518d4c5a483af65a2"
+      },
+      "kind": "Actual Unity scene-camera PNG from PRE-GUARD PlayMode25; 960x540, unedited. Not guarded-source or standalone acceptance."
+    },
+    {
+      "file": "02-first-fight.png",
+      "source": {
+        "path": "results/playmode-25/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-FirstEnemyDefeated.png",
+        "bytes": 458670,
+        "sha256": "413efa5ae5541b32fd92d0d9cd06cef829be68696a8808b2733cffc344c49adf"
+      },
+      "kind": "Actual Unity scene-camera PNG from PRE-GUARD PlayMode25; 960x540, unedited. Not guarded-source or standalone acceptance.",
+      "framing": {
+        "scope": "Actual front-facing actor triangles at the observed windup; player obscuration and viewport only. Not environment, lighting or human acceptance.",
+        "encounter": "First Demon",
+        "test": "CastleMainRouteCompletesThroughControlsWithoutSecret",
+        "geometryFailure": "",
+        "playerPosition": {
+          "x": 0.0,
+          "y": 0.019999910145998,
+          "z": 15.035860061645508
+        },
+        "enemyPosition": {
+          "x": 0.0,
+          "y": 0.05000019073486328,
+          "z": 16.654216766357422
+        },
+        "cameraPosition": {
+          "x": -1.4704627990722656,
+          "y": 3.470771312713623,
+          "z": 12.585088729858398
+        },
+        "cameraRotation": {
+          "x": 0.17847810685634613,
+          "y": 0.11224280297756195,
+          "z": -0.020498069003224373,
+          "w": 0.9773059487342834
+        },
+        "cameraDistance": 3.0,
+        "cameraHeight": 4.0,
+        "cameraPivotHeight": 1.0,
+        "lookHeightOffset": 1.5,
+        "shoulderOffset": -1.7999999523162842,
+        "shoulderAimFraction": 0.5,
+        "fieldOfView": 75.0,
+        "aspect": 1.7777777910232544,
+        "measurementMilliseconds": 24.7496,
+        "columns": 48,
+        "rows": 64,
+        "sampledRays": 3072,
+        "playerMeshes": 37,
+        "enemyMeshes": 43,
+        "regions": [
+          {
+            "name": "head",
+            "silhouetteSamples": 296,
+            "visibleSamples": 296,
+            "playerBlockedSamples": 0,
+            "outsideViewSamples": 0,
+            "visibleFraction": 1.0
+          },
+          {
+            "name": "torso",
+            "silhouetteSamples": 233,
+            "visibleSamples": 233,
+            "playerBlockedSamples": 0,
+            "outsideViewSamples": 0,
+            "visibleFraction": 1.0
+          },
+          {
+            "name": "right attack arm",
+            "silhouetteSamples": 301,
+            "visibleSamples": 301,
+            "playerBlockedSamples": 0,
+            "outsideViewSamples": 0,
+            "visibleFraction": 1.0
+          },
+          {
+            "name": "left attack arm",
+            "silhouetteSamples": 208,
+            "visibleSamples": 208,
+            "playerBlockedSamples": 0,
+            "outsideViewSamples": 0,
+            "visibleFraction": 1.0
+          }
+        ]
+      },
+      "framing_source": {
+        "path": "results/playmode-25/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-FirstEnemyDefeated-framing.json",
+        "bytes": 2184,
+        "sha256": "6ad0536560b83f3b4ec320877f5ca37995d4f0bf064273807631693ccc701377"
+      }
+    },
+    {
+      "file": "03-throne-fight.png",
+      "source": {
+        "path": "results/playmode-25/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-MinibossDefeated.png",
+        "bytes": 474183,
+        "sha256": "36e121e9e25f68123c009a50eda77e2e6f3031ece2c987a15e6f51e0e6e72a0e"
+      },
+      "kind": "Actual Unity scene-camera PNG from PRE-GUARD PlayMode25; 960x540, unedited. Not guarded-source or standalone acceptance.",
+      "framing": {
+        "scope": "Actual front-facing actor triangles at the observed windup; player obscuration and viewport only. Not environment, lighting or human acceptance.",
+        "encounter": "Corrupted Guard",
+        "test": "CastleMainRouteCompletesThroughControlsWithoutSecret",
+        "geometryFailure": "",
+        "playerPosition": {
+          "x": 7.960299968719482,
+          "y": 0.019999910145998,
+          "z": 31.010337829589844
+        },
+        "enemyPosition": {
+          "x": 8.004834175109863,
+          "y": 0.05000019073486328,
+          "z": 32.627647399902344
+        },
+        "cameraPosition": {
+          "x": 6.607961177825928,
+          "y": 3.4449024200439453,
+          "z": 28.52675437927246
+        },
+        "cameraRotation": {
+          "x": 0.1763036549091339,
+          "y": 0.09001555293798447,
+          "z": -0.016192669048905373,
+          "w": 0.9800775647163391
+        },
+        "cameraDistance": 3.0,
+        "cameraHeight": 4.0,
+        "cameraPivotHeight": 1.0,
+        "lookHeightOffset": 1.5,
+        "shoulderOffset": -1.7999999523162842,
+        "shoulderAimFraction": 0.5,
+        "fieldOfView": 75.0,
+        "aspect": 1.7777777910232544,
+        "measurementMilliseconds": 23.5924,
+        "columns": 48,
+        "rows": 64,
+        "sampledRays": 3072,
+        "playerMeshes": 37,
+        "enemyMeshes": 41,
+        "regions": [
+          {
+            "name": "head",
+            "silhouetteSamples": 209,
+            "visibleSamples": 209,
+            "playerBlockedSamples": 0,
+            "outsideViewSamples": 0,
+            "visibleFraction": 1.0
+          },
+          {
+            "name": "torso",
+            "silhouetteSamples": 349,
+            "visibleSamples": 328,
+            "playerBlockedSamples": 21,
+            "outsideViewSamples": 0,
+            "visibleFraction": 0.939828097820282
+          },
+          {
+            "name": "right attack arm",
+            "silhouetteSamples": 605,
+            "visibleSamples": 581,
+            "playerBlockedSamples": 24,
+            "outsideViewSamples": 0,
+            "visibleFraction": 0.960330605506897
+          }
+        ]
+      },
+      "framing_source": {
+        "path": "results/playmode-25/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-MinibossDefeated-framing.json",
+        "bytes": 1999,
+        "sha256": "1de18a8ec7954355e61e5f420b8418f46b16ecc3f34bbba776553fb00c3ae50f"
+      }
+    },
+    {
+      "file": "04-final-fight.png",
+      "source": {
+        "path": "results/playmode-25/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-FinalEnemyDefeated.png",
+        "bytes": 503343,
+        "sha256": "96192c5b69ccbb5d48272398e2d38e999f6f16c795c7667f1899f8313a922fc3"
+      },
+      "kind": "Actual Unity scene-camera PNG from PRE-GUARD PlayMode25; 960x540, unedited. Not guarded-source or standalone acceptance.",
+      "framing": {
+        "scope": "Actual front-facing actor triangles at the observed windup; player obscuration and viewport only. Not environment, lighting or human acceptance.",
+        "encounter": "Final Demon",
+        "test": "CastleMainRouteCompletesThroughControlsWithoutSecret",
+        "geometryFailure": "",
+        "playerPosition": {
+          "x": 7.942441463470459,
+          "y": -3.9800002574920654,
+          "z": 62.78329086303711
+        },
+        "enemyPosition": {
+          "x": 7.977270603179932,
+          "y": -3.9499998092651367,
+          "z": 64.39993286132812
+        },
+        "cameraPosition": {
+          "x": 6.562932968139648,
+          "y": -0.621549129486084,
+          "z": 60.403865814208984
+        },
+        "cameraRotation": {
+          "x": 0.16915209591388702,
+          "y": 0.098383329808712,
+          "z": -0.016972359269857407,
+          "w": 0.9805204272270203
+        },
+        "cameraDistance": 3.0,
+        "cameraHeight": 4.0,
+        "cameraPivotHeight": 1.0,
+        "lookHeightOffset": 1.5,
+        "shoulderOffset": -1.7999999523162842,
+        "shoulderAimFraction": 0.5,
+        "fieldOfView": 75.0,
+        "aspect": 1.7777777910232544,
+        "measurementMilliseconds": 28.756,
+        "columns": 48,
+        "rows": 64,
+        "sampledRays": 3072,
+        "playerMeshes": 37,
+        "enemyMeshes": 47,
+        "regions": [
+          {
+            "name": "head",
+            "silhouetteSamples": 296,
+            "visibleSamples": 296,
+            "playerBlockedSamples": 0,
+            "outsideViewSamples": 0,
+            "visibleFraction": 1.0
+          },
+          {
+            "name": "torso",
+            "silhouetteSamples": 146,
+            "visibleSamples": 146,
+            "playerBlockedSamples": 0,
+            "outsideViewSamples": 0,
+            "visibleFraction": 1.0
+          },
+          {
+            "name": "right attack arm",
+            "silhouetteSamples": 308,
+            "visibleSamples": 288,
+            "playerBlockedSamples": 20,
+            "outsideViewSamples": 0,
+            "visibleFraction": 0.9350649118423462
+          },
+          {
+            "name": "left attack arm",
+            "silhouetteSamples": 174,
+            "visibleSamples": 169,
+            "playerBlockedSamples": 5,
+            "outsideViewSamples": 0,
+            "visibleFraction": 0.9712643623352051
+          }
+        ]
+      },
+      "framing_source": {
+        "path": "results/playmode-25/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-FinalEnemyDefeated-framing.json",
+        "bytes": 2239,
+        "sha256": "feee06cf21850bf95655071f7799e1e839855eaf0c7d18e4aad908549ed1faa5"
+      }
+    }
+  ],
+  "standalone": {
+    "launched": false,
+    "build6_status": "Not run; player directories were not accessed"
+  },
+  "limitations": [
+    "Play25 passed 193 cases before the zero-look guard and its regression existed.",
+    "Edit9 passed 173 cases for guarded inputs; it does not execute the new PlayMode guard regression.",
+    "Play27 and Play29 were disk-aborted and have no complete NUnit XML.",
+    "No headless guard route or build6 is qualified; earlier player builds are not this guarded candidate.",
+    "Screenshots are copied byte-for-byte from one pre-guard run; no composite run is reported as passing.",
+    "Framing measures sampled actor mesh surfaces at snapped windups, not all frames, environment visibility, lighting or human play.",
+    "Standalone, human readability/pacing, performance and audio acceptance remain pending."
+  ],
+  "receipt_correction": {
+    "scope": "Correct each disk-aborted run additional_frozen_files from its exact retained frozen map; PNGs, inputs and original collection time unchanged.",
+    "superseded_receipt": {
+      "path": "artifacts/validation/superseded/combat-camera-preview-2026-10-01-before-abort-extras-correction.json",
+      "bytes": 27391,
+      "sha256": "80e8eb8c2f1941aefdb262daa09150d2933a162eccdffb8e96a92985dcdca293"
+    }
+  }
+}

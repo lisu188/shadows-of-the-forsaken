@@ -22,7 +22,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private Keyboard keyboard;
         private InputSettings.UpdateMode previousInputMode;
         private static readonly MethodInfo ManualInputUpdate = typeof(InputSystem).GetMethod("Update",
-            BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
 
         private Component Add(string name, string type)
         {
@@ -41,7 +41,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         private static void PumpInput()
         {
-            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its internal typed update pump.");
+            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its typed update pump.");
             try { ManualInputUpdate.Invoke(null, new object[] { InputUpdateType.Manual }); }
             catch (TargetInvocationException error) { throw error.InnerException; }
         }

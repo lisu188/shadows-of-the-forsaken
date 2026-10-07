@@ -52,11 +52,11 @@ flowchart TD
 
 Obowiązkowe zdarzenia: `first_enemy_defeated`, `main_puzzle_solved`, `miniboss_defeated`, `library_opened`, `final_enemy_defeated`. Opcjonalne: `secret_lever_pulled`, `bonus_discovered`. Sekretna dźwignia nie otwiera obowiązkowej drogi do finału. Biblioteka otwiera obowiązkowe ukryte drzwi, a nie dostęp do opcjonalnego bonusu.
 
-Po spełnieniu warunków bramy pozostają otwarte do restartu. Połączenia są dwukierunkowe; wejście do końcowego wyjścia jest terminalne. Flagi są jednorazowe i nie są zużywanymi przedmiotami. Restart rozpoczyna nową sesję bez flag. Śmierć, collidery i subskrypcje Unity będą realizowane i weryfikowane w odpowiednich issues; model projektowy ich nie symuluje.
+Po spełnieniu warunków bramy pozostają otwarte do restartu. Połączenia są dwukierunkowe; wejście do końcowego wyjścia jest terminalne. Flagi są jednorazowe i nie są zużywanymi przedmiotami. Restart rozpoczyna nową sesję bez flag. Pierwotne #4 pozostawiało śmierć, collidery i subskrypcje Unity kolejnym issues; obecnie opisuje je [integracja pełnej trasy](full-castle-route.md). Model projektowy nadal ich nie symuluje.
 
 ## Minimalne sterowanie, walka i target
 
-**To decyzje implementacyjne, nie specyfikacja już działających skryptów.**
+**To decyzje implementacyjne przyjęte w #4; obecny zakres ich realizacji i odbioru opisuje [pełna trasa](full-castle-route.md).**
 
 | Akcja | Wybrany wariant |
 | --- | --- |
@@ -67,12 +67,12 @@ Po spełnieniu warunków bramy pozostają otwarte do restartu. Połączenia są 
 | Interakcja | E; jeden cel w zasięgu i bez przeszkody. Wariant i podpowiedź zagadki ustala #13. |
 | Ponowna gra | R lub przycisk ekranowy wyłącznie po porażce/ukończeniu; reset całej sesji, bez zapisu na dysku. |
 | Obsada | Jeden demon na początku, jeden skażony strażnik jako miniboss, jeden demon w finale; brak obowiązkowych fal i wielofazowości. |
-| Wejście techniczne | Jeden zestaw akcji istniejącego Input System 1.11.1: Move, Jump, Attack, Interact oraz terminalne Restart. Nie odczytywać jednocześnie starego i nowego wejścia. |
+| Wejście techniczne | Jeden zestaw akcji istniejącego Input System, obecnie 1.20.0: Move, Jump, Attack, Interact oraz terminalne Restart. Nie odczytywać jednocześnie starego i nowego wejścia. |
 | Build | Windows x64, `BuildTarget.StandaloneWindows64`; jedna scena poziomu. To wybór targetu, nie potwierdzenie zbudowanego artefaktu. |
 
-Obrażenia, zdrowie, prędkości, okna ataku, rozmiary i ewentualny budżet FPS będą jawnie dostrajane w #6/#11/#23/#24. Nie są zamrożonymi liczbami z DOCX. Nie dodajemy staminy, uników, blokowania, ekwipunku, rozwoju postaci, craftingu ani trwałych zapisów. Unity `6000.0.24f1`, pakiety i istniejące GUID-y pozostają bez zmian.
+Obrażenia, zdrowie, prędkości, okna ataku, rozmiary i ewentualny budżet FPS będą jawnie dostrajane w #6/#11/#23/#24. Nie są zamrożonymi liczbami z DOCX. Nie dodajemy staminy, uników, blokowania, ekwipunku, rozwoju postaci, craftingu ani trwałych zapisów. Pierwotne #4 zachowało wersje edytora i pakietów. Późniejsze polecenie właściciela zatwierdziło zapis aktualizacji do Unity `6000.6.3f1` i pakietów wskazanych w README; te wersje są obecnie przypięte. Istniejące GUID-y pozostają bez zmian. Wymagane testy nowej wersji wykonano dla wcześniejszych etapów; [bieżący raport](validation/full-castle-route-2026-09-30.md) oddziela je od wyników aktualnej integracji i odbioru playera.
 
-Dokumentacja techniczna: [Input System 1.11 — Actions](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Actions.html), [Unity 6 — StandaloneWindows64](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/BuildTarget.StandaloneWindows64.html). Te źródła opisują API, nie narzucają przyjętego modelu rozgrywki.
+Historyczne odniesienia techniczne z #4: [Input System 1.11 — Actions](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/Actions.html), [Unity 6 — StandaloneWindows64](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/BuildTarget.StandaloneWindows64.html). Te źródła opisują ówczesne API, nie narzucają przyjętego modelu rozgrywki ani nie potwierdzają zgodności po aktualizacji.
 
 ## Testowalny kontrakt i granice weryfikacji
 
@@ -86,3 +86,16 @@ python3 -m unittest discover -s tests -p 'test_*.py' -v
 Walidator wylicza osiągalne stany dla trasy z sekretem i bez niego. Sprawdza osiągalność wszystkich obszarów/zdarzeń, wymagania wejścia, brak przedwczesnego końca i możliwość ukończenia z każdego osiągalnego stanu modelu. Odrzuca błędny schemat, duplikaty i nieistniejące referencje. Porównuje również blob DOCX z zapisaną wersją. Zmiana źródła wymaga przeglądu decyzji, nie automatycznej aktualizacji hasha.
 
 Testy mutacyjne celowo usuwają bramy, uzależniają główną ścieżkę od bonusu i tworzą cykl warunków. Zielony wynik nie potwierdza kolizji, AI, sterowania, grafiki ani 2–3 minut rozgrywki. Te dowody muszą pochodzić z rzeczywistych testów Unity i playtestów. PR dla #4 nie zmienia skryptów C#, scen ani konfiguracji targetu edytora.
+
+## Decyzje pełnej trasy — 2026-09-30
+
+Właściciel wybrał pełną trasę, proste mechanizmy „znajdź i uruchom”, opcjonalny sekret oraz wydłużenie spokojnego podejścia. To późniejsze decyzje wykonawcze, nie dodatkowa treść DOCX.
+
+- **§3, §7–8 — dziedziniec:** początek przesuwamy na południe do `(0, 0.05, -88)`; granica pierwszego starcia pozostaje na `z=12`. Daje to 100 m bezpiecznej drogi przy prędkości 5 m/s. Nie ma wymuszonego oczekiwania ani blokady prędkości. Późniejsze pomieszczenia i połączenia pozostają na miejscu; rozszerzenie początku nie jest twierdzeniem o metrycznej skali mapy DOCX. Rzeczywiste czasy wymagają pomiaru.
+- **§3, §6, §8 — zagadka:** jedna oznaczona runą dźwignia otwiera trasę do tronu po pierwszej walce. Wskazówka używa tego samego znaku na mechanizmie i zamkniętym przejściu. Uszkodzony mechanizm daje informację o nieudanej próbie, bez zużycia poprawnego rozwiązania. Nie ma sekwencji do zapamiętania.
+- **§4 — biblioteka:** oznaczona księga uruchamia ukryte drzwi do katakumb; wskazówka pozostaje w pomieszczeniu.
+- **§3, §6, §8 — sekret:** dźwignia katakumb otwiera istniejącą salę bonusową i dolny skrót do tronu. Jednorazowe odkrycie reliktu (`bonus_discovered`) daje krótki tekst fabularny oraz informację na ekranie ukończenia. Nagroda nie wprowadza ekwipunku, leczenia ani nowego warunku finału.
+- **§1, §6–8 — walki:** trzy odrębne starcia używają wspólnego zdrowia, ataku wręcz i AI. Pierwszy demon wprowadza walkę; skażony strażnik jest wolniejszy i wytrzymalszy; demon finałowy szybszy. Parametry są wyborami implementacyjnymi do weryfikacji w grze.
+- **§3, §7 — sesja:** porażka i ukończenie zatrzymują rozgrywkę, a R lub przycisk uruchamia pełny reset. Ukończenie następuje przez wejście żywego gracza do wyjścia po wymaganych walkach i mechanizmach.
+
+Główna trasa nadal wymaga pięciu dotychczasowych celów; kontrakt JSON i hash źródłowego DOCX nie zmieniają się. Implementacja blockoutu i odbiór finalnej oprawy pozostają odrębnymi etapami.

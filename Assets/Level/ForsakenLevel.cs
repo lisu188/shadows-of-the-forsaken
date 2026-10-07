@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ShadowsOfTheForsaken.Progression;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using CastlePlayerCombat = ShadowsOfTheForsaken.LevelCombat.PlayerCombat;
 
 namespace ShadowsOfTheForsaken.Level
 {
@@ -15,7 +16,7 @@ namespace ShadowsOfTheForsaken.Level
         public Material worldTextMaterial;
         public LevelProgressionController Progression { get; private set; }
         public PlayerMovement Movement { get; private set; }
-        public PlayerCombat Combat { get; private set; }
+        public CastlePlayerCombat Combat { get; private set; }
         public PlayerInteraction Interaction { get; private set; }
         public CameraFollow Follow { get; private set; }
         public readonly List<EnemyCombat> Enemies = new List<EnemyCombat>();
@@ -183,7 +184,7 @@ namespace ShadowsOfTheForsaken.Level
             Movement = player.AddComponent<PlayerMovement>();
             Movement.speed = 2f; Movement.rotationSpeed = 110; Movement.inputActions = inputActions;
             var sword = art.Actor(player.transform, false, false);
-            Combat = player.AddComponent<PlayerCombat>();
+            Combat = player.AddComponent<CastlePlayerCombat>();
             Combat.Configure(Progression, 100);
             Interaction = player.AddComponent<PlayerInteraction>();
             Interaction.Configure(Movement, Progression, 2.6f);

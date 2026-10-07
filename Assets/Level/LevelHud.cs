@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using ShadowsOfTheForsaken.Combat;
+using ShadowsOfTheForsaken.Combat.CastleRules;
 using ShadowsOfTheForsaken.Progression;
 using UnityEngine;
 using UnityEngine.EventSystems;

@@ -14,5 +14,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
     <ProjectReference Include="Core/Combat.Core.csproj" />
     <Compile Include="../../Assets/Tests/EditMode/CombatRulesTests.cs" Link="CombatRulesTests.cs" />
+    <Compile Include="../../Assets/Tests/EditMode/CombatStateTests.cs" Link="CombatStateTests.cs" />
+    <Compile Include="../../Assets/Tests/EditMode/EncounterStateTests.cs" Link="EncounterStateTests.cs" />
   </ItemGroup>
 </Project>

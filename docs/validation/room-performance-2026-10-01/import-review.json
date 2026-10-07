@@ -1,0 +1,676 @@
+{
+  "schema_version": 1,
+  "source_commit": "8cdba0197532e8e6fea5b711c30152b837d8e5d6",
+  "source_archive_sha256": "b2939e34aa3ce882bbf800843cfc4b01ac297105584c83c2284d174d9849acb7",
+  "imported_archive_sha256": "edeb47f7bc57a8a08d70d4f1094281bad64f635bc2b7a9a1a38906045466a569",
+  "unreviewed_pairs": 0,
+  "unresolved_findings": 0,
+  "differences": [
+    {
+      "path": "Assets/Combat/Demo/Player.mat",
+      "source_sha256": "2076252739f88622ebb47946d63122727b8e578e472cf3603fe1574878dfaf06",
+      "imported_sha256": "f16355e6e75f05defa5dddb83464a5904fa7528951f90bd9efbba8b1c053d821",
+      "reason": "Only compatibility _Color RGB decimal round-trip and trailing YAML whitespace changed. Authored _BaseColor and alpha remain exact; all other serialized text is identical after trimming line-end whitespace, including shader, textures, keywords, pass settings, emission and AssetVersion metadata.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-demo-import-review.json",
+        "report_sha256": "3f9e5b5bc0a4475b5c74a8986075c5dd948f9f01d21a3afc4d9224ac4db860c5"
+      }
+    },
+    {
+      "path": "Assets/Combat/Demo/Stone.mat",
+      "source_sha256": "9e20598b04c4bcb53dea0ba4d4e5545da3086f6ff675435fedcad20f270f60f5",
+      "imported_sha256": "0a438501137f8c7954c8d08f3acb2ddbb4706930001fc9608ed10bf6951ec829",
+      "reason": "Only compatibility _Color RGB decimal round-trip and trailing YAML whitespace changed. Authored _BaseColor and alpha remain exact; all other serialized text is identical after trimming line-end whitespace, including shader, textures, keywords, pass settings, emission and AssetVersion metadata.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-demo-import-review.json",
+        "report_sha256": "3f9e5b5bc0a4475b5c74a8986075c5dd948f9f01d21a3afc4d9224ac4db860c5"
+      }
+    },
+    {
+      "path": "Assets/Combat/Demo/Target.mat",
+      "source_sha256": "abafc4095a354e38d245f65f267d27e7898f20fd64af22c148418d699b3fa160",
+      "imported_sha256": "e4b73562a574200b50ec9f7d7b716490fc257f8e35db0e7b7812456f55736630",
+      "reason": "Only compatibility _Color RGB decimal round-trip and trailing YAML whitespace changed. Authored _BaseColor and alpha remain exact; all other serialized text is identical after trimming line-end whitespace, including shader, textures, keywords, pass settings, emission and AssetVersion metadata.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-demo-import-review.json",
+        "report_sha256": "3f9e5b5bc0a4475b5c74a8986075c5dd948f9f01d21a3afc4d9224ac4db860c5"
+      }
+    },
+    {
+      "path": "Assets/Interactions/Demo/BlockedRune.mat",
+      "source_sha256": "8f9a8ddf3f69d7b01a70be9267a1d5a276df34d77f0ee3c69ba3a9249c56625c",
+      "imported_sha256": "afdee58e80723af3796bb8be56c95f95d6a46a4e7ac749c729554b0759bcb67a",
+      "reason": "Only compatibility _Color RGB decimal round-trip and trailing YAML whitespace changed. Authored _BaseColor and alpha remain exact; all other serialized text is identical after trimming line-end whitespace, including shader, textures, keywords, pass settings, emission and AssetVersion metadata.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-demo-import-review.json",
+        "report_sha256": "3f9e5b5bc0a4475b5c74a8986075c5dd948f9f01d21a3afc4d9224ac4db860c5"
+      }
+    },
+    {
+      "path": "Assets/Interactions/Demo/Gate.mat",
+      "source_sha256": "4bf4ddee0f12fcbac68d05597905a65f795fab01b81b99e8ee601da5b85240d1",
+      "imported_sha256": "fe17e2458826420d6bc21e555149d4c8775ec522bcf5f0a30bd3b1ae62d6c85a",
+      "reason": "Only compatibility _Color RGB decimal round-trip and trailing YAML whitespace changed. Authored _BaseColor and alpha remain exact; all other serialized text is identical after trimming line-end whitespace, including shader, textures, keywords, pass settings, emission and AssetVersion metadata.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-demo-import-review.json",
+        "report_sha256": "3f9e5b5bc0a4475b5c74a8986075c5dd948f9f01d21a3afc4d9224ac4db860c5"
+      }
+    },
+    {
+      "path": "Assets/Interactions/Demo/Lever.mat",
+      "source_sha256": "9091ccc46d2e433320e67a6da0fe0de19028ac2b408233dc6b665fc2463a763a",
+      "imported_sha256": "a18ab64c8e2daf003d8d1c7b9c8c88e4799dcaeb95fb1d11bb0886f28c544171",
+      "reason": "Only compatibility _Color RGB decimal round-trip and trailing YAML whitespace changed. Authored _BaseColor and alpha remain exact; all other serialized text is identical after trimming line-end whitespace, including shader, textures, keywords, pass settings, emission and AssetVersion metadata.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-demo-import-review.json",
+        "report_sha256": "3f9e5b5bc0a4475b5c74a8986075c5dd948f9f01d21a3afc4d9224ac4db860c5"
+      }
+    },
+    {
+      "path": "Assets/Interactions/Demo/Stone.mat",
+      "source_sha256": "bfc68cb2a5cb5cb9a3f4aa9b99e4423297be0add48044b224a3df8f9646fe037",
+      "imported_sha256": "b5bbdb33b007d116a7b68c92b86a3d8e0bc4c11734be726140e7756c98b8ffa6",
+      "reason": "Only compatibility _Color RGB decimal round-trip and trailing YAML whitespace changed. Authored _BaseColor and alpha remain exact; all other serialized text is identical after trimming line-end whitespace, including shader, textures, keywords, pass settings, emission and AssetVersion metadata.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-demo-import-review.json",
+        "report_sha256": "3f9e5b5bc0a4475b5c74a8986075c5dd948f9f01d21a3afc4d9224ac4db860c5"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Blood.mat",
+      "source_sha256": "cff60fc9fc4576233ffcb0b6c68f62eabd71a37dd853cb09fa8661727f94fcd0",
+      "imported_sha256": "c0a1c47c845e0e32e586601b0e6638751a4c312cc76e8fd39d7c2cdc2f371d53",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/BookGold.mat",
+      "source_sha256": "5a1f7b3b3b8fd7ea124ebced20c339b50dd16c147293fb9193d1a7d85c548afa",
+      "imported_sha256": "92090c2dae0719a7b4d1b677e582285275af9105b8029da2cd80f700acd00ffc",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/BookRed.mat",
+      "source_sha256": "a74b08d390bbc8883b5a8614c2329350bd9cf83cbdea54701fba5d4d0b176611",
+      "imported_sha256": "d8c72eddfbb068e136787897341e54f9e5a66923211c3e9da368502dee2a6479",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/DarkStone.mat",
+      "source_sha256": "71568f8c70114342f24989d3f008be024f8c2b3f33ac0b835092bf44b86af90b",
+      "imported_sha256": "4136bf2c9f907dfa649a0d14a7d49839ec2514ae8c187662ae35e3e4fc2faa13",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Flame.mat",
+      "source_sha256": "caef4f69e47b8c15edd1d5cf8630f4760d2a7da61e7fce93184f95c7864a5efd",
+      "imported_sha256": "fcfb75df9fb8df276cde68be36a431bd36ebe3b23118609444024a655679dad8",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Glass.mat",
+      "source_sha256": "e58bcee2e473c1fe75f6f49d8583e023dae3ec2a45b728dd411095e486b4507d",
+      "imported_sha256": "307baedbb671fd766cd38950e611315b4fb88c0b9bee602be0449bb7b6f01dc7",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Iron.mat",
+      "source_sha256": "783b268f0810fb8d93ade96cf1b3b61694425276ad8e647c0e3ad78e8f7eb7ce",
+      "imported_sha256": "e296a569c2ded2aa015cd34ac45140e96a83ce8308900ab1dcb7600f5cc7f9f0",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Player.mat",
+      "source_sha256": "9e2251b4e66620d645808f7f7317e322f3e41a6fe3f64871147df1042cd3aae8",
+      "imported_sha256": "bccc928ac62a48ccc8645af5425c5b971fa9b347022df11c028d91ef09d52835",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Rune.mat",
+      "source_sha256": "40588a5589d48401361923c82171895ff8c054ad1dd70b914b211c0e4a8c769a",
+      "imported_sha256": "c55ada4408908c2de0511fcbe83c1b785f08e75e1e79e20b7c4e125773efabcb",
+      "reason": "Rune alone additionally serializes 15 pinned Lit defaults, null texture slots, disabled MOTIONVECTORS and compatibility _Color rounding. Parsed Material equals the reviewed build4 material; authored base/emission/shader/surface values are preserved.",
+      "category": "urp_material_default_population",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Stone.mat",
+      "source_sha256": "f4c378b3bf5b887b63386351a55b32c7595ae5c711c3854b208e4a64f0593516",
+      "imported_sha256": "911584ee9594439cabee843abd5350566f7864a4558feb207c0b2dfe3bfef05f",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Trim.mat",
+      "source_sha256": "58e7af2587b431841120512c96ebd69a4f2d9a359bc3073abb710402e54e000b",
+      "imported_sha256": "a7b7e84100704ff1ddbc9d8ad3f5443c717f5a5db0501e2673594552a9f92688",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Wall.mat",
+      "source_sha256": "e33203a9a3bf16e509497f2582e25b1427e83344e207ffc64cda84791c482c8f",
+      "imported_sha256": "dbc29dfd0d1ee7509c1d3a04f1771d7233ebb82eec31279341bca7a68afb26d5",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Wood.mat",
+      "source_sha256": "6b48c1ba8aae65a8130e8b75d120593bc966c14f22d45d3ae6979db9e033c566",
+      "imported_sha256": "869c9311d93d8058a17cb00f63dfc8ef36246a0c4dacda6537f28bdb7a77c199",
+      "reason": "Only AssetVersion10 editor subasset and YAML formatting changed. All parsed Material fields, shader, properties, keywords and pass settings remain equal.",
+      "category": "urp_assetversion10_metadata",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Ancient ivory.mat",
+      "source_sha256": "e9dec65e338bb31e352c17a7c21e4fb503a004f92443076af794e8dfcf0fd5af",
+      "imported_sha256": "30bf4824c851ec172c0e68dc24dc0594649231c400ed4dd698d7dd2e9ba73694",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Antique brass.mat",
+      "source_sha256": "b3d1a060db56bf67b0f01845ab03007122e7092f6f74ca70931ff96b2d2c9dcf",
+      "imported_sha256": "749912187771cf2b3f368ad495c81fa354ac3f811acceea4ce01c834dc01e92b",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Blackened iron.mat",
+      "source_sha256": "924aaa1e0c47e3039498980f113d7f378d61b26680985847062c9768a7866231",
+      "imported_sha256": "332bc533a885729f3a803464e5f14f50bd9828ab8614a744bb08ff86304eac61",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Blade steel.mat",
+      "source_sha256": "584bd7322afcfa31862cf0b56b06b563dbe3bc72e3b01972b9218ea145f3e1ad",
+      "imported_sha256": "de48d117b4a1788091afdad996231b7c9e1307d19c8827fd13d22ba0b3ace1a2",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Cursed violet.mat",
+      "source_sha256": "7451cec6715f41afe75e0aa7ddb1ec350204d33eafc06139b52810106a0710db",
+      "imported_sha256": "ad3b84c8ff9d3c97944e7529a1842353ad9d57ffeb67f2df146bf72c22dfa013",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Demon hide.mat",
+      "source_sha256": "50e58a34dfcaa4d6678da6945257536a5cddb97482c78a2dfc06186fd0063e43",
+      "imported_sha256": "91a9d48047b5165ea7710dec5b3885709b5d1a65052d681eac2704ee1ac5926a",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Ember eyes.mat",
+      "source_sha256": "dadb44de8462355cc929b145404d4bf7925ab1c63a80325d9285e3f053ffcda0",
+      "imported_sha256": "fbf3a62ee3b1d68d94f1077cbec96f5be0a64f5e5c6af4bcc3778046fed1cc5e",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Leather.mat",
+      "source_sha256": "6a1fd065d9aa18913671d00b1d159afa321fafea165e68e770797d76e52176e5",
+      "imported_sha256": "01ccb49aa6a82c3c17522e5b1bd801b323e40398651f74abd85f5852ae699a3e",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Midnight cloak.mat",
+      "source_sha256": "b560bc23a395d251588218dc84f148c6df3da778eee206b23fae89a9a993400a",
+      "imported_sha256": "2baa3ff3304b6f41ded783f2b745e261648b4cf232803e46a05134f97cf097e0",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Obsidian hide.mat",
+      "source_sha256": "43a581b4776e6ea4ee455d886ebb4ac0715f5b743da952d13e1cd9c27bb8c99d",
+      "imported_sha256": "09faee4fa87220cddcb19b86972243404066763b00bef9a371c74d8b25145697",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Oxblood cloth.mat",
+      "source_sha256": "7b99cbe111739d5d6f6332a88df3d53b37a6e528a03c64dc8d0be03e2ef73134",
+      "imported_sha256": "8f4b7a2fde93a8869d42f027422b4cb422b162930396d4e8769ad95e200a84ec",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Actors/Materials/Worn silver.mat",
+      "source_sha256": "79e18517fcc22dacdecd10c3b99acbd367941358b63d9f641eac73734509ddd8",
+      "imported_sha256": "4f39ca1e02bb857611f1e613466e089d72c5996846c1851b6644610036eefedb",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Blood.mat",
+      "source_sha256": "350581a38355c259005bc90955be3322b3441eb740c06d08c60978b5b2bf7de0",
+      "imported_sha256": "db4c049f2688066162af663b5cccd97c9d2ab019a52494fb865244540420be1a",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Bronze.mat",
+      "source_sha256": "a8e50f522836049f2a8f16e146b7857b03034dc5f3975555f7b6002c3fbf0de0",
+      "imported_sha256": "238cc07cacacb420393c178d21918ae9c91ed515e5982042880af2b745216387",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/CarvedStone.mat",
+      "source_sha256": "45d9b31a769ba3b8fef3f99439d603e74f5e1b30daf5333e814b84e2d92a6a2d",
+      "imported_sha256": "76907e259997e06daabf69c24c8f76d882f75381e01004c6082d827787f2c2f6",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/DarkStone.mat",
+      "source_sha256": "94a8a9e4f8aadb303013cf848f344efb6a8195e3db076cd66a0398e232559ff5",
+      "imported_sha256": "e9104cf20ad6ad913827d47965fc253cd77e57c06c646e114900406b7a760ab2",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Flagstone.mat",
+      "source_sha256": "57e8e41d9648ba056268aebd195d5a1beb8df53bac0a37723eec760497548ab6",
+      "imported_sha256": "811e88740f774dfb4012744cd60edcabf98f9859e8ec6404e17822b3b90fc270",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Flame.mat",
+      "source_sha256": "fc1341afac4c31090d95b65c54078976c72c371066eec891d2f6b9c8c8e49ba0",
+      "imported_sha256": "7dc775f95f45988f658059d2f795c6e9f6071f50de17fa6151eb7b11b0d57ec6",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/GlassBlue.mat",
+      "source_sha256": "94309d35306f0ff358e3dd13ed0fe1e20e453266a227ffeb0815f6d121311b3f",
+      "imported_sha256": "5acb87787576578f733e3a7a007d68cafef1da8e5516906f464209324165ade5",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/GlassWine.mat",
+      "source_sha256": "8eb0e79b4cb9f3d3b76f396e3968fb336ac15b0bd0ed0070f61b3cbd7ccb2c2a",
+      "imported_sha256": "0671c8006c4c0e2f381c6225f17a6b87400b75654f61b7ea632c9e27ab1fe7ed",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Iron.mat",
+      "source_sha256": "77dcca78b42e8e9af8d0878a930ef9a82724bdb4aed486f600713f787a73325b",
+      "imported_sha256": "0436be9b86cf7dff4a55bd6107d1221e9545c3cda1948090b32ea2bd1e880f78",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/LeatherGreen.mat",
+      "source_sha256": "a8296f4b70cb38bd30969bc59483cc6ecad4afa6d3139966b016cc0fabd87615",
+      "imported_sha256": "c8481fad8b0e3dd6189a9946c7ee99225a407cc81a74637095a5819153d05a65",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/LeatherRed.mat",
+      "source_sha256": "714289c4d120bd1bf1d0e8b329901cd445ab307fc6441c036d7089827f81dfe9",
+      "imported_sha256": "aecf199e72959c652686bcd41b7f746452988d8eab7ccb0ec52e430579e69649",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Mountain.mat",
+      "source_sha256": "99d33410bd7a8ed728691cbbaacdba8735ec2e7f2d8d01965779b3d5f169de1e",
+      "imported_sha256": "5dfb7d651fa6880ebf9b46d0ae4c4f4556deef6dc2f76b5e9295698cd2bb5488",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Oak.mat",
+      "source_sha256": "b9d9c49df3a2c45e27384da874440ac79b8a4a2d33b23826b0c3ffb446b61a09",
+      "imported_sha256": "abb9195b27a1dfba0c1eb9b0e4042fd868cdd3585546f1b062929236f9cd52ea",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Pages.mat",
+      "source_sha256": "54aa759da91eec13238896b36dd44e9b31c38aae5b63d05c12e2940fa2733131",
+      "imported_sha256": "1aaa5cceab99cb637cde35108343651d0d4596912aef2023c3fa4243fc0b5714",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Rune.mat",
+      "source_sha256": "12522d9b6cb80c74065fde8407cad9c92e8bd76ec52d74c7e821783201ca076d",
+      "imported_sha256": "785e08cadc23023f61969df703b86eae106a71b8d7628ec2ad6d69609861abe3",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/LevelPresentation/Environment/Wax.mat",
+      "source_sha256": "19a791c1e2ef2602703d6e21d5683ea7c88a40bb491b7dbc39a9c9d453ac95b7",
+      "imported_sha256": "2b577b4b613ad151ad20de46e2daad58adf513bf9226140aa5d133b5211703ac",
+      "reason": "Compatibility _Color rounding only; all other parsed material values including _BaseColor, emission, keywords and passes match first inputs.",
+      "category": "compatibility_color_roundtrip",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "ProjectSettings/ProjectAuditorSettings.asset",
+      "source_sha256": "7b96b4b637e0ff3513edbe878c6375e8d0f8eb6b2f5b4e3202dcbd52aa55897d",
+      "imported_sha256": "9e68444b9bda981e2927a98df9edf69ea88362f0c6b7f3c81b39b9d515d2a416",
+      "reason": "Trailing whitespace or line endings only.",
+      "category": "whitespace",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "ProjectSettings/ProjectSettings.asset",
+      "source_sha256": "03ce1b99777646dbe853ba6c477febe166a15e409e96023e86006f93c6645a69",
+      "imported_sha256": "200dc70efa535d919f553bd136cc41dfb9b2d2d756abb8e32f3c7c26af70ae92",
+      "reason": "Trailing whitespace or line endings only.",
+      "category": "whitespace",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "ProjectSettings/SceneTemplateSettings.json",
+      "source_sha256": null,
+      "imported_sha256": "bb9098b3bfcde78d93e264b96f7b77b5430e64e8c57a7aad7f5a5d9c3945e16a",
+      "reason": "Generated editor scene-template dependency defaults; exact prior reviewed hash, no user-added entries or new-scene override.",
+      "category": "native_only_scene_template_defaults",
+      "review_basis": "Reused only after exact path and both complete payload SHA256 matches.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-final-input-review.json",
+        "report_sha256": "923f9d4505654d607f43a0604042f94f327a430df2a96bd848f057afb0450f5a"
+      }
+    },
+    {
+      "path": "Assets/Settings/DefaultVolumeProfile.asset",
+      "source_sha256": "3a6f825e8d07fe8b9f3b52e7d4e2dfa0e22c555b22335adb19f0ecc66dfa38dd",
+      "imported_sha256": "463776c51ae49d4fef980e8fd268081b2f505610d79315003faae1acff8f4115",
+      "reason": "Default zero ProbeVolume worldOffset and Gaussian Bloom filter serialized; two legacy custom components removed from active reference list (Outline Enabled=false, OasisFog Density=0; their GUIDs do not resolve in project Assets).",
+      "category": "default_volume_profile_serialization",
+      "review_basis": "Exact frozen Build6 pair verified by camera-build6 and prior build review.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/cold-build5-asset-review.json",
+        "report_sha256": "9db6b76212ab6eeb95592c18c50960429b2fbad5387b2335e391d6fcf69ec876"
+      },
+      "build6_review": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-build6-asset-review.json",
+        "report_sha256": "7078d286b7d843f6b008daed72f962723c0b118d8443df850bedda0eea41518d"
+      }
+    },
+    {
+      "path": "Assets/Settings/PC_RPAsset.asset",
+      "source_sha256": "684af083c0c3f025cdc9a9ea2287a8cc05df4e2137572b7781ca0f3b17a1e51a",
+      "imported_sha256": "362f427deb9e767720ed0ec3eb1284e93ddf2042c7ddd22d31e9678e5f16bdf4",
+      "reason": "Serialized shader keyword prefilter cache recalculated by URP build preprocessing; configured rendering quality/features unchanged.",
+      "category": "urp_shader_prefilter_cache",
+      "review_basis": "Exact frozen Build6 pair verified by camera-build6 and prior build review.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/cold-build5-asset-review.json",
+        "report_sha256": "9db6b76212ab6eeb95592c18c50960429b2fbad5387b2335e391d6fcf69ec876"
+      },
+      "build6_review": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-build6-asset-review.json",
+        "report_sha256": "7078d286b7d843f6b008daed72f962723c0b118d8443df850bedda0eea41518d"
+      }
+    },
+    {
+      "path": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+      "source_sha256": "6cbc535caaf1b4f83e68f8f98661ab2281115cfbd8697413e053caa555e7acae",
+      "imported_sha256": "9035df085c3de1c069aa254cce96789fc5764c5d79da92cdb45a5ce65e30027f",
+      "reason": "Runtime-settings reference list populated from existing serialized settings; no setting values changed.",
+      "category": "urp_runtime_settings_reference_population",
+      "review_basis": "Exact frozen Build6 pair verified by camera-build6 and prior build review.",
+      "prior_exact_hash_pair": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/cold-build5-asset-review.json",
+        "report_sha256": "9db6b76212ab6eeb95592c18c50960429b2fbad5387b2335e391d6fcf69ec876"
+      },
+      "build6_review": {
+        "report": "/tmp/shadows-full-route/artifacts/validation/camera-build6-asset-review.json",
+        "report_sha256": "7078d286b7d843f6b008daed72f962723c0b118d8443df850bedda0eea41518d"
+      }
+    }
+  ],
+  "prior_review": {
+    "path": "/mnt/c/Users/andrz/shadows-of-the-forsaken/artifacts/full-route-unity/build6-identity/import-review.json",
+    "bytes": 50011,
+    "sha256": "a1948e9dda52dca3d89adbbc2ae3fdbd03f2a556010379013ed392c89e16d39a"
+  },
+  "scope": "Reused only the exact 54 Build6 source/import pairs; no new import approval."
+}

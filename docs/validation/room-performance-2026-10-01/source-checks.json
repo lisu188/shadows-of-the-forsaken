@@ -1,0 +1,67 @@
+{
+  "source_commit": "8cdba0197532e8e6fea5b711c30152b837d8e5d6",
+  "rebased_main": "ce4c468ef47c7d226c5eff3fd9986a100eb520f0",
+  "branch": "feat/room-performance-observations",
+  "working_tree_clean": true,
+  "checks": {
+    "python": {
+      "passed": 142,
+      "failed": 0,
+      "seconds": 20.817
+    },
+    "source": {
+      "tracked_files": 773,
+      "assets": 297,
+      "unique_guids": 336
+    },
+    "contract": {
+      "passed": true,
+      "with_secret_states": 63,
+      "without_secret_states": 29,
+      "docx_unchanged": true
+    },
+    "dotnet": {
+      "rerun": false,
+      "retained_performance_passed": 7,
+      "retained_progression_passed": 29,
+      "exact_compiled_test_project_contract_input_files": 10,
+      "tested_commit": "8bb24ff003e40dfa59608a80c17921535c59393e"
+    },
+    "diff_check": "passed",
+    "unity": {
+      "executed": false,
+      "expected_editmode": 173,
+      "expected_playmode": 202
+    }
+  },
+  "changes": "Rebased unchanged room implementation; retained merged complete fixture catalog +8 qualified room cases; kept historical193 fixture; added missing/wrong-fixture room rejection; scoped README validation history.",
+  "evidence": {
+    "room-rebase-python.log": {
+      "path": "artifacts/validation/room-rebase-python.log",
+      "bytes": 21220,
+      "sha256": "5172e6ae4565aceb14095232f959bc2a5f79183b3e975b8fe159377bc69f62b0"
+    },
+    "room-rebase-source.log": {
+      "path": "artifacts/validation/room-rebase-source.log",
+      "bytes": 59,
+      "sha256": "acdd606351642ad03390e608195574d8aec5c60690d17a8e118d986336b6826c"
+    },
+    "room-rebase-contract.log": {
+      "path": "artifacts/validation/room-rebase-contract.log",
+      "bytes": 155,
+      "sha256": "336f038ea12984b75712525fb24a491e35e6a582aea95e208b7372ea94fca606"
+    },
+    "room-rebase-dotnet-reuse.json": {
+      "path": "artifacts/validation/room-rebase-dotnet-reuse.json",
+      "bytes": 2446,
+      "sha256": "48bed3fbb08d195a09fcc22e61636495b4b4d4212dff90d6aebfc4ec4011244c"
+    }
+  },
+  "delivery": {
+    "locally_committed": true,
+    "pushed": false,
+    "native_sync_executed": false,
+    "editor_or_player_launched": false
+  },
+  "cleanup": "Test temporary directories cleaned by fixtures; no large outputs or dependency restore. Compact logs/reuse manifest retained; no source/native/player/evidence deletion."
+}

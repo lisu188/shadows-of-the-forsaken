@@ -1,5 +1,6 @@
 using System;
-using ShadowsOfTheForsaken.Combat;
+using ShadowsOfTheForsaken.Combat.CastleRules;
+using CastlePlayerCombat = ShadowsOfTheForsaken.LevelCombat.PlayerCombat;
 using ShadowsOfTheForsaken.Progression;
 using UnityEngine;
 
@@ -20,9 +21,9 @@ public sealed class EnemyCombat : MonoBehaviour
     public LevelObjective Objective => objective;
     public event Action Died;
 
-    private readonly MeleeAttack attack = new MeleeAttack();
+    private readonly MeleeAttack<EntityId> attack = new MeleeAttack<EntityId>();
     private LevelProgressionController progression;
-    private PlayerCombat target;
+    private CastlePlayerCombat target;
     private CharacterController motor;
     private CombatHealth health;
     private CombatPresentation presentation;
@@ -39,7 +40,7 @@ public sealed class EnemyCombat : MonoBehaviour
     private bool focused = true;
     private bool paused;
 
-    public void Configure(LevelProgressionController controller, PlayerCombat player, LevelRoom encounterRoom,
+    public void Configure(LevelProgressionController controller, CastlePlayerCombat player, LevelRoom encounterRoom,
         LevelObjective defeatObjective, Bounds arenaBounds, int maxHealth = 60, int attackDamage = 15, float speed = 2.2f)
     {
         if (controller == null) throw new ArgumentNullException(nameof(controller));
@@ -132,7 +133,7 @@ public sealed class EnemyCombat : MonoBehaviour
             Mathf.Abs(target.transform.position.y - transform.position.y) <= 1.6f &&
             MeleeGeometry.Contains(swingForward.x, swingForward.z, offset.x, offset.z, attackRange, 0.6f) &&
             CombatPresentation.IsClear(transform, target.transform) &&
-            attack.TryRegisterHit(target.GetInstanceID(), progression.Snapshot.SessionId))
+            attack.TryRegisterHit(target.GetEntityId(), progression.Snapshot.SessionId))
             target.ReceiveDamage(damage, attack.SessionId);
         if (presentation != null)
             presentation.Tint(Phase == AttackPhase.Active ? Color.red : new Color(1, 0.55f, 0.08f),

@@ -1,4 +1,6 @@
-# Weryfikacja poziomu zamku
+# Historyczna weryfikacja gałęzi runtime zamku
+
+Ten raport zachowuje dokładne wyniki i paczki sprzed integracji z nowszym main. Opisane niżej `ForsakenCastle` było wówczas sceną runtime i zostało zachowane jako `ForsakenRuntimeCastle`. Dane Unity6000.0.24f1 nie zatwierdzają połączonego projektu Unity6000.6.3f1; [raport integracji](validation/main-merge-2026-10-07.md) podaje nową proweniencję.
 
 ## Poprawki po przeglądzie — 2026-10-06
 
@@ -24,7 +26,7 @@ Zestaw PlayMode powiększył się z 67 do 74. Walidator wymaga pełnej nazwy NUn
 
 Commit poprawki: `5008313c842cf4e5b864fca6ad30256ae756e700`. Wszystkie nowe testy i build korzystały z niezmiennego drzewa `89d78f8126bdf0618ce160661088af1ff62a699a`, subtree Assets `5ef6c73f5c565ee9cb7ce24704dadfa63ec84777`. Osobny projekt `C:\Users\andrz\AppData\Local\Temp\shadows-review-fixes-cold-20261006` nie miał przed pierwszym importem Library, Temp, Logs, Obj ani UserSettings. Późniejszy commit dokumentacji opisuje te wyniki i nie zmienia sprawdzonych assetów ani pakietów.
 
-Aktualna paczka to `Builds/ShadowsOfTheForsaken-Windows-x64-review-fixes-20261006.zip`. Player jest w `Builds/Windows-review-fixes-20261006`; poprzedni build, ZIP i wszystkie dowody z 2026-10-05 zachowano. SHA-256 nowego ZIP:
+Paczka dostawy z 2026-10-06 to `Builds/ShadowsOfTheForsaken-Windows-x64-review-fixes-20261006.zip`. Player jest w `Builds/Windows-review-fixes-20261006`; poprzedni build, ZIP i wszystkie dowody z 2026-10-05 zachowano. SHA-256 ZIP tej dostawy:
 
 ```text
 cfb85f923f66f26a0b89efb543a10d1dd88685d97fd3f33e0d8a673392d4beae

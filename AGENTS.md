@@ -31,7 +31,7 @@ Use one scene-owned controller per game session, capture its SessionId when star
 ## Implementation
 
 - Tie each feature and acceptance check to a DOCX section. Label unspecified mechanics/balance values as implementation choices.
-- Keep `6000.0.24f1` and package versions pinned unless the owner requests an upgrade or a verified requirement necessitates it.
+- Keep `6000.6.3f1` and package versions pinned unless the owner requests an upgrade or a verified requirement necessitates it.
 - Preserve existing script names, serialized fields and `.meta` GUIDs unless a migration is included.
 - Never commit generated `Library`, `Temp`, `Logs`, `Obj`, `UserSettings`, build output, credentials or local editor state.
 - Commit `.meta` files for new Unity assets and folders. Do not rewrite binary art or the original design document without a concrete need.

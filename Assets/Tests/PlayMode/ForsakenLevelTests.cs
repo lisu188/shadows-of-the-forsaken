@@ -20,7 +20,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
     /// <summary>Real scene, colliders, triggers, combat queries and E selection. No direct objective grants.</summary>
     public sealed class ForsakenLevelTests
     {
-        private const string ScenePath = "Assets/Scenes/ForsakenCastle.unity";
+        private const string ScenePath = "Assets/Scenes/ForsakenRuntimeCastle.unity";
         private readonly WaitForFixedUpdate fixedUpdate = new WaitForFixedUpdate();
         private readonly List<string> visited = new List<string>();
         private readonly List<string> screenshots = new List<string>();
@@ -41,7 +41,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private bool timedJourney;
         private float travelledMetres;
         private static readonly MethodInfo ManualInputUpdate = typeof(InputSystem).GetMethod("Update",
-            BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
 
         private static object Call(Component component, string name, params object[] args)
         {
@@ -53,7 +53,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         private static void PumpInput()
         {
-            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its internal typed update pump.");
+            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its typed update pump.");
             try { ManualInputUpdate.Invoke(null, new object[] { InputUpdateType.Manual }); }
             catch (TargetInvocationException error) { throw error.InnerException; }
         }
@@ -69,13 +69,13 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             for (int index = 0; index < SceneManager.sceneCount; index++)
             {
                 var otherScene = SceneManager.GetSceneAt(index);
-                if (!otherScene.isLoaded || (otherScene.path != ScenePath && otherScene.path != "Assets/Scenes/SampleScene.unity")) continue;
+                if (!otherScene.isLoaded || (otherScene.path != ScenePath && otherScene.path != "Assets/Scenes/ForsakenCastle.unity" && otherScene.path != "Assets/Scenes/SampleScene.unity")) continue;
                 foreach (var root in otherScene.GetRootGameObjects())
                 {
                     if (root.name.IndexOf("TestRunner", StringComparison.OrdinalIgnoreCase) >= 0) continue;
                     bool isLevelRoot = root.GetComponent(levelType) != null || root.name == "Shadows of the Forsaken";
                     bool isGeometryRoot = root.GetComponent<Camera>() != null || root.GetComponent<Light>() != null || root.GetComponent<Collider>() != null;
-                    if (root.activeSelf && (isLevelRoot || isGeometryRoot))
+                    if (root.activeSelf && (otherScene.path == "Assets/Scenes/ForsakenCastle.unity" || isLevelRoot || isGeometryRoot))
                     {
                         suspendedSceneRoots.Add(root);
                         root.SetActive(false);

@@ -1,0 +1,7680 @@
+{
+  "version": 1,
+  "gridSize": 8,
+  "spawn": {
+    "x": 0.0,
+    "y": 0.05,
+    "z": -88.0
+  },
+  "approachWaypoints": [
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": -88.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": -64.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": -40.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": -16.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": 0.0
+    },
+    {
+      "x": 0.0,
+      "y": 0.05,
+      "z": 12.0
+    }
+  ],
+  "materials": [
+    {
+      "name": "Stone",
+      "color": {
+        "r": 0.24,
+        "g": 0.27,
+        "b": 0.3,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "Wall",
+      "color": {
+        "r": 0.3,
+        "g": 0.32,
+        "b": 0.35,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "Trim",
+      "color": {
+        "r": 0.43,
+        "g": 0.44,
+        "b": 0.43,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "DarkStone",
+      "color": {
+        "r": 0.16,
+        "g": 0.18,
+        "b": 0.21,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "Wood",
+      "color": {
+        "r": 0.24,
+        "g": 0.14,
+        "b": 0.1,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "Iron",
+      "color": {
+        "r": 0.12,
+        "g": 0.14,
+        "b": 0.17,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "Rune",
+      "color": {
+        "r": 0.25,
+        "g": 0.68,
+        "b": 0.77,
+        "a": 1
+      },
+      "emission": {
+        "r": 0.25,
+        "g": 0.68,
+        "b": 0.77,
+        "a": 1
+      }
+    },
+    {
+      "name": "Glass",
+      "color": {
+        "r": 0.18,
+        "g": 0.32,
+        "b": 0.6,
+        "a": 1
+      },
+      "emission": {
+        "r": 0.18,
+        "g": 0.32,
+        "b": 0.6,
+        "a": 1
+      }
+    },
+    {
+      "name": "BookRed",
+      "color": {
+        "r": 0.4,
+        "g": 0.08,
+        "b": 0.1,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "BookGold",
+      "color": {
+        "r": 0.55,
+        "g": 0.38,
+        "b": 0.14,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "Blood",
+      "color": {
+        "r": 0.24,
+        "g": 0.025,
+        "b": 0.035,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    },
+    {
+      "name": "Flame",
+      "color": {
+        "r": 1.0,
+        "g": 0.48,
+        "b": 0.12,
+        "a": 1
+      },
+      "emission": {
+        "r": 1.0,
+        "g": 0.48,
+        "b": 0.12,
+        "a": 1
+      }
+    },
+    {
+      "name": "Player",
+      "color": {
+        "r": 0.65,
+        "g": 0.48,
+        "b": 0.25,
+        "a": 1
+      },
+      "emission": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 1
+      }
+    }
+  ],
+  "objects": [
+    {
+      "name": "GroundStructure",
+      "parent": "Geometry",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "kind": "Empty",
+      "material": "",
+      "collider": false
+    },
+    {
+      "name": "UpperStructure",
+      "parent": "Geometry",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "kind": "Empty",
+      "material": "",
+      "collider": false
+    },
+    {
+      "name": "SecretStructure",
+      "parent": "Geometry",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "kind": "Empty",
+      "material": "",
+      "collider": false
+    },
+    {
+      "name": "Ramps",
+      "parent": "Geometry",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "kind": "Empty",
+      "material": "",
+      "collider": false
+    },
+    {
+      "name": "Landmarks",
+      "parent": "Geometry",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "kind": "Empty",
+      "material": "",
+      "collider": false
+    },
+    {
+      "name": "GroundStructure_Floor_000",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 0.0,
+        "y": -0.25,
+        "z": -44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 0.5,
+        "z": 96.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_001",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 0.0,
+        "y": -0.25,
+        "z": 12.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 16.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_002",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -3.0,
+        "y": -0.25,
+        "z": 16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_003",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 3.0,
+        "y": -0.25,
+        "z": 16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_004",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -7.0,
+        "y": -0.25,
+        "z": 16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_005",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 7.0,
+        "y": -0.25,
+        "z": 16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_006",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -8.0,
+        "y": -0.25,
+        "z": 23.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 10.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_007",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 8.0,
+        "y": -0.25,
+        "z": 27.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 18.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_008",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -11.0,
+        "y": -0.25,
+        "z": 24.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_009",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -5.0,
+        "y": -0.25,
+        "z": 24.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_010",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 5.0,
+        "y": -0.25,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_011",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 11.0,
+        "y": -0.25,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_012",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 2.0,
+        "y": -0.25,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_013",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 15.0,
+        "y": -0.25,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Floor_014",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 16.0,
+        "y": -0.25,
+        "z": 35.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Ceiling_000",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -8.0,
+        "y": 4.75,
+        "z": 24.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Ceiling_001",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 8.0,
+        "y": 4.75,
+        "z": 28.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 16.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Ceiling_002",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 5.0,
+        "y": 4.75,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Ceiling_003",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 11.0,
+        "y": 4.75,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Ceiling_004",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 2.0,
+        "y": 4.75,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Ceiling_005",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 15.0,
+        "y": 4.75,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Ceiling_006",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 16.0,
+        "y": 4.75,
+        "z": 35.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_000",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -12.2,
+        "y": 2.25,
+        "z": 24.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_001",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -10.2,
+        "y": 2.25,
+        "z": 17.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 6.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_002",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -5.8,
+        "y": 2.25,
+        "z": 19.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_003",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -4.2,
+        "y": 2.25,
+        "z": -44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 96.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_004",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -4.2,
+        "y": 2.25,
+        "z": 13.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_005",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -4.2,
+        "y": 2.25,
+        "z": 19.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_006",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -3.8,
+        "y": 2.25,
+        "z": 24.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_007",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -2.2,
+        "y": 2.25,
+        "z": 8.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_008",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 2.2,
+        "y": 2.25,
+        "z": 8.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_009",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 3.8,
+        "y": 2.25,
+        "z": 29.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_010",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 3.8,
+        "y": 2.25,
+        "z": 35.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_011",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 4.2,
+        "y": 2.25,
+        "z": -44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 96.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_012",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 4.2,
+        "y": 2.25,
+        "z": 13.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_013",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 4.2,
+        "y": 2.25,
+        "z": 19.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_014",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 5.8,
+        "y": 2.25,
+        "z": 23.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 10.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_015",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 10.2,
+        "y": 2.25,
+        "z": 21.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 14.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_016",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 12.2,
+        "y": 2.25,
+        "z": 29.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_017",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 12.2,
+        "y": 2.25,
+        "z": 35.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_018",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 13.8,
+        "y": 2.25,
+        "z": 35.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_019",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 18.2,
+        "y": 2.25,
+        "z": 33.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 6.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_020",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 0.0,
+        "y": 2.25,
+        "z": -92.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_021",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -3.0,
+        "y": 2.25,
+        "z": 4.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_022",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 3.0,
+        "y": 2.25,
+        "z": 4.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_023",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -3.0,
+        "y": 2.25,
+        "z": 11.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_024",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 3.0,
+        "y": 2.25,
+        "z": 11.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_025",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -7.0,
+        "y": 2.25,
+        "z": 13.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_026",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 7.0,
+        "y": 2.25,
+        "z": 13.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_027",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -5.0,
+        "y": 2.25,
+        "z": 18.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_028",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 5.0,
+        "y": 2.25,
+        "z": 18.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_029",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -11.0,
+        "y": 2.25,
+        "z": 19.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_030",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -5.0,
+        "y": 2.25,
+        "z": 19.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_031",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 0.0,
+        "y": 2.25,
+        "z": 20.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_032",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 5.0,
+        "y": 2.25,
+        "z": 27.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_033",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 11.0,
+        "y": 2.25,
+        "z": 27.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_034",
+      "parent": "GroundStructure",
+      "position": {
+        "x": -8.0,
+        "y": 2.25,
+        "z": 28.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_035",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 2.0,
+        "y": 2.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_036",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 15.0,
+        "y": 2.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 6.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_037",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 2.0,
+        "y": 2.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_038",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 13.0,
+        "y": 2.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "GroundStructure_Wall_039",
+      "parent": "GroundStructure",
+      "position": {
+        "x": 8.0,
+        "y": 2.25,
+        "z": 36.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Floor_000",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 16.0,
+        "y": -4.25,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Floor_001",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 1.0,
+        "y": -4.25,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 22.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Floor_002",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -8.0,
+        "y": -4.25,
+        "z": 59.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 18.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Floor_003",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 8.0,
+        "y": -4.25,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 28.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Floor_004",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -11.0,
+        "y": -4.25,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Floor_005",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -5.0,
+        "y": -4.25,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Floor_006",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 5.0,
+        "y": -4.25,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Floor_007",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 11.0,
+        "y": -4.25,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Ceiling_000",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 16.0,
+        "y": 0.75,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Ceiling_001",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 1.0,
+        "y": 0.75,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 22.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Ceiling_002",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -8.0,
+        "y": 0.75,
+        "z": 59.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 18.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Ceiling_003",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 8.0,
+        "y": 0.75,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 28.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Ceiling_004",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -11.0,
+        "y": 0.75,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Ceiling_005",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -5.0,
+        "y": 0.75,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Ceiling_006",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 5.0,
+        "y": 0.75,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Ceiling_007",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 11.0,
+        "y": 0.75,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 0.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_000",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -12.2,
+        "y": -1.75,
+        "z": 61.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_001",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -12.2,
+        "y": -1.75,
+        "z": 67.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_002",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -10.2,
+        "y": -1.75,
+        "z": 53.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 14.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_003",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -5.8,
+        "y": -1.75,
+        "z": 55.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 10.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_004",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -3.8,
+        "y": -1.75,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_005",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 3.8,
+        "y": -1.75,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_006",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 5.8,
+        "y": -1.75,
+        "z": 55.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 10.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_007",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 5.8,
+        "y": -1.75,
+        "z": 73.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 10.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_008",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 10.2,
+        "y": -1.75,
+        "z": 55.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 10.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_009",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 10.2,
+        "y": -1.75,
+        "z": 73.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 10.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_010",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 11.8,
+        "y": -1.75,
+        "z": 45.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_011",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 11.8,
+        "y": -1.75,
+        "z": 51.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_012",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 12.2,
+        "y": -1.75,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_013",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 20.2,
+        "y": -1.75,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 8.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_014",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 13.0,
+        "y": -1.75,
+        "z": 43.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_015",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 19.0,
+        "y": -1.75,
+        "z": 43.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_016",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 1.0,
+        "y": -1.75,
+        "z": 45.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 22.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_017",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 0.0,
+        "y": -1.75,
+        "z": 50.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 12.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_018",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 11.0,
+        "y": -1.75,
+        "z": 50.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_019",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 16.0,
+        "y": -1.75,
+        "z": 52.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_020",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -11.0,
+        "y": -1.75,
+        "z": 59.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_021",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -5.0,
+        "y": -1.75,
+        "z": 59.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_022",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 5.0,
+        "y": -1.75,
+        "z": 59.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_023",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 11.0,
+        "y": -1.75,
+        "z": 59.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_024",
+      "parent": "UpperStructure",
+      "position": {
+        "x": -8.0,
+        "y": -1.75,
+        "z": 68.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_025",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 5.0,
+        "y": -1.75,
+        "z": 68.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_026",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 11.0,
+        "y": -1.75,
+        "z": 68.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "UpperStructure_Wall_027",
+      "parent": "UpperStructure",
+      "position": {
+        "x": 8.0,
+        "y": -1.75,
+        "z": 78.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Floor_000",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -28.0,
+        "y": -12.25,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Floor_001",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -30.0,
+        "y": -12.25,
+        "z": 50.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 32.0
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Ceiling_000",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -28.0,
+        "y": -7.25,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 0.5,
+        "z": 4.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Ceiling_001",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -30.0,
+        "y": -7.25,
+        "z": 50.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 32.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Wall_000",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -32.2,
+        "y": -9.75,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 36.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Wall_001",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -27.8,
+        "y": -9.75,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 4.5,
+        "z": 28.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Wall_002",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -28.0,
+        "y": -9.75,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Wall_003",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -26.0,
+        "y": -9.75,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretStructure_Wall_004",
+      "parent": "SecretStructure",
+      "position": {
+        "x": -30.0,
+        "y": -9.75,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Floor",
+      "parent": "Ramps",
+      "position": {
+        "x": 16.0,
+        "y": -2.223607,
+        "z": 39.888197
+      },
+      "rotation": {
+        "x": 26.565051,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.0,
+        "y": 0.5,
+        "z": 8.944272
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Ceiling",
+      "parent": "Ramps",
+      "position": {
+        "x": 16.0,
+        "y": 2.776393,
+        "z": 39.888197
+      },
+      "rotation": {
+        "x": 26.565051,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 8.8,
+        "y": 0.5,
+        "z": 9.344272
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Side_-1_00",
+      "parent": "Ramps",
+      "position": {
+        "x": 11.8,
+        "y": 1.75,
+        "z": 37.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Side_1_00",
+      "parent": "Ramps",
+      "position": {
+        "x": 20.2,
+        "y": 1.75,
+        "z": 37.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Side_-1_01",
+      "parent": "Ramps",
+      "position": {
+        "x": 11.8,
+        "y": 0.75,
+        "z": 39.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Side_1_01",
+      "parent": "Ramps",
+      "position": {
+        "x": 20.2,
+        "y": 0.75,
+        "z": 39.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Side_-1_02",
+      "parent": "Ramps",
+      "position": {
+        "x": 11.8,
+        "y": -0.25,
+        "z": 41.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Side_1_02",
+      "parent": "Ramps",
+      "position": {
+        "x": 20.2,
+        "y": -0.25,
+        "z": 41.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Side_-1_03",
+      "parent": "Ramps",
+      "position": {
+        "x": 11.8,
+        "y": -1.25,
+        "z": 43.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryDescent_Side_1_03",
+      "parent": "Ramps",
+      "position": {
+        "x": 20.2,
+        "y": -1.25,
+        "z": 43.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryEntranceShoulder_13",
+      "parent": "Ramps",
+      "position": {
+        "x": 13.0,
+        "y": 2.25,
+        "z": 35.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryExitShoulder_13",
+      "parent": "Ramps",
+      "position": {
+        "x": 13.0,
+        "y": -1.75,
+        "z": 44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryEntranceShoulder_19",
+      "parent": "Ramps",
+      "position": {
+        "x": 19.0,
+        "y": 2.25,
+        "z": 35.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "LibraryExitShoulder_19",
+      "parent": "Ramps",
+      "position": {
+        "x": 19.0,
+        "y": -1.75,
+        "z": 44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 2.0,
+        "y": 4.5,
+        "z": 0.4
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Floor",
+      "parent": "Ramps",
+      "position": {
+        "x": -11.888197,
+        "y": -6.223607,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 26.565051,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 26.832816
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Ceiling",
+      "parent": "Ramps",
+      "position": {
+        "x": -11.888197,
+        "y": -1.223607,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 26.565051,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.8,
+        "y": 0.5,
+        "z": 27.232816
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_00",
+      "parent": "Ramps",
+      "position": {
+        "x": -1.0,
+        "y": 1.75,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_00",
+      "parent": "Ramps",
+      "position": {
+        "x": -1.0,
+        "y": 1.75,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_01",
+      "parent": "Ramps",
+      "position": {
+        "x": -3.0,
+        "y": 0.75,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_01",
+      "parent": "Ramps",
+      "position": {
+        "x": -3.0,
+        "y": 0.75,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_02",
+      "parent": "Ramps",
+      "position": {
+        "x": -5.0,
+        "y": -0.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_02",
+      "parent": "Ramps",
+      "position": {
+        "x": -5.0,
+        "y": -0.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_03",
+      "parent": "Ramps",
+      "position": {
+        "x": -7.0,
+        "y": -1.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_03",
+      "parent": "Ramps",
+      "position": {
+        "x": -7.0,
+        "y": -1.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_04",
+      "parent": "Ramps",
+      "position": {
+        "x": -9.0,
+        "y": -2.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_04",
+      "parent": "Ramps",
+      "position": {
+        "x": -9.0,
+        "y": -2.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_05",
+      "parent": "Ramps",
+      "position": {
+        "x": -11.0,
+        "y": -3.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_05",
+      "parent": "Ramps",
+      "position": {
+        "x": -11.0,
+        "y": -3.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_06",
+      "parent": "Ramps",
+      "position": {
+        "x": -13.0,
+        "y": -4.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_06",
+      "parent": "Ramps",
+      "position": {
+        "x": -13.0,
+        "y": -4.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_07",
+      "parent": "Ramps",
+      "position": {
+        "x": -15.0,
+        "y": -5.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_07",
+      "parent": "Ramps",
+      "position": {
+        "x": -15.0,
+        "y": -5.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_08",
+      "parent": "Ramps",
+      "position": {
+        "x": -17.0,
+        "y": -6.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_08",
+      "parent": "Ramps",
+      "position": {
+        "x": -17.0,
+        "y": -6.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_09",
+      "parent": "Ramps",
+      "position": {
+        "x": -19.0,
+        "y": -7.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_09",
+      "parent": "Ramps",
+      "position": {
+        "x": -19.0,
+        "y": -7.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_10",
+      "parent": "Ramps",
+      "position": {
+        "x": -21.0,
+        "y": -8.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_10",
+      "parent": "Ramps",
+      "position": {
+        "x": -21.0,
+        "y": -8.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_-1_11",
+      "parent": "Ramps",
+      "position": {
+        "x": -23.0,
+        "y": -9.25,
+        "z": 29.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretDescent_Side_1_11",
+      "parent": "Ramps",
+      "position": {
+        "x": -23.0,
+        "y": -9.25,
+        "z": 34.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": -90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Floor",
+      "parent": "Ramps",
+      "position": {
+        "x": -19.888197,
+        "y": -8.223607,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": -26.565051,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.0,
+        "y": 0.5,
+        "z": 17.888544
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Ceiling",
+      "parent": "Ramps",
+      "position": {
+        "x": -19.888197,
+        "y": -3.223607,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": -26.565051,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 4.8,
+        "y": 0.5,
+        "z": 18.288544
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_-1_00",
+      "parent": "Ramps",
+      "position": {
+        "x": -27.0,
+        "y": -9.25,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_1_00",
+      "parent": "Ramps",
+      "position": {
+        "x": -27.0,
+        "y": -9.25,
+        "z": 61.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_-1_01",
+      "parent": "Ramps",
+      "position": {
+        "x": -25.0,
+        "y": -8.25,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_1_01",
+      "parent": "Ramps",
+      "position": {
+        "x": -25.0,
+        "y": -8.25,
+        "z": 61.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_-1_02",
+      "parent": "Ramps",
+      "position": {
+        "x": -23.0,
+        "y": -7.25,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_1_02",
+      "parent": "Ramps",
+      "position": {
+        "x": -23.0,
+        "y": -7.25,
+        "z": 61.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_-1_03",
+      "parent": "Ramps",
+      "position": {
+        "x": -21.0,
+        "y": -6.25,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_1_03",
+      "parent": "Ramps",
+      "position": {
+        "x": -21.0,
+        "y": -6.25,
+        "z": 61.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_-1_04",
+      "parent": "Ramps",
+      "position": {
+        "x": -19.0,
+        "y": -5.25,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_1_04",
+      "parent": "Ramps",
+      "position": {
+        "x": -19.0,
+        "y": -5.25,
+        "z": 61.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_-1_05",
+      "parent": "Ramps",
+      "position": {
+        "x": -17.0,
+        "y": -4.25,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_1_05",
+      "parent": "Ramps",
+      "position": {
+        "x": -17.0,
+        "y": -4.25,
+        "z": 61.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_-1_06",
+      "parent": "Ramps",
+      "position": {
+        "x": -15.0,
+        "y": -3.25,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_1_06",
+      "parent": "Ramps",
+      "position": {
+        "x": -15.0,
+        "y": -3.25,
+        "z": 61.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_-1_07",
+      "parent": "Ramps",
+      "position": {
+        "x": -13.0,
+        "y": -2.25,
+        "z": 66.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "SecretAscent_Side_1_07",
+      "parent": "Ramps",
+      "position": {
+        "x": -13.0,
+        "y": -2.25,
+        "z": 61.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.4,
+        "y": 5.5,
+        "z": 2.0
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "Passage_Courtyard_FirstEncounter_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -2.25,
+        "y": 2.0,
+        "z": 12.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Courtyard_FirstEncounter_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 2.25,
+        "y": 2.0,
+        "z": 12.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Courtyard_FirstEncounter_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": 0.0,
+        "y": 4.25,
+        "z": 12.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FirstEncounter_Puzzle_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.25,
+        "y": 2.0,
+        "z": 20.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FirstEncounter_Puzzle_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -5.75,
+        "y": 2.0,
+        "z": 20.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FirstEncounter_Puzzle_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": -8.0,
+        "y": 4.25,
+        "z": 20.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FirstEncounter_ThroneRoom_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.75,
+        "y": 2.0,
+        "z": 28.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FirstEncounter_ThroneRoom_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.25,
+        "y": 2.0,
+        "z": 28.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FirstEncounter_ThroneRoom_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": 8.0,
+        "y": 4.25,
+        "z": 28.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_ThroneRoom_Library_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.0,
+        "y": 2.0,
+        "z": 34.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_ThroneRoom_Library_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.0,
+        "y": 2.0,
+        "z": 29.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_ThroneRoom_Library_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.0,
+        "y": 4.25,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Library_Catacombs_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.75,
+        "y": -2.0,
+        "z": 44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Library_Catacombs_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.25,
+        "y": -2.0,
+        "z": 44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Library_Catacombs_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": 16.0,
+        "y": 0.25,
+        "z": 44.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Catacombs_FinalArena_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.75,
+        "y": -2.0,
+        "z": 60.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Catacombs_FinalArena_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.25,
+        "y": -2.0,
+        "z": 60.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Catacombs_FinalArena_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": 8.0,
+        "y": 0.25,
+        "z": 60.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Catacombs_BonusRoom_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.25,
+        "y": -2.0,
+        "z": 60.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Catacombs_BonusRoom_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -5.75,
+        "y": -2.0,
+        "z": 60.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_Catacombs_BonusRoom_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": -8.0,
+        "y": 0.25,
+        "z": 60.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_ThroneRoom_BonusRoom_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 4.0,
+        "y": 2.0,
+        "z": 34.25
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_ThroneRoom_BonusRoom_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 4.0,
+        "y": 2.0,
+        "z": 29.75
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_ThroneRoom_BonusRoom_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": 4.0,
+        "y": 4.25,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FinalArena_Exit_Frame-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.75,
+        "y": -2.0,
+        "z": 68.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FinalArena_Exit_Frame1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.25,
+        "y": -2.0,
+        "z": 68.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 4.0,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Passage_FinalArena_Exit_FrameLintel",
+      "parent": "Landmarks",
+      "position": {
+        "x": 8.0,
+        "y": 0.25,
+        "z": 68.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 5.0,
+        "y": 0.5,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Courtyard_MonumentBase",
+      "parent": "Landmarks",
+      "position": {
+        "x": -2.7,
+        "y": 0.25,
+        "z": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.2,
+        "y": 0.5,
+        "z": 1.2
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Courtyard_BrokenMonument",
+      "parent": "Landmarks",
+      "position": {
+        "x": -2.7,
+        "y": 1.5,
+        "z": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.65,
+        "y": 2.0,
+        "z": 0.65
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_0_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -80.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_0_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -80.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -80.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Approach_Pier_1_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_1_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Approach_Pier_2_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_2_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Approach_Pier_3_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_3_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_3",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Approach_Pier_4_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.35,
+        "y": 1.3,
+        "z": -16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Pier_4_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 3.35,
+        "y": 1.3,
+        "z": -16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 2.6,
+        "z": 0.8
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Approach_Torch_4",
+      "parent": "Landmarks",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -16.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Puzzle_RunePlinth",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.5,
+        "y": 0.55,
+        "z": 25.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 1.1,
+        "z": 1.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "Puzzle_RuneFace",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.5,
+        "y": 1.12,
+        "z": 25.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.6,
+        "y": 0.04,
+        "z": 0.6
+      },
+      "kind": "Cube",
+      "material": "Rune",
+      "collider": false
+    },
+    {
+      "name": "Throne_Column_-2.8_-2.8Base",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.2,
+        "y": 0.15,
+        "z": 29.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.9,
+        "y": 0.3,
+        "z": 0.9
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Throne_Column_-2.8_-2.8",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.2,
+        "y": 1.2,
+        "z": 29.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 1.8,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "Throne_Column_2.8_-2.8Base",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.8,
+        "y": 0.15,
+        "z": 29.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.9,
+        "y": 0.3,
+        "z": 0.9
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Throne_Column_2.8_-2.8",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.8,
+        "y": 1.2,
+        "z": 29.2
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 1.8,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "Throne_Column_-2.8_2.8Base",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.2,
+        "y": 0.15,
+        "z": 34.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.9,
+        "y": 0.3,
+        "z": 0.9
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Throne_Column_-2.8_2.8",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.2,
+        "y": 2.05,
+        "z": 34.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 3.5,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "Throne_Column_2.8_2.8Base",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.8,
+        "y": 0.15,
+        "z": 34.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.9,
+        "y": 0.3,
+        "z": 0.9
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": true
+    },
+    {
+      "name": "Throne_Column_2.8_2.8",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.8,
+        "y": 2.05,
+        "z": 34.8
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.5,
+        "y": 3.5,
+        "z": 0.5
+      },
+      "kind": "Cube",
+      "material": "Wall",
+      "collider": true
+    },
+    {
+      "name": "Throne_Seat",
+      "parent": "Landmarks",
+      "position": {
+        "x": 8.0,
+        "y": 0.7,
+        "z": 35.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.6,
+        "y": 1.4,
+        "z": 1.0
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "Throne_Back",
+      "parent": "Landmarks",
+      "position": {
+        "x": 8.0,
+        "y": 1.9,
+        "z": 35.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.6,
+        "y": 2.2,
+        "z": 0.35
+      },
+      "kind": "Cube",
+      "material": "Iron",
+      "collider": true
+    },
+    {
+      "name": "Throne_BloodTrace",
+      "parent": "Landmarks",
+      "position": {
+        "x": 6.0,
+        "y": 0.012,
+        "z": 34.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.75,
+        "y": 0.02,
+        "z": 1.2
+      },
+      "kind": "Cube",
+      "material": "Blood",
+      "collider": false
+    },
+    {
+      "name": "Library_ShelfPlinth_-1_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.9,
+        "y": -0.75,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.85,
+        "y": 0.8,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "Library_Shelf_-1_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.9,
+        "y": 0.9,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.65,
+        "y": 2.5,
+        "z": 1.4
+      },
+      "kind": "Cube",
+      "material": "Wood",
+      "collider": true
+    },
+    {
+      "name": "Library_Book_-1_0_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": 0.65,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_0_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": 0.9,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_0_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": 1.15,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_0_3",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": 1.4,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_ShelfPlinth_-1_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.9,
+        "y": -2.0,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.85,
+        "y": 0.8,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "Library_Shelf_-1_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.9,
+        "y": -0.35,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.65,
+        "y": 2.5,
+        "z": 1.4
+      },
+      "kind": "Cube",
+      "material": "Wood",
+      "collider": true
+    },
+    {
+      "name": "Library_Book_-1_1_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": -0.6,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_1_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": -0.35,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_1_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": -0.1,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_1_3",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": 0.15,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_ShelfPlinth_-1_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.9,
+        "y": -3.25,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.85,
+        "y": 0.8,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "Library_Shelf_-1_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 12.9,
+        "y": -1.6,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.65,
+        "y": 2.5,
+        "z": 1.4
+      },
+      "kind": "Cube",
+      "material": "Wood",
+      "collider": true
+    },
+    {
+      "name": "Library_Book_-1_2_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": -1.85,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_2_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": -1.6,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_2_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": -1.35,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_-1_2_3",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.28,
+        "y": -1.1,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_ShelfPlinth_1_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 19.1,
+        "y": -0.75,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.85,
+        "y": 0.8,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "Library_Shelf_1_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 19.1,
+        "y": 0.9,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.65,
+        "y": 2.5,
+        "z": 1.4
+      },
+      "kind": "Cube",
+      "material": "Wood",
+      "collider": true
+    },
+    {
+      "name": "Library_Book_1_0_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": 0.65,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_0_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": 0.9,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_0_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": 1.15,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_0_3",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": 1.4,
+        "z": 37.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_ShelfPlinth_1_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 19.1,
+        "y": -2.0,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.85,
+        "y": 0.8,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "Library_Shelf_1_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 19.1,
+        "y": -0.35,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.65,
+        "y": 2.5,
+        "z": 1.4
+      },
+      "kind": "Cube",
+      "material": "Wood",
+      "collider": true
+    },
+    {
+      "name": "Library_Book_1_1_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": -0.6,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_1_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": -0.35,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_1_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": -0.1,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_1_3",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": 0.15,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_ShelfPlinth_1_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 19.1,
+        "y": -3.25,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.85,
+        "y": 0.8,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "Stone",
+      "collider": true
+    },
+    {
+      "name": "Library_Shelf_1_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 19.1,
+        "y": -1.6,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.65,
+        "y": 2.5,
+        "z": 1.4
+      },
+      "kind": "Cube",
+      "material": "Wood",
+      "collider": true
+    },
+    {
+      "name": "Library_Book_1_2_0",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": -1.85,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_2_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": -1.6,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_2_2",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": -1.35,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": false
+    },
+    {
+      "name": "Library_Book_1_2_3",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.72,
+        "y": -1.1,
+        "z": 42.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.16,
+        "z": 1.05
+      },
+      "kind": "Cube",
+      "material": "BookRed",
+      "collider": false
+    },
+    {
+      "name": "Catacombs_Sarcophagus_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 13.1,
+        "y": -3.55,
+        "z": 51.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 0.9,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "Catacombs_Sarcophagus_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.9,
+        "y": -3.55,
+        "z": 51.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 0.9,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "BonusRoom_Sarcophagus_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.9,
+        "y": -3.55,
+        "z": 67.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 0.9,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "BonusRoom_Sarcophagus_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -5.1,
+        "y": -3.55,
+        "z": 67.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 0.9,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "FinalArena_Sarcophagus_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.1,
+        "y": -3.55,
+        "z": 67.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 0.9,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "FinalArena_Sarcophagus_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.9,
+        "y": -3.55,
+        "z": 67.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 0.9,
+        "z": 1.5
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "Catacombs_CultMark",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.75,
+        "y": -3.985,
+        "z": 46.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 45.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 0.02,
+        "z": 1.0
+      },
+      "kind": "Cube",
+      "material": "Rune",
+      "collider": false
+    },
+    {
+      "name": "SecretLever_Plinth",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.8,
+        "y": -3.6,
+        "z": 49.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.7,
+        "y": 0.8,
+        "z": 0.7
+      },
+      "kind": "Cube",
+      "material": "DarkStone",
+      "collider": true
+    },
+    {
+      "name": "SecretLever_Handle",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.8,
+        "y": -2.9,
+        "z": 49.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -25.0
+      },
+      "scale": {
+        "x": 0.12,
+        "y": 0.8,
+        "z": 0.12
+      },
+      "kind": "Cube",
+      "material": "Iron",
+      "collider": false
+    },
+    {
+      "name": "Bonus_Reliquary",
+      "parent": "Landmarks",
+      "position": {
+        "x": -8.0,
+        "y": -3.65,
+        "z": 66.5
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.0,
+        "y": 0.7,
+        "z": 0.7
+      },
+      "kind": "Cube",
+      "material": "BookGold",
+      "collider": true
+    },
+    {
+      "name": "Puzzle_WindowGlass",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.5,
+        "y": 2.7,
+        "z": 27.96
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.15,
+        "y": 1.9,
+        "z": 0.06
+      },
+      "kind": "Cube",
+      "material": "Glass",
+      "collider": false
+    },
+    {
+      "name": "Puzzle_PointedArch_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.87,
+        "y": 3.65,
+        "z": 27.92
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -40.0
+      },
+      "scale": {
+        "x": 0.14,
+        "y": 1.1,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": false
+    },
+    {
+      "name": "Puzzle_PointedArch_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.13,
+        "y": 3.65,
+        "z": 27.92
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 40.0
+      },
+      "scale": {
+        "x": 0.14,
+        "y": 1.1,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": false
+    },
+    {
+      "name": "ThroneRoom_WindowGlass",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.5,
+        "y": 2.7,
+        "z": 35.96
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.15,
+        "y": 1.9,
+        "z": 0.06
+      },
+      "kind": "Cube",
+      "material": "Glass",
+      "collider": false
+    },
+    {
+      "name": "ThroneRoom_PointedArch_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.13,
+        "y": 3.65,
+        "z": 35.92
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -40.0
+      },
+      "scale": {
+        "x": 0.14,
+        "y": 1.1,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": false
+    },
+    {
+      "name": "ThroneRoom_PointedArch_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.87,
+        "y": 3.65,
+        "z": 35.92
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 40.0
+      },
+      "scale": {
+        "x": 0.14,
+        "y": 1.1,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": false
+    },
+    {
+      "name": "BonusRoom_WindowGlass",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.5,
+        "y": -1.3,
+        "z": 67.96
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.15,
+        "y": 1.9,
+        "z": 0.06
+      },
+      "kind": "Cube",
+      "material": "Glass",
+      "collider": false
+    },
+    {
+      "name": "BonusRoom_PointedArch_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.87,
+        "y": -0.35,
+        "z": 67.92
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -40.0
+      },
+      "scale": {
+        "x": 0.14,
+        "y": 1.1,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": false
+    },
+    {
+      "name": "BonusRoom_PointedArch_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.13,
+        "y": -0.35,
+        "z": 67.92
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 40.0
+      },
+      "scale": {
+        "x": 0.14,
+        "y": 1.1,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": false
+    },
+    {
+      "name": "FinalArena_WindowGlass",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.5,
+        "y": -1.3,
+        "z": 67.96
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 1.15,
+        "y": 1.9,
+        "z": 0.06
+      },
+      "kind": "Cube",
+      "material": "Glass",
+      "collider": false
+    },
+    {
+      "name": "FinalArena_PointedArch_-1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.13,
+        "y": -0.35,
+        "z": 67.92
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": -40.0
+      },
+      "scale": {
+        "x": 0.14,
+        "y": 1.1,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": false
+    },
+    {
+      "name": "FinalArena_PointedArch_1",
+      "parent": "Landmarks",
+      "position": {
+        "x": 5.87,
+        "y": -0.35,
+        "z": 67.92
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 40.0
+      },
+      "scale": {
+        "x": 0.14,
+        "y": 1.1,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Trim",
+      "collider": false
+    },
+    {
+      "name": "Torch_00_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": 0.0,
+        "y": 2.8,
+        "z": 1.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_01_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.8,
+        "y": 2.8,
+        "z": 24.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_02_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.8,
+        "y": 2.8,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_03_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": 16.0,
+        "y": 1.0,
+        "z": 40.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_04_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": 18.7,
+        "y": -1.2,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_05_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": -10.7,
+        "y": -1.2,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_06_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": 10.7,
+        "y": -1.2,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_07_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": -8.0,
+        "y": -2.0,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_08_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": -24.0,
+        "y": -8.0,
+        "z": 32.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_09_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": -30.0,
+        "y": -9.2,
+        "z": 48.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    },
+    {
+      "name": "Torch_10_Flame",
+      "parent": "Landmarks",
+      "position": {
+        "x": -20.0,
+        "y": -5.2,
+        "z": 64.0
+      },
+      "rotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "scale": {
+        "x": 0.15,
+        "y": 0.3,
+        "z": 0.15
+      },
+      "kind": "Cube",
+      "material": "Flame",
+      "collider": false
+    }
+  ],
+  "rooms": [
+    {
+      "id": "Courtyard",
+      "objectName": "Room_Courtyard",
+      "column": 5,
+      "row": 10,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    {
+      "id": "FirstEncounter",
+      "objectName": "Room_FirstEncounter",
+      "column": 5,
+      "row": 8,
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 16.0
+      }
+    },
+    {
+      "id": "Puzzle",
+      "objectName": "Room_Puzzle",
+      "column": 4,
+      "row": 7,
+      "position": {
+        "x": -8.0,
+        "y": 0.0,
+        "z": 24.0
+      }
+    },
+    {
+      "id": "ThroneRoom",
+      "objectName": "Room_ThroneRoom",
+      "column": 6,
+      "row": 6,
+      "position": {
+        "x": 8.0,
+        "y": 0.0,
+        "z": 32.0
+      }
+    },
+    {
+      "id": "Library",
+      "objectName": "Room_Library",
+      "column": 7,
+      "row": 5,
+      "position": {
+        "x": 16.0,
+        "y": -2.0,
+        "z": 40.0
+      }
+    },
+    {
+      "id": "Catacombs",
+      "objectName": "Room_Catacombs",
+      "column": 7,
+      "row": 4,
+      "position": {
+        "x": 16.0,
+        "y": -4.0,
+        "z": 48.0
+      }
+    },
+    {
+      "id": "BonusRoom",
+      "objectName": "Room_BonusRoom",
+      "column": 4,
+      "row": 2,
+      "position": {
+        "x": -8.0,
+        "y": -4.0,
+        "z": 64.0
+      }
+    },
+    {
+      "id": "FinalArena",
+      "objectName": "Room_FinalArena",
+      "column": 6,
+      "row": 2,
+      "position": {
+        "x": 8.0,
+        "y": -4.0,
+        "z": 64.0
+      }
+    },
+    {
+      "id": "Exit",
+      "objectName": "Room_Exit",
+      "column": 6,
+      "row": 0.75,
+      "position": {
+        "x": 8.0,
+        "y": -4.0,
+        "z": 74.0
+      }
+    }
+  ],
+  "passages": [
+    {
+      "from": "Courtyard",
+      "to": "FirstEncounter",
+      "objectName": "Passage_Courtyard_FirstEncounter",
+      "waypoints": [
+        {
+          "x": 0.0,
+          "y": 0.05,
+          "z": 0.0
+        },
+        {
+          "x": 0.0,
+          "y": 0.05,
+          "z": 16.0
+        }
+      ],
+      "gatePosition": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 12.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    {
+      "from": "FirstEncounter",
+      "to": "Puzzle",
+      "objectName": "Passage_FirstEncounter_Puzzle",
+      "waypoints": [
+        {
+          "x": 0.0,
+          "y": 0.05,
+          "z": 16.0
+        },
+        {
+          "x": -8.0,
+          "y": 0.05,
+          "z": 16.0
+        },
+        {
+          "x": -8.0,
+          "y": 0.05,
+          "z": 24.0
+        }
+      ],
+      "gatePosition": {
+        "x": -8.0,
+        "y": 0.0,
+        "z": 20.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    {
+      "from": "FirstEncounter",
+      "to": "ThroneRoom",
+      "objectName": "Passage_FirstEncounter_ThroneRoom",
+      "waypoints": [
+        {
+          "x": 0.0,
+          "y": 0.05,
+          "z": 16.0
+        },
+        {
+          "x": 8.0,
+          "y": 0.05,
+          "z": 16.0
+        },
+        {
+          "x": 8.0,
+          "y": 0.05,
+          "z": 32.0
+        }
+      ],
+      "gatePosition": {
+        "x": 8.0,
+        "y": 0.0,
+        "z": 28.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    {
+      "from": "ThroneRoom",
+      "to": "Library",
+      "objectName": "Passage_ThroneRoom_Library",
+      "waypoints": [
+        {
+          "x": 8.0,
+          "y": 0.05,
+          "z": 32.0
+        },
+        {
+          "x": 16.0,
+          "y": 0.05,
+          "z": 32.0
+        },
+        {
+          "x": 16.0,
+          "y": 0.05,
+          "z": 36.0
+        },
+        {
+          "x": 16.0,
+          "y": -1.95,
+          "z": 40.0
+        }
+      ],
+      "gatePosition": {
+        "x": 12.0,
+        "y": 0.0,
+        "z": 32.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      }
+    },
+    {
+      "from": "Library",
+      "to": "Catacombs",
+      "objectName": "Passage_Library_Catacombs",
+      "waypoints": [
+        {
+          "x": 16.0,
+          "y": -1.95,
+          "z": 40.0
+        },
+        {
+          "x": 16.0,
+          "y": -3.95,
+          "z": 44.0
+        },
+        {
+          "x": 16.0,
+          "y": -3.95,
+          "z": 48.0
+        }
+      ],
+      "gatePosition": {
+        "x": 16.0,
+        "y": -4.0,
+        "z": 44.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    {
+      "from": "Catacombs",
+      "to": "FinalArena",
+      "objectName": "Passage_Catacombs_FinalArena",
+      "waypoints": [
+        {
+          "x": 16.0,
+          "y": -3.95,
+          "z": 48.0
+        },
+        {
+          "x": 8.0,
+          "y": -3.95,
+          "z": 48.0
+        },
+        {
+          "x": 8.0,
+          "y": -3.95,
+          "z": 64.0
+        }
+      ],
+      "gatePosition": {
+        "x": 8.0,
+        "y": -4.0,
+        "z": 60.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    {
+      "from": "Catacombs",
+      "to": "BonusRoom",
+      "objectName": "Passage_Catacombs_BonusRoom",
+      "waypoints": [
+        {
+          "x": 16.0,
+          "y": -3.95,
+          "z": 48.0
+        },
+        {
+          "x": -8.0,
+          "y": -3.95,
+          "z": 48.0
+        },
+        {
+          "x": -8.0,
+          "y": -3.95,
+          "z": 64.0
+        }
+      ],
+      "gatePosition": {
+        "x": -8.0,
+        "y": -4.0,
+        "z": 60.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    },
+    {
+      "from": "ThroneRoom",
+      "to": "BonusRoom",
+      "objectName": "Passage_ThroneRoom_BonusRoom",
+      "waypoints": [
+        {
+          "x": 8.0,
+          "y": 0.05,
+          "z": 32.0
+        },
+        {
+          "x": 0.0,
+          "y": 0.05,
+          "z": 32.0
+        },
+        {
+          "x": -24.0,
+          "y": -11.95,
+          "z": 32.0
+        },
+        {
+          "x": -30.0,
+          "y": -11.95,
+          "z": 32.0
+        },
+        {
+          "x": -30.0,
+          "y": -11.95,
+          "z": 64.0
+        },
+        {
+          "x": -28.0,
+          "y": -11.95,
+          "z": 64.0
+        },
+        {
+          "x": -12.0,
+          "y": -3.95,
+          "z": 64.0
+        },
+        {
+          "x": -8.0,
+          "y": -3.95,
+          "z": 64.0
+        }
+      ],
+      "gatePosition": {
+        "x": 4.0,
+        "y": 0.0,
+        "z": 32.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 90.0,
+        "z": 0.0
+      }
+    },
+    {
+      "from": "FinalArena",
+      "to": "Exit",
+      "objectName": "Passage_FinalArena_Exit",
+      "waypoints": [
+        {
+          "x": 8.0,
+          "y": -3.95,
+          "z": 64.0
+        },
+        {
+          "x": 8.0,
+          "y": -3.95,
+          "z": 74.0
+        }
+      ],
+      "gatePosition": {
+        "x": 8.0,
+        "y": -4.0,
+        "z": 68.0
+      },
+      "gateRotation": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      }
+    }
+  ],
+  "anchors": [
+    {
+      "name": "Spawn",
+      "parent": "Anchors",
+      "position": {
+        "x": 0.0,
+        "y": 0.05,
+        "z": -88.0
+      }
+    },
+    {
+      "name": "FirstEnemy",
+      "parent": "Anchors",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 18.0
+      }
+    },
+    {
+      "name": "MainPuzzle",
+      "parent": "Anchors",
+      "position": {
+        "x": -9.5,
+        "y": 0.0,
+        "z": 25.5
+      }
+    },
+    {
+      "name": "ThroneMiniboss",
+      "parent": "Anchors",
+      "position": {
+        "x": 8.0,
+        "y": 0.0,
+        "z": 34.0
+      }
+    },
+    {
+      "name": "LibraryMechanism",
+      "parent": "Anchors",
+      "position": {
+        "x": 16.0,
+        "y": -2.0,
+        "z": 40.0
+      }
+    },
+    {
+      "name": "SecretLever",
+      "parent": "Anchors",
+      "position": {
+        "x": 18.5,
+        "y": -4.0,
+        "z": 49.5
+      }
+    },
+    {
+      "name": "BonusDiscovery",
+      "parent": "Anchors",
+      "position": {
+        "x": -8.0,
+        "y": -4.0,
+        "z": 66.0
+      }
+    },
+    {
+      "name": "FinalEnemy",
+      "parent": "Anchors",
+      "position": {
+        "x": 8.0,
+        "y": -4.0,
+        "z": 66.0
+      }
+    },
+    {
+      "name": "Exit",
+      "parent": "Anchors",
+      "position": {
+        "x": 8.0,
+        "y": -4.0,
+        "z": 76.0
+      }
+    }
+  ],
+  "lights": [
+    {
+      "name": "Approach_Light_0",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -80.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Approach_Light_1",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -64.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Approach_Light_2",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -48.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Approach_Light_3",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -32.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Approach_Light_4",
+      "position": {
+        "x": -3.25,
+        "y": 2.85,
+        "z": -16.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_00",
+      "position": {
+        "x": 0.0,
+        "y": 2.8,
+        "z": 1.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_01",
+      "position": {
+        "x": -10.8,
+        "y": 2.8,
+        "z": 24.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_02",
+      "position": {
+        "x": 10.8,
+        "y": 2.8,
+        "z": 32.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_03",
+      "position": {
+        "x": 16.0,
+        "y": 1.0,
+        "z": 40.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_04",
+      "position": {
+        "x": 18.7,
+        "y": -1.2,
+        "z": 48.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_05",
+      "position": {
+        "x": -10.7,
+        "y": -1.2,
+        "z": 64.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_06",
+      "position": {
+        "x": 10.7,
+        "y": -1.2,
+        "z": 64.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_07",
+      "position": {
+        "x": -8.0,
+        "y": -2.0,
+        "z": 32.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_08",
+      "position": {
+        "x": -24.0,
+        "y": -8.0,
+        "z": 32.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_09",
+      "position": {
+        "x": -30.0,
+        "y": -9.2,
+        "z": 48.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    },
+    {
+      "name": "Torch_10",
+      "position": {
+        "x": -20.0,
+        "y": -5.2,
+        "z": 64.0
+      },
+      "color": {
+        "r": 1,
+        "g": 0.63,
+        "b": 0.32,
+        "a": 1
+      },
+      "intensity": 2.2,
+      "range": 9
+    }
+  ]
+}

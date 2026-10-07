@@ -97,7 +97,8 @@ namespace ShadowsOfTheForsaken.Level
                 Vector3 point = candidate.bounds.center;
                 float distance = Vector3.Distance(origin, point);
                 if (distance > range || distance > nearestDistance ||
-                    (Mathf.Approximately(distance, nearestDistance) && nearest != null && target.GetInstanceID() > nearest.GetInstanceID())) continue;
+                    (Mathf.Approximately(distance, nearestDistance) && nearest != null &&
+                        target.GetEntityId().CompareTo(nearest.GetEntityId()) > 0)) continue;
                 if (!Visible(origin, point, target)) continue;
                 nearest = target;
                 nearestDistance = distance;

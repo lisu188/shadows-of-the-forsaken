@@ -11,22 +11,21 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
     {
         private const string ScenePath = "Assets/Scenes/SampleScene.unity";
         private Scene scene;
-        private bool loadedForTest;
+        private OwnedSceneLoad sceneLoad;
 
         [UnitySetUp]
         public IEnumerator LoadBaselineScene()
         {
+            sceneLoad = null;
+            scene = default;
+            OwnedSceneLoad.RequireNoPendingCleanup();
             scene = SceneManager.GetSceneByPath(ScenePath);
-            loadedForTest = !scene.IsValid() || !scene.isLoaded;
-            if (loadedForTest)
+            if (!scene.IsValid() || !scene.isLoaded)
             {
-                var operation = SceneManager.LoadSceneAsync(ScenePath, LoadSceneMode.Additive);
-                Assert.That(operation, Is.Not.Null);
-                var deadline = Time.realtimeSinceStartup + 30f;
-                while (!operation.isDone && Time.realtimeSinceStartup < deadline)
-                    yield return null;
-                Assert.That(operation.isDone, Is.True, "Baseline scene load timed out");
-                scene = SceneManager.GetSceneByPath(ScenePath);
+                sceneLoad = new OwnedSceneLoad();
+                yield return sceneLoad.Load(ScenePath, () => SceneManager.LoadSceneAsync(ScenePath, LoadSceneMode.Additive));
+                scene = sceneLoad.Scene;
+                Assert.That(sceneLoad.LoadedWithinDeadline && scene.IsValid() && scene.isLoaded, Is.True, "Baseline scene load timed out");
             }
             Assert.That(scene.IsValid() && scene.isLoaded, Is.True);
             yield return null;
@@ -35,14 +34,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator UnloadBaselineScene()
         {
-            if (!loadedForTest || !scene.IsValid() || !scene.isLoaded)
-                yield break;
-            var operation = SceneManager.UnloadSceneAsync(scene);
-            Assert.That(operation, Is.Not.Null);
-            var deadline = Time.realtimeSinceStartup + 30f;
-            while (!operation.isDone && Time.realtimeSinceStartup < deadline)
-                yield return null;
-            Assert.That(operation.isDone, Is.True, "Baseline scene unload timed out");
+            // A scene that was already open belongs to the surrounding editor.
+            if (sceneLoad != null) yield return sceneLoad.Cleanup();
+            Assert.That(sceneLoad?.CleanupFailure, Is.Null, "Baseline scene cleanup failed");
         }
 
         [UnityTest]

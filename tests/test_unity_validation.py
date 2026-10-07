@@ -12,6 +12,17 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import unity_validation as validation
 
+ROOM_PERFORMANCE_METHODS = (
+    "RoomPerformanceTransitionsKeepVisitIdentityAndSessionCounters",
+    "RoomPerformanceDefeatRestartAndQuitKeepOriginalTokens",
+    "RoomPerformanceExternalResetWaitsForNewRunningSession",
+    "RoomPerformanceStaleRoomCallbackCannotCloseTheNewSessionVisit",
+    "RoomPerformanceCapLeavesExistingSessionEvidenceOperational",
+    "RoomPerformanceDisableFlushesOnceAndDoesNotResume",
+    "RoomPerformanceWriteFailureStopsObservationWithoutMutatingGameplay",
+    "RoomPerformanceMarksConfigurationChangesEvenAfterRestoration",
+)
+
 
 class ProjectValidationTests(unittest.TestCase):
     def setUp(self):
@@ -171,12 +182,28 @@ class NUnitEvidenceTests(unittest.TestCase):
     def save(self, report):
         ET.ElementTree(report).write(self.path, encoding="utf-8", xml_declaration=True)
 
-    def test_accepts_complete_required_reports_for_both_modes(self):
+    def test_accepts_complete_baseline_reports_for_both_modes(self):
         for mode in ("editmode", "playmode"):
             count = len(validation.EXPECTED_CASES[mode])
             with self.subTest(mode=mode):
                 self.save(report_for(mode))
                 self.assertEqual(count, validation.validate_results(self.path, mode)["passed"])
+
+    def test_rejects_reports_that_omit_castle_scene_coverage(self):
+        for mode, omitted in [("editmode", "CastleIsFirstEnabledSceneAndHasNoMissingComponents"),
+                              ("playmode", "EveryPassageIsWalkableInBothDirections")]:
+            with self.subTest(mode=mode):
+                report = report_for(mode)
+                suite = report.find("test-suite")
+                for case in list(suite):
+                    if omitted in case.get("fullname", ""):
+                        suite.remove(case)
+                count = str(len(list(report.iter("test-case"))))
+                report.set("total", count)
+                report.set("passed", count)
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, omitted):
+                    validation.validate_results(self.path, mode)
 
     def test_rejects_missing_report(self):
         with self.assertRaisesRegex(validation.ValidationError, "results missing"):
@@ -264,6 +291,150 @@ class NUnitEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(validation.ValidationError, "Expected baseline"):
             validation.validate_results(self.path, "editmode")
 
+    def test_rejects_unknown_mode(self):
+        with self.assertRaisesRegex(validation.ValidationError, "Unknown test mode"):
+            validation.validate_results(self.path, "standalone")
+
+    def test_rejects_missing_gameplay_regression_despite_passing_other_tests(self):
+        for mode, method in [
+            ("editmode", "OneShotRejectsRepeatAndStaleTokensAfterReset"),
+            ("editmode", "CompoundTargetsAreHitOncePerActionAndAgainOnNextAction"),
+            ("editmode", "HashCollisionsDoNotMergeDistinctTargets"),
+            ("playmode", "InteractionGateResetWaitsForTeleportedOccupantAndClosesAfterEscape"),
+            ("playmode", "CombatPhysicsEmbeddedWallUsesTheActorsLocalPhysicsScene"),
+        ]:
+            with self.subTest(mode=mode, method=method):
+                report = report_for(mode)
+                case = next(c for c in report.iter("test-case") if f".{method}" in c.get("fullname", ""))
+                case.set("fullname", "Other.Tests.UnrelatedPassingTest")
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, method):
+                    validation.validate_results(self.path, mode)
+
+    def test_rejects_reports_that_omit_required_regression_families(self):
+        for mode, fixture in [
+            ("editmode", "CameraMotionTests"),
+            ("editmode", "PlayerMotorTests"),
+            ("editmode", "LevelProgressionTests"),
+            ("editmode", "CombatRulesTests"),
+            ("playmode", "CameraFollowTests"),
+            ("playmode", "PlayerMovementTests"),
+            ("playmode", "ProgressionControllerTests"),
+            ("playmode", "FullCastleRouteTests"),
+            ("playmode", "CombatControllerTests"),
+            ("playmode", "ForsakenLevelTests"),
+            ("playmode", "LevelInteractionTests"),
+            ("playmode", "WorldTextTests"),
+            ("playmode", "LevelHudLayoutTests"),
+        ]:
+            with self.subTest(mode=mode, fixture=fixture):
+                report = report_for(mode)
+                suite = report.find("test-suite")
+                removed = [case for case in suite if f".{fixture}." in case.get("fullname", "")]
+                self.assertTrue(removed, f"The catalog must require {fixture}")
+                for case in removed:
+                    suite.remove(case)
+                count = str(len(list(report.iter("test-case"))))
+                report.set("total", count)
+                report.set("passed", count)
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, fixture):
+                    validation.validate_results(self.path, mode)
+
+    def test_rejects_same_method_name_from_wrong_fixture(self):
+        for mode, required in [
+            ("editmode", "PlayerMotorTests"),
+            ("playmode", "ProgressionControllerTests"),
+            ("playmode", "CameraFollowTests"),
+        ]:
+            with self.subTest(mode=mode, fixture=required):
+                report = report_for(mode)
+                case = next(c for c in report.iter("test-case") if f".{required}." in c.get("fullname", ""))
+                case.set("fullname", case.get("fullname").replace(f".{required}.", ".UnrelatedFixture."))
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, required):
+                    validation.validate_results(self.path, mode)
+
+    def test_rejects_either_missing_authored_or_default_collision_case(self):
+        for method in [
+            "ShoulderFramingRetainsNearPlaneClearanceBesideWallAndDuringTurn",
+            "LockedGateTurnDuringJumpRetainsAValidatedPreviousCameraPose",
+        ]:
+            for removed_index in [0, 1]:
+                with self.subTest(method=method, removed_index=removed_index):
+                    report = report_for("playmode")
+                    suite = report.find("test-suite")
+                    cases = [c for c in suite if f".CameraFollowTests.{method}(" in c.get("fullname", "")]
+                    self.assertEqual(2, len(cases), "Both scene settings must be required")
+                    suite.remove(cases[removed_index])
+                    count = str(len(list(report.iter("test-case"))))
+                    report.set("total", count)
+                    report.set("passed", count)
+                    self.save(report)
+                    with self.assertRaisesRegex(validation.ValidationError, method):
+                        validation.validate_results(self.path, "playmode")
+
+    def test_rejects_missing_aim_or_mesh_ray_regression_case(self):
+        for method in [
+            "CameraFollowTests.LookHeightOffsetChangesOnlyAimAndRetainsTheCollisionPivot",
+            "CameraFollowTests.ShoulderAimFractionChangesOnlyAimAndRetainsTheFullCameraBoom",
+            "FullCastleRouteTests.FramingRayMissesRemainInfiniteInsideAndOutsideMeshBounds",
+            "FullCastleRouteTests.FramingRayRejectsBackfacesAndHitsAtTheExclusiveDistanceLimit",
+            "FullCastleRouteTests.FramingRaySelectsNearestSurfaceIncludingUnlabelledPlayer",
+        ]:
+            with self.subTest(method=method):
+                report = report_for("playmode")
+                case = next(c for c in report.iter("test-case") if f".{method}" in c.get("fullname", ""))
+                # Preserve the root count with an unrelated passing case: the
+                # named regression, not merely the total, must be required.
+                case.set("fullname", "ShadowsOfTheForsaken.Tests.PlayMode.UnrelatedFixture.PassingTest")
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, method):
+                    validation.validate_results(self.path, "playmode")
+
+    def test_historical_193_case_report_cannot_qualify_new_zero_aim_guard(self):
+        method = "MovingTargetAtHeldCameraAimUsesSafeBoomWithoutInvalidRotation"
+        report = report_for("playmode")
+        suite = report.find("test-suite")
+        case = next(c for c in suite if f".CameraFollowTests.{method}" in c.get("fullname", ""))
+        suite.remove(case)
+        # This is the historical camera suite, before both the zero-aim guard
+        # and the eight later room-observer cases; do not relabel 201 as 193.
+        for room_method in ROOM_PERFORMANCE_METHODS:
+            case = next(c for c in suite if
+                        f".PlayerValidationPerformanceTests.{room_method}" in c.get("fullname", ""))
+            suite.remove(case)
+        alternate_fixtures = (
+            ".CombatControllerTests.", ".ForsakenLevelTests.", ".LevelHudLayoutTests.",
+            ".LevelInteractionTests.", ".WorldTextTests.",
+        )
+        for case in list(suite):
+            name = case.get("fullname", "")
+            if any(fixture in name for fixture in alternate_fixtures) or name.endswith(
+                    ".PlayerMovementTests.MouseAttackFiresOncePerPressThroughOwnedActionMap"):
+                suite.remove(case)
+        count = len(list(report.iter("test-case")))
+        self.assertEqual(193, count)
+        report.set("total", str(count))
+        report.set("passed", str(count))
+        self.save(report)
+        with self.assertRaisesRegex(validation.ValidationError, method):
+            validation.validate_results(self.path, "playmode")
+
+    def test_room_observer_cases_cannot_be_omitted_or_satisfied_by_another_fixture(self):
+        for method in ROOM_PERFORMANCE_METHODS:
+            for substitute in ("PassingUnrelatedCase", method):
+                with self.subTest(method=method, substitute=substitute):
+                    report = report_for("playmode")
+                    case = next(c for c in report.iter("test-case") if
+                                f".PlayerValidationPerformanceTests.{method}" in c.get("fullname", ""))
+                    # Keep the total and passing count: only the required named
+                    # method in the correct fixture can satisfy this regression.
+                    case.set("fullname", f"ShadowsOfTheForsaken.Tests.PlayMode.UnrelatedFixture.{substitute}")
+                    self.save(report)
+                    with self.assertRaisesRegex(validation.ValidationError, method):
+                        validation.validate_results(self.path, "playmode")
+
     def test_rejects_missing_full_level_route_despite_all_executed_cases_passing(self):
         report = report_for("playmode")
         suite = report.find("test-suite")
@@ -311,6 +482,29 @@ class NUnitEvidenceTests(unittest.TestCase):
                 with self.assertRaises(validation.ValidationError):
                     validation.validate_results(self.path, "editmode")
 
+    def test_rejects_changed_main_parameters_without_changing_case_counts(self):
+        replacements = [
+            ("editmode", "CombatStateTests.InvalidAttackTimingIsRejected",
+             "(double.NaN,0.1d,0.1d)", "(0.0d,0.1d,0.1d)"),
+            ("editmode", "EncounterStateTests.EncounterLifeAndSessionGatesPrecedePursuit",
+             "(False,True,True,Dormant)", "(False,True,True,Chasing)"),
+            ("playmode", "CameraFollowTests.LockedGateTurnDuringJumpRetainsAValidatedPreviousCameraPose",
+             "(5.0f,2.0f,0.0f,1.4f,1.0f,60.0f)", "(5.0f,2.0f,0.0f,1.4f,1.0f,61.0f)"),
+            ("playmode", "CastleLayoutTraversalTests.EveryPassageIsWalkableInBothDirections",
+             '("Courtyard","FirstEncounter",False)', '("Courtyard","Puzzle",False)'),
+            ("playmode", "EnemyEncounterTests.EncounterLostOrSuspendedTargetInterruptsTelegraph",
+             '("time-scale")', '("timescale")'),
+        ]
+        for mode, method, old, new in replacements:
+            with self.subTest(mode=mode, method=method):
+                report = report_for(mode)
+                case = next(case for case in report.iter("test-case")
+                            if case.get("fullname").endswith("." + method + old))
+                case.set("fullname", case.get("fullname").removesuffix(old) + new)
+                self.save(report)
+                with self.assertRaisesRegex(validation.ValidationError, method):
+                    validation.validate_results(self.path, mode)
+
     def test_extra_passed_case_cannot_replace_a_required_parameter_identity(self):
         report = report_for("playmode")
         suite = report.find("test-suite")
@@ -323,10 +517,6 @@ class NUnitEvidenceTests(unittest.TestCase):
         self.save(report)
         with self.assertRaisesRegex(validation.ValidationError, r"GroundMovementAtRepresentativeFrameRates\(30\)"):
             validation.validate_results(self.path, "playmode")
-
-    def test_rejects_unknown_mode(self):
-        with self.assertRaisesRegex(validation.ValidationError, "Unknown test mode"):
-            validation.validate_results(self.path, "standalone")
 
     def test_cli_returns_failure_for_missing_report(self):
         result = subprocess.run(
@@ -362,7 +552,7 @@ class LocalRunnerCommandTests(unittest.TestCase):
             ET.ElementTree(report_for("editmode")).write(self.output / "editmode-results.xml")
             return subprocess.CompletedProcess(command, 0)
         process.side_effect = execute
-        self.assertEqual(113, self.run_editor()["passed"])
+        self.assertEqual(len(validation.EXPECTED_CASES["editmode"]), self.run_editor()["passed"])
         project.assert_called_once_with(self.root)
 
     @patch.object(validation, "validate_project")

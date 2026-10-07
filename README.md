@@ -4,6 +4,8 @@ Przygodowa gra akcji z eksploracją i zagadkami środowiskowymi w mrocznym, upad
 
 > **DOCX jest nadrzędną specyfikacją projektu** — obejmuje tekst, referencje graficzne, flow chart i mapę 2D. README opisuje zakres i stan realizacji, ale nie zastępuje dokumentu. W razie rozbieżności obowiązuje DOCX albo późniejsza, wyraźna decyzja właściciela projektu. Prototypy techniczne są etapami realizacji, nie alternatywnym pomysłem na grę.
 
+Zapisany układ sceny porównano z mapą DOCX: [trzy widoki z edytora i zakres weryfikacji](docs/validation/castle-map-2026-10-01.md). Zgodność topologii nie zastępuje ręcznego odbioru geometrii i nawigacji.
+
 ## Docelowa gra
 
 Zgodnie z sekcjami 1–2 dokumentu gracz eksploruje ruiny miast i zamków, walczy z demonicznymi stworzeniami oraz skażonymi ludźmi i rozwiązuje zagadki środowiskowe. Pierwszy poziom rozgrywa się w ruinach starożytnego, przeklętego zamku pośród mglistych gór.
@@ -50,37 +52,60 @@ Mapa z §8 rozwija układ przestrzenny: start znajduje się na dole, pierwsze st
 - **Sekret:** jedna sala bonusowa z dojściem od katakumb oraz ukrytym skrótem od sali tronowej. Oba połączenia odblokowuje dźwignia w katakumbach, dopiero po otwarciu biblioteki. Skrót jest jawną interpretacją połączenia flow chartu, nie korytarzem narysowanym na mapie. Bonus nie jest wymagany do ukończenia.
 - **Finał:** górna komnata należy do katakumb; po walce otwiera się wyjście kończące scenariusz. Bez obowiązkowej cutscenki i bez ładowania nieistniejącego następnego poziomu.
 
-[Kontrakt poziomu w JSON](docs/level-contract.json) zapisuje obszary, połączenia i warunki postępu. Walidator sprawdza osiągalność i brak przedwczesnego ukończenia w modelu, z sekretem i bez niego. JSON pozostaje kontraktem projektowym; [runtime C# dla #10](docs/progression-runtime.md) implementuje te reguły osobno i jest porównywany z nim w testach. **Same testy modelu ani rdzeni C# nie potwierdzają działania sceny w Unity.**
+[Kontrakt poziomu w JSON](docs/level-contract.json) zapisuje obszary, połączenia i warunki postępu. Walidator sprawdza osiągalność i brak przedwczesnego ukończenia w modelu, z sekretem i bez niego. JSON pozostaje kontraktem projektowym; [runtime C# dla #10](docs/progression-runtime.md) implementuje te reguły osobno i jest porównywany z nim w testach. **Testy modelu i C# są oddzielne od testów sceny w Unity.**
 
 Dokument nie określa również wszystkich parametrów implementacyjnych: klawiszy, statystyk przeciwników, obrażeń, szczegółowych zasad walki czy wymiarów geometrii. Takie decyzje należy oznaczać jako decyzje projektowe / techniczne, a nie dosłowne wymagania DOCX.
 
-## Aktualny stan
+## Integracja gałęzi runtime — 2026-10-07
 
-Implementacja sceny gry znajduje się w Assets/Scenes/ForsakenCastle.unity. Scena składa poziom zgodny z mapą i zapisanymi decyzjami: wszystkie obowiązkowe obszary, trzy starcia, zagadka run, biblioteka, katakumby, opcjonalna sala i osobny skrót oraz zakończenie. [Opis implementacji i mapowania do DOCX](docs/level-implementation.md) rozdziela wymagania od wybranej skali, balansu i stylizacji.
+Main zachowuje Unity `6000.6.3f1`, pakiety z aktualnego lockfile i autorską scenę `ForsakenCastle` jako podstawowy poziom. Ukończona gałąź runtime jest zachowana w osobnej scenie `Assets/Scenes/ForsakenRuntimeCastle.unity`, z własnym kontrolerem sesji i dotychczasowymi GUID-ami assetów. Menu `Forsaken/Build runtime castle Windows player` buduje tę alternatywną scenę; podstawowy builder `CastlePlayerBuild` pozostaje bez zmian.
+
+Integracja zachowuje cztery poprawki przeglądu: anulowanie zamachu w pauzie, test głębokości napisów świata, skalowanie dolnego HUD-u i walidację dokładnych argumentów NUnit. Połączony katalog wymaga 187 EditMode i 228 PlayMode; [raport integracji](docs/validation/main-merge-2026-10-07.md) rozdziela nowe wykonanie od historycznych wyników gałęzi i main. Starsze paczki runtime z Unity6000.0.24f1 pozostają dowodami tej wersji, opisanymi w [raporcie gałęzi](docs/level-verification.md).
+
+## Podstawowa scena i historyczne wyniki main
+
+Poniższe wyniki i tabela zachowują dowody main sprzed integracji, wraz z ich oryginalnymi commitami i licznikami. Nie zatwierdzają połączonego katalogu 187/228; jego wykonanie opisuje [raport integracji z 2026-10-07](docs/validation/main-merge-2026-10-07.md). Opisane mechaniki podstawowej sceny pozostają w projekcie.
+
+Kod i jawny builder sceny `Assets/Scenes/ForsakenCastle.unity` łączą pełną trasę zamku: spokojny dziedziniec, trzy odrębne starcia, runiczną dźwignię, mechanizm biblioteki, opcjonalny relikt i wyjście. [Opis pełnej trasy](docs/full-castle-route.md) podaje sterowanie, parametry AI, połączenia, restart i granice dowodów. Zachowano scenę bazową `SampleScene` oraz oddzielne demonstracje mechanik.
+
+Podstawowa scena z main obejmuje gotycką architekturę i dekoracje, oryginalne modele postaci z animacją, prezentacje bram/mechanizmów, rozbudowany HUD oraz opcjonalne pomiary wydajności. [Pochodzenie zasobów](docs/art-provenance.md) oddziela wygenerowane tekstury od rzeczywistych ujęć gry. **Baza kamery z PR #35 zaliczyła 173/173 EditMode 9 oraz 194/194 PlayMode 35**, w tym ochronę przed zerowym kierunkiem patrzenia i regresję kadrowania walki. Historyczny build Windows 5 z czystych wejść commita `8602b8e` zakończył się sukcesem; ten kandydat pozostaje nieuruchomiony, a build 6 zakończył się sukcesem (kod 0, bez warunku zatrzymania): zweryfikowano 198 plików silnika / 133 694 160 B. Po trzech osobno przejrzanych zmianach zasobów renderowania graficzny PlayMode 41 i headless 42 zaliczyły po jednym teście głównej trasy; ten zestaw wejść pozostaje odróżniony od pełnych EditMode 9/PlayMode 35. [Raport z galerią PlayMode 14](docs/validation/gothic-presentation-2026-10-01.md#rendered-evidence) zachowuje dowody wcześniejszej korekty emisji, a [macierz DOCX](docs/docx-acceptance.md) wskazuje odroczone testy standalone i oczekujące pierwsze przejście człowieka.
+
+[Historyczny przegląd 21 otwartych issues](docs/github-issue-review.md) rozdziela dostarczone mechaniki od pozostałego odbioru. Walidator wymaga teraz pełnych, kwalifikowanych nazwami klas zestawów testów Unity. Narzędzia [identyfikacji builda](docs/player-build-identity.md) i [raportowania tempa](docs/timing-validation.md) wiążą przyszłe pomiary z zachowanymi plikami; nie zastępują odroczonych przejść standalone ani odbioru człowieka.
+
+[Poprawka kadrowania walki](docs/validation/combat-camera-2026-10-01.md) ogranicza zasłanianie przeciwników przez model gracza. Rzeczywiste [ujęcia PlayMode 25](docs/validation/combat-camera-2026-10-01.md#rendered-evidence), sprzed dodania ochrony przed zerowym kierunkiem patrzenia, pokazują pełną postać na dziedzińcu, zachowany zarys zamku oraz głowy, tułowia i kończyny atakujące trzech przeciwników; w ujęciu podejścia do finału dolna część gracza nadal wychodzi poza kadr. Regresja mierzy zasłanianie rzeczywistych trójkątów modeli w zaobserwowanym przygotowaniu ataku: co najmniej 12 próbek i 50% widoczności każdej wymaganej części. Jest to próg implementacyjny dla zasłaniania przez gracza i granic kadru; nie zastępuje oceny oświetlenia, przeszkód otoczenia ani czytelności podczas gry przez człowieka.
+
+Dla #21/#24 dodano osobny, ograniczony zapis `room-performance.jsonl` w dotychczasowym trybie opt-in. Każda wizyta zachowuje pokój, token sesji, konfigurację i histogram rzeczywistych odstępów klatek; przejścia, utrata fokusu, pauza oraz pierwsze 5 kwalifikujących sekund wizyty są wyłączane z próbek. Krótkie wizyty mogą nie mieć pomiarów. Dotychczasowy plik sesji `performance.jsonl` zachowuje format. [Opis i granice](docs/room-performance.md) podają zaliczone 7 testów akumulatora .NET i 29 postępu; po rebase ich źródła i konfiguracja projektów pozostały identyczne z testowanym commitem `8bb24ff`. Historyczny commit `8cdba019` zaliczył **173/173 EditMode 10 i 202/202 PlayMode 44**, w tym osiem nowych regresji pokoi. [Raport walidacji](docs/validation/room-performance-2026-10-01.md) zachowuje wcześniejszy PlayMode 43: 200/202, dwa przekroczenia limitu ładowania sceny. Powtórkę wykonano bez zmiany źródeł, limitów i asercji. Build 7 zakończył się sukcesem; zweryfikowano 198 plików playera i osobny BUILD-INFO, a pomiary na wskazanym sprzęcie pozostają odroczone. Nie jest to profilowanie GPU ani kosztów poszczególnych świateł.
 
 | Obszar | Stan |
 | --- | --- |
-| Specyfikacja i kontrakt (#4) | DOCX i jego hash zachowane; decyzje i warunki postępu bez zmian. |
-| Runtime postępu (#10), ruch (#6), kamera (#7) | Istniejące rdzenie i GUID-y wykorzystane w scenie gry. |
-| Układ zamku (#8) | Geometria, collidery, osobna lewa odnoga zagadki, obowiązkowa biblioteka, dolny skrót do bonusu. Fizyczna trasa główna i opcjonalna przeszły testy rzeczywistej sceny Unity. |
-| Walka i obsada (#11–12, #14, #17) | Rzeczywiste ataki, obrażenia, zdrowie, pojedynczy demon, strażnik miniboss i demon finałowy. [Balans i mechanika](docs/combat.md). |
-| Interakcje, runy, biblioteka, sekret (#9, #13, #15–16, #19) | E wybiera jeden widoczny cel; sekwencja run, księga, dźwignia i relikt; fizyczne bramy według jednego runtime postępu. [Opis](docs/interaction.md). |
-| HUD i restart (#18) | Canvas z własnym wejściem UI: zdrowie, cel, interakcja, telegraph, wynik i czas. Testy potwierdziły reset fizycznej sceny przez przycisk i R oraz odrzucanie starych sesji. |
-| Oprawa i atmosfera (#20–21) | Stylizowana gotycka geometria, kolumny, krew, księgi, sarkofagi, witraże, księżyc, góry, mgła, pochodnie i syntetyzowany wiatr. Obejrzano obrazy rzeczywistej kamery z HUD-em; odbiór wizualny właściciela pozostaje oddzielny. |
-| Dokumentacja i testy rdzeni | Bazowe: Python 76/76 w WSL, postęp 29/29, ruch 36/36, kamera 32/32. Nowe: walka 13/13, runy 5/5; testują rzeczywiste źródła rdzeni. |
-| Unity EditMode/PlayMode (#5, #22) | Rzeczywisty przypięty edytor: czysty import i EditMode 113/113; pełny PlayMode 74/74, bez pominięć. [Raport i identyfikacja źródeł](docs/level-verification.md). |
-| Player Windows x64 (#24) | Build Windows x64 Mono zaliczony, 0 błędów. Natywny start zaliczony: rzeczywiste GPU, kamera i Canvas HUD, exit 0. Gotowy lokalny ZIP z wymaganymi plikami runtime; pełny benchmark playera niewykonany. |
-| Tempo 2–3 minut i odbiór (#23–24) | Automatyczne przejście głównej trasy rzeczywistej sceny: 134,17 s, 255,44 m, prędkość 2 m/s, bez sekretu i przymusowych pauz. To pomiar automatyczny, nie ręczny playtest lub benchmark playera. |
+| Specyfikacja i kontrakt (#4) | DOCX i jego hash zachowane; główna trasa oraz opcjonalność sekretu pozostają zgodne z kontraktem. Późniejsze decyzje opisują wydłużone podejście i proste mechanizmy. |
+| Postęp i integracja sceny (#10, #18) | Jeden kontroler postępu, przestrzenne triggery pokoi, sesja Running/Defeated/Completed/Resetting, terminalny restart i odtwarzanie świata. |
+| Ruch i kamera (#6–7) | Zachowano sterowanie, R, blokadę sesji i ukrywanie własnego modelu przy zbliżeniu kamery. Scena i builder używają `distance=3`, `height=4`, `shoulderOffset=-1.8`, `shoulderAimFraction=0.5`, `lookHeightOffset=1.5` oraz FOV 75°. To decyzje implementacyjne dla DOCX §§1–3 i 6; punkt kolizji pozostaje na wysokości 1 m, a dotychczasowa ochrona uwzględnia szerszą płaszczyznę bliską. |
+| Interakcje i bramy (#9, #13, #15–16, #19) | E uruchamia oznaczoną dźwignię, księgę, dźwignię sekretu i relikt. Uszkodzony mechanizm daje nieszkodliwy komunikat. Bramy synchronizują collider, panel i blokadę nawigacji. |
+| Walka i starcia (#11–12, #14, #17) | Wspólne zdrowie i melee obsługują jednego demona, wytrzymalszego strażnika i szybszego demona finałowego. AI ma ograniczoną arenę, nawigację, kontrolę przeszkód i zachowuje tokeny oczekującego zaliczenia śmierci. |
+| Geometria zamku (#8) | Zachowano dziewięć obszarów, zejście biblioteki i osobny dolny skrót. Podejście wydłużono do 100 m; brak przejścia przez ścianę między zagadką a tronem. |
+| HUD i zakończenie (#18) | Nazwa obszaru, pasek zdrowia, osobne panele podpowiedzi/komunikatów i terminalny restart. Ujęcia PlayMode 14 pokazują proporcje HUD i cele w bieżącym pokoju; zaliczono obie trasy oraz porażki/restarty po korekcie emisji materiałów. |
+| Walidacja rdzeni i narzędzi | Historycznie zaliczono 160 testów .NET dla niezmienionych rdzeni. W walidacji opisanej 2026-10-01 ponownie zaliczono 61 przypadków: 29 postępu i 32 kamery. Po rebase obserwacji pokoi zaliczono 142 testy Python w 20,817 s, w tym odmowę brakujących przypadków pokoju i podstawienia innej klasy testowej. Wynik PR #35 (141 testów w 11,849 s) pozostaje historyczny. Te testy nie zastępują weryfikacji sceny w Unity. |
+| Walidacja integracji Unity (#22) | Historyczne EditMode 10: **173/173**, PlayMode 44: **202/202**, oba kod 0; 662 wejścia bez zmian podczas przebiegów, zamrożona delta 64 plików / 249 232 B. Wszystkie 15 przypadków obserwatora zaliczono. Zachowano PlayMode 43 (200/202): dwa błędy limitu 30 s ładowania sceny, bez zmiany limitu lub asercji w powtórce. [Raport pokoi](docs/validation/room-performance-2026-10-01.md) podaje zakres i dowody. Historyczne EditMode 9: 173/173 i PlayMode 35: 194/194 dotyczą bazy PR #35; wcześniejsze Author 17, EditMode 5, PlayMode 14 i build 4 pozostają w raporcie oprawy. Wyłączone audio i użycie cache nie kwalifikują audio ani świeżego checkoutu. |
+| Walidacja poprawki kamery (#7, #22) | PlayMode 35 obejmuje ówczesną ochronę przed zerowym kierunkiem i regresję widoczności siatek. Zachowano przerwania PlayMode 27/29/31 przy rezerwie 60 GiB oraz PlayMode 33 przy 50 GiB. Ówczesne 32 GiB rezerwy i limit 5 GiB przyrostu zadania są ustawieniami wybranymi przez agenta, nie wartościami narzuconymi przez właściciela. Headless 36 zatrzymano po zawieszeniu ILPP przed testami: tylko drzewo tego procesu, kod 1 po 436,91 s, bez XML; 660 wejść pozostało bez zmian. Headless 38 i 40 zakończyły się niepowodzeniem limitu 30 s ładowania zapisanej sceny (każdy: 0/1, kod 8), przed rozpoczęciem trasy; limitu ani asercji nie zmieniono. PlayMode 40: 368,42 s runnera / 154,3470826 s XML; log ładowania: 153,689031 s deserializacji / 154,079391 s łącznie. Późniejszy graficzny PlayMode 41 zaliczył 1/1 (166,36 s runnera / 92,0267627 s XML), a headless 42 zaliczył 1/1 (146,44 s / 93,5338602 s); oba kod 0, bez zmian 660 wejść po buildzie, delta 60 plików / 235 339 B. Pierwsza deserializacja zamku w 42: 5,316521 s. Dokładna przyczyna wcześniejszych powolnych ładowań pozostaje nieudowodniona. Końcowy kolektor dowodów oraz [galeria czterech rzeczywistych ujęć PlayMode 35](docs/validation/combat-camera-2026-10-01.md#rendered-evidence) są gotowe; BUILD-INFO został zapisany i zweryfikowany. Historyczny podgląd PlayMode 25 (193/193, przed ochroną przed zerowym kierunkiem) zachowano oddzielnie. |
+| Windows player i ręczny odbiór (#23–24) | **Historyczny build 7: sukces, 0 błędów/ostrzeżeń; 198 zweryfikowanych plików silnika / 133 699 472 B.** Osobny `BUILD-INFO.json` wiąże player ze źródłem `8cdba019` i 662 przejrzanymi wejściami, bez zmian podczas budowania. [Raport i galeria](docs/validation/room-performance-2026-10-01.md) zachowują wyniki testów, wcześniejsze niepowodzenie i granice odbioru. Build użył istniejącego cache; wcześniejszy [build 5 bez cache](docs/validation/clean-build-2026-10-01.json) ma osobną proweniencję. Ten player nie został uruchomiony, zgodnie z odroczeniem standalone przez właściciela; ręczny odbiór i pomiary sprzętowe pozostają otwarte. |
+| Oprawa zamku i postaci (#20–21) | Author 17 zapisał 106 220 trójkątów środowiska / 126 rendererów / 126 siatek bez zmian fizyki. Ujęcia PlayMode 14 i testy trójkątów wspierają poprawkę szczelin podłoga–ściana; widoczna jest poprawiona emisja runy, płomieni i oczu. Test ponownego importu zaliczono. Późniejsze ujęcia PlayMode 25 pokazują poprawę widoczności przeciwników i kadru gracza. Końcowy odbiór człowieka, w tym czytelność walki w ruchu, pozostaje otwarty. |
+| Tempo i wydajność (#23–24) | Znane automatyzacji trasy w PlayMode 14 zajęły 81,591 s bez sekretu i 121,163 s z sekretem, kończąc z 200 HP. Nie potwierdza to tempa pierwszej próby ani celu 2–3 minut. Regresje liczników zaliczono; pomiary aktualnego playera na wskazanym sprzęcie pozostają odroczone. |
+| Aktywacja Unity w CI (#5) | Historyczny workflow main zakończył etap aktywacji błędem przed uruchomieniem testów silnika. Stan kontroli dokładnego commita po integracji podaje [raport integracji](docs/validation/main-merge-2026-10-07.md); lokalna aktywacja i wyniki .NET nie potwierdzają aktywacji zdalnego CI. |
+
+Historyczny [raport blockoutu](docs/validation/unity-castle-2026-09-30.md) zawiera 105 EditMode i 68 PlayMode, a [raport wspólnych mechanik i rzeczywistych obrazów](docs/validation/shared-gameplay-2026-09-30.md) — 145 .NET, 153 EditMode, 109 PlayMode oraz 82 Python. Te wyniki opisują wcześniejsze rewizje i nie są deklaracją zaliczenia nowych starć, pełnej trasy ani player builda.
 
 Dodano ignorowanie generowanych plików Unity. `Library`, `Logs` i `UserSettings` nie należą do źródeł; usunięcie ich z bieżącego drzewa Git nie usuwa ich ze starej historii.
 
-## Zakres dostawy i dalszy odbiór
+## Plan realizacji
 
-Poprawki przeglądu z 2026-10-06 anulują zamach przeciwnika podczas pauzy, zasłaniają napisy świata przez ściany, utrzymują timer HUD wewnątrz viewportu oraz wymagają dokładnych argumentów przypadków NUnit. Siedem nowych regresji PlayMode zaliczono w przypiętym edytorze; natywny player sprawdzono w 1024 × 768 i 1280 × 720. Szczegóły i hashe zawiera [raport weryfikacji](docs/level-verification.md).
+1. **Fundamenty techniczne:** kontroler gracza, kamera, niezawodne wejście i testy. Zachować istniejące GUID-y skryptów oraz przypiętą wersję Unity.
+2. **Blokowy poziom zamku:** dziedziniec, pierwsze starcie, zagadka, sala tronowa, biblioteka, sekretne przejście, katakumby, finał i wyjście. Odwzorować mapę z rozstrzygnięciami zapisanymi w `docs/design-decisions.md`. Geometria zastępcza nie jest finalną oprawą.
+3. **Pełny przebieg rozgrywki:** spokojne wejście, pojedynczy pierwszy przeciwnik, zagadka, miniboss, katakumby, finałowa walka i osiągalne zakończenie. Oddzielić opcjonalny sekret od wymaganej ścieżki.
+4. **Atmosfera i czytelność:** ruiny, kolumny, księgi, ślady kultu, gotyckie okna, światło księżyca i pochodni, mgła oraz czytelna prezentacja zagrożeń.
+5. **Weryfikacja:** testy logiki, testy w Unity i ręczne przejście poziomu. Sprawdzić brak blokad postępu, możliwość ukończenia bez opcjonalnego sekretu oraz dodatkową zawartość sekretnej trasy. Dopiero po pomiarach deklarować osiągnięcie czasu 2–3 minut.
 
-Poziom implementuje obowiązkowy przebieg i opcjonalną zawartość z DOCX, z rozstrzygnięciami zapisanymi w `docs/design-decisions.md`. Oprawa jest autorską stylizacją z geometrii proceduralnej, a nie importem fotografii referencyjnych. Testy sceny sprawdzają rzeczywistą fizykę, ataki, mechanizmy, oba warianty ukończenia oraz reset; testy samych rdzeni nie są ich zamiennikiem.
-
-[Raport weryfikacji](docs/level-verification.md) rozdziela wykonane kontrole od niewykonanych: ręczna rozgrywka człowieka, odbiór podobieństwa do referencji, pomiar pełnej trasy w playerze i nowy run zdalnego CI pozostają osobnymi etapami. Nie dodano rozbudowanych systemów poza specyfikacją. Zasady pracy znajdują się w [AGENTS.md](AGENTS.md).
+Każda zmiana powinna wskazywać realizowane wymaganie i aktualizować stan implementacji. Nie dodajemy rozbudowanych systemów niezwiązanych ze specyfikacją zamiast realizować opisany poziom. Zasady dla narzędzi i agentów znajdują się w [AGENTS.md](AGENTS.md).
 
 ## Uruchomienie projektu
 
@@ -88,25 +113,29 @@ Wersje zapisane w repozytorium:
 
 | Składnik | Wersja |
 | --- | --- |
-| Unity Editor | `6000.0.24f1` |
-| Universal Render Pipeline | `17.0.3` |
-| Input System | `1.11.1` |
-| Unity Test Framework | `1.4.5` |
+| Unity Editor | `6000.6.3f1` |
+| Universal Render Pipeline | `17.6.0` |
+| Input System | `1.20.0` |
+| AI Navigation | `2.0.14` |
+| Unity UI | `2.6.0` |
+| Unity Test Framework | `1.8.0` |
 
 Źródła wersji: [ProjectVersion.txt](ProjectSettings/ProjectVersion.txt) i [manifest.json](Packages/manifest.json). Nie aktualizować edytora ani pakietów przypadkowo podczas otwierania projektu.
+
+Poniższe wyniki migracji wersji pochodzą z main sprzed integracji gałęzi runtime. Na polecenie właściciela zapisano aktualizację do Unity `6000.6.3f1` oraz pakietów z manifestu i lockfile; dostosowano przypięcia walidatora, testu wersji i CI. Import, kompilację oraz testy bazy kamery potwierdzono lokalnie na Windows: 173 EditMode 9 i 194 PlayMode 35. Po dodaniu obserwacji pokoi zaliczono 173/173 EditMode 10 i 202/202 PlayMode 44; zachowano wcześniejsze dwa błędy ładowania sceny w PlayMode 43. Build 7 zakończył się sukcesem bez błędów/ostrzeżeń; zweryfikowano 198 plików i osobny BUILD-INFO ([raport](docs/validation/room-performance-2026-10-01.md)). Raport prezentacji zachowuje wcześniejsze 173 EditMode / 172 PlayMode po korekcie emisji i udany build 4; osobny build 5 identyfikuje wcześniejszy commit. Headless 38 i 40 nie zaliczyły 30-sekundowego limitu ładowania sceny i nie weszły na trasę. Build 6 zakończył się kodem 0 bez błędów/ostrzeżeń; zweryfikowano 198 plików i trzy zmiany renderowania. Graficzny PlayMode 41 i headless 42 zaliczyły po jednym teście trasy na wejściach po buildzie. Końcowy pakiet dowodów i galeria PlayMode 35 są gotowe; BUILD-INFO został zapisany i zweryfikowany. Ówczesny kandydat standalone nie został uruchomiony, a ręczny odbiór pozostaje otwarty.
 
 ```sh
 git clone https://github.com/lisu188/shadows-of-the-forsaken.git
 cd shadows-of-the-forsaken
 ```
 
-Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/ForsakenCastle.unity` i uruchom Play. Geometria jest składana deterministycznie w `Awake`, dlatego przed Play scena pokazuje obiekt właściciela poziomu. `SampleScene` pozostaje bazową fixture testów.
+Dodaj katalog repozytorium w Unity Hub, otwórz go we wskazanej wersji edytora i zaczekaj na import zasobów oraz odtworzenie `Library`. Otwórz `Assets/Scenes/ForsakenCastle.unity` i włącz Play: W/S porusza, A/D obraca, Spacja skacze, LPM atakuje, E używa mechanizmu. R lub przycisk ekranowy rozpoczyna nową sesję po śmierci albo ukończeniu. Instrukcja trasy i jawnego autorowania jest w [opisie integracji](docs/full-castle-route.md). Build Settings zachowują trzy włączone sceny w kolejności: podstawowa `ForsakenCastle`, alternatywna `ForsakenRuntimeCastle` i bazowa `SampleScene` dla dotychczasowych testów. Jawne buildery playera wybierają pojedynczą scenę poziomu. Przed dużym importem obowiązuje limit miejsca na dysku z instrukcji projektu.
 
-Dostawa Windows po poprawkach przeglądu z 2026-10-06 znajduje się w `Builds/ShadowsOfTheForsaken-Windows-x64-review-fixes-20261006.zip`; odpowiadający player jest w `Builds/Windows-review-fixes-20261006`. Wcześniejsza paczka i build z 2026-10-05 pozostają zachowane. Rozpakuj całe archiwum i uruchom `ShadowsOfTheForsaken.exe`; zachowaj towarzyszący folder Data, DLL-e, `MonoBleedingEdge` i `D3D12`. Builder można ponowić przez menu `Forsaken/Build Windows player`. Sterowanie: **W/S** ruch, **A/D** obrót, **Spacja** skok, **LPM** atak, **E** interakcja; po zakończeniu lub śmierci **R** albo przycisk rozpoczyna nową sesję. Build i archiwum są ignorowanymi wynikami lokalnymi, nie śledzonymi źródłami repozytorium.
-
-[Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Scena zamku tworzy gracza, wiąże ten kontroler z istniejącym assetem wejścia i dodaje akcję Restart; SampleScene pozostaje fixture bazową.
+[Instrukcja kontrolera #6](docs/player-movement.md) opisuje podłączenie istniejącego assetu wejścia, W/S, A/D, Spację, sygnały LPM/E, blokowanie sterowania i reset. Po przywróceniu fokusu/pauzy należy puścić używane klawisze przed ponownym sterowaniem. Gracz i geometria zamku są zapisane w ForsakenCastle; odbiór sceny w Unity pozostaje częścią #8.
 
 [Instrukcja kamery #7](docs/camera-follow.md) opisuje przypisanie celu, tag Player, maskę przeszkód, parametry kolizji, `SetTarget` i `SnapToTarget`. Ściany muszą mieć collidery na uwzględnianych warstwach. Przy braku bezpiecznej pozycji kamera czasowo wstrzymuje renderowanie zamiast pokazywać wnętrze geometrii; ograniczenia i wymagany odbiór są opisane w instrukcji.
+
+Wspólne mechaniki można sprawdzić w zapisanych scenach [InteractionDemo](Assets/Interactions/Demo/InteractionDemo.unity) (E: dźwignia i brama) oraz [CombatDemo](Assets/Combat/Demo/CombatDemo.unity) (LPM: atak na cel). [Instrukcja interakcji](docs/interactions.md) i [instrukcja walki](docs/combat.md) opisują podłączenie i parametry. Są to oddzielne sceny testowe poza Build Settings. Te same komponenty są używane przez integrację pełnej trasy; przygotowane warunki demonstracji nie są dowodem ukończenia zamku.
 
 ## Dokumentacja i testy narzędzi
 
@@ -125,14 +154,14 @@ Workflow `Validate` sprawdza dokumentację, kontrakt poziomu, śledzone źródł
 
 ## Testy runtime C# bez edytora
 
-Wymagany jest .NET SDK 8.0. Projekty testów odwołują się do rzeczywistego kodu w `Assets/Progression/Core`, `Assets/Movement/Core`, `Assets/CameraRig/Core`, `Assets/Combat/Core` i `Assets/Puzzles/Core`, nie do kopii lub atrap Unity:
+Wymagany jest .NET SDK 8.0. Projekty testów odwołują się do rzeczywistego kodu rdzeni w `Assets`, nie do kopii lub atrap Unity:
 
 ```sh
 dotnet test tests/Progression/Progression.Tests.csproj --configuration Release
 dotnet test tests/Movement/Movement.Tests.csproj --configuration Release
 dotnet test tests/Camera/Camera.Tests.csproj --configuration Release
+dotnet test tests/Interactions/Interactions.Tests.csproj --configuration Release
 dotnet test tests/Combat/Combat.Tests.csproj --configuration Release
-dotnet test tests/Puzzles/Puzzles.Tests.csproj --configuration Release
 ```
 
 Workflow `Progression C# tests` kompiluje rdzeń, uruchamia NUnit, sprawdza raport TRX i publikuje go jako artefakt. Test zgodności z JSON porównuje komendy we wszystkich osiągalnych stanach: 29 bez sekretu i 63 z sekretem, łącznie 1472 porównania. Pokrywa również odrzucane komendy. **Nie zastępuje testów komponentu Unity ani fizycznego przejścia poziomu.** Sposób podłączenia komponentu i granice API opisuje [dokument runtime](docs/progression-runtime.md).
@@ -141,20 +170,23 @@ Workflow `Movement C# tests` kompiluje produkcyjny rdzeń ruchu jako .NET Standa
 
 Workflow `Camera C# tests` kompiluje produkcyjną matematykę kamery jako .NET Standard 2.1 i wykonuje 32 wspólne przypadki NUnit, w tym próby 30/60/120 FPS. Nie wykonuje zapytań kolizji, renderowania ani automatycznego odnajdywania celu w Unity.
 
+Workflow `Shared gameplay C# tests` kompiluje produkcyjne rdzenie interakcji i walki. Wymaga niepustych, kompletnie zaliczonych raportów TRX; zestaw zawiera 17 przypadków interakcji oraz 60 walki i cyklu życia starć: 31 `CombatStateTests`, 15 `EncounterStateTests` i 14 `CombatRulesTests`. Raycasty, fizyczne bramy, CharacterController i wejście są weryfikowane osobno w PlayMode.
+
 ## Testy Unity
 
-Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.0.24f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
+Osobny workflow `Unity tests` uruchamia EditMode i PlayMode na Unity 6000.6.3f1, każdy tryb z czystego checkoutu bez cache `Library`. Wymaga skonfigurowanej aktywacji; jej brak kończy etap wstępny błędem `Unity tests NOT RUN`, a nie zaliczeniem testów. Raporty NUnit są sprawdzane pod kątem brakujących, pustych, niepełnych lub pominiętych wyników.
 
-[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, pełny zakres 113 EditMode / 74 PlayMode, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. [Raport poziomu](docs/level-verification.md) dokumentuje zaliczone lokalne zestawy, czysty import i osobne dowody builda oraz jego uruchomienia. Nie jest deklaracją wyniku niewykonanego zdalnego CI.
+[Instrukcja testów i aktywacji CI](docs/unity-testing.md) zawiera polecenia lokalne dla Windows, zakres 8 przypadków bazowych, lokalizację logów oraz warunki zamknięcia #5. Kod testów jest w `Assets/Tests`. Do bazowych zestawów dodano testy rdzeni, cyklu życia, kontrolera, kamery, geometrii, interakcji, walki i demonstracji, a następnie regresje AI/nawigacji, sesji, HUD oraz pełnej trasy zamku. Walidator wymaga wykonania nowych regresji, a nie tylko bazowych przypadków. [Raport blockoutu](docs/validation/unity-castle-2026-09-30.md) zachowuje wyniki 105/105 i 68/68 oraz czysty import; [raport wspólnych mechanik](docs/validation/shared-gameplay-2026-09-30.md) opisuje walidację połączonego zestawu po rebase. Aktywacja CI, ręczny odbiór i automatyczny build gry (#24) pozostają osobnymi zadaniami.
 
 ## Struktura repozytorium
 
 ```text
 Assets/                         Sceny, skrypty, zasoby i powiązane pliki .meta
 Assets/CameraRig/Core/          Matematyka wygładzania i limitów kamery bez Unity
-Assets/Combat/                 Testowalna walka, przeciwnicy i prezentacja
-Assets/Level/                  Scena zamku, architektura, HUD, atmosfera i interakcje
-Assets/Puzzles/Core/           Sekwencja run bez zależności Unity
+Assets/Combat/                  Zdrowie, atak, reguły tożsamości starć i arena testowa
+Assets/Encounters/              AI, nawigacja i zaliczanie trzech starć
+Assets/LevelSession/            Sesja, obszary, HUD i pełny restart
+Assets/Interactions/            Mechanizmy, fizyczne bramy, rdzeń i scena testowa
 Assets/Movement/Core/           Rdzeń ruchu i blokada wejścia bez zależności Unity
 Assets/Progression/             Rdzeń postępu bez Unity i adapter MonoBehaviour
 Assets/Tests/                   Testy EditMode i PlayMode silnika Unity
@@ -164,6 +196,8 @@ docs/                           Decyzje projektowe, kontrakt poziomu i uruchamia
 tools/                          Walidacja dokumentacji, źródeł i wyników; lokalny runner Unity
 tests/                          Testy narzędzi Pythona i modelu poziomu, nie testy silnika
 tests/Camera/                   Runner NUnit/.NET kompilujący matematykę kamery
+tests/Combat/                   Runner NUnit/.NET kompilujący rdzeń walki
+tests/Interactions/             Runner NUnit/.NET kompilujący reguły interakcji
 tests/Movement/                 Runner NUnit/.NET kompilujący produkcyjny rdzeń ruchu
 tests/Progression/              Runner NUnit/.NET kompilujący produkcyjny rdzeń C#
 .github/workflows/              Automatyzacja CI

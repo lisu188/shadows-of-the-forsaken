@@ -1,0 +1,122 @@
+{
+  "capture_method": "Actual scene camera with camera-space HUD during passing Unity PlayMode input-driven secret route; not standalone or human play",
+  "execution": {
+    "root": "native_artifacts",
+    "path": "results/playmode-14/execution.json",
+    "sha256": "2297c91be59d8d1ae4bcaa654062ac7a8bf353018ea27848e04236c67fc7e0f3",
+    "bytes": 88679
+  },
+  "results_xml": {
+    "root": "native_artifacts",
+    "path": "results/playmode-14/results.xml",
+    "sha256": "b8df17c92a03973d892c3444b07705913dde6ae99519a8131f758b568ed7a5e3",
+    "bytes": 152022
+  },
+  "source_before": {
+    "root": "native_artifacts",
+    "path": "results/playmode-14/source-before.json",
+    "sha256": "dfbed445f67a90a6c44ddceb06795798f6d735afedfb154a3fac66bcdee154fa",
+    "bytes": 87920
+  },
+  "images": [
+    {
+      "file": "01-courtyard.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-courtyard.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 476816,
+      "sha256": "fe4d87038ed5858ad8e85e61087f5d09c18416aa987e1385e60e3f9db2dde9ea",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    },
+    {
+      "file": "02-first-fight.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-fight-FirstEnemyDefeated.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 422627,
+      "sha256": "3b594de181051ff170334f5f471bec16b4ee2892c12ae3613f862a77f43204a4",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    },
+    {
+      "file": "03-rune-lever.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-rune-lever.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 473302,
+      "sha256": "a769fdb58c907f4226558cf832a803b89d5dd6768ffce6b097ae511c1476301f",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    },
+    {
+      "file": "04-throne-fight.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-fight-MinibossDefeated.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 411494,
+      "sha256": "815ce61f33160720223091ac473ca4e93413244c7b393f65c866b26f8ccd2a27",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    },
+    {
+      "file": "05-library.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-library.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 453762,
+      "sha256": "512e732d8274ebf795fe5dea28b3bf7439fce11fef46e69e6edec403610997fd",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    },
+    {
+      "file": "06-relic.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-relic.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 432871,
+      "sha256": "66dd5c4dbeac656ba479201efe0a527d600beb734ca5602c8f885f37fb8bba08",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    },
+    {
+      "file": "07-final-fight.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-fight-FinalEnemyDefeated.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 405421,
+      "sha256": "13258a0ae7006b4538c771ceb5930be45ca4a3d68d6323fa644a6dde622b04fd",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    },
+    {
+      "file": "08-secret-complete.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-complete-secret.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 365849,
+      "sha256": "a3a3cbf82e12147c9a0f386f0765dec41c1c67ff261e07bbdbf3f9b0e20f6f5d",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    },
+    {
+      "file": "09-final-arena.png",
+      "source_file": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-final-ready.png",
+      "run": "playmode-14",
+      "test": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "bytes": 403088,
+      "sha256": "5ccb6f3fc17c35c648a80f7e1704683c2bdadf6e67671455d5a2413fedb1995b",
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte"
+    }
+  ]
+}

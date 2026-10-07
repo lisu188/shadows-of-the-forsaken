@@ -22,17 +22,21 @@ Każda komenda zmieniająca pokój lub cel wymaga `SessionId` pobranego przy roz
 
 W rdzeniu błąd obserwatora nie blokuje innych obserwatorów: po ich powiadomieniu zgłaszany jest `AggregateException`, a zatwierdzona zmiana nie jest cofana. Adapter Unity loguje wyjątki obserwatorów przez `Debug.LogException` i powiadamia pozostałych.
 
-`Reset` rdzenia / `TryResetSession` komponentu czyści wszystkie cele, wraca logicznie do dziedzińca, zamyka bramy w modelu i emituje `SessionReset`. Nie niszczy subskrypcji aktualnych odbiorców, ponieważ potrzebują sygnału do odtworzenia świata. Fizyczny respawn, odtworzenie przeciwników i UI należą do #18 i zadań konkretnych scen.
+`Reset` rdzenia / `TryResetSession` komponentu czyści wszystkie cele, wraca logicznie do dziedzińca, zamyka bramy w modelu i emituje `SessionReset`. Nie niszczy subskrypcji aktualnych odbiorców, ponieważ potrzebują sygnału do odtworzenia świata. Fizyczny respawn, odtworzenie przeciwników i UI koordynuje teraz `LevelSessionController` opisany w [integracji pełnej trasy](full-castle-route.md). Sam rdzeń nadal nie zmienia Transformów ani colliderów.
 
 Komponent jest związany ze sceną, bez singletona, statycznego stanu czy `DontDestroyOnLoad`. `OnDisable` odłącza przekazywanie zdarzeń i blokuje komendy; `OnEnable` przywraca dokładnie jedną subskrypcję bez resetowania postępu. `OnDestroy` usuwa odbiorców i odłącza rdzeń. Odbiorcy z własnym cyklem życia powinni także odpinać swoje subskrypcje w `OnDisable`. API służy głównemu wątkowi Unity, nie obsłudze współbieżnych komend.
 
-## Podłączenie w kolejnych zadaniach
+## Podłączenie do poziomu
 
 Dodać jeden `LevelProgressionController` do obiektu sesji w scenie poziomu. Komponenty gracza, obszarów, bram, przeciwników i UI powinny wskazywać tę samą instancję, zamiast tworzyć własny model. Trigger obszaru wywołuje `TryEnter`; kontrola bramy używa `IsPassageOpen`; źródło ukończenia celu przechowuje token sesji i wywołuje `TryComplete` z przypisanym celem. Nie pobierać nowego tokenu dopiero w starym opóźnionym callbacku.
 
 Rdzeń zakłada wiarygodne sygnały od komponentów rozgrywki. Nie potwierdza sam, że przeciwnik naprawdę zginął ani że rozwiązano zagadkę; nie wolno wystawiać `TryComplete` jako dowolnego polecenia gracza. Sygnał jest odrzucany poza właściwym logicznym pokojem — starcia i mechanizmy muszą kończyć się w swoim obszarze lub dostarczyć zdarzenie po powrocie gracza. Nie zaliczać celu przez zmianę Inspectora.
 
-`SampleScene` pozostaje sceną bazową. Scena gry `ForsakenCastle` korzysta z tego runtime: `ForsakenLevel` tworzy jeden kontroler, wiąże fizyczne przejścia i bramy, przeciwników, mechanizmy oraz HUD. [Opis implementacji poziomu](level-implementation.md) określa mapowanie do DOCX. Testy samego rdzenia nadal nie stanowią dowodu działania tej integracji.
+`SampleScene` pozostaje sceną bazową. Builder `ForsakenCastle` podłącza do wspólnej instancji `LevelRoomTrigger`, `ProgressionGate`, `InteractionTarget`, zdrowie wszystkich aktorów oraz UI. Triggery sprawdzają wnętrze bryły pokoju także w osi Y; przejście dolnym skrótem nie wchodzi logicznie do pomieszczeń powyżej.
+
+`EnemyEncounter` rejestruje śmierć aktywowanego przeciwnika z oryginalnymi `SessionId` i `LifeId`. Jeśli gracz wycofał się z logicznego pokoju, zachowuje oczekujące zaliczenie do powrotu; wywołuje `TryComplete` w aktualizacji poza powiadomieniem `Changed`. Restart odrzuca poprzednią śmierć i odtwarza istniejącego aktora, bez dodatkowego spawnu.
+
+`LevelSessionController` dodaje stan przebiegu Running/Defeated/Completed/Resetting, lecz nie kopiuje flag. `RestartSession()` działa tylko po porażce lub ukończeniu, blokuje akcje i obrażenia, przenosi gracza poza bramy, resetuje istniejący model, odtwarza świat i kamerę. Samo `CombatHealth.ResetHealth()` nie omija blokady sesji. Szczegóły sceny, mechanizmów i ograniczeń odbioru opisuje [pełna trasa](full-castle-route.md).
 
 ## Weryfikacja
 
@@ -45,6 +49,10 @@ python3 tools/validate_level_contract.py
 
 Projekt .NET kompiluje dokładnie produkcyjny plik C# jako .NET Standard 2.1 i uruchamia ten sam plik testów NUnit, który należy do EditMode w Unity. Osobny test .NET porównuje wszystkie komendy w 29 osiągalnych stanach bez sekretu i 63 z sekretem z niezależnie odczytanym JSON-em. Dane runtime nie są ładowane z `docs/` w playerze; test parytetu wykrywa rozjazd ręcznie zapisanych reguł z kontraktem.
 
-Testy PlayMode `ProgressionControllerTests` obejmują adapter, wyłączenie/włączenie, odrzucanie starych sesji, zniszczenie obiektu i wyładowanie sceny. Muszą zostać wykonane w rzeczywistym Unity zgodnie z [instrukcją](unity-testing.md). CI `.NET` **nie kompiluje adaptera MonoBehaviour i nie zastępuje tych testów**. Odbiór integracyjny #10 zależy od odblokowania #5 oraz rzeczywistych wyników Unity. Nie deklarujemy czasu przejścia ani poprawności fizycznego poziomu.
+Testy PlayMode `ProgressionControllerTests` obejmują adapter, wyłączenie/włączenie, odrzucanie starych sesji, zniszczenie obiektu i wyładowanie sceny. Wszystkie 7 przypadków zaliczono 2026-09-30 przez Windows Unity CLI z edytorem `6000.6.3f1`, razem ze wspólnymi testami rdzenia w EditMode; zob. [raport pełnych zestawów 105/105 i 68/68](validation/unity-castle-2026-09-30.md) oraz [instrukcję powtórzenia](unity-testing.md). CI `.NET` **nie kompiluje adaptera MonoBehaviour i nie zastępuje tych testów**. Te historyczne wyniki potwierdzają adapter; nie zaliczają nowej integracji zamku ani aktywacji GitHub Actions (#5). `LevelSessionTests` pokrywa nowe blokady, restart, triggery i HUD, a `FullCastleRouteTests` sprawdza pełną trasę przez sterowanie. Stan wykonania nowych testów podaje [bieżący raport](validation/full-castle-route-2026-09-30.md). Wyniki adaptera nie zatwierdzają czasu przejścia ani ręcznego odbioru pełnej rozgrywki.
 
 Dokumentacja API: [referencje assembly w Unity 6](https://docs.unity3d.com/6000.0/Documentation/Manual/assembly-definitions-referencing.html), [OnDisable](https://docs.unity3d.com/6000.0/Documentation/ScriptReference/MonoBehaviour.OnDisable.html), [NUnit i dotnet test](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-csharp-with-nunit). Nie aktualizowano pakietów Unity; zależności NuGet dotyczą wyłącznie zewnętrznego runnera testów.
+
+## Alternate runtime castle scene
+
+The merged `ForsakenRuntimeCastle` scene keeps a separate scene-owned `LevelProgressionController` and the same deterministic progression rules. `ForsakenLevel` creates its physical consumers and resets them through session notifications. The authored `ForsakenCastle` scene and its `LevelSessionController` remain the primary castle and build target. Both routes use the existing core; neither shares a global progression singleton or loads the other scene during normal play.

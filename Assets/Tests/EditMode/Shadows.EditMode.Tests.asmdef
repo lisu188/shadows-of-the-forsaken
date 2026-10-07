@@ -8,7 +8,8 @@
     "Shadows.Movement.Core",
     "Shadows.Camera.Core",
     "Shadows.Combat.Core",
-    "Shadows.Puzzles.Core"
+    "Shadows.Puzzles.Core",
+    "Shadows.Interactions.Core"
   ],
   "includePlatforms": [
     "Editor"

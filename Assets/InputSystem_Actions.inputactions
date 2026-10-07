@@ -89,7 +89,7 @@
                 {
                     "name": "Restart",
                     "type": "Button",
-                    "id": "d8522105-5a56-477d-a7fb-e47cf7fa8db1",
+                    "id": "05cf87bd-7388-4f1f-a061-2cc74244f4ad",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -484,7 +484,7 @@
                 },
                 {
                     "name": "",
-                    "id": "dec6103f-d951-4273-beb0-d93ec61d249e",
+                    "id": "7c488c86-f5eb-4f2d-8f05-502c0b7b36e8",
                     "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",

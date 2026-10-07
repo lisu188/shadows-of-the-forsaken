@@ -2,6 +2,7 @@
 
 This authoring helper never replaces existing metadata, source documents or scene GUIDs.
 Geometry and component composition are owned by ForsakenLevel.cs, not generated YAML objects.
+The runtime scene is an explicit alternative to the primary saved ForsakenCastle scene.
 """
 from pathlib import Path
 import json
@@ -101,7 +102,7 @@ Material:
 """, encoding="utf-8")
     text_material_guid = ensure_meta(text_material)
     script_guid = ensure_meta(assets / "Level/ForsakenLevel.cs")
-    scene = assets / "Scenes/ForsakenCastle.unity"
+    scene = assets / "Scenes/ForsakenRuntimeCastle.unity"
     if not scene.exists():
         scene.write_text(f"""%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
@@ -162,8 +163,10 @@ SceneRoots:
     scene_guid = ensure_meta(scene)
     build = ROOT / "ProjectSettings/EditorBuildSettings.asset"
     build_text = build.read_text(encoding="utf-8")
-    if "Assets/Scenes/ForsakenCastle.unity" not in build_text:
-        build_text = build_text.replace("  m_Scenes:\n", "  m_Scenes:\n  - enabled: 1\n    path: Assets/Scenes/ForsakenCastle.unity\n    guid: " + scene_guid + "\n")
+    if "Assets/Scenes/ForsakenRuntimeCastle.unity" not in build_text:
+        entry = "  - enabled: 1\n    path: Assets/Scenes/ForsakenRuntimeCastle.unity\n    guid: " + scene_guid + "\n"
+        # Preserve the existing primary scene ordering.
+        build_text = build_text.replace("  m_configObjects:", entry + "  m_configObjects:", 1)
         build.write_text(build_text, encoding="utf-8")
     actions = assets / "InputSystem_Actions.inputactions"
     data = json.loads(actions.read_text(encoding="utf-8"))

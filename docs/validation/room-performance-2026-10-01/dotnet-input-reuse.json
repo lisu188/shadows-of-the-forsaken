@@ -1,0 +1,46 @@
+{
+  "scope": "Existing real .NET results reused after exact byte comparison, not a new run or MonoBehaviour compilation.",
+  "tested_commit": "8bb24ff003e40dfa59608a80c17921535c59393e",
+  "rebased_main": "ce4c468ef47c7d226c5eff3fd9986a100eb520f0",
+  "exact_input_files": 10,
+  "source_sha256": {
+    "Assets/LevelSession/PlayerFrameMetrics.cs": "2811af9c1822fd0c7b6b7d06b8451d7508feb259c2c0b2b4678bce19eec90d31",
+    "Assets/LevelSession/PlayerRoomFrameMetrics.cs": "322e2770d834e2251b93b7b5d2db24676ed247c6e53e2ffae9f9fb5c9630cbff",
+    "Assets/Progression/Core/LevelProgression.cs": "e27f8c53c753a635900c9946420d3896b62a9941311d31e17d68055dd0fd3790",
+    "Assets/Tests/EditMode/LevelProgressionTests.cs": "602b6b8f4f5a0d2570fee03b9bf37b7d814901d3d61e291e75c65384483f1443",
+    "docs/level-contract.json": "d50e2adc748763c2b59a290ecaedb7dd050f7279a97feb60a643827236e2d40a",
+    "tests/Performance/Performance.Tests.csproj": "70ea6f1e83460e397faf6472ed1b057d6bc1d00f4f19601eb41e99cfd7b71555",
+    "tests/Performance/RoomFrameMetricsTests.cs": "1af15127968789de0847fca51c210271543baeea112363750ae8160020883f0e",
+    "tests/Progression/ContractParityTests.cs": "09016b5f6680161f00617b14ef35c2a0144e7c701353da79d2b80c82ca6784a8",
+    "tests/Progression/Core/Progression.Core.csproj": "d0165312fda4d13f89c2efeb1c1259349b29850d85ecc707c3712753f3a24b34",
+    "tests/Progression/Progression.Tests.csproj": "3d65314747d9441da8a56e2dcb0a27b2d204e5d1c53f1f10d646c1220730b0ec"
+  },
+  "suites": {
+    "Performance": {
+      "passed": 7,
+      "failed": 0,
+      "rerun": false,
+      "trx_sha256": "601473c13aa587d6bf5e9a84c968e624b7355e2930f5b5962385c697a536ec47",
+      "exact_input_paths": [
+        "Assets/LevelSession/PlayerFrameMetrics.cs",
+        "Assets/LevelSession/PlayerRoomFrameMetrics.cs",
+        "tests/Performance/Performance.Tests.csproj",
+        "tests/Performance/RoomFrameMetricsTests.cs"
+      ]
+    },
+    "Progression": {
+      "passed": 29,
+      "failed": 0,
+      "rerun": false,
+      "trx_sha256": "7f890bbc5b1de262e87a0471f43c21b245075270fa0cb9def1f38fe16c686141",
+      "exact_input_paths": [
+        "Assets/Progression/Core/LevelProgression.cs",
+        "Assets/Tests/EditMode/LevelProgressionTests.cs",
+        "docs/level-contract.json",
+        "tests/Progression/ContractParityTests.cs",
+        "tests/Progression/Core/Progression.Core.csproj",
+        "tests/Progression/Progression.Tests.csproj"
+      ]
+    }
+  }
+}

@@ -1,6 +1,6 @@
 using System;
 using NUnit.Framework;
-using ShadowsOfTheForsaken.Combat;
+using ShadowsOfTheForsaken.Combat.CastleRules;
 
 namespace ShadowsOfTheForsaken.Tests.EditMode
 {
@@ -81,6 +81,27 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
             attack.TryBegin(Timing, session);
             attack.Step(0.21f);
             Assert.That(attack.TryRegisterHit(7, session), Is.True);
+        }
+
+        [Test]
+        public void HashCollisionsDoNotMergeDistinctTargets()
+        {
+            var first = new CollidingTarget();
+            var second = new CollidingTarget();
+            var attack = new MeleeAttack<CollidingTarget>();
+            var session = Guid.NewGuid();
+            Assert.That(first.GetHashCode(), Is.EqualTo(second.GetHashCode()));
+            attack.TryBegin(Timing, session);
+            attack.Step(0.21f);
+            Assert.That(attack.TryRegisterHit(first, session), Is.True);
+            Assert.That(attack.TryRegisterHit(first, session), Is.False);
+            Assert.That(attack.TryRegisterHit(second, session), Is.True);
+            Assert.That(attack.TryRegisterHit(second, session), Is.False);
+        }
+
+        private sealed class CollidingTarget
+        {
+            public override int GetHashCode() => 7;
         }
 
         [Test]

@@ -24,7 +24,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private InputSettings.UpdateMode previousUpdateMode;
         private float previousTimeScale;
         private static readonly MethodInfo ManualInputUpdate = typeof(InputSystem).GetMethod("Update",
-            BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
 
         [SetUp]
         public void SetUp()
@@ -109,8 +109,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         // Editor updates deliberately do not dispatch player onAfterUpdate callbacks in PlayMode.
         private static void PumpInput()
         {
-            // Input System 1.11.1 exposes the typed pump internally; keep this reflection in the fixture.
-            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its internal typed update pump");
+            // The typed pump can be public or internal across pinned Input System versions; keep reflection in the fixture.
+            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its typed update pump");
             try { ManualInputUpdate.Invoke(null, new object[] { InputUpdateType.Manual }); }
             catch (TargetInvocationException error) { throw error.InnerException; }
         }

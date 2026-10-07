@@ -25,7 +25,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private Mouse mouse;
         private InputSettings.UpdateMode previousUpdateMode;
         private static readonly MethodInfo ManualInputUpdate = typeof(InputSystem).GetMethod("Update",
-            BindingFlags.Static | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic, null, new[] { typeof(InputUpdateType) }, null);
 
         [SetUp]
         public void SetUp()
@@ -48,7 +48,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             playerObject.transform.position = new Vector3(0, 1, 0);
             var movement = playerObject.AddComponent(Type.GetType("PlayerMovement, Assembly-CSharp", true));
             movement.GetType().GetField("inputActions").SetValue(movement, inputs);
-            player = playerObject.AddComponent(Type.GetType("PlayerCombat, Assembly-CSharp", true));
+            player = playerObject.AddComponent(Type.GetType("ShadowsOfTheForsaken.LevelCombat.PlayerCombat, Assembly-CSharp", true));
             Call(player, "Configure", progression, 100);
             playerObject.SetActive(true);
             Call(movement, "OnApplicationFocus", true);
@@ -98,13 +98,13 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             for (int index = 0; index < SceneManager.sceneCount; index++)
             {
                 var scene = SceneManager.GetSceneAt(index);
-                if (!scene.isLoaded || (scene.path != "Assets/Scenes/ForsakenCastle.unity" && scene.path != "Assets/Scenes/SampleScene.unity")) continue;
+                if (!scene.isLoaded || (scene.path != "Assets/Scenes/ForsakenRuntimeCastle.unity" && scene.path != "Assets/Scenes/ForsakenCastle.unity" && scene.path != "Assets/Scenes/SampleScene.unity")) continue;
                 foreach (var root in scene.GetRootGameObjects())
                 {
                     if (root.name.IndexOf("TestRunner", StringComparison.OrdinalIgnoreCase) >= 0) continue;
                     bool ownsGeometry = root.GetComponent<Collider>() != null || root.GetComponent<Camera>() != null || root.GetComponent<Light>() != null;
                     bool ownsLevel = root.GetComponent(levelType) != null || root.name == "Shadows of the Forsaken";
-                    if (root.activeSelf && (ownsGeometry || ownsLevel))
+                    if (root.activeSelf && (scene.path == "Assets/Scenes/ForsakenCastle.unity" || ownsGeometry || ownsLevel))
                     {
                         suspendedSceneRoots.Add(root);
                         root.SetActive(false);
@@ -133,7 +133,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         private static void PumpInput()
         {
-            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its internal typed update pump");
+            Assert.That(ManualInputUpdate, Is.Not.Null, "Pinned Input System must expose its typed update pump");
             try { ManualInputUpdate.Invoke(null, new object[] { InputUpdateType.Manual }); }
             catch (TargetInvocationException error) { throw error.InnerException; }
         }

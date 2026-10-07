@@ -8,13 +8,13 @@ namespace ShadowsOfTheForsaken.Editor
 {
     public static class ForsakenBuild
     {
-        public const string Scene = "Assets/Scenes/ForsakenCastle.unity";
-        [MenuItem("Forsaken/Build Windows player")]
+        public const string Scene = "Assets/Scenes/ForsakenRuntimeCastle.unity";
+        [MenuItem("Forsaken/Build runtime castle Windows player")]
         public static void BuildWindows()
         {
-            if (Application.unityVersion != "6000.0.24f1")
-                throw new InvalidOperationException("The Windows delivery requires pinned Unity 6000.0.24f1.");
-            string output = Path.GetFullPath("Builds/Windows/ShadowsOfTheForsaken.exe");
+            if (Application.unityVersion != "6000.6.3f1")
+                throw new InvalidOperationException("The Windows delivery requires pinned Unity 6000.6.3f1.");
+            string output = Path.GetFullPath("Builds/RuntimeCastle-Windows/ShadowsOfTheForsaken.exe");
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i + 1 < args.Length; i++)
                 if (args[i] == "-forsakenBuildPath") output = Path.GetFullPath(args[i + 1]);

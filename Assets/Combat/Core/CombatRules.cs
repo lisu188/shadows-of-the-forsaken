@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ShadowsOfTheForsaken.Combat
+namespace ShadowsOfTheForsaken.Combat.CastleRules
 {
     public enum AttackPhase { Ready, Windup, Active, Recovery }
 
@@ -62,9 +62,9 @@ namespace ShadowsOfTheForsaken.Combat
     }
 
     /// <summary>One directional swing, with one damage registration per target even for compound colliders.</summary>
-    public sealed class MeleeAttack
+    public class MeleeAttack<TTarget>
     {
-        private readonly HashSet<int> hitTargets = new HashSet<int>();
+        private readonly HashSet<TTarget> hitTargets = new HashSet<TTarget>();
         private AttackTiming timing;
         private double elapsed;
         private bool running;
@@ -106,7 +106,7 @@ namespace ShadowsOfTheForsaken.Combat
             else Phase = AttackPhase.Windup;
         }
 
-        public bool TryRegisterHit(int targetId, Guid currentSession)
+        public bool TryRegisterHit(TTarget targetId, Guid currentSession)
         {
             return CanHit && currentSession == SessionId && hitTargets.Add(targetId);
         }
@@ -121,6 +121,9 @@ namespace ShadowsOfTheForsaken.Combat
             hitTargets.Clear();
         }
     }
+
+    /// <summary>Preserves the original integer-key API for deterministic callers.</summary>
+    public sealed class MeleeAttack : MeleeAttack<int> { }
 
     public static class MeleeGeometry
     {
