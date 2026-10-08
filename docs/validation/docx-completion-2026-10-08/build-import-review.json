@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+  "source_archive_sha256": "fc953c3d4e8f7c4554fc4d14451891f3eec2cce3706e2dd84d9c481efb3ecb80",
+  "imported_archive_sha256": "a20f83bbb0b9d2d3e3e09ffcc1cf15ddfc09a95710f9189b37f9c76959ff1bf9",
+  "unreviewed_pairs": 0,
+  "unresolved_findings": 0,
+  "reviewed_by": "Codex verification_baseline exact archive and pinned package source review",
+  "reviewed_utc": "2026-10-08T22:02:30.933968+00:00",
+  "differences": [
+    {
+      "path": "Assets/LevelLayout/Materials/Blood.mat",
+      "source_sha256": "cff60fc9fc4576233ffcb0b6c68f62eabd71a37dd853cb09fa8661727f94fcd0",
+      "imported_sha256": "c943472ac6954cfdcb9e7873b2d9bc71e501d97069d7b9a254a4e91a88ebbe17",
+      "reason": "Blood material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/BookGold.mat",
+      "source_sha256": "5a1f7b3b3b8fd7ea124ebced20c339b50dd16c147293fb9193d1a7d85c548afa",
+      "imported_sha256": "632aa6f1c9110deebef02ecd04c44255943a22776409123d8b79dd62605da4e8",
+      "reason": "BookGold material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/BookRed.mat",
+      "source_sha256": "a74b08d390bbc8883b5a8614c2329350bd9cf83cbdea54701fba5d4d0b176611",
+      "imported_sha256": "866b10c4e574510c1af6ef68f71335341c45dbe7efe0ae83f55191fdf0174ad7",
+      "reason": "BookRed material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/DarkStone.mat",
+      "source_sha256": "71568f8c70114342f24989d3f008be024f8c2b3f33ac0b835092bf44b86af90b",
+      "imported_sha256": "aaaee92f17a9127d268a0b4112dd3cda10de0e598f8c83119a477af8f3368136",
+      "reason": "DarkStone material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Flame.mat",
+      "source_sha256": "caef4f69e47b8c15edd1d5cf8630f4760d2a7da61e7fce93184f95c7864a5efd",
+      "imported_sha256": "467e3631223ca44d95482546cbd146e6cb6f19c2c9e7b27fcafb787daf55b711",
+      "reason": "Flame material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Glass.mat",
+      "source_sha256": "e58bcee2e473c1fe75f6f49d8583e023dae3ec2a45b728dd411095e486b4507d",
+      "imported_sha256": "d3ad8fe07903bdfdac3b42d72f7d4edee491929754f49426ff8e5c2d0f293857",
+      "reason": "Glass material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Iron.mat",
+      "source_sha256": "783b268f0810fb8d93ade96cf1b3b61694425276ad8e647c0e3ad78e8f7eb7ce",
+      "imported_sha256": "6a93bc93c41be161e276cf2f8816862bc0233b7a305a4e2f14575b28b7ec7dc4",
+      "reason": "Iron material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Player.mat",
+      "source_sha256": "9e2251b4e66620d645808f7f7317e322f3e41a6fe3f64871147df1042cd3aae8",
+      "imported_sha256": "13a881b4b7ff09fa80b3e766ecea32708775a9fe106d11815b5b4fe0bffc1fa3",
+      "reason": "Player material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Rune.mat",
+      "source_sha256": "40588a5589d48401361923c82171895ff8c054ad1dd70b914b211c0e4a8c769a",
+      "imported_sha256": "cfbfd7d2ffafa03fbf7d982e9443687212d8f852184ee2403d5185c69f8eebbe",
+      "reason": "Rune material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Stone.mat",
+      "source_sha256": "f4c378b3bf5b887b63386351a55b32c7595ae5c711c3854b208e4a64f0593516",
+      "imported_sha256": "c2d9a87c02614763a84a1a5eef2b492f3ab015ee5fbb68e302ad8056ca6ca457",
+      "reason": "Stone material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Trim.mat",
+      "source_sha256": "58e7af2587b431841120512c96ebd69a4f2d9a359bc3073abb710402e54e000b",
+      "imported_sha256": "3079049805d56deefa3b5655e2d57e32703bb6eec9765fe4bbc74657078fafee",
+      "reason": "Trim material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Wall.mat",
+      "source_sha256": "e33203a9a3bf16e509497f2582e25b1427e83344e207ffc64cda84791c482c8f",
+      "imported_sha256": "32e7dbe9be55f4707dbffdb8b7bb2e6b15f610e6cdaea8c8d91fdaaef33f6ee3",
+      "reason": "Wall material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/LevelLayout/Materials/Wood.mat",
+      "source_sha256": "6b48c1ba8aae65a8130e8b75d120593bc966c14f22d45d3ae6979db9e033c566",
+      "imported_sha256": "d7ce4d7704e59e7c81314cd84a12d7f4bb07b7a1515095d1c5c042ff26813c13",
+      "reason": "Wood material body is unchanged after trailing-space and equivalent keyword-list formatting normalization. The only added object is the pinned URP Editor AssetVersion subasset (GUID d0353a89b1f911e48b9e16bdc9f2e058, version 10, hideFlags 11). URP MaterialPostprocessor creates and hides this version marker. Shader, textures, numeric/color properties and render settings remain identical.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/Settings/DefaultVolumeProfile.asset",
+      "source_sha256": "3a6f825e8d07fe8b9f3b52e7d4e2dfa0e22c555b22335adb19f0ecc66dfa38dd",
+      "imported_sha256": "463776c51ae49d4fef980e8fd268081b2f505610d79315003faae1acff8f4115",
+      "reason": "Only serialized defaults worldOffset=(0,0,0) and Bloom.filter=0/Gaussian are added; these equal the pinned Core/URP 17.6 defaults. Existing Bloom intensity remains 0 and highQualityFiltering remains false. The components list drops OutlineVolumeComponent (-7750755424749557576, GUID 60f3b30c03e6ba64d9a27dc9dba8f28d) and OasisFogVolumeComponent (-5139089513906902183, GUID 5a00a63fdd6bd2a45ab1f2d869305ffd). Neither script GUID resolves in source Assets or pinned package meta files; VolumeProfile.OnEnable removes null components. Their disabled/zero-density serialized object blocks are retained unchanged. No other volume values change.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/Settings/PC_RPAsset.asset",
+      "source_sha256": "684af083c0c3f025cdc9a9ea2287a8cc05df4e2137572b7781ca0f3b17a1e51a",
+      "imported_sha256": "362f427deb9e767720ed0ec3eb1284e93ddf2042c7ddd22d31e9678e5f16bdf4",
+      "reason": "Exactly 15 m_Prefilter* fields are regenerated shader variant filtering data. The pinned URP UniversalRenderPipelineAssetPrefiltering.cs is UNITY_EDITOR-only, and UpdateShaderKeywordPrefiltering assigns each changed field from ShaderPrefilteringData. ShaderBuildPreprocessor derives that data from the target/renderer/features and explicitly saves the asset before building. Authored renderer references, lighting, shadows, quality and other runtime asset values are byte-identical; this is the package build prefilter update, with no independent gameplay/configuration edit.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "Assets/Settings/UniversalRenderPipelineGlobalSettings.asset",
+      "source_sha256": "6cbc535caaf1b4f83e68f8f98661ab2281115cfbd8697413e053caa555e7acae",
+      "imported_sha256": "9035df085c3de1c069aa254cce96789fc5764c5d79da92cdb45a5ce65e30027f",
+      "reason": "The sole change populates m_Settings.m_RuntimeSettings.m_List with 16 existing managed-reference RIDs. Each was already in the original editor m_SettingsList and references.RefIds; all type/resource payloads, version and author settings are byte-identical. Core RenderPipelineGraphicsSettingsContainer.OnBeforeSerialize clears this list and calls RenderPipelineGraphicsSettingsStripper.PerformStripping only while BuildPipeline.isBuildingPlayer; that method selects existing settings objects for the player. The list is expected build-derived serialization, with no new or modified resource definitions.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "ProjectSettings/ProjectAuditorSettings.asset",
+      "source_sha256": "7b96b4b637e0ff3513edbe878c6375e8d0f8eb6b2f5b4e3202dcbd52aa55897d",
+      "imported_sha256": "9e68444b9bda981e2927a98df9edf69ea88362f0c6b7f3c81b39b9d515d2a416",
+      "reason": "Only trailing spaces are added to existing empty YAML values (m_Name); the complete file is identical after line-end whitespace normalization. No setting value changes.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "ProjectSettings/ProjectSettings.asset",
+      "source_sha256": "03ce1b99777646dbe853ba6c477febe166a15e409e96023e86006f93c6645a69",
+      "imported_sha256": "200dc70efa535d919f553bd136cc41dfb9b2d2d756abb8e32f3c7c26af70ae92",
+      "reason": "Only trailing spaces are added to existing empty YAML values (androidAppCategoryOther, switchCaStoreFilePath); the complete file is identical after line-end whitespace normalization. No setting value changes.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    },
+    {
+      "path": "ProjectSettings/SceneTemplateSettings.json",
+      "source_sha256": null,
+      "imported_sha256": "bb9098b3bfcde78d93e264b96f7b77b5430e64e8c57a7aad7f5a5d9c3945e16a",
+      "reason": "Reviewed the entire added 3535-byte generated editor scene-template configuration: templatePinStates is empty, all 22 dependency records and the default record have userAdded=false, only built-in dependency type names and default instantiation modes are present, and newSceneOverride=0. No asset GUID, path, custom template, scene replacement, runtime level connection or player setting is introduced. Accepted as generated editor scene-template defaults only.",
+      "review_status": "approved",
+      "validator_reviewable": true
+    }
+  ]
+}

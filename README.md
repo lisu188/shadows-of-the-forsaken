@@ -56,6 +56,14 @@ Mapa z §8 rozwija układ przestrzenny: start znajduje się na dole, pierwsze st
 
 Dokument nie określa również wszystkich parametrów implementacyjnych: klawiszy, statystyk przeciwników, obrażeń, szczegółowych zasad walki czy wymiarów geometrii. Takie decyzje należy oznaczać jako decyzje projektowe / techniczne, a nie dosłowne wymagania DOCX.
 
+## Kandydat podstawowego poziomu — 2026-10-08
+
+Podstawowa scena `ForsakenCastle` zachowuje całą wymaganą trasę DOCX: spokojny dziedziniec, pierwszego demona, runiczną dźwignię i powrót dolnym skrzyżowaniem, minibossa na tronie, obowiązkową bibliotekę, katakumby, finał i wyjście. Dźwignia sekretu, relikt oraz ukryty powrót do tronu są opcjonalne. Po ponownym przeczytaniu dokumentu i obejrzeniu wszystkich sześciu obrazów dopracowano ślad kultu w katakumbach, widoczny z biblioteki, oraz ostrołukowy widok wyjścia. Zapisana scena, fizyka, nawigacja, GUID-y i zasady postępu pozostały bez zmian.
+
+[Bieżący raport i rzeczywiste zrzuty gry](docs/validation/docx-completion-2026-10-08.md) wiążą źródła `5af8861` z nową weryfikacją i oddzielają podstawowy poziom od alternatywnego `ForsakenRuntimeCastle`. Unity `6000.6.3f1` i wersje pakietów pozostają przypięte. Ręczny odbiór, pierwsze przejście człowieka, cel 2–3 minut oraz pomiary wydajności standalone pozostają otwarte zgodnie z [macierzą odbioru](docs/docx-acceptance.md); automatyczna znana trasa nie zatwierdza tych wymagań.
+
+Zaliczono 147 testów Python i 187/187 Unity EditMode. Pełny PlayMode zaliczył 227/228; jedyny błąd dotyczył inicjalizacji urządzenia FMOD, a niezmieniony test porażki/restartu na tronie zaliczył osobną powtórkę 1/1. Wszystkie 228 przypadków mają zaliczone wykonanie w tych dwóch przebiegach; nie jest to pełny zielony przebieg 228/228. Wyniki 186 testów C# zachowano na podstawie identyczności wszystkich 34 wejść. Zbudowano i zweryfikowano podstawowy player Windows x64 (0 błędów/ostrzeżeń, 199 plików silnika), sprawdzono ZIP oraz początkowy stan w headless standalone z normalnym zakończeniem i niezmienioną tożsamością. Lokalna paczka: `Builds/ShadowsOfTheForsaken-Windows-x64-20261008.zip`.
+
 ## Integracja gałęzi runtime — 2026-10-07
 
 Main zachowuje Unity `6000.6.3f1`, pakiety z aktualnego lockfile i autorską scenę `ForsakenCastle` jako podstawowy poziom. Ukończona gałąź runtime jest zachowana w osobnej scenie `Assets/Scenes/ForsakenRuntimeCastle.unity`, z własnym kontrolerem sesji i dotychczasowymi GUID-ami assetów. Menu `Forsaken/Build runtime castle Windows player` buduje tę alternatywną scenę; podstawowy builder `CastlePlayerBuild` pozostaje bez zmian.
