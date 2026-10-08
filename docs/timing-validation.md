@@ -11,8 +11,15 @@ the reporting tool; they are not timed playthroughs.
 
 ## Inputs and invocation
 
-Keep each recorded attempt's original `events.jsonl`, `performance.jsonl` and
-final `status.json`. A run manifest supplies the participant's route familiarity,
+For the current verified primary build, the [owner-run playtest handoff](primary-player-playtest.md)
+provides an evidence-enabled launch and creates manifests from actual files after
+the foreground-testing deferral is explicitly lifted.
+
+Keep each recorded attempt's original `events.jsonl`, `performance.jsonl`,
+`room-performance.jsonl`, final `status.json` and player log. The timing schema
+references only events/performance/status; retain and hash the room file and
+player log alongside them for separate performance and error review.
+A run manifest supplies the participant's route familiarity,
 human versus automated input, route variant and exact session ID. Obtain these
 facts from the actual run; do not infer first-time play from a short duration.
 Use a separate evidence directory per attempt. A restarted, failed or incomplete

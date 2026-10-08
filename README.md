@@ -64,6 +64,8 @@ Podstawowa scena `ForsakenCastle` zachowuje całą wymaganą trasę DOCX: spokoj
 
 Zaliczono 147 testów Python i 187/187 Unity EditMode. Pełny PlayMode zaliczył 227/228; jedyny błąd dotyczył inicjalizacji urządzenia FMOD, a niezmieniony test porażki/restartu na tronie zaliczył osobną powtórkę 1/1. Wszystkie 228 przypadków mają zaliczone wykonanie w tych dwóch przebiegach; nie jest to pełny zielony przebieg 228/228. Wyniki 186 testów C# zachowano na podstawie identyczności wszystkich 34 wejść. Zbudowano i zweryfikowano podstawowy player Windows x64 (0 błędów/ostrzeżeń, 199 plików silnika), sprawdzono ZIP oraz początkowy stan w headless standalone z normalnym zakończeniem i niezmienioną tożsamością. Lokalna paczka: `Builds/ShadowsOfTheForsaken-Windows-x64-20261008.zip`.
 
+[Instrukcja ręcznego playtestu](docs/primary-player-playtest.md) przygotowuje zapis rzeczywistych prób, czasu i pomiarów pokoi dla tej paczki. Włącza obserwację wyłącznie w procesie gry, wymaga jawnych deklaracji uczestnika i sprawdza pliki playera przed oraz po próbie. Procedura pozostaje niewykonana do czasu odwołania wcześniejszego odroczenia testów standalone przez właściciela.
+
 ## Integracja gałęzi runtime — 2026-10-07
 
 Main zachowuje Unity `6000.6.3f1`, pakiety z aktualnego lockfile i autorską scenę `ForsakenCastle` jako podstawowy poziom. Ukończona gałąź runtime jest zachowana w osobnej scenie `Assets/Scenes/ForsakenRuntimeCastle.unity`, z własnym kontrolerem sesji i dotychczasowymi GUID-ami assetów. Menu `Forsaken/Build runtime castle Windows player` buduje tę alternatywną scenę; podstawowy builder `CastlePlayerBuild` pozostaje bez zmian.
