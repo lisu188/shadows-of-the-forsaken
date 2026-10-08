@@ -212,11 +212,13 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             yield return MoveTo(new Vector3(16, 0, 32));
             yield return MoveTo(new Vector3(16, 0, 36));
             yield return MoveTo(new Vector3(16, -2, 39));
+            Capture("route-library-sealed");
             yield return Use(ObjectiveTarget(LevelObjective.LibraryOpened));
             Assert.That(Has(LevelObjective.LibraryOpened), Is.True);
             Capture("route-library");
             yield return MoveTo(new Vector3(16, -4, 44));
             yield return MoveTo(new Vector3(16, -4, 48));
+            Capture("route-catacombs");
             if (secret)
             {
                 yield return Use(ObjectiveTarget(LevelObjective.SecretLeverPulled));
@@ -558,6 +560,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 Canvas.ForceUpdateCanvases();
                 var request = new RenderPipeline.StandardRequest { destination = texture };
                 Assert.That(RenderPipeline.SupportsRenderRequest(camera, request), Is.True, "The scene pipeline must support a camera render request.");
+                // A Game View render can already have queued a variant before
+                // this capture disables asynchronous compilation. Resolve the
+                // actual emissive passes after a warmup render, then render the
+                // same state again. No Update, input or gameplay clock advances.
+                RenderPipeline.SubmitRenderRequest(camera, request);
+                PrepareEmissiveCapturePasses();
                 RenderPipeline.SubmitRenderRequest(camera, request);
                 RenderTexture.active = texture;
                 pixels = new Texture2D(960, 540, TextureFormat.RGB24, false);
@@ -581,6 +589,34 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 texture.Release(); Object.DestroyImmediate(texture);
             }
             return framing;
+        }
+
+        private void PrepareEmissiveCapturePasses()
+        {
+            var materials = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<Renderer>())
+                .Where(renderer => renderer.enabled)
+                .SelectMany(renderer => renderer.sharedMaterials)
+                .Where(material => material != null && material.IsKeywordEnabled("_EMISSION"))
+                .Distinct().ToArray();
+            foreach (var material in materials)
+            {
+                Assert.That(material.shader, Is.Not.Null, material.name + " capture shader");
+                Assert.That(material.shader.isSupported, Is.True, material.name + " capture shader support");
+                for (int pass = 0; pass < material.passCount; pass++)
+                {
+                    string passName = material.GetPassName(pass);
+                    if ((passName != "ForwardLit" && passName != "GBuffer") || !material.GetShaderPassEnabled(passName)) continue;
+                    bool readyBefore = ShaderUtil.IsPassCompiled(material, pass);
+                    ShaderUtil.CompilePass(material, pass, true);
+                    Assert.That(ShaderUtil.IsPassCompiled(material, pass), Is.True,
+                        material.name + "/" + passName + " must compile before capturing emission");
+                    Assert.That(ShaderUtil.ShaderHasError(material.shader), Is.False,
+                        material.name + "/" + passName + " capture shader errors");
+                    TestContext.WriteLine("Capture shader readiness: " + material.name + "/" + passName +
+                        "; before=" + readyBefore + "; after=True");
+                }
+            }
         }
 
         [Serializable] private sealed class FramingRegion

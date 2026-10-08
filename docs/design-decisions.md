@@ -99,3 +99,9 @@ Właściciel wybrał pełną trasę, proste mechanizmy „znajdź i uruchom”, 
 - **§3, §7 — sesja:** porażka i ukończenie zatrzymują rozgrywkę, a R lub przycisk uruchamia pełny reset. Ukończenie następuje przez wejście żywego gracza do wyjścia po wymaganych walkach i mechanizmach.
 
 Główna trasa nadal wymaga pięciu dotychczasowych celów; kontrakt JSON i hash źródłowego DOCX nie zmieniają się. Implementacja blockoutu i odbiór finalnej oprawy pozostają odrębnymi etapami.
+
+## Detale końcowej oprawy — 2026-10-08
+
+DOCX §4 wymaga śladów kultu w katakumbach, a §7 kończy scenariusz przy wyjściu. W podstawowej scenie `ForsakenCastle` świetlisty kwadrat zastępuje teraz niewielki pierścień z rozgałęzionym glifem; widoczna ściana za końcowym progiem otrzymuje ostrołukowe otwarcie na istniejące nocne niebo. Kształt glifu i rama wyjścia są wyborami wykonawczymi, nie dodatkowymi symbolami ani geometrią z DOCX.
+
+Zmiana dotyczy dwóch istniejących siatek prezentacji. Zachowuje ich GUID-y, zapisaną scenę, fizyczną ścianę graniczną, nawigację, triggery, wszystkie warunki postępu i opcjonalność sekretu. Ukończenie nadal zatrzymuje gracza przed fizyczną granicą świata; otwarcie jest widokiem końcowym, bez następnego poziomu i bez obowiązkowej cutscenki. Jawny `CastlePresentationBuilder.BuildCompletionDetailsForBatch` odtwarza wyłącznie te dwie siatki. Kontrakt JSON i źródłowy DOCX pozostają bez zmian. Testy renderowanych trójkątów sprawdzają glif, otwarcie, ramę i górną powierzchnię muru osobno od zachowanego collidera. Wyniki wykonania i obrazy opisuje raport bieżącej dostawy.

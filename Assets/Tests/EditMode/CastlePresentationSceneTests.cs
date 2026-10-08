@@ -55,6 +55,34 @@ namespace ShadowsOfTheForsaken.Tests.EditMode
                 Assert.That(HitsVisibleMesh(meshes, ray, 1.6f), Is.True,
                     "The visible floor/wall envelope leaks through the final room's eastern join, offset " + offset);
             }
+            // DOCX 4: sample the saved luminous inscription itself. Its center
+            // stem and ring are visible, while spaces between strokes expose
+            // the existing floor instead of filling a solid blockout square.
+            var cult = meshes.Single(f => f.name == "Masonry_0_1_Upper_Rune");
+            var cultCenter = new Vector3(18.75f, -3.967f, 46.5f);
+            foreach (var offset in new[] { Vector3.zero, Vector3.right * .42f })
+                Assert.That(HitsVisibleMesh(new[] { cult }, new Ray(cultCenter + offset + Vector3.up, Vector3.down), 1.1f),
+                    Is.True, "The cult inscription must retain its stem and enclosing ring.");
+            foreach (var offset in new[] { new Vector3(.25f, 0, -.24f), new Vector3(.43f, 0, .43f) })
+                Assert.That(HitsVisibleMesh(new[] { cult }, new Ray(cultCenter + offset + Vector3.up, Vector3.down), 1.1f),
+                    Is.False, "The cult inscription must have visible spaces between its strokes.");
+
+            // DOCX 7: the terminal threshold frames an outside view. Check
+            // rendered triangles separately from the unchanged solid end wall.
+            var exit = meshes.Single(f => f.name == "Masonry_0_3_Upper_Limestone");
+            Assert.That(HitsVisibleMesh(new[] { exit }, new Ray(new Vector3(8, -2, 76), Vector3.forward), 5), Is.False,
+                "The exit's central sightline must be an opening rather than a blank visible wall.");
+            foreach (var origin in new[] { new Vector3(9.8f, -2, 76), new Vector3(8, .35f, 76) })
+                Assert.That(HitsVisibleMesh(new[] { exit }, new Ray(origin, Vector3.forward), 5), Is.True,
+                    "Stone jambs and the pointed opening's upper masonry must still frame the exit.");
+            Assert.That(HitsVisibleMesh(new[] { exit }, new Ray(new Vector3(8, 1.5f, 78.2f), Vector3.down), 1.1f), Is.True,
+                "The opening wall's upper masonry must have a visible top cap between its jambs.");
+            var geometry = scene.GetRootGameObjects().Single(o => o.name == "Geometry");
+            var exitCollider = geometry.GetComponentsInChildren<BoxCollider>(true)
+                .Single(c => c.name == "UpperStructure_Wall_027");
+            Assert.That(exitCollider.enabled, Is.True, "The visual opening must preserve the physical world boundary.");
+            Assert.That(exitCollider.transform.position, Is.EqualTo(new Vector3(8, -1.75f, 78.2f)));
+            Assert.That(Vector3.Scale(exitCollider.size, exitCollider.transform.lossyScale), Is.EqualTo(new Vector3(4, 4.5f, .4f)));
         }
 
         private static bool HitsVisibleMesh(MeshFilter[] meshes, Ray ray, float maximumDistance)
