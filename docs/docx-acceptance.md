@@ -2,7 +2,7 @@
 
 ## Current primary-level candidate — 2026-10-08
 
-The [current completion report and actual rendered gallery](validation/docx-completion-2026-10-08.md) identify primary-scene source `5af8861`, its verification and its separate player identity. This candidate replaces the solid cult marker with an inscription and frames the terminal exit with a pointed stone opening. These are DOCX §§4/7 presentation choices; topology, required combat, optional-secret rules and the source DOCX remain unchanged. Current results do not turn the existing standalone deferral or human acceptance requirements below into passes. The older reports and build identities remain historical evidence for their stated revisions.
+The [current completion report and actual rendered gallery](validation/docx-completion-2026-10-08.md) identify primary-scene source `5af8861`, its verification and its separate player identity. This candidate replaces the solid cult marker with an inscription and frames the terminal exit with a pointed stone opening. These are DOCX §§4/7 presentation choices; topology, required combat, optional-secret rules and the source DOCX remain unchanged. On **2026-10-14**, the owner lifted the foreground-testing deferral. The first `human / first_attempt / basic` attempt exited normally but remained **incomplete**, in Puzzle after the first enemy and main puzzle, with 176 HP. Its 210.978 s session is not a completion time; interruption information is unknown and the timing reader rejected it. The separately requested `automation / known_route / basic` setup retained a closed no-input session and a prelaunch extraction failure; a fresh player is running behind the confirmed Windows lock screen, with computer-use input stopped. See the [standalone report](validation/standalone-playtest-2026-10-14.md). Completion, timing, audio, performance and human acceptance remain unverified. Older reports and build identities remain historical evidence for their stated revisions.
 
 ## Retained requirement matrix and earlier evidence
 
@@ -51,7 +51,9 @@ The [design decisions](design-decisions.md) distinguish requirements from implem
 - The accepted #4 interpretation places the library on the mandatory throne-to-catacomb connector, uses one bonus room reached from the catacombs and the lower throne shortcut, and keeps the final fight mandatory.
 - Existing W/S movement, A/D turning, Space, LMB, E and terminal R remain the chosen control model. Windows x64 is the first target; advanced combat systems, saves, cities and a cutscene are outside this level's agreed scope.
 - Unity **6000.6.3f1** and pinned packages supersede the historical `6000.0.24f1` wording still present in #24. Do not downgrade to satisfy an obsolete issue sentence.
-- The owner subsequently chose **“Continue implementation; test later”** for standalone foreground/OS-input checks. Those checks are deferred by the owner. Implementation and editor regression continue; this is not a pause of the completion goal or an acceptance pass.
+- The owner previously chose **“Continue implementation; test later”** for standalone foreground/OS-input checks. That historical deferral did not pause the completion goal or count as acceptance.
+- On **2026-10-14**, the owner explicitly requested **“start the human playtest now”** and confirmed this is their first time playing. That incomplete attempt and its unknown interruption status are retained under the [playtest handoff](primary-player-playtest.md); no acceptance requirement passed.
+- The owner then requested **“use computer use to autoplay and test”**. A separate attempt is labelled `automation / known_route / basic`; it does not become human evidence. The first setup player exited normally without gameplay input, a subsequent extraction failed before launch, and a fresh player launched. The desktop is now confirmed locked; input is stopped pending owner unlock. No autoplay gameplay has executed.
 
 ## Opt-in performance evidence
 
