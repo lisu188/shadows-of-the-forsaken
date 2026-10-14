@@ -6,13 +6,13 @@ The human kit is `artifacts/primary-player-playtest/attempt-6e914f6fd871408794a5
 
 The owner subsequently requested **“use computer use to autoplay and test”**. The separate setup kit `attempt-3093873a892e41b7bb75450b52086be4` exited normally without gameplay input; a later PTY extraction failed before launch and its partial kit is retained. The later d272 player has exited: reported code 0 and unchanged identity, but a native crash-report/fatal diagnostic and FMOD fallback with no sound. The agent sent no gameplay input; recorded late movement and the first fight have unqualified external provenance. A separate closure review and final hash index preserve the raw records without a qualifying timing manifest. After the owner confirmed Windows unlocked, the earlier game window/process was already closed. The owner subsequently chose “Hidden Unity route test”; the [completed hidden editor run](validation/hidden-routes-2026-10-14.md) passed 10/10 cases, including six gameplay cases and four helpers. Its known-route basic/secret traces are separate from this human playtest procedure and do not qualify standalone OS-input or human pacing acceptance. The [standalone report](validation/standalone-playtest-2026-10-14.md) links the exact retained receipts. It is not human evidence. The human log's seven camera safety messages have no recorded location or duration and do not establish a lasting visible defect.
 
-The delivered primary level is `ForsakenCastle`, source `5af8861c39bd5fbf4d324690e5a74b1d12aae333`, Unity `6000.6.3f1`. Its retained executable is `C:\Users\andrz\git\shadows-of-the-forsaken\artifacts\goal-20261008\committed-build\player\ShadowsOfTheForsaken.exe`. Use a fresh extraction of the verified ZIP for each attempt; leave that retained player and its evidence intact.
+The current delivered primary level is `ForsakenCastle`, source `08b26973d36fd22b0864649073b3ffe334eec62b`, Unity `6000.6.3f1`. Its retained executable is `C:\Users\andrz\git\shadows-of-the-forsaken\artifacts\goal-20261014\release-build\player\ShadowsOfTheForsaken.exe`. The [Release delivery report](validation/release-player-2026-10-14.md) records the camera fix, reviewed source/import identity, ordinary Release build and qualified hidden two-minute startup/normal-exit check. Use a fresh extraction of the verified ZIP for each attempt; leave that retained player and its evidence intact. The October 8 package and earlier attempts remain preserved under their original identities.
 
 | Local input | Trusted SHA-256 |
 | --- | --- |
-| `Builds/ShadowsOfTheForsaken-Windows-x64-20261008.zip` | `3c328a9382826bce0c1090fb164f09e6b572d04d6c03fd408e2a520409b71984` |
-| `artifacts/goal-20261008/committed-build/player/BUILD-INFO.json` | `aa3fbf3c43943579fafe956a8fba43c5348232d3d48ef22f81b8eaa0e6a93578` |
-| `artifacts/goal-20261008/committed-build/identity/source.zip` | `fc953c3d4e8f7c4554fc4d14451891f3eec2cce3706e2dd84d9c481efb3ecb80` |
+| `Builds/ShadowsOfTheForsaken-Windows-x64-20261014-08b2697.zip` | `c507664ae0be9fd5ac465afcb44bf33e4677537859a731c625ab3b62d0f5b372` |
+| `artifacts/goal-20261014/release-build/player/BUILD-INFO.json` | `83ffdc101ad51227e5ae32de2332bfbbd2fdc92a47dca055772d4eda7cd2c371` |
+| `artifacts/goal-20261014/release-build/source.zip` | `ec101e80f4b748dce69387996f5cda44a61fb80a19a971d2157a5c017d26c566` |
 
 Paths in the table are relative to `C:\Users\andrz\git\shadows-of-the-forsaken`. The ZIP contains the complete player and supplementary receipt, not the source archive or reporting tools. The recipe copies the receipt and source archive into a new local evidence kit so the timing manifest can use confined relative references. It verifies every player file before and after play with the [official identity tool](player-build-identity.md).
 
@@ -31,8 +31,8 @@ For **hidden startup/shutdown validation**, use [native_player_validation.py](..
 ```powershell
 $nativeOutput = Join-Path $PWD ('artifacts/native-' + [guid]::NewGuid().ToString('N'))
 & 'C:\Users\andrz\AppData\Local\Programs\Python\Python311\python.exe' tools/native_player_validation.py `
-    --player artifacts/goal-20261008/committed-build/player/ShadowsOfTheForsaken.exe `
-    --output $nativeOutput --receipt-sha256 aa3fbf3c43943579fafe956a8fba43c5348232d3d48ef22f81b8eaa0e6a93578 `
+    --player artifacts/goal-20261014/release-build/player/ShadowsOfTheForsaken.exe `
+    --output $nativeOutput --receipt-sha256 83ffdc101ad51227e5ae32de2332bfbbd2fdc92a47dca055772d4eda7cd2c371 `
     --player-mode embedded --parent-mode owned --graphics-mode legacy --observe-seconds 120 --timeout-seconds 180
 ```
 
