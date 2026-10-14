@@ -406,12 +406,15 @@ class NUnitEvidenceTests(unittest.TestCase):
             suite.remove(case)
         alternate_fixtures = (
             ".CombatControllerTests.", ".ForsakenLevelTests.", ".LevelHudLayoutTests.",
-            ".LevelInteractionTests.", ".WorldTextTests.",
+            ".LevelInteractionTests.", ".WorldTextTests.", ".CastleCameraExplorationTests.",
         )
+        # The later plinth-landing regression also did not exist in this
+        # historical report. Preserve its original 193 cases as the catalog grows.
+        later_camera_method = ".CameraFollowTests.LandingBesideLowPlinthRetainsClearCameraAndRecoversFullBoom"
         for case in list(suite):
             name = case.get("fullname", "")
             if any(fixture in name for fixture in alternate_fixtures) or name.endswith(
-                    ".PlayerMovementTests.MouseAttackFiresOncePerPressThroughOwnedActionMap"):
+                    ".PlayerMovementTests.MouseAttackFiresOncePerPressThroughOwnedActionMap") or name.endswith(later_camera_method):
                 suite.remove(case)
         count = len(list(report.iter("test-case")))
         self.assertEqual(193, count)

@@ -469,6 +469,91 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             LogAssert.NoUnexpectedReceived();
         }
 
+        [Test]
+        public void LandingBesideLowPlinthRetainsClearCameraAndRecoversFullBoom()
+        {
+            // DOCX 3, 7-8: replay the actual west-wall/rune-plinth channel
+            // landing. Its one-metre gap fits the character, while the saved
+            // widescreen near-plane sphere has a diameter greater than 1 m.
+            camera.nearClipPlane = .3f;
+            camera.fieldOfView = 75f;
+            camera.aspect = 16f / 9f;
+            Set("distance", 3f);
+            Set("height", 4f);
+            Set("shoulderOffset", -1.8f);
+            Set("shoulderAimFraction", .5f);
+            Set("lookHeightOffset", 1.5f);
+            Set("smoothSpeed", 0f);
+            var wall = Box(new Vector3(-12.2f, 2.25f, 24), new Vector3(.4f, 4.5f, 8)).GetComponent<Collider>();
+            var plinth = Box(new Vector3(-10.5f, .55f, 25.5f), new Vector3(1, 1.1f, 1)).GetComponent<Collider>();
+            var floor = Box(new Vector3(-11, -.25f, 24), new Vector3(2, .5f, 8)).GetComponent<Collider>();
+            player.transform.rotation = Quaternion.Euler(0, 272.929321f, 0);
+            player.transform.position = new Vector3(-11.699013f, 1.27f, 25.502113f);
+            Assert.That(Step(), Is.True);
+
+            // Restore the recorded, previously validated camera pose without
+            // modifying the solver's tracking or safety state. Zero response
+            // keeps that exact pose for the last-safe and landing observations.
+            camera.transform.position = new Vector3(-9.778874f, 3.822746f, 24.144306f);
+            player.transform.position = new Vector3(-11.699013f, .07392454f, 25.502113f);
+            Assert.That(Step(), Is.True, "The retained capture's last-safe pose must be reproducible.");
+            AssertBoomAndNearPlaneClear(wall, plinth, floor);
+            Assert.That(Get<float>("EffectiveCollisionRadius"), Is.EqualTo(.55719787f).Within(.00001f));
+
+            foreach (float feetHeight in new[] { .07039309f, .02f })
+            {
+                player.transform.position = new Vector3(-11.699013f, feetHeight, 25.502113f);
+                Assert.That(Step(), Is.True, "Landing at y=" + feetHeight + " must retain a checked camera.");
+                Assert.That(camera.enabled, Is.True);
+                AssertBoomAndNearPlaneClear(wall, plinth, floor);
+            }
+
+            // A steep alternative still has to retract below a ceiling rather
+            // than placing its centre or any near-plane corner through it.
+            var ceiling = Box(new Vector3(-10.5f, 3.75f, 25.5f), new Vector3(4, .5f, 6)).GetComponent<Collider>();
+            Assert.That(Step(), Is.True);
+            AssertBoomAndNearPlaneClear(wall, plinth, floor, ceiling);
+            Assert.That(camera.transform.position.y, Is.LessThan(ceiling.bounds.min.y));
+
+            // Leave beside the plinth, then move away from the wall in ordinary
+            // 5 cm steps. No target replacement, teleport or explicit snap may
+            // be needed to recover the full authored view.
+            Set("smoothSpeed", 10f);
+            for (int frame = 0; frame < 114; frame++)
+            {
+                player.transform.position += (frame < 60 ? Vector3.back : Vector3.right) * .05f;
+                Assert.That(Step(), Is.True, "Ordinary departure frame " + frame);
+                AssertBoomAndNearPlaneClear(wall, plinth, floor, ceiling);
+            }
+            for (int frame = 0; frame < 120; frame++) Assert.That(Step(), Is.True);
+            Vector3 fullBoom = player.transform.position - player.transform.forward * 3f + Vector3.up * 4f - player.transform.right * 1.8f;
+            Assert.That(Vector3.Distance(camera.transform.position, fullBoom), Is.LessThan(.001f),
+                "Ordinary departure must restore the full authored boom without a snap.");
+            Assert.That(camera.enabled && Get<bool>("HasSafePose"), Is.True);
+            Assert.That(player.GetComponent<CharacterController>().enabled, Is.True);
+            LogAssert.NoUnexpectedReceived();
+        }
+
+        private void AssertBoomAndNearPlaneClear(params Collider[] obstacles)
+        {
+            Vector3 pivot = player.transform.position + Vector3.up * (float)followType.GetField("pivotHeight").GetValue(follow);
+            Vector3 boom = camera.transform.position - pivot;
+            var corners = new Vector3[4];
+            camera.CalculateFrustumCorners(new Rect(0, 0, 1, 1), camera.nearClipPlane, Camera.MonoOrStereoscopicEye.Mono, corners);
+            foreach (var obstacle in obstacles)
+            {
+                AssertClear(obstacle);
+                Assert.That(obstacle.Raycast(new Ray(pivot, boom.normalized), out _, boom.magnitude), Is.False,
+                    "The camera's complete boom must remain on the visible side of " + obstacle.name);
+                foreach (var corner in corners)
+                {
+                    Vector3 point = camera.transform.TransformPoint(corner);
+                    Assert.That(Vector3.Distance(obstacle.ClosestPoint(point), point), Is.GreaterThan(.00001f),
+                        "Every actual near-plane corner must remain outside " + obstacle.name);
+                }
+            }
+        }
+
         [TestCase(0f, 0f)]
         [TestCase(1.3f, 1.3f)]
         [TestCase(-1f, 0f)]

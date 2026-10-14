@@ -134,6 +134,22 @@ public class CameraFollow : MonoBehaviour
         // across a target change, teleport or explicit snap.
         if (!safe && !snap && Finite(pivot) && Finite(transform.position))
             safe = TryResolve(pivot, transform.position, out candidate);
+        // A low obstacle beside a wall can block every shallow boom as the
+        // player lands, although a steeper view still fits above it. Keep the
+        // authored height and horizontal heading, shorten only its reach, and
+        // validate the complete alternative with the same pivot and sphere.
+        if (!safe && Finite(pivot) && Finite(desired) && desired.y > pivot.y)
+        {
+            Vector3 horizontal = desired - pivot;
+            horizontal.y = 0f;
+            float length = horizontal.magnitude;
+            float reach = 2f * EffectiveCollisionRadius + collisionPadding;
+            if (Finite(length) && Finite(reach) && length > reach)
+            {
+                Vector3 steep = pivot + horizontal * (reach / length) + Vector3.up * (desired.y - pivot.y);
+                safe = TryResolve(pivot, steep, out candidate);
+            }
+        }
         if (!safe)
         {
             tracking = false;
