@@ -7,12 +7,12 @@ $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $repo = Split-Path $PSScriptRoot -Parent
 $python = 'C:\Users\andrz\AppData\Local\Programs\Python\Python311\python.exe'
-$commit = '08b26973d36fd22b0864649073b3ffe334eec62b'
-$receiptHash = '83ffdc101ad51227e5ae32de2332bfbbd2fdc92a47dca055772d4eda7cd2c371'
-$zipHash = 'c507664ae0be9fd5ac465afcb44bf33e4677537859a731c625ab3b62d0f5b372'
-$sourceHash = 'ec101e80f4b748dce69387996f5cda44a61fb80a19a971d2157a5c017d26c566'
-$zip = Join-Path $repo 'Builds\ShadowsOfTheForsaken-Windows-x64-20261014-08b2697.zip'
-$source = Join-Path $repo 'artifacts\goal-20261014\release-build\source.zip'
+$commit = 'e4d58a19a5b0714fd4519015778b4f8ce8dbf7b9'
+$receiptHash = 'c75342a1a137ba42d7469e4f70eb73dcbc1d12f9dfa34615badbed9ccf2b86f0'
+$zipHash = '574edc715016c1fe7ec3ce56446e128b09bc61b281a7b15cc1f92ec2a9f9c297'
+$sourceHash = '6f7ad0ad17ad7642d2ddc4e112f6988ddb75093c202600e681f32fbbe6c4c201'
+$zip = Join-Path $repo 'Builds\ShadowsOfTheForsaken-Windows-x64-20261014-e4d58a1.zip'
+$source = Join-Path $repo 'artifacts\goal-20261014\release-hud-build\source.zip'
 $identityTool = Join-Path $repo 'tools\player_build_manifest.py'
 function Sha([string]$path) { (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant() }
 function Save-New([string]$path, [string]$text) {
