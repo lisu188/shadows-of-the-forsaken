@@ -653,9 +653,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 if (!saveImage) return framing;
                 for (int i = 0; i < canvases.Length; i++)
                 {
+                    // Preserve the primary HUD's actual camera-space depth.
+                    // Moving it for a capture can hide wall-occlusion defects.
+                    if (canvases[i].renderMode != RenderMode.ScreenSpaceOverlay) continue;
                     canvases[i].renderMode = RenderMode.ScreenSpaceCamera;
                     canvases[i].worldCamera = camera;
-                    canvases[i].planeDistance = camera.nearClipPlane + .1f;
+                    canvases[i].planeDistance = camera.nearClipPlane + .001f;
                 }
                 Canvas.ForceUpdateCanvases();
                 var request = new RenderPipeline.StandardRequest { destination = texture };

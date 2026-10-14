@@ -134,6 +134,7 @@ EXPECTED_TESTS = {
         'ProjectBaselineTests.RuntimeScriptImportsWithOriginalGuid': ('("Assets/PlayerMovement.cs","PlayerMovement","963b3f782c6d71942ad1e73d117b2820")', '("Assets/CameraFollow.cs","CameraFollow","9191262690f98974abc0076595479fd6")'),
     },
     'playmode': {
+        'AudioMixerPlaybackTests.QuietClipTraversesMixerAndReturnsToSilence': ('',),
         'BaselineSceneTests.BaselineCameraAndDirectionalLightAreActive': ('',),
         'BaselineSceneTests.BaselineSceneRunsWithoutMissingComponents': ('',),
         'CameraFollowTests.AcquiresOneTaggedPlayerButDoesNotChooseBetweenTwo': ('',),
@@ -218,6 +219,8 @@ EXPECTED_TESTS = {
         'ForsakenLevelTests.MainRouteWinsWithoutSecretAndVictoryRestartRestoresTheWholeScene': ('',),
         'ForsakenLevelTests.OptionalRelicAndPhysicalConcealedRampReturnStillRequireTheFinalFight': ('',),
         'CastleCameraExplorationTests.LowerRoomsRetainVisibleCameraDuringUnsnappedInputExploration': ('',),
+        'PrimaryCastleHudRenderingTests.PrimaryHudRendersAtRecordedPuzzleNorthwestCornerPose': ('',),
+        'PrimaryCastleHudRenderingTests.PrimaryHudRendersAtRecordedPuzzleWestWallPose': ('',),
         'FullCastleRouteTests.CastleFinalFightDeathRestartsTheSavedWorld': ('',),
         'FullCastleRouteTests.CastleFirstFightDeathRestartsTheSavedWorld': ('',),
         'FullCastleRouteTests.CastleLockedMainGatesRejectWalkingAndJumping': ('',),
