@@ -344,8 +344,9 @@ def validate_mixer(value):
         peak = max(abs(item) for item in data)
         require(peak > .00001 and math.isclose(signal[peak_name], peak, rel_tol=1e-5, abs_tol=1e-8),
                 "Reported signal peak differs from actual retained PCM")
-        windows[key] = {"samples": len(data), "peak": peak,
-                        "rms": math.sqrt(sum(item * item for item in data) / len(data)),
+        rms = math.sqrt(sum(item * item for item in data) / len(data))
+        require(math.isfinite(rms) and rms > 0, "PCM RMS must be finite and positive")
+        windows[key] = {"samples": len(data), "peak": peak, "rms": rms,
                         "nonzero_samples": sum(item != 0 for item in data)}
     samples = value.get("samples")
     require(isinstance(samples, list) and 1 <= len(samples) <= 512, "Missing/excessive bounded sample history")

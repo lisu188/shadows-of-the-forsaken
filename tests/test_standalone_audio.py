@@ -388,6 +388,14 @@ class StandaloneAudioTests(unittest.TestCase):
                 with self.subTest(key=key, change=change), self.assertRaises(ValueError):
                     audio.validate_mixer(value)
 
+    def test_finite_json_pcm_cannot_qualify_an_overflowed_rms(self):
+        for key, peak_name in (("sourceWindow", "sourcePeak"), ("masterWindow", "masterPeak")):
+            value = mixer_evidence()
+            value[key] = [1e308] * 1024
+            value["signal"][peak_name] = 1e308
+            with self.subTest(window=key), self.assertRaisesRegex(ValueError, "RMS"):
+                audio.validate_mixer(value)
+
     def test_stale_dsp_or_backwards_sample_clocks_cannot_prove_play_then_silence(self):
         for change in ("play", "stop-before-signal", "unflushed-stop", "real-backwards", "history-dsp", "history-real"):
             value = mixer_evidence()
