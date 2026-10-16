@@ -361,7 +361,49 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 new LoadSceneParameters(LoadSceneMode.Additive)));
 #else
             Assert.That(SceneUtility.GetBuildIndexByScenePath(ScenePath), Is.GreaterThanOrEqualTo(0));
-            yield return sceneLoad.Load(ScenePath, () => SceneManager.LoadSceneAsync(ScenePath, LoadSceneMode.Additive));
+            // A visible embedded player can render the newly activated scene
+            // before this coroutine resumes. Prepare the existing exact inactive
+            // pass expectations in sceneLoaded, before its first ordinary render.
+            var previousScenes = new HashSet<Scene>(Enumerable.Range(0, SceneManager.sceneCount)
+                .Select(index => SceneManager.GetSceneAt(index)));
+            int preparedSceneCount = 0;
+            Scene preparedScene = default;
+            Exception pipelinePreparationFailure = null;
+            UnityEngine.Events.UnityAction<Scene, LoadSceneMode> prepareNativePipeline = (loaded, mode) =>
+            {
+                if (loaded.path != ScenePath || previousScenes.Contains(loaded)) return;
+                try
+                {
+                    preparedSceneCount++;
+                    Assert.That(preparedSceneCount, Is.EqualTo(1), "Prepare exactly one newly loaded castle scene.");
+                    Assert.That(mode, Is.EqualTo(LoadSceneMode.Additive));
+                    Assert.That(loaded.IsValid() && loaded.isLoaded, Is.True);
+                    var savedCameras = loaded.GetRootGameObjects()
+                        .SelectMany(root => root.GetComponentsInChildren<Camera>(true)).ToArray();
+                    Assert.That(savedCameras.Length, Is.EqualTo(1), "The owned saved castle has one scene camera.");
+                    Assert.That(savedCameras[0].gameObject.scene, Is.EqualTo(loaded));
+                    NativePresentationPipelineDiagnostics.Prepare(savedCameras[0], loaded);
+                    preparedScene = loaded;
+                }
+                catch (Exception error)
+                {
+                    pipelinePreparationFailure = pipelinePreparationFailure == null
+                        ? error : new AggregateException(pipelinePreparationFailure, error);
+                }
+            };
+            SceneManager.sceneLoaded += prepareNativePipeline;
+            try
+            {
+                yield return sceneLoad.Load(ScenePath, () => SceneManager.LoadSceneAsync(ScenePath, LoadSceneMode.Additive));
+            }
+            finally
+            {
+                SceneManager.sceneLoaded -= prepareNativePipeline;
+            }
+            if (pipelinePreparationFailure != null)
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(pipelinePreparationFailure).Throw();
+            Assert.That(preparedSceneCount, Is.EqualTo(1), "The native castle load must prepare its first ordinary render.");
+            Assert.That(preparedScene, Is.EqualTo(sceneLoad.Scene), "Prepare only this fixture's owned scene.");
 #endif
             scene = sceneLoad.Scene;
             Assert.That(sceneLoad.LoadedWithinDeadline && scene.IsValid() && scene.isLoaded, Is.True, "Saved castle load exceeded 30 s.");
