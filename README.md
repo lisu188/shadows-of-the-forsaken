@@ -6,7 +6,9 @@ Przygodowa gra akcji z eksploracją i zagadkami środowiskowymi w mrocznym, upad
 
 Zapisany układ sceny porównano z mapą DOCX: [trzy widoki z edytora i zakres weryfikacji](docs/validation/castle-map-2026-10-01.md). Zgodność topologii nie zastępuje ręcznego odbioru geometrii i nawigacji.
 
-## Bieżący kandydat — 2026-10-16
+## Bieżący kandydat — 2026-10-17
+
+Nowy [workflow testów metryk tras](.github/workflows/rendered-routes-tests.yml) kompiluje te same źródła C# i wymaga wykonania wszystkich **30 przypadków w 18 metodach**, z zachowaniem TRX i logu. Odrzuca brakujące, pominięte, niezaliczone lub podmienione wyniki. Lokalny rzeczywisty przebieg zaliczył **30/30**; wykonanie tego workflow w GitHub Actions pozostaje niezweryfikowane. To testy czystego C#, odrębne od Unity, renderowania i aktywacji #5.
 
 Opcjonalny [pasywny dziennik audio i zamykania](docs/audio-run-lifecycle-diagnostic.md), źródło **`971ef31`**, zalicza **2/2 regresje Unity oraz obie trasy native i 24/24 warunki kwalifikacji**. Poprawiono rejestrację callbacków testowych i odnajdywanie ukrytego pomocnika zakończenia. Zapis obejmuje oba przebiegi, końcowy odczyt konfiguracji przed quit i **13 rzeczywistych znaczników cyklu życia**. Player sam kończy się kodem 0; runner zapisuje **205,625 s zegara monotonicznego**, bez wykrytego FMOD/no-sound, sekcji awarii natywnej lub pliku awarii. Nie zaobserwowano naturalnych zmian konfiguracji audio; nie jest to dowód odzyskiwania dźwięku ani słyszalnego wyjścia. [Raport](docs/validation/audio-run-lifecycle-2026-10-16.md) zachowuje pierwszy nieudany build, native **23/24** i Unity **1/2**, a następnie niezależnie sprawdzone powtórki. Przyczyna wcześniejszych awarii FMOD/Mono i odbiór człowieka pozostają otwarte; dostawa Release `23b3ac0` zachowuje swój dotychczasowy zakres.
 

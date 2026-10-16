@@ -1,0 +1,93 @@
+name: Rendered-route evidence C# tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: rendered-routes-tests-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  rendered-routes:
+    name: Pure C# metrics (not Unity, rendering or GPU)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Compile linked metrics sources and run shared NUnit tests
+        shell: bash
+        run: |
+          mkdir -p artifacts/rendered-routes
+          dotnet test tests/RenderedRoutes/RenderedRoutes.Tests.csproj --configuration Release --logger 'trx;LogFileName=rendered-routes.trx' --results-directory artifacts/rendered-routes 2>&1 | tee artifacts/rendered-routes/dotnet-test.log
+      - name: Require all 30 executed pure C# cases and their identities
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from collections import Counter
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          path = Path('artifacts/rendered-routes/rendered-routes.trx')
+          assert path.is_file() and 0 < path.stat().st_size <= 10_000_000, 'Missing or oversized real TRX'
+          data = path.read_bytes()
+          assert b'<!DOCTYPE' not in data.upper() and b'<!ENTITY' not in data.upper(), 'DTD/entities are not permitted'
+          root = ET.fromstring(data)
+          ns = {'t': 'http://microsoft.com/schemas/VisualStudio/TeamTest/2010'}
+          summary = root.find('t:ResultSummary', ns)
+          counts = root.find('t:ResultSummary/t:Counters', ns)
+          results = root.findall('t:Results/t:UnitTestResult', ns)
+          assert summary is not None and summary.get('outcome') == 'Completed', 'Test run did not complete'
+          assert counts is not None, 'Missing execution counters'
+          assert int(counts.attrib['total']) == int(counts.attrib['executed']) == int(counts.attrib['passed']) == 30, counts.attrib
+          for key in ('failed', 'error', 'timeout', 'aborted', 'inconclusive', 'passedButRunAborted', 'notRunnable', 'notExecuted', 'disconnected', 'warning', 'inProgress', 'pending'):
+              assert int(counts.get(key, '0')) == 0, (key, counts.attrib)
+          assert len(results) == 30 and all(result.get('outcome') == 'Passed' for result in results), 'Missing or nonpassing result'
+          expected = {
+              'CaptureInvalidationExcludesWholeCrossingIntervalAndRestartsBaseline': ('',),
+              'CleanupAttemptsLaterResourcesAfterAnEarlierRemovalFails': ('',),
+              'CleanupRetainsDestroyedResourceFailuresAndStillClosesOtherLeases': ('',),
+              'CompletedIdentityAndObjectivesSurviveLaterResetObservations': ('',),
+              'DuplicateFrameIsExcludedAndClosureIsSingleUse': ('',),
+              'EntireWarmupCrossingFrameIsExcludedWithoutTrimmingLaterOutlier': ('',),
+              'ForeignSessionCannotRelabelVisitOrDonateAnInterval': ('',),
+              'HistogramRejectsOverflowAndKeepsConservativeBucketUpperBound': ('',),
+              'InvalidClockCannotEnterHistogram': ('(-1)', '(double.NaN)', '(double.PositiveInfinity)'),
+              'MissingExactRenderPairRemainsUnavailableDespiteSameNameAndOtherRenderCounters': ('',),
+              'MissingRenderFramesExcludeGapRatherThanInventFastOrSlowFrame': ('',),
+              'OnlyBalancedOwnedUnboundSameFrameCycleQualifies': ('',),
+              'ProfilerSelectionAcceptsExactInternalThreadAndRejectsUnboundedOrUnidentifiedQueries': ('',),
+              'RawIncludesColdFramesButShortVisitDoesNotQualifyWarmLane': ('',),
+              'SameNameUiCounterCannotSubstituteForRenderCounterInEitherEnumerationOrder': ('(False)', '(True)'),
+              'ThreadSelectionRequiresExactCaseSensitiveCategoryAndName': ('("Internal","main thread")', '("Render","Main Thread")', '("internal","Main Thread")'),
+              'UnownedUnbalancedChangedOrSuspendedCycleIsRejected': tuple('("' + value + '")' for value in ('begin', 'bracket', 'camera', 'end', 'frame', 'identity', 'paused', 'target')),
+              'WarmLaneMatchesUnchangedProductionHistogramPolicy': ('',),
+          }
+          expected_names = {method + suffix for method, suffixes in expected.items() for suffix in suffixes}
+          names = [result.get('testName') for result in results]
+          assert len(expected) == 18 and len(expected_names) == 30
+          assert len(set(names)) == 30 and set(names) == expected_names, 'Missing, duplicate or unexpected case identity'
+          assert Counter(name.split('(', 1)[0] for name in names) == {method: len(suffixes) for method, suffixes in expected.items()}, 'Method multiplicities differ'
+          definitions = root.findall('t:TestDefinitions/t:UnitTest', ns)
+          by_id = {definition.get('id'): definition for definition in definitions}
+          assert len(definitions) == len(by_id) == 30 and all(by_id), 'Missing or duplicate test definitions'
+          assert len({result.get('testId') for result in results}) == 30, 'Duplicate result identity'
+          for result in results:
+              definition = by_id.get(result.get('testId'))
+              assert definition is not None, 'Result has no linked test definition'
+              method = definition.find('t:TestMethod', ns)
+              assert method is not None and method.get('className') == 'RenderedRoutePureTests.RenderedRouteMetricsTests', 'Wrong pure C# fixture'
+              assert method.get('name') == definition.get('name') == result.get('testName'), 'Result/definition method identity differs'
+          print('Verified 30 pure C# cases across 18 methods; Unity, rendering and GPU acceptance are separate.')
+          PY
+      - name: Upload complete pure C# test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-route-csharp-test-results
+          path: artifacts/rendered-routes/
+          if-no-files-found: error
+          retention-days: 14
