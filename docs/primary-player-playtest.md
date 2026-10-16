@@ -31,8 +31,8 @@ For **hidden startup/shutdown validation**, use [native_player_validation.py](..
 ```powershell
 $nativeOutput = Join-Path $PWD ('artifacts/native-' + [guid]::NewGuid().ToString('N'))
 & 'C:\Users\andrz\AppData\Local\Programs\Python\Python311\python.exe' tools/native_player_validation.py `
-    --player artifacts/goal-20261014/release-hud-build/player/ShadowsOfTheForsaken.exe `
-    --output $nativeOutput --receipt-sha256 c75342a1a137ba42d7469e4f70eb73dcbc1d12f9dfa34615badbed9ccf2b86f0 `
+    --player artifacts/goal-20261014/ceiling-release-build-20261016/player/ShadowsOfTheForsaken.exe `
+    --output $nativeOutput --receipt-sha256 0d82727a96d9db9d05c9bb4000574eb2942176b4e61430d9d4b8d7be1b298dbd `
     --player-mode embedded --parent-mode owned --graphics-mode legacy --observe-seconds 120 --timeout-seconds 180
 ```
 
