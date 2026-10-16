@@ -135,6 +135,8 @@ EXPECTED_TESTS = {
         'ProjectBaselineTests.RuntimeScriptImportsWithOriginalGuid': ('("Assets/PlayerMovement.cs","PlayerMovement","963b3f782c6d71942ad1e73d117b2820")', '("Assets/CameraFollow.cs","CameraFollow","9191262690f98974abc0076595479fd6")'),
     },
     'playmode': {
+        'AudioRunLifecycleObserverTests.RunLeaseRetainsPostCaseCallbackAndSealsBeforeQuit': ('',),
+        'AudioRunLifecycleObserverTests.BypassedQuitAndSetupFaultDetachWithoutLateConfigurationReads': ('',),
         'AudioConfigurationTelemetryTests.CallbackQueueIsBoundedAndClosedAcceptanceIsImmutable': ('',),
         'AudioConfigurationTelemetryTests.OwnedObserverDrainsOnMainThreadAndDetachesAcrossFaults': ('',),
         'AudioMixerPlaybackTests.QuietClipTraversesMixerAndReturnsToSilence': ('',),

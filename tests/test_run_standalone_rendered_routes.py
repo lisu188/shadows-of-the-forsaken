@@ -123,6 +123,16 @@ class RenderedRunnerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             r.guard_output_parent(Path(temporary).absolute())
 
+    def test_audio_lifecycle_opt_in_uses_only_the_exact_owned_output(self):
+        output = Path("owned-output").absolute()
+        inherited = {name: "unexpected" for name in r.CONFLICTS}
+        inherited["KEEP"] = "yes"
+        actual = r.player_environment(output, inherited, observe_audio_lifecycle=True)
+        self.assertEqual(actual, {"SHADOWS_RENDERED_ROUTE_OUTPUT": str(output),
+            "SHADOWS_CAPTURE_DIR": str(output / "captures"),
+            "SHADOWS_AUDIO_RUN_LIFECYCLE_OUTPUT": str(output), "KEEP": "yes"})
+        self.assertEqual(inherited["SHADOWS_AUDIO_RUN_LIFECYCLE_OUTPUT"], "unexpected")
+
     def test_nonexistent_or_file_output_parent_rejected(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -207,6 +217,28 @@ class RenderedRunnerTests(unittest.TestCase):
     def test_already_visible_contained_child_needs_no_repeated_show(self):
         record = self.passing_record()
         self.assertTrue(r.qualify(record))
+
+    def test_passive_audio_gate_requires_closed_evidence_only_when_requested(self):
+        original = self.passing_record()
+        self.assertTrue(r.qualify(original))
+        self.assertEqual(len(original["qualification_checks"]), 23)
+        for verified in (None, False, True):
+            with self.subTest(verified=verified):
+                record = self.passing_record()
+                record["audio_lifecycle_observation_requested"] = True
+                if verified is not None:
+                    record["audio_lifecycle_verified"] = verified
+                self.assertEqual(r.qualify(record), verified is True)
+                self.assertEqual(len(record["qualification_checks"]), 24)
+                self.assertEqual(record["qualification_checks"]["passive_audio_lifecycle_verified"], verified is True)
+
+    def test_malformed_audio_request_cannot_silently_disable_the_extra_gate(self):
+        for requested in ("true", 1, None):
+            with self.subTest(requested=requested):
+                record = self.passing_record()
+                record["audio_lifecycle_observation_requested"] = requested
+                self.assertFalse(r.qualify(record))
+                self.assertIn("Audio lifecycle observation request must be boolean", record["errors"])
 
     def test_repeated_child_show_or_missing_final_resource_check_rejected(self):
         for field in ("show", "resource", "audio", "capture"):

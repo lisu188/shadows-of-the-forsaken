@@ -411,7 +411,7 @@ class NUnitEvidenceTests(unittest.TestCase):
             ".CombatControllerTests.", ".ForsakenLevelTests.", ".LevelHudLayoutTests.",
             ".LevelInteractionTests.", ".WorldTextTests.", ".CastleCameraExplorationTests.",
             ".PrimaryCastleHudRenderingTests.", ".AudioMixerPlaybackTests.",
-            ".AudioConfigurationTelemetryTests.",
+            ".AudioConfigurationTelemetryTests.", ".AudioRunLifecycleObserverTests.",
         )
         # The later plinth-landing and held-ceiling regressions also did not exist
         # in this historical report. Preserve its original 193 cases as the catalog grows.
@@ -442,6 +442,22 @@ class NUnitEvidenceTests(unittest.TestCase):
                                 f".PlayerValidationPerformanceTests.{method}" in c.get("fullname", ""))
                     # Keep the total and passing count: only the required named
                     # method in the correct fixture can satisfy this regression.
+                    case.set("fullname", f"ShadowsOfTheForsaken.Tests.PlayMode.UnrelatedFixture.{substitute}")
+                    self.save(report)
+                    with self.assertRaisesRegex(validation.ValidationError, method):
+                        validation.validate_results(self.path, "playmode")
+
+    def test_audio_lifecycle_cases_require_their_exact_fixture(self):
+        methods = (
+            "RunLeaseRetainsPostCaseCallbackAndSealsBeforeQuit",
+            "BypassedQuitAndSetupFaultDetachWithoutLateConfigurationReads",
+        )
+        for method in methods:
+            for substitute in ("PassingUnrelatedCase", method):
+                with self.subTest(method=method, substitute=substitute):
+                    report = report_for("playmode")
+                    case = next(c for c in report.iter("test-case") if
+                                f".AudioRunLifecycleObserverTests.{method}" in c.get("fullname", ""))
                     case.set("fullname", f"ShadowsOfTheForsaken.Tests.PlayMode.UnrelatedFixture.{substitute}")
                     self.save(report)
                     with self.assertRaisesRegex(validation.ValidationError, method):

@@ -203,9 +203,24 @@ namespace ForsakenStandaloneRenderedRouteSupport
     public sealed class StandaloneRenderedRoutePlayerExit : MonoBehaviour
     {
         private bool pending;
+        private bool preQuitRaised;
         private int exitCode, exitFrame;
+        public event Action BeforeQuit;
         public void Schedule(int code) { pending = true; exitCode = Math.Max(exitCode, code); exitFrame = Time.frameCount + 2; }
-        private void Update() { if (pending && Time.frameCount >= exitFrame) Application.Quit(exitCode); }
+        public void PrepareToQuit()
+        {
+            if (preQuitRaised) return;
+            preQuitRaised = true;
+            BeforeQuit?.Invoke();
+        }
+        private void Update()
+        {
+            if (pending && Time.frameCount >= exitFrame)
+            {
+                try { PrepareToQuit(); }
+                finally { Application.Quit(exitCode); }
+            }
+        }
     }
 }
 #endif

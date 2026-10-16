@@ -38,15 +38,18 @@ GROWTH_LIMIT = 5 * 2**30
 CONFLICTS = ("SHADOWS_ROUTE_PLAYER_BUILD", "SHADOWS_ROUTE_PLAYER_OUTPUT", "SHADOWS_AUDIO_PLAYER_BUILD",
              "SHADOWS_AUDIO_PLAYER_OUTPUT", "SHADOWS_AUDIO_PROBE_OUTPUT", "SHADOWS_PRESENTATION_PLAYER_BUILD",
              "SHADOWS_PRESENTATION_PLAYER_OUTPUT", "SHADOWS_PLAYER_OUTPUT", "SHADOWS_PLAYER_EVIDENCE_DIR",
-             "SHADOWS_CAPTURE_DIR", "SHADOWS_RENDERED_ROUTE_BUILD", "SHADOWS_RENDERED_ROUTE_OUTPUT")
+             "SHADOWS_CAPTURE_DIR", "SHADOWS_RENDERED_ROUTE_BUILD", "SHADOWS_RENDERED_ROUTE_OUTPUT",
+             "SHADOWS_AUDIO_RUN_LIFECYCLE_OUTPUT")
 
 
-def player_environment(output, inherited=None):
+def player_environment(output, inherited=None, *, observe_audio_lifecycle=False):
     result = dict(os.environ if inherited is None else inherited)
     for name in CONFLICTS:
         result.pop(name, None)
     result["SHADOWS_RENDERED_ROUTE_OUTPUT"] = str(output)
     result["SHADOWS_CAPTURE_DIR"] = str(output / "captures")
+    if observe_audio_lifecycle:
+        result["SHADOWS_AUDIO_RUN_LIFECYCLE_OUTPUT"] = str(output)
     return result
 
 
@@ -224,6 +227,11 @@ def qualify(record):
         "no_fatal_audio_or_dump": not record.get("native_fatal_markers") and not record.get("audio_failure_markers") and record.get("crash_reports") == [],
         "no_callback_failure": record.get("callback_failure_present") is False,
     }
+    requested = record.get("audio_lifecycle_observation_requested", False)
+    if not isinstance(requested, bool):
+        record["errors"].append("Audio lifecycle observation request must be boolean")
+    elif requested:
+        checks["passive_audio_lifecycle_verified"] = record.get("audio_lifecycle_verified") is True
     record["qualification_checks"] = checks
     record["errors"].extend("Qualification failed: " + key for key, passed in checks.items() if not passed)
     passed = all(checks.values()) and not record["errors"]
@@ -238,6 +246,8 @@ def main(argv=None):
     parser.add_argument("--build-receipt", type=Path, required=True)
     parser.add_argument("--build-receipt-sha256", required=True)
     parser.add_argument("--timeout-seconds", type=float, default=360)
+    parser.add_argument("--observe-audio-lifecycle", action="store_true",
+                        help="Require the separate passive whole-run audio and quit journal")
     args = parser.parse_args(argv)
     require(os.name == "nt", "Runner requires native Windows")
     require(math.isfinite(args.timeout_seconds) and 5 <= args.timeout_seconds <= 600, "Use a finite 5–600 s timeout")
@@ -263,6 +273,8 @@ def main(argv=None):
     sources = {}
     source_names = ("run_standalone_rendered_routes", "rendered_route_evidence", "rendered_route_capture_evidence",
                     "concealed_native_window", "native_player_validation", "player_build_manifest", "presentation_evidence")
+    if args.observe_audio_lifecycle:
+        source_names += ("audio_run_lifecycle_evidence",)
     for name in source_names:
         path = ROOT / "tools" / (name + ".py")
         (out / path.name).write_bytes(path.read_bytes())
@@ -277,7 +289,9 @@ def main(argv=None):
         "initial_volume_free_bytes": initial_free, "no_overlap_preflight": overlap,
         "player_mode": "embedded", "parent_mode": "owned", "graphics_mode": "legacy", "batch_mode": False,
         "audio_disabling_flag": False, "foreground_or_visually_exposed_window_violation": False,
-        "child_environment_override": {name: player_environment(out, {}).get(name) for name in CONFLICTS},
+        "child_environment_override": {name: player_environment(out, {},
+            observe_audio_lifecycle=args.observe_audio_lifecycle).get(name) for name in CONFLICTS},
+        "audio_lifecycle_observation_requested": args.observe_audio_lifecycle,
         "cleanup_intervened": False, "errors": [],
         "not_qualified": ["GPU completion timing", "displayed FPS", "ordinary shipping Release route performance",
                           "OS-input gameplay", "human timing/readability/art", "physical audible-output acceptance"]}
@@ -299,7 +313,8 @@ def main(argv=None):
                 parent.child_guard["poll_seconds"] = record["poll_seconds"]
                 parent.create()
                 record["command"] = native.player_command(player, out, "legacy", parent.handle, "embedded")
-                process = subprocess.Popen(record["command"], cwd=player.parent, env=player_environment(out),
+                process = subprocess.Popen(record["command"], cwd=player.parent,
+                    env=player_environment(out, observe_audio_lifecycle=args.observe_audio_lifecycle),
                     startupinfo=startup, creationflags=subprocess.CREATE_NO_WINDOW, stdout=stdout, stderr=stderr)
                 record["pid"] = process.pid
                 record["child_integrity"] = native.process_integrity(kernel, process.pid)
@@ -378,6 +393,16 @@ def main(argv=None):
         record["captures_verified"] = True
     except Exception as error:
         record["errors"].append("captures: " + str(error))
+    if args.observe_audio_lifecycle:
+        try:
+            require(history is not None and completion is not None and record.get("runtime_verified") is True,
+                    "Audio lifecycle requires the verified runtime and UTF callbacks")
+            record["audio_lifecycle_validation"] = load_tool("audio_run_lifecycle_evidence").validate_output(
+                out, record.get("pid"), record["started_utc"], record["completed_utc"],
+                events_raw=native.shared_read(kernel, out / "events.jsonl", 8 * 1024 * 1024))
+            record["audio_lifecycle_verified"] = True
+        except Exception as error:
+            record["errors"].append("audio lifecycle: " + str(error))
     try:
         record.update(native.scan_player_logs(kernel, out))
         record["logs_scanned"] = True
