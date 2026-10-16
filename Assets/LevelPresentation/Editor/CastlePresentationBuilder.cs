@@ -73,6 +73,35 @@ public static class CastlePresentationBuilder
         Debug.Log("Updated only the existing cult-mark and exit-wall mesh assets; saved scene/navigation unchanged.");
     }
 
+    // DOCX 4: regenerate only the existing throne stone mesh. The uneven
+    // fracture shape is an implementation choice, not extra physical geometry.
+    public static void BuildBrokenColumnsForBatch()
+    {
+        if (!Application.isBatchMode || Application.isPlaying)
+            throw new InvalidOperationException("Run the targeted throne-column mesh authoring in a batch editor.");
+        const string scenePath = "Assets/Scenes/ForsakenCastle.unity";
+        if (SceneManager.GetSceneByPath(scenePath).isLoaded)
+            throw new InvalidOperationException("The targeted authoring must own its temporary scene load.");
+        var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+        try
+        {
+            var geometry = scene.GetRootGameObjects().Single(o => o.name == "Geometry");
+            var temporary = new GameObject("Temporary broken-column mesh drafts");
+            SceneManager.MoveGameObjectToScene(temporary, scene);
+            var context = new Context(temporary.transform);
+            context.LoadExistingMaterials();
+            context.Architecture(geometry);
+            context.SaveExistingMeshes(new[] { "Throne_CarvedStone" });
+        }
+        finally
+        {
+            // Architecture changes source renderer state and temporary lights.
+            // Discard that scene, preserving the saved colliders and navigation.
+            EditorSceneManager.CloseScene(scene, true);
+        }
+        Debug.Log("Updated only the existing throne stone mesh; saved scene, materials and navigation unchanged.");
+    }
+
     private static void Folder(string path)
     {
         if (AssetDatabase.IsValidFolder(path)) return;
@@ -236,7 +265,11 @@ public static class CastlePresentationBuilder
                 { Tomb(name, t.position, size); renderer.enabled = false; continue; }
                 if (name.StartsWith("Throne_Column_") && !name.EndsWith("Base"))
                 {
-                    Column(D("Throne", "CarvedStone"), t.position - Vector3.up * size.y / 2, size.y, size.x / 2);
+                    var stone = D("Throne", "CarvedStone");
+                    var bottom = t.position - Vector3.up * size.y / 2;
+                    if (name == "Throne_Column_-2.8_-2.8" || name == "Throne_Column_2.8_-2.8")
+                        BrokenColumn(stone, bottom, size.y, size.x / 2);
+                    else Column(stone, bottom, size.y, size.x / 2);
                     renderer.enabled = false; continue;
                 }
                 if (name == "Catacombs_CultMark")
@@ -656,6 +689,25 @@ public static class CastlePresentationBuilder
         }
     }
 
+    private static void BrokenColumn(Draft d, Vector3 bottom, float height, float radius)
+    {
+        // Keep the existing lower collar and fluted shaft within its collider.
+        // The fractured crown replaces the complete decorative upper capital.
+        float fractureDepth = .48f;
+        float shaftHeight = height - fractureDepth;
+        d.Tube(bottom, bottom + Vector3.up * .16f, radius, radius, 12);
+        d.Tube(bottom + Vector3.up * .16f, bottom + Vector3.up * shaftHeight,
+            radius * .68f, radius * .6f, 12);
+        for (int i = 0; i < 8; i++)
+        {
+            float angle = i * Mathf.PI / 4;
+            var offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius * .62f;
+            d.Tube(bottom + offset + Vector3.up * .2f, bottom + offset + Vector3.up * shaftHeight,
+                radius * .12f, radius * .1f, 5);
+        }
+        d.FracturedShaftTop(bottom + Vector3.up * shaftHeight, radius * .6f, fractureDepth);
+    }
+
     // Meshes contain explicit bevels, curved arch profiles and metre-scaled UVs.
     // Only renderers consume them; no MeshCollider or NavMeshModifier is added.
     private sealed class Draft
@@ -847,6 +899,27 @@ public static class CastlePresentationBuilder
                     center + rotation * new Vector3(Mathf.Cos(b) * radius, Mathf.Sin(b) * radius, 0), rotation * Vector3.back);
             }
         }
+
+        public void FracturedShaftTop(Vector3 bottom, float radius, float height)
+        {
+            // Unequal edge heights make the ruined silhouette readable without
+            // adding debris outside the original pillar's physical footprint.
+            float[] levels = { .7f, 1, .62f, .34f, .8f, .45f, .88f, .5f, .28f, .72f, .53f, .84f };
+            var center = bottom + Vector3.up * (height * .58f);
+            for (int i = 0; i < levels.Length; i++)
+            {
+                int next = (i + 1) % levels.Length;
+                float a = i * Mathf.PI * 2 / levels.Length, b = next * Mathf.PI * 2 / levels.Length;
+                var offsetA = new Vector3(Mathf.Cos(a), 0, Mathf.Sin(a)) * radius;
+                var offsetB = new Vector3(Mathf.Cos(b), 0, Mathf.Sin(b)) * radius;
+                var lowerA = bottom + offsetA; var lowerB = bottom + offsetB;
+                var topA = lowerA + Vector3.up * (height * levels[i]);
+                var topB = lowerB + Vector3.up * (height * levels[next]);
+                Quad(lowerA, lowerB, topB, topA, (offsetA + offsetB).normalized);
+                Tri(center, topA, topB, Vector3.Cross(topB - center, topA - center).normalized);
+            }
+        }
+
         public void Crystal(Vector3 center, float radius, float height)
         {
             for (int i = 0; i < 6; i++)
