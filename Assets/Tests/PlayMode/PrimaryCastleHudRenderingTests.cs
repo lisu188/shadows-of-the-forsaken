@@ -37,6 +37,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private float originalAspect, previousTimeScale;
         private bool settingsCaptured, canvasEnabled;
         private string directory;
+#if !UNITY_EDITOR
+        private NativeHudRenderProbe nativeRenderProbe;
+#endif
 
         [SetUp]
         public void Prepare()
@@ -147,19 +150,32 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Texture2D visible = null, hidden = null, textHidden = null;
             try
             {
+#if !UNITY_EDITOR
+                NativePresentationPipelineDiagnostics.Prepare(camera, scene);
+                nativeRenderProbe = new NativeHudRenderProbe(camera, target);
+#endif
                 yield return OrdinaryRenderFrames();
+#if !UNITY_EDITOR
+                nativeRenderProbe.RecordPhase("hud-visible");
+#endif
                 int visibleFrame = Time.frameCount;
                 var regions = Regions();
                 visible = ReadOrdinaryFrame();
                 File.WriteAllBytes(Path.Combine(directory, name + "-hud-visible.png"), visible.EncodeToPNG());
                 canvas.enabled = false;
                 yield return OrdinaryRenderFrames();
+#if !UNITY_EDITOR
+                nativeRenderProbe.RecordPhase("hud-disabled");
+#endif
                 int hiddenFrame = Time.frameCount;
                 hidden = ReadOrdinaryFrame();
                 File.WriteAllBytes(Path.Combine(directory, name + "-hud-disabled.png"), hidden.EncodeToPNG());
                 canvas.enabled = true;
                 foreach (var text in texts) text.enabled = false;
                 yield return OrdinaryRenderFrames();
+#if !UNITY_EDITOR
+                nativeRenderProbe.RecordPhase("hud-text-disabled");
+#endif
                 int textHiddenFrame = Time.frameCount;
                 textHidden = ReadOrdinaryFrame();
                 File.WriteAllBytes(Path.Combine(directory, name + "-hud-text-disabled.png"), textHidden.EncodeToPNG());
@@ -187,6 +203,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                     healthText = (string)hud.GetType().GetProperty("HealthText").GetValue(hud),
                     textOriginallyEnabled = textEnabled,
                     minimumChangedPixels = MinimumChangedPixels, regions = regions,
+#if !UNITY_EDITOR
+                    nativeRendering = nativeRenderProbe.Snapshot(),
+#endif
                     scope = "Primary saved HUD at recorded camera/player transforms, persistent native-resolution target and ordinary frames. Actor/camera movement frozen as presentation setup; CastleActorPresentation child poses are saved and restored after disabling animation, preventing body/cape animation from contributing paired pixel changes. Canvas-disabled image retains world validation; text-specific image keeps Canvas/panels enabled and disables only actual Health and Controls Text components. Progression is not bypassed or tested. Difference floor establishes text graphic contribution, not human readability. No forced Camera.Render or RenderPipeline render request."
                 };
                 File.WriteAllText(Path.Combine(directory, name + "-evidence.json"), JsonUtility.ToJson(evidence, true));
@@ -219,6 +238,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             }
             finally
             {
+#if !UNITY_EDITOR
+                StopNativeRenderObservation();
+#endif
                 for (int i = 0; i < texts.Length; i++) if (texts[i] != null) texts[i].enabled = textEnabled[i];
                 if (canvas != null) canvas.enabled = canvasEnabled;
                 if (visible != null) Object.DestroyImmediate(visible);
@@ -358,6 +380,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         private void RestoreTarget()
         {
+#if !UNITY_EDITOR
+            // Teardown also releases subscriptions if UTF abandons the iterator.
+            StopNativeRenderObservation();
+#endif
             if (canvas != null) canvas.enabled = canvasEnabled;
             if (target == null) return;
             if (camera != null) { camera.targetTexture = originalTarget; camera.aspect = originalAspect; }
@@ -381,7 +407,109 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             public RegionEvidence canvasBounds;
             public Vector3[] nearPlaneWorldCorners;
             public RegionEvidence[] regions;
+#if !UNITY_EDITOR
+            public NativeHudRendering nativeRendering;
+#endif
         }
+#if !UNITY_EDITOR
+        private void StopNativeRenderObservation()
+        {
+            nativeRenderProbe?.Dispose();
+            nativeRenderProbe = null;
+        }
+
+        // Observe SRP callbacks only. These counts do not establish GPU completion,
+        // presentation, frame performance or pixels. PNG assertions remain separate.
+        private sealed class NativeHudRenderProbe : IDisposable
+        {
+            private const int FrameLimit = 256;
+            private readonly Camera ownedCamera;
+            private readonly RenderTexture ownedTarget;
+            private readonly List<int> allBeginFrames = new List<int>(FrameLimit), allEndFrames = new List<int>(FrameLimit);
+            private readonly List<int> ownedBeginFrames = new List<int>(FrameLimit), ownedEndFrames = new List<int>(FrameLimit);
+            private readonly List<NativeHudRenderPhase> phases = new List<NativeHudRenderPhase>(3);
+            private int allBeginCount, allEndCount, ownedBeginCount, ownedEndCount;
+            private bool disposed, frameLimitReached;
+
+            public NativeHudRenderProbe(Camera camera, RenderTexture texture)
+            {
+                ownedCamera = camera; ownedTarget = texture;
+                RenderPipelineManager.beginCameraRendering += Begin;
+                RenderPipelineManager.endCameraRendering += End;
+            }
+
+            private void Begin(ScriptableRenderContext context, Camera camera)
+            {
+                allBeginCount++; RecordFrame(allBeginFrames);
+                if (camera == ownedCamera) { ownedBeginCount++; RecordFrame(ownedBeginFrames); }
+            }
+
+            private void End(ScriptableRenderContext context, Camera camera)
+            {
+                allEndCount++; RecordFrame(allEndFrames);
+                if (camera == ownedCamera) { ownedEndCount++; RecordFrame(ownedEndFrames); }
+            }
+
+            private void RecordFrame(List<int> frames)
+            {
+                if (frames.Count < FrameLimit) frames.Add(Time.frameCount);
+                else frameLimitReached = true;
+            }
+
+            public void RecordPhase(string name)
+            {
+                if (phases.Count == 3) return;
+                phases.Add(new NativeHudRenderPhase
+                {
+                    name = name, frame = Time.frameCount,
+                    cameraEnabled = ownedCamera != null && ownedCamera.enabled,
+                    cameraActiveSelf = ownedCamera != null && ownedCamera.gameObject.activeSelf,
+                    cameraActiveInHierarchy = ownedCamera != null && ownedCamera.gameObject.activeInHierarchy,
+                    cameraIsActiveAndEnabled = ownedCamera != null && ownedCamera.isActiveAndEnabled,
+                    targetIsCreated = ownedTarget != null && ownedTarget.IsCreated(),
+                    targetMatchesCamera = ownedCamera != null && ownedCamera.targetTexture == ownedTarget,
+                    applicationIsFocused = Application.isFocused, applicationRunInBackground = Application.runInBackground,
+                    pipelineType = RenderPipelineManager.currentPipeline?.GetType().FullName ?? "<null>",
+                    allBeginCount = allBeginCount, allEndCount = allEndCount,
+                    ownedBeginCount = ownedBeginCount, ownedEndCount = ownedEndCount
+                });
+            }
+
+            public NativeHudRendering Snapshot() => new NativeHudRendering
+            {
+                frameLimit = FrameLimit, frameLimitReached = frameLimitReached,
+                allBeginCount = allBeginCount, allEndCount = allEndCount,
+                ownedBeginCount = ownedBeginCount, ownedEndCount = ownedEndCount,
+                allBeginFrames = allBeginFrames.ToArray(), allEndFrames = allEndFrames.ToArray(),
+                ownedBeginFrames = ownedBeginFrames.ToArray(), ownedEndFrames = ownedEndFrames.ToArray(), phases = phases.ToArray()
+            };
+
+            public void Dispose()
+            {
+                if (disposed) return;
+                disposed = true;
+                RenderPipelineManager.beginCameraRendering -= Begin;
+                RenderPipelineManager.endCameraRendering -= End;
+            }
+        }
+
+        [Serializable] private sealed class NativeHudRendering
+        {
+            public string scope = "Native-only read-only SRP camera callbacks and phase state; no render, focus, time, pose or gameplay changes. Callbacks are not GPU completion or display proof.";
+            public int frameLimit, allBeginCount, allEndCount, ownedBeginCount, ownedEndCount;
+            public bool frameLimitReached;
+            public int[] allBeginFrames, allEndFrames, ownedBeginFrames, ownedEndFrames;
+            public NativeHudRenderPhase[] phases;
+        }
+
+        [Serializable] private sealed class NativeHudRenderPhase
+        {
+            public string name, pipelineType;
+            public int frame, allBeginCount, allEndCount, ownedBeginCount, ownedEndCount;
+            public bool cameraEnabled, cameraActiveSelf, cameraActiveInHierarchy, cameraIsActiveAndEnabled;
+            public bool targetIsCreated, targetMatchesCamera, applicationIsFocused, applicationRunInBackground;
+        }
+#endif
         private sealed class ActorPartPose
         {
             private readonly Transform part;

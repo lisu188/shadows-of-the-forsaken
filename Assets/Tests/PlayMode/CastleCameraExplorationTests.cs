@@ -594,6 +594,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 ShaderUtil.allowAsyncCompilation = false;
 #endif
                 var request = new RenderPipeline.StandardRequest { destination = texture };
+#if !UNITY_EDITOR
+                NativePresentationPipelineDiagnostics.Prepare(camera, scene);
+#endif
                 Assert.That(RenderPipeline.SupportsRenderRequest(camera, request), Is.True, "Saved pipeline must support an unsnapped view capture.");
                 RenderPipeline.SubmitRenderRequest(camera, request);
 #if UNITY_EDITOR
