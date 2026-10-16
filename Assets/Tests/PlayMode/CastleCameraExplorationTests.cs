@@ -64,6 +64,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private string evidenceCaseName;
         private int observedFrames, unsafeFrames, warningCount;
         private double started, ended, nextPeriodicSample;
+#if !UNITY_EDITOR
+        private NativeExplorationRenderProbe nativeRenderProbe;
+#endif
 
         [SetUp]
         public void Prepare()
@@ -71,6 +74,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             // NUnit reuses this fixture. Do not inherit another case's evidence
             // or discard a scene lease whose teardown did not finish.
             directory = null; // A setup guard failure must not rewrite the preceding case's bundle.
+#if !UNITY_EDITOR
+            if (nativeRenderProbe != null)
+                throw new InvalidOperationException("An earlier native exploration render observer still owns subscriptions.");
+#endif
             OwnedSceneLoad.RequireNoPendingCleanup();
             Assert.That(sceneLeaseReleased && suspendedBehaviours.Count == 0 && suspendedColliders.Count == 0 &&
                 suspendedRenderers.Count == 0 && observer == null && input == null &&
@@ -137,6 +144,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 }
                 ended = Time.realtimeSinceStartupAsDouble;
                 observing = false;
+#if !UNITY_EDITOR
+                nativeRenderProbe?.Dispose();
+#endif
                 Application.logMessageReceived -= OnLog;
                 if (observer != null) { observer.AfterLateUpdate = null; Object.DestroyImmediate(observer.gameObject); }
                 try { SaveEvidence(); }
@@ -152,6 +162,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             finally
             {
                 observing = false;
+#if !UNITY_EDITOR
+                nativeRenderProbe?.Dispose();
+                nativeRenderProbe = null;
+#endif
                 Application.logMessageReceived -= OnLog;
                 if (observer != null) Object.DestroyImmediate(observer.gameObject);
                 if (camera != null && viewport != null) camera.aspect = viewport.originalAspect;
@@ -393,6 +407,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             observer = helper.AddComponent<CameraExplorationLateObserver>();
             observer.AfterLateUpdate = Observe;
             Application.logMessageReceived += OnLog;
+#if !UNITY_EDITOR
+            if (!directComponentEvidence)
+                nativeRenderProbe = new NativeExplorationRenderProbe(camera, started, () => phase);
+#endif
             observing = true;
             Input(); yield return null;
             yield return Checkpoint("00-saved-spawn");
@@ -574,6 +592,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         {
             if (!observing || follow == null || movement == null) return;
             observedFrames++;
+#if !UNITY_EDITOR
+            nativeRenderProbe?.ObserveLateFrame();
+#endif
             var sample = Sample();
             if (observedFrames == 1)
             {
@@ -672,8 +693,18 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 #endif
             RenderTexture texture = null;
             Texture2D pixels = null;
+#if !UNITY_EDITOR
+            bool nativeCaptureBracketEntered = false;
+#endif
             try
             {
+#if !UNITY_EDITOR
+                if (nativeRenderProbe != null)
+                {
+                    nativeRenderProbe.BeginExplicitCapture(name);
+                    nativeCaptureBracketEntered = true;
+                }
+#endif
                 // Match the observed camera aspect; never recompute its clearance
                 // or presentation pose for a capture. URP includes the saved
                 // camera-space HUD; no UI mode/layout conversion is performed.
@@ -714,12 +745,23 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             }
             finally
             {
+#if !UNITY_EDITOR
+                try
+                {
+#endif
 #if UNITY_EDITOR
                 ShaderUtil.allowAsyncCompilation = originalAsyncCompilation;
 #endif
                 camera.targetTexture = originalTarget; RenderTexture.active = originalActive;
                 if (pixels != null) Object.DestroyImmediate(pixels);
                 if (texture != null) { texture.Release(); Object.DestroyImmediate(texture); }
+#if !UNITY_EDITOR
+                }
+                finally
+                {
+                    if (nativeCaptureBracketEntered) nativeRenderProbe.EndExplicitCapture();
+                }
+#endif
             }
             Assert.That(camera.transform.position, Is.EqualTo(sample.cameraPosition), "Capture must not move the camera.");
             Assert.That(camera.transform.rotation, Is.EqualTo(sample.cameraRotation), "Capture must not turn the camera.");
@@ -730,6 +772,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         {
             if (string.IsNullOrWhiteSpace(directory)) return;
             var evidence = new Evidence { completed = completed, observedFrames = observedFrames, unsafeFrames = unsafeFrames,
+#if !UNITY_EDITOR
+                nativeRendering = nativeRenderProbe?.Snapshot(),
+#endif
                 blockedWarnings = warningCount, elapsedObservedSeconds = observedFrames == 0 ? 0 : (observing ? Time.realtimeSinceStartupAsDouble : ended) - started,
                 viewport = viewport, samples = samples.ToArray(), inputs = inputs.ToArray(), episodes = episodes.ToArray(), warnings = warnings.ToArray(), captures = captures.ToArray(),
                 limitations = directComponentEvidence
@@ -775,7 +820,186 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             public UnsafeEpisode[] episodes;
             public WarningSample[] warnings;
             public CaptureSample[] captures;
+#if !UNITY_EDITOR
+            public NativeExplorationRendering nativeRendering;
+#endif
         }
+#if !UNITY_EDITOR
+        // Read-only SRP observation. An unbracketed callback with an active,
+        // unbound owned camera is an ordinary-render candidate, not GPU/display
+        // proof. Every native capture is bracketed throughout its preparation,
+        // request and target restoration; the Editor branch remains unchanged.
+        private sealed class NativeExplorationRenderProbe : IDisposable
+        {
+            private const int SampleLimit = 256;
+            private readonly Camera ownedCamera;
+            private readonly double origin;
+            private readonly Func<string> currentPhase;
+            private readonly NativeExplorationRenderCounts all = new NativeExplorationRenderCounts();
+            private readonly NativeExplorationRenderCounts ordinaryUnbound = new NativeExplorationRenderCounts();
+            private readonly NativeExplorationRenderCounts explicitCapture = new NativeExplorationRenderCounts();
+            private readonly NativeExplorationRenderCounts outsideUnbound = new NativeExplorationRenderCounts();
+            private readonly List<NativeExplorationRenderSample> callbacks = new List<NativeExplorationRenderSample>(SampleLimit);
+            private readonly List<NativeExplorationRenderSample> lateSamples = new List<NativeExplorationRenderSample>(SampleLimit);
+            private long callbackSamplesDropped, lateSamplesDropped, lateFrames, ordinaryUnboundLateFrames;
+            private long explicitCaptureLateFrames, outsideUnboundLateFrames, captureBegins, captureEnds;
+            private double nextLateSample;
+            private int captureDepth;
+            private string captureName;
+            private bool disposed;
+
+            public NativeExplorationRenderProbe(Camera camera, double startedAt, Func<string> phase)
+            {
+                ownedCamera = camera; origin = startedAt; currentPhase = phase;
+                try
+                {
+                    RenderPipelineManager.beginContextRendering += BeginContext;
+                    RenderPipelineManager.endContextRendering += EndContext;
+                    RenderPipelineManager.beginCameraRendering += BeginCamera;
+                    RenderPipelineManager.endCameraRendering += EndCamera;
+                }
+                catch { Dispose(); throw; }
+            }
+
+            public void BeginExplicitCapture(string name)
+            {
+                if (disposed || captureDepth != 0)
+                    throw new InvalidOperationException("Invalid native exploration capture observation bracket.");
+                captureBegins = checked(captureBegins + 1);
+                captureName = name; captureDepth = 1;
+            }
+
+            public void EndExplicitCapture()
+            {
+                if (captureDepth != 1)
+                    throw new InvalidOperationException("Unbalanced native exploration capture observation bracket.");
+                try { captureEnds = checked(captureEnds + 1); }
+                finally { captureDepth = 0; captureName = null; }
+            }
+
+            private NativeExplorationRenderCounts Classify(out string name)
+            {
+                if (captureDepth != 0) { name = "explicit-capture"; return explicitCapture; }
+                if (ownedCamera != null && ownedCamera.isActiveAndEnabled && ownedCamera.targetTexture == null)
+                {
+                    name = "unbracketed-owned-camera-active-and-unbound"; return ordinaryUnbound;
+                }
+                name = "outside-owned-active-unbound-interval"; return outsideUnbound;
+            }
+
+            private void BeginContext(ScriptableRenderContext context, List<Camera> cameras) => Record("context-begin", cameras, null);
+            private void EndContext(ScriptableRenderContext context, List<Camera> cameras) => Record("context-end", cameras, null);
+            private void BeginCamera(ScriptableRenderContext context, Camera camera) => Record("camera-begin", null, camera);
+            private void EndCamera(ScriptableRenderContext context, Camera camera) => Record("camera-end", null, camera);
+
+            private void Record(string kind, List<Camera> cameras, Camera callbackCamera)
+            {
+                if (disposed) return;
+                var category = Classify(out string classification);
+                bool owned = callbackCamera != null && callbackCamera == ownedCamera;
+                all.Increment(kind, owned); category.Increment(kind, owned);
+                if (callbacks.Count >= SampleLimit)
+                {
+                    callbackSamplesDropped = checked(callbackSamplesDropped + 1); return;
+                }
+                callbacks.Add(Sample(kind, classification, cameras?.Count ?? -1,
+                    cameras != null && cameras.Contains(ownedCamera), owned));
+            }
+
+            public void ObserveLateFrame()
+            {
+                if (disposed) return;
+                var category = Classify(out string classification);
+                lateFrames = checked(lateFrames + 1);
+                if (category == ordinaryUnbound) ordinaryUnboundLateFrames = checked(ordinaryUnboundLateFrames + 1);
+                else if (category == explicitCapture) explicitCaptureLateFrames = checked(explicitCaptureLateFrames + 1);
+                else outsideUnboundLateFrames = checked(outsideUnboundLateFrames + 1);
+                double now = Time.realtimeSinceStartupAsDouble - origin;
+                if (now < nextLateSample) return;
+                nextLateSample = now + 1;
+                if (lateSamples.Count < SampleLimit) lateSamples.Add(Sample("late-update", classification, -1, false, false));
+                else lateSamplesDropped = checked(lateSamplesDropped + 1);
+            }
+
+            private NativeExplorationRenderSample Sample(string kind, string classification, int cameraCount, bool present, bool owned) =>
+                new NativeExplorationRenderSample
+                {
+                    kind = kind, classification = classification, frame = Time.frameCount,
+                    seconds = Time.realtimeSinceStartupAsDouble - origin, phase = currentPhase(), capture = captureName,
+                    contextCameraCount = cameraCount, ownedCameraPresentInContext = present, callbackCameraIsOwned = owned,
+                    ownedCameraActiveAndEnabled = ownedCamera != null && ownedCamera.isActiveAndEnabled,
+                    ownedCameraTargetIsNull = ownedCamera != null && ownedCamera.targetTexture == null
+                };
+
+            public NativeExplorationRendering Snapshot() => new NativeExplorationRendering
+            {
+                sampleLimitPerArray = SampleLimit, disposed = disposed, activeCaptureDepth = captureDepth,
+                allCallbacks = all.Copy(), ordinaryUnboundCallbacks = ordinaryUnbound.Copy(),
+                explicitCaptureCallbacks = explicitCapture.Copy(), outsideUnboundCallbacks = outsideUnbound.Copy(),
+                lateFrames = lateFrames, ordinaryUnboundLateFrames = ordinaryUnboundLateFrames,
+                explicitCaptureLateFrames = explicitCaptureLateFrames, outsideUnboundLateFrames = outsideUnboundLateFrames,
+                captureBegins = captureBegins, captureEnds = captureEnds,
+                callbackSamplesDropped = callbackSamplesDropped, lateSamplesDropped = lateSamplesDropped,
+                callbackSamples = callbacks.ToArray(), lateSamples = lateSamples.ToArray()
+            };
+
+            public void Dispose()
+            {
+                if (disposed) return;
+                disposed = true;
+                RenderPipelineManager.beginContextRendering -= BeginContext;
+                RenderPipelineManager.endContextRendering -= EndContext;
+                RenderPipelineManager.beginCameraRendering -= BeginCamera;
+                RenderPipelineManager.endCameraRendering -= EndCamera;
+            }
+        }
+
+        [Serializable] private sealed class NativeExplorationRenderCounts
+        {
+            public long contextBegin, contextEnd, allCameraBegin, allCameraEnd, ownedCameraBegin, ownedCameraEnd;
+            public void Increment(string kind, bool owned)
+            {
+                switch (kind)
+                {
+                    case "context-begin": contextBegin = checked(contextBegin + 1); break;
+                    case "context-end": contextEnd = checked(contextEnd + 1); break;
+                    case "camera-begin":
+                        allCameraBegin = checked(allCameraBegin + 1);
+                        if (owned) ownedCameraBegin = checked(ownedCameraBegin + 1);
+                        break;
+                    case "camera-end":
+                        allCameraEnd = checked(allCameraEnd + 1);
+                        if (owned) ownedCameraEnd = checked(ownedCameraEnd + 1);
+                        break;
+                    default: throw new InvalidOperationException("Unknown native exploration render callback.");
+                }
+            }
+            public NativeExplorationRenderCounts Copy() => new NativeExplorationRenderCounts
+            {
+                contextBegin = contextBegin, contextEnd = contextEnd, allCameraBegin = allCameraBegin,
+                allCameraEnd = allCameraEnd, ownedCameraBegin = ownedCameraBegin, ownedCameraEnd = ownedCameraEnd
+            };
+        }
+
+        [Serializable] private sealed class NativeExplorationRendering
+        {
+            public string scope = "Native-only read-only SRP callbacks during unsnapped exploration. Ordinary-unbound counts classify observed callback state outside this fixture's explicit capture brackets while its owned camera is active with no targetTexture; other cameras are counted separately. Deferred/asynchronous request callbacks outside the bracket cannot be proved to originate from ordinary rendering. Native capture brackets include preparation/request/target restoration. Callback presence, LateUpdate counts and active/unbound state are not GPU completion, display, FPS or human acceptance proof.";
+            public int sampleLimitPerArray, activeCaptureDepth;
+            public bool disposed;
+            public long lateFrames, ordinaryUnboundLateFrames, explicitCaptureLateFrames, outsideUnboundLateFrames;
+            public long captureBegins, captureEnds, callbackSamplesDropped, lateSamplesDropped;
+            public NativeExplorationRenderCounts allCallbacks, ordinaryUnboundCallbacks, explicitCaptureCallbacks, outsideUnboundCallbacks;
+            public NativeExplorationRenderSample[] callbackSamples, lateSamples;
+        }
+
+        [Serializable] private sealed class NativeExplorationRenderSample
+        {
+            public string kind, classification, phase, capture;
+            public int frame, contextCameraCount;
+            public double seconds;
+            public bool ownedCameraPresentInContext, callbackCameraIsOwned, ownedCameraActiveAndEnabled, ownedCameraTargetIsNull;
+        }
+#endif
         [Serializable] private sealed class ViewportSetup
         {
             public float originalAspect, requestedAspect, observedAspect, originalRadius, requestedRadius, observedRadius;

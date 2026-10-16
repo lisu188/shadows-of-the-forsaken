@@ -8,7 +8,7 @@ Zapisany układ sceny porównano z mapą DOCX: [trzy widoki z edytora i zakres w
 
 ## Bieżący kandydat — 2026-10-16
 
-Nowsza [poprawka dokładnej pozycji kamery](docs/validation/camera-tangent-2026-10-16.md), źródło `0b9e160`, odtwarza i usuwa potwierdzony zanik widoku przy piedestale runy: niezmieniona rzeczywista regresja Unity przechodzi z **0/1** do **1/1**, zachowując margines kolizji i odzyskanie pełnego widoku. **187/187 EditMode** przeszło; pełny **235-case PlayMode** i świeże playery są jeszcze w weryfikacji. Dotychczasowa paczka/recorder pozostają przypięte do poniższego `3af1c661` do czasu kwalifikacji zastępstwa.
+Nowsza [poprawka dokładnej pozycji kamery](docs/validation/camera-tangent-2026-10-16.md), źródło `0b9e160`, odtwarza i usuwa potwierdzony zanik widoku przy piedestale runy: niezmieniona rzeczywista regresja Unity przechodzi z **0/1** do **1/1**, zachowując margines kolizji i odzyskanie pełnego widoku. **235/235 PlayMode i 187/187 EditMode** przeszło bez pominięć; świeże playery są jeszcze w weryfikacji. Dotychczasowa paczka/recorder pozostają przypięte do poniższego `3af1c661` do czasu kwalifikacji zastępstwa.
 
 [Read-only obserwacja kontekstów native](docs/validation/native-render-context-2026-10-16.md) zachowuje ścisłe **1/3** z pustymi zwykłymi klatkami HUD-u. Osobny kontrast z przezroczystym oknem całkowicie poza pulpitem zakończył się **0/3**: zwykły rendering nadal był pusty, a eksploracja ujawniła opisany wyżej błąd kamery. Oba przebiegi zakończyły się kontrolowanie, bez wykrytego FMOD/awarii natywnej; nie potwierdzają naprawy przyczyny starej awarii silnika.
 
