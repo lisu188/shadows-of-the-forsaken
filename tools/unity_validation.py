@@ -42,6 +42,7 @@ EXPECTED_TESTS = {
         'CastlePresentationSceneTests.GothicEnvironmentUsesSavedDetailedMeshesWithinItsBudget': ('',),
         'CastlePresentationSceneTests.GothicGateAndRelicMeshesRemainBoundToTheirExistingStateComponents': ('',),
         'CastlePresentationSceneTests.GothicStoneSurfacesUseRepeatableMipmappedOriginalAlbedos': ('',),
+        'CastlePresentationSceneTests.ThroneRuinedColumnsHaveFracturedTopsInsideOriginalPhysicalBounds': ('',),
         'CombatRulesTests.AttackHasWindupActiveRecoveryAndCannotQueueAnotherSwing': ('',),
         'CombatRulesTests.CancelClearsActiveWindowAndSession': ('',),
         'CombatRulesTests.DirectionalConeRejectsBehindOutsideRangeAndInvalidValues': ('',),
