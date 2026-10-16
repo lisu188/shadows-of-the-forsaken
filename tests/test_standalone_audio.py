@@ -71,6 +71,7 @@ def qualified_record():
                 cleanup_intervened=False, foreground_or_visible_window_violation=False,
                 hidden_parent=dict(destroyed=True), power_request=dict(restored=True), identity_unchanged=True,
                 parent_relation_verified=True, callback_failure_present=False, mixer_verified=True,
+                audio_configuration_telemetry_verified=True, command=["synthetic-player", "-timestamps"],
                 logs_scanned=True, native_fatal_markers=[], audio_failure_markers=[], crash_reports=[],
                 graphics_threading_observations=[dict(mode="kGfxThreadingModeClientWorkerJobs")])
 
@@ -242,10 +243,10 @@ class StandaloneAudioTests(unittest.TestCase):
         for name in set(inherited) - {"OTHER", "SHADOWS_AUDIO_PLAYER_OUTPUT", "SHADOWS_AUDIO_PROBE_OUTPUT"}:
             self.assertNotIn(name, child)
 
-    def test_all_fifteen_qualification_gates_have_an_independent_failure(self):
+    def test_original_fifteen_gates_and_additive_telemetry_gate_have_independent_failures(self):
         valid = qualified_record()
         self.assertTrue(audio.qualify(valid))
-        self.assertEqual(len(valid["qualification_checks"]), 15)
+        self.assertEqual(len(valid["qualification_checks"]), 16)
         mutations = {
             "exact_results_verified": dict(results_verified=False),
             "runtime_callback_verified": dict(completion_verified=False),
@@ -262,6 +263,7 @@ class StandaloneAudioTests(unittest.TestCase):
             "no_fatal_audio_or_dump": dict(audio_failure_markers=[dict(text="FMOD output failed")]),
             "no_callback_failure": dict(callback_failure_present=True),
             "mixer_verified": dict(mixer_verified=False),
+            "audio_configuration_telemetry_verified": dict(audio_configuration_telemetry_verified=False),
         }
         self.assertEqual(set(mutations), set(valid["qualification_checks"]))
         for gate, change in mutations.items():

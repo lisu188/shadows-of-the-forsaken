@@ -328,6 +328,7 @@ class NUnitEvidenceTests(unittest.TestCase):
             ("playmode", "LevelHudLayoutTests"),
             ("playmode", "PrimaryCastleHudRenderingTests"),
             ("playmode", "AudioMixerPlaybackTests"),
+            ("playmode", "AudioConfigurationTelemetryTests"),
         ]:
             with self.subTest(mode=mode, fixture=fixture):
                 report = report_for(mode)
@@ -410,10 +411,12 @@ class NUnitEvidenceTests(unittest.TestCase):
             ".CombatControllerTests.", ".ForsakenLevelTests.", ".LevelHudLayoutTests.",
             ".LevelInteractionTests.", ".WorldTextTests.", ".CastleCameraExplorationTests.",
             ".PrimaryCastleHudRenderingTests.", ".AudioMixerPlaybackTests.",
+            ".AudioConfigurationTelemetryTests.",
         )
         # The later plinth-landing and held-ceiling regressions also did not exist
         # in this historical report. Preserve its original 193 cases as the catalog grows.
         later_camera_methods = (
+            ".CameraFollowTests.MinimumTravelEndpointSurvivesLowerJunctionGroundMicrostep",
             ".CameraFollowTests.LandingBesideLowPlinthRetainsClearCameraAndRecoversFullBoom",
             ".CameraFollowTests.HeldCeilingTangentViewSurvivesRunePlinthNorthEdge",
         )

@@ -33,6 +33,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private float originalVolume;
         private bool originalPause;
         private double nextEvidenceSample;
+#if !UNITY_EDITOR
+        private GameObject telemetryOwner;
+        private AudioConfigurationTelemetry telemetry;
+#endif
 
         [UnityTest, Timeout(20000)]
         public IEnumerator QuietClipTraversesMixerAndReturnsToSilence()
@@ -76,6 +80,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                         evidence.signal = sample;
                         evidence.sourceWindow = (float[])sourceBuffer.Clone();
                         evidence.masterWindow = (float[])masterBuffer.Clone();
+#if !UNITY_EDITOR
+                        telemetry?.MarkPhase("signal-captured");
+#endif
                         signal = true;
                         break;
                     }
@@ -99,6 +106,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                     if (sample.dspTime - evidence.stopDspTime >= grace && quiet >= 3)
                     {
                         evidence.stopped = sample;
+#if !UNITY_EDITOR
+                        telemetry?.MarkPhase("silence-captured");
+#endif
                         stopped = true;
                         break;
                     }
@@ -144,6 +154,18 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             path = Path.Combine(directory, "evidence.json");
             TestContext.WriteLine("Audio mixer diagnostic evidence: " + path);
             evidence = new Evidence { unityVersion = Application.unityVersion, platform = Application.platform.ToString(), isEditor = Application.isEditor };
+#if !UNITY_EDITOR
+            string nativeOutput = Environment.GetEnvironmentVariable("SHADOWS_AUDIO_PLAYER_OUTPUT");
+            if (!string.IsNullOrWhiteSpace(nativeOutput))
+            {
+                // Separate active owner ensures Awake ran before Begin and
+                // adds no AudioSource/AudioListener to the borrowed-state scan.
+                telemetryOwner = new GameObject("Owned passive audio configuration observer");
+                telemetry = telemetryOwner.AddComponent<AudioConfigurationTelemetry>();
+                telemetry.Begin(TestContext.CurrentContext.Test.FullName, Path.GetFullPath(nativeOutput), path,
+                    new AudioConfigurationTelemetry.UnityEvents(), new AudioConfigurationTelemetry.UnityReader());
+            }
+#endif
             originalVolume = AudioListener.volume; originalPause = AudioListener.pause; settingsCaptured = true;
             foreach (var item in Object.FindObjectsByType<AudioSource>(FindObjectsInactive.Include))
             {
@@ -192,6 +214,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         private SignalSample Observe()
         {
+#if !UNITY_EDITOR
+            telemetry?.MarkPhase(stage);
+#endif
             source.GetOutputData(sourceBuffer, 0);
             AudioListener.GetOutputData(masterBuffer, 0);
             var sample = new SignalSample { stage = stage, realtime = Time.realtimeSinceStartupAsDouble, dspTime = AudioSettings.dspTime,
@@ -221,6 +246,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         {
             if (evidence == null) return;
             if (cleanupComplete) { SaveEvidence(); return; }
+#if !UNITY_EDITOR
+            telemetry?.MarkPhase("cleanup");
+#endif
             evidence.stage = stage; evidence.recordedUtc = DateTime.UtcNow.ToString("O");
             if (tap != null) evidence.tap = tap.Snapshot();
             Cleanup(() => { if (source != null) source.Stop(); });
@@ -247,6 +275,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                     else evidence.listenersRestored = false;
                 });
             evidence.globalSettingsRestored = settingsCaptured && AudioListener.volume == originalVolume && AudioListener.pause == originalPause;
+#if !UNITY_EDITOR
+            Cleanup(() => { if (telemetry != null) evidence.audioConfigurationTelemetry = telemetry.Close(); });
+            Cleanup(() => { if (telemetryOwner != null) Object.DestroyImmediate(telemetryOwner); });
+            if (evidence.audioConfigurationTelemetry != null)
+                evidence.audioConfigurationTelemetry.ownedObserverDestroyed = telemetryOwner == null;
+#endif
             evidence.samples = samples.ToArray(); evidence.cleanupErrors = cleanupErrors.ToArray();
             cleanupComplete = true;
             SaveEvidence();
@@ -282,6 +316,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             public float[] sourceWindow, masterWindow;
             public AudioMixerTapSnapshot tap;
             public string[] cleanupErrors;
+#if !UNITY_EDITOR
+            public AudioConfigurationTelemetry.Evidence audioConfigurationTelemetry;
+#endif
         }
     }
 

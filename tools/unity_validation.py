@@ -135,6 +135,8 @@ EXPECTED_TESTS = {
         'ProjectBaselineTests.RuntimeScriptImportsWithOriginalGuid': ('("Assets/PlayerMovement.cs","PlayerMovement","963b3f782c6d71942ad1e73d117b2820")', '("Assets/CameraFollow.cs","CameraFollow","9191262690f98974abc0076595479fd6")'),
     },
     'playmode': {
+        'AudioConfigurationTelemetryTests.CallbackQueueIsBoundedAndClosedAcceptanceIsImmutable': ('',),
+        'AudioConfigurationTelemetryTests.OwnedObserverDrainsOnMainThreadAndDetachesAcrossFaults': ('',),
         'AudioMixerPlaybackTests.QuietClipTraversesMixerAndReturnsToSilence': ('',),
         'BaselineSceneTests.BaselineCameraAndDirectionalLightAreActive': ('',),
         'BaselineSceneTests.BaselineSceneRunsWithoutMissingComponents': ('',),
@@ -148,6 +150,7 @@ EXPECTED_TESTS = {
         'CameraFollowTests.LookHeightOffsetChangesOnlyAimAndRetainsTheCollisionPivot': ('(0.0f,0.0f)', '(1.3f,1.3f)', '(-1.0f,0.0f)', '(3.0f,2.0f)', '(float.NaN,0.0f)', '(float.PositiveInfinity,0.0f)', '(float.NegativeInfinity,0.0f)'),
         'CameraFollowTests.LowCeilingAndCornerLeaveCollisionVolumeClear': ('',),
         'CameraFollowTests.MissingTargetWarnsOnceAndCanRecover': ('',),
+        'CameraFollowTests.MinimumTravelEndpointSurvivesLowerJunctionGroundMicrostep': ('',),
         'CameraFollowTests.MovingTargetAtHeldCameraAimUsesSafeBoomWithoutInvalidRotation': ('',),
         'CameraFollowTests.OriginalSerializedFieldsAndDefaultsRemainAvailable': ('',),
         'CameraFollowTests.OriginallyDisabledCameraIsNotEnabledByRecovery': ('',),

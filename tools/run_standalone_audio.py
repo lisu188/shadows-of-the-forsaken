@@ -266,6 +266,8 @@ def qualify(record):
             not record.get("audio_failure_markers") and record.get("crash_reports") == [],
         "no_callback_failure": record.get("callback_failure_present") is False,
         "mixer_verified": record.get("mixer_verified") is True,
+        "audio_configuration_telemetry_verified": record.get("audio_configuration_telemetry_verified") is True
+            and type(record.get("command")) is list and record["command"].count("-timestamps") == 1,
     }
     record["qualification_checks"] = conditions
     record["errors"].extend("Qualification failed: " + key for key, okay in conditions.items() if not okay)
@@ -384,6 +386,132 @@ def validate_mixer_output(output, started_utc, completed_utc):
     return result
 
 
+def audio_player_command(player, output, parent):
+    # Documented Unity player logging adds timestamps and thread IDs. This does
+    # not select a device, reset audio, alter rendering, or route OS output.
+    command = native.player_command(player, output, "legacy", parent, "embedded")
+    require("-timestamps" not in command, "Duplicate timestamp logging flag")
+    return [*command, "-timestamps"]
+
+
+def validate_audio_configuration(value, pid, output, path, started_utc, completed_utc):
+    """Check passive observations; zero actual device-change callbacks is valid."""
+    require(type(value) is dict and type(value.get("schemaVersion")) is int and value["schemaVersion"] == 1 and
+            value.get("profile") == "audio-mixer-passive-configuration", "Missing passive audio telemetry")
+    require(type(value.get("pid")) is int and value["pid"] == pid and value.get("caseFullName") == AUDIO_CASE,
+            "Audio telemetry process/case differs")
+    for key, expected in (("outputDirectory", output), ("evidencePath", path)):
+        require(type(value.get(key)) is str and Path(value[key]).is_absolute() and
+                Path(value[key]).resolve() == expected.resolve(), "Audio telemetry path differs: " + key)
+    require(re.fullmatch(r"[0-9a-f]{32}", value.get("probeSessionId", "")) is not None,
+            "Missing observer lease identity")
+    main = bounded_integer(value.get("mainThreadId"), "observer main thread", 1, 2**31 - 1)
+    scene = bounded_integer(value.get("sceneHandle"), "observer scene", 1, 2**64 - 1)
+    require(value.get("sceneLoaded") is True and type(value.get("scenePath")) is str and
+            type(value.get("sceneName")) is str and bool(value["sceneName"]), "Missing actual observer scene")
+    for key, expected in (("closed", True), ("ownedObserverDestroyed", True), ("subscribed", False),
+                          ("acceptingCallbacks", False), ("counterOverflow", False), ("phaseLimitReached", False)):
+        require(value.get(key) is expected, "Observer lifecycle/capacity failed: " + key)
+    require(value.get("errors") == [], "Observer errors are not empty")
+    require(type(value.get("queueCapacity")) is int and value["queueCapacity"] == 128 and
+            type(value.get("recordCapacity")) is int and value["recordCapacity"] == 256, "Observer bounds differ")
+    frequency = bounded_integer(value.get("stopwatchFrequency"), "monotonic frequency", 1)
+
+    def utc(stamp):
+        ticks = native.published_utc_ticks(stamp)
+        require(dt.datetime.fromisoformat(stamp.replace("Z", "+00:00")).utcoffset() == dt.timedelta(0),
+                "Audio telemetry requires UTC")
+        return ticks
+
+    start, end = utc(started_utc), utc(completed_utc)
+    began, closed = utc(value.get("beganUtc")), utc(value.get("closedUtc"))
+    require(start <= began <= closed <= end, "Observer timestamps escaped this actual run")
+
+    def configuration(item):
+        require(type(item) is dict, "Missing drain-time configuration")
+        require(item.get("readThreadId") == main and type(item.get("readThreadId")) is int,
+                "Configuration was not read on captured Unity main thread")
+        require(item.get("sceneHandle") == scene and type(item.get("sceneHandle")) is int and
+                item.get("scenePath") == value["scenePath"] and item.get("sceneLoaded") is True,
+                "Configuration belongs to another/unloaded scene")
+        stamp = utc(item.get("readUtc"))
+        require(began <= stamp <= closed, "Configuration time escaped observer lease")
+        clock = bounded_integer(item.get("readClockTicks"), "configuration monotonic clock", 1)
+        bounded_integer(item.get("sampleRate"), "configuration sample rate", 8000, 384000)
+        bounded_integer(item.get("dspBufferSize"), "configuration DSP frames", 1, 65536)
+        bounded_integer(item.get("numRealVoices"), "real voices", 1, 1000000)
+        bounded_integer(item.get("numVirtualVoices"), "virtual voices", 1, 1000000)
+        bounded_integer(item.get("frame"), "configuration frame", 0, 2**31 - 1)
+        require(item.get("speakerMode") in ("Raw", "Mono", "Stereo", "Quad", "Surround", "Mode5point1", "Mode7point1", "Prologic"),
+                "Missing actual speaker mode")
+        return stamp, clock
+
+    initial_stamp, initial_clock = configuration(value.get("initial"))
+    final_stamp, final_clock = configuration(value.get("final"))
+    require(initial_stamp <= final_stamp and initial_clock <= final_clock, "Configuration clocks ran backwards")
+    phases = value.get("phases")
+    expected = ["prepared", "prime-and-baseline", "playing", "signal-captured", "stopped-silence",
+                "silence-captured", "cleanup", "observer-closing"]
+    require(type(phases) is list and len(phases) == len(expected), "Missing/excessive capture phase boundaries")
+    previous_stamp, previous_clock, previous_frame = began, 0, 0
+    for token, (item, name) in enumerate(zip(phases, expected)):
+        require(type(item) is dict and type(item.get("token")) is int and item["token"] == token and
+                item.get("name") == name, "Capture phase identity/order differs")
+        stamp = utc(item.get("utc"))
+        clock = bounded_integer(item.get("clockTicks"), "phase clock", 1, final_clock)
+        frame = bounded_integer(item.get("frame"), "phase frame", 0, 2**31 - 1)
+        require(previous_stamp <= stamp <= closed and previous_clock <= clock and previous_frame <= frame,
+                "Phase clocks ran backwards")
+        previous_stamp, previous_clock, previous_frame = stamp, clock, frame
+    require(utc(phases[0]["utc"]) <= initial_stamp and phases[0]["clockTicks"] <= initial_clock and
+            previous_stamp <= final_stamp,
+            "Initial/final configuration missed lifecycle boundaries")
+    retained = value.get("retained")
+    require(type(retained) is list and len(retained) <= 256, "Unbounded callback history")
+    counts = {key: bounded_integer(value.get(key), key) for key in
+              ("callbackCount", "queueDrops", "recordDrops", "pendingCallbacks")}
+    require(counts["callbackCount"] == len(retained) + counts["queueDrops"] + counts["recordDrops"] + counts["pendingCallbacks"],
+            "Callback accounting differs")
+    require(counts["queueDrops"] == counts["recordDrops"] == counts["pendingCallbacks"] == 0,
+            "Callback evidence was lost or remains pending")
+    previous_read = 0
+    for sequence, item in enumerate(retained, 1):
+        require(type(item) is dict and type(item.get("sequence")) is int and item["sequence"] == sequence,
+                "Callback sequence/accounting differs")
+        require(type(item.get("deviceWasChanged")) is bool, "Callback device-change value is missing")
+        bounded_integer(item.get("callbackThreadId"), "actual callback thread", 1, 2**31 - 1)
+        callback_phase = bounded_integer(item.get("callbackPhaseToken"), "callback phase", 0, len(phases) - 1)
+        drain_phase = bounded_integer(item.get("drainedPhaseToken"), "drain phase", callback_phase, len(phases) - 1)
+        callback_stamp = utc(item.get("callbackUtc"))
+        read_stamp, read_clock = configuration(item.get("configuration"))
+        require(read_stamp >= initial_stamp and read_clock >= initial_clock and
+                read_stamp >= utc(phases[drain_phase]["utc"]) and read_clock >= phases[drain_phase]["clockTicks"],
+                "Drain configuration predates initial read or sampled drain-phase boundary")
+        callback_clock = bounded_integer(item.get("callbackClockTicks"), "callback clock", 1, read_clock)
+        require(began <= callback_stamp <= read_stamp and previous_read <= read_clock <= final_clock,
+                "Callback/main-thread drain clocks differ")
+        delay = finite_number(item.get("observedDelaySeconds"), "observed main-thread delay")
+        require(math.isclose(delay, (read_clock - callback_clock) / frequency, rel_tol=1e-9, abs_tol=1e-9),
+                "Reported main-thread delay differs from actual clocks")
+        previous_read = read_clock
+    return {"callback_count": counts["callbackCount"], "retained_count": len(retained), "drops": 0,
+            "probe_session_id": value["probeSessionId"], "main_thread_id": main, "scene_handle": scene,
+            "initial_configuration": value["initial"], "final_configuration": value["final"],
+            "phase_names": expected, "scope": "Passive actual callbacks and later main-thread configuration only; zero events is valid. No device recovery, endpoint identity, stream health or audible acceptance is established."}
+
+
+def validate_audio_configuration_output(output, pid, mixer_validation, started_utc, completed_utc):
+    path = output / mixer_validation["path"]
+    require(path.resolve().is_relative_to(output.resolve()) and not path.is_symlink(), "Telemetry file escaped output")
+    require(native.manifest.regular(path).stat().st_size <= 512 * 1024, "Telemetry file exceeds bounds")
+    raw = path.read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == mixer_validation["sha256"], "Mixer evidence changed between validators")
+    value = json.loads(raw, object_pairs_hook=native.manifest.unique_json)
+    result = validate_audio_configuration(value.get("audioConfigurationTelemetry"), pid, output, path, started_utc, completed_utc)
+    require(native.manifest.digest(path) == mixer_validation["sha256"], "Telemetry evidence changed during validation")
+    return {**result, "path": mixer_validation["path"], "sha256": mixer_validation["sha256"]}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--player", type=Path, required=True)
@@ -442,7 +570,7 @@ def main():
             try:
                 parent = native.HiddenParentWindow(kernel, user, record)
                 parent.create()
-                command = native.player_command(player, out, "legacy", parent.handle, "embedded")
+                command = audio_player_command(player, out, parent.handle)
                 record["command"] = command
                 process = subprocess.Popen(command, cwd=player.parent, env=environment, startupinfo=startup,
                     creationflags=subprocess.CREATE_NO_WINDOW, stdout=stdout, stderr=stderr)
@@ -517,6 +645,12 @@ def main():
         record["mixer_verified"] = True
     except Exception as error:
         record["errors"].append("mixer: " + str(error))
+    try:
+        record["audio_configuration_telemetry_validation"] = validate_audio_configuration_output(out, record.get("pid"),
+            record["mixer_validation"], record["started_utc"], record["completed_utc"])
+        record["audio_configuration_telemetry_verified"] = True
+    except Exception as error:
+        record["errors"].append("audio configuration telemetry: " + str(error))
     passed = qualify(record)
     native.write_new(out / "execution.json", record)
     native.write_new(out / "evidence-file-inventory.json", {"utc": native.utc(), "files": native.manifest.file_tree(out)})
