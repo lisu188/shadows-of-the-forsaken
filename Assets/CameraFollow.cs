@@ -231,7 +231,11 @@ public class CameraFollow : MonoBehaviour
         for (int attempt = 0; attempt <= 24; attempt++)
         {
             float travel = Mathf.Lerp(limit, minimum, attempt / 24f);
-            Vector3 position = pivot + direction * travel;
+            // Keep an uncut endpoint exact: rebuilding it can round a clear
+            // tangent position into the padded overlap volume.
+            Vector3 position = attempt == 0 && limit >= length
+                ? requested
+                : pivot + direction * travel;
             count = Overlap(position, radius + collisionPadding * 0.5f);
             if (count < 0) return false;
             bool clear = true;
