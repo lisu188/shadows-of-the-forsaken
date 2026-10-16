@@ -4,9 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using ForsakenStandaloneRenderedRouteSupport;
+using ForsakenPassiveAudioLifecycleTestSupport;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.TestRunner;
 using Object = UnityEngine.Object;
 
 namespace ShadowsOfTheForsaken.Tests.PlayMode
@@ -20,8 +23,26 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             GameObject owner = null, exitOwner = null;
             try
             {
+                var calls = new List<string>();
+                var original = new FakeCallbacks("route", calls); var companion = new FakeCallbacks("audio", calls);
+                var dispatcher = new StandaloneMainTestCallbacks(original, companion);
+                dispatcher.RunStarted(null); dispatcher.TestStarted(null); dispatcher.TestFinished(null); dispatcher.RunFinished(null);
+                Assert.That(calls, Is.EqualTo(new[] { "route-run-started", "audio-run-started", "route-test-started", "audio-test-started",
+                    "route-test-finished", "audio-test-finished", "route-run-finished", "audio-run-finished" }));
+                calls.Clear(); original.failStart = true;
+                Assert.Throws<InvalidOperationException>(() => dispatcher.RunStarted(null));
+                Assert.That(calls, Is.EqualTo(new[] { "route-run-started", "audio-run-started" }));
+                if (Application.isEditor)
+                {
+                    // Actual default delegates are inactive in Editor, even
+                    // with null tokens. No files/owners/quit are requested.
+                    dispatcher = new StandaloneMainTestCallbacks();
+                    dispatcher.RunStarted(null); dispatcher.TestStarted(null); dispatcher.TestFinished(null); dispatcher.RunFinished(null);
+                }
                 owner = new GameObject("Synthetic audio lifecycle owner");
                 var observer = owner.AddComponent<AudioRunLifecycleObserver>();
+                Assert.That(observer.GetType().Namespace.StartsWith("ShadowsOfTheForsaken", StringComparison.Ordinal), Is.False,
+                    "The unchanged route fixture must not suspend the passive observer's Update.");
                 var publisher = new FakeEvents(); var reader = new FakeReader(); var sink = new FakeSink();
                 observer.Begin("synthetic", 123, publisher, reader, sink, false);
                 observer.ObserveTest("run-started", "suite", "synthetic suite", true, "");
@@ -139,6 +160,17 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             public bool throwAfterAttach, throwOnRemove;
             public void Subscribe(Action<bool> value) { callback = value; if (throwAfterAttach) throw new InvalidOperationException("Synthetic attach fault"); }
             public void Unsubscribe(Action<bool> value) { removals++; if (throwOnRemove) throw new InvalidOperationException("Synthetic detach fault"); callback -= value; }
+        }
+        private sealed class FakeCallbacks : ITestRunCallback
+        {
+            private readonly string label;
+            private readonly List<string> calls;
+            public bool failStart;
+            public FakeCallbacks(string label, List<string> calls) { this.label = label; this.calls = calls; }
+            public void RunStarted(ITest test) { calls.Add(label + "-run-started"); if (failStart) throw new InvalidOperationException("Synthetic callback fault"); }
+            public void TestStarted(ITest test) { calls.Add(label + "-test-started"); }
+            public void TestFinished(ITestResult result) { calls.Add(label + "-test-finished"); }
+            public void RunFinished(ITestResult result) { calls.Add(label + "-run-finished"); }
         }
         private sealed class FakeReader : IAudioConfigurationReader
         {

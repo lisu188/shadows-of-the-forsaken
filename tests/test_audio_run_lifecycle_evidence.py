@@ -1,6 +1,7 @@
 import copy
 import importlib.util
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -248,6 +249,44 @@ class AudioRunLifecycleEvidenceTests(unittest.TestCase):
             with self.assertRaisesRegex(AssertionError, "grew beyond"):
                 e.read_closed(target)
         stream.__enter__.return_value.read.assert_called_once_with(e.LIMIT + 1)
+
+
+class CallbackAssemblyRegistrationTests(unittest.TestCase):
+    def test_observer_namespace_escapes_the_unchanged_route_isolation_predicate(self):
+        root = TOOL.parents[1]
+        source = (root / "Assets/Tests/PlayMode/AudioRunLifecycleObserver.cs").read_text(encoding="utf-8-sig")
+        observer = source.index("public sealed class AudioRunLifecycleObserver : MonoBehaviour")
+        namespaces = list(re.finditer(r"\bnamespace\s+([A-Za-z0-9_.]+)", source[:observer]))
+        self.assertTrue(namespaces)
+        self.assertEqual(namespaces[-1][1], "ForsakenPassiveAudioLifecycleTestSupport")
+        self.assertFalse(namespaces[-1][1].startswith("ShadowsOfTheForsaken"))
+        fixture = (root / "Assets/Tests/PlayMode/FullCastleRouteTests.cs").read_text(encoding="utf-8-sig")
+        self.assertIn('item.GetType().Namespace?.StartsWith("ShadowsOfTheForsaken", StringComparison.Ordinal) == true', fixture)
+
+    def test_one_callback_attribute_per_actual_assembly_boundary(self):
+        root = TOOL.parents[1]
+        assets = root / "Assets"
+        registrations = {}
+        for source in (assets / "Tests").rglob("*.cs"):
+            declarations = re.findall(r"^\s*\[assembly:\s*TestRunCallback\(typeof\(([^)]+)\)\)\]", source.read_text(encoding="utf-8-sig"), re.M)
+            if not declarations:
+                continue
+            parent = source.parent
+            while parent != assets:
+                assemblies = list(parent.glob("*.asmdef"))
+                if assemblies:
+                    self.assertEqual(len(assemblies), 1)
+                    assembly = json.loads(assemblies[0].read_text(encoding="utf-8-sig"))["name"]
+                    break
+                parent = parent.parent
+            else:
+                self.fail("Callback declaration has no assembly definition: " + str(source))
+            registrations.setdefault(assembly, []).extend(declarations)
+        self.assertEqual(registrations["Shadows.PlayMode.Tests"], ["ShadowsOfTheForsaken.Tests.PlayMode.StandaloneMainTestCallbacks"])
+        self.assertEqual(registrations["Shadows.StandaloneRenderedRoutes.PlayerSupport"], ["ForsakenStandaloneRenderedRouteSupport.StandaloneRenderedRoutePlayerEvidence"])
+        self.assertEqual(registrations["Shadows.StandaloneAudio.PlayerSupport"], ["ForsakenStandaloneAudioTestSupport.StandaloneAudioPlayerEvidence"])
+        self.assertEqual(registrations["Shadows.StandalonePresentation.PlayerSupport"], ["ForsakenStandalonePresentationTestSupport.StandalonePresentationPlayerEvidence"])
+        self.assertTrue(all(len(values) == 1 for values in registrations.values()))
 
 
 if __name__ == "__main__":

@@ -8,16 +8,33 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using ForsakenStandaloneRenderedRouteSupport;
+using ForsakenPassiveAudioLifecycleTestSupport;
 using NUnit.Framework.Interfaces;
 using UnityEngine;
 using UnityEngine.TestRunner;
 using UnityEngine.Scripting;
 using Object = UnityEngine.Object;
 
-[assembly: TestRunCallback(typeof(ShadowsOfTheForsaken.Tests.PlayMode.AudioRunLifecycleCallbacks))]
-
 namespace ShadowsOfTheForsaken.Tests.PlayMode
 {
+    // One attribute is allowed per assembly. Keep the original ten-route
+    // callback as an unchanged owned delegate and add the optional companion.
+    [Preserve]
+    public sealed class StandaloneMainTestCallbacks : ITestRunCallback
+    {
+        private readonly ITestRunCallback route, audio;
+        public StandaloneMainTestCallbacks() : this(new ForsakenStandaloneRouteTestSupport.StandaloneRoutePlayerEvidence(), new AudioRunLifecycleCallbacks()) { }
+        public StandaloneMainTestCallbacks(ITestRunCallback route, ITestRunCallback audio)
+        {
+            this.route = route ?? throw new ArgumentNullException(nameof(route));
+            this.audio = audio ?? throw new ArgumentNullException(nameof(audio));
+        }
+        public void RunStarted(ITest test) { try { route.RunStarted(test); } finally { audio.RunStarted(test); } }
+        public void TestStarted(ITest test) { try { route.TestStarted(test); } finally { audio.TestStarted(test); } }
+        public void TestFinished(ITestResult result) { try { route.TestFinished(result); } finally { audio.TestFinished(result); } }
+        public void RunFinished(ITestResult result) { try { route.RunFinished(result); } finally { audio.RunFinished(result); } }
+    }
+
     // Optional test-only companion. It neither changes the existing two tests
     // nor owns quitting. UTF callback order is deliberately not assumed.
     [Preserve]
@@ -56,6 +73,14 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         public void TestFinished(ITestResult result) => Guard(() => { if (!result.Test.IsSuite) observer.ObserveTest("test-finished", result.Test.Id, result.Test.FullName, false, result.ResultState.Status.ToString()); });
         public void RunFinished(ITestResult result) => Guard(() => observer.ObserveTest("run-finished", result.Test.Id, result.Test.FullName, result.Test.IsSuite, result.ResultState.Status.ToString()));
     }
+
+}
+
+// The unchanged route fixture suspends gameplay-namespaced Behaviours. This
+// owned diagnostic must keep draining while both actual routes are running.
+namespace ForsakenPassiveAudioLifecycleTestSupport
+{
+    using ShadowsOfTheForsaken.Tests.PlayMode;
 
     public interface IAudioRunLifecycleSink
     {

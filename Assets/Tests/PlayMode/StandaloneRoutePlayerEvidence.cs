@@ -11,7 +11,7 @@ using NUnit.Framework.Interfaces;
 using UnityEngine;
 using UnityEngine.TestRunner;
 
-[assembly: TestRunCallback(typeof(ForsakenStandaloneRouteTestSupport.StandaloneRoutePlayerEvidence))]
+[assembly: TestRunCallback(typeof(ShadowsOfTheForsaken.Tests.PlayMode.StandaloneMainTestCallbacks))]
 
 namespace ForsakenStandaloneRouteTestSupport
 {
