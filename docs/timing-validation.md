@@ -2,8 +2,11 @@
 
 `tools/report_route_timing.py` supports issue #23 and DOCX §3 by reading existing
 `PlayerValidationEvidence` logs. It sends no input, launches no game, changes no
-Unity source, and preserves raw evidence. Standalone testing remains deferred
-under the owner's instruction to continue implementation and test later.
+Unity source, and preserves raw evidence. On 2026-10-14 the owner lifted the
+previous foreground-testing deferral, then chose hidden Unity testing. The
+[current native/Release evidence](validation/minimum-travel-native-release-2026-10-16.md)
+and [rendered-route diagnostic](validation/rendered-routes-2026-10-16.md) retain
+their automated scope; a completed first-time human timing set remains pending.
 
 The output is **input for review**, never a declaration that the 120–180 second
 target or human acceptance has been achieved. Synthetic parser tests exercise
@@ -12,8 +15,9 @@ the reporting tool; they are not timed playthroughs.
 ## Inputs and invocation
 
 For the current verified primary build, the [owner-run playtest handoff](primary-player-playtest.md)
-provides an evidence-enabled launch and creates manifests from actual files after
-the foreground-testing deferral is explicitly lifted.
+provides an evidence-enabled manual method and creates manifests from actual
+files. The earlier deferral has already been lifted; that method still needs
+actual human participation and completed attempts to supply human timing data.
 
 Keep each recorded attempt's original `events.jsonl`, `performance.jsonl`,
 `room-performance.jsonl`, final `status.json` and player log. The timing schema
