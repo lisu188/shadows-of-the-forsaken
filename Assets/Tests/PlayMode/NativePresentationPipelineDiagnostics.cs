@@ -18,6 +18,13 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         public static void Prepare(Camera camera, Scene scene)
         {
 #if !UNITY_EDITOR
+            Prepare(camera, scene, true);
+#endif
+        }
+
+#if !UNITY_EDITOR
+        public static void Prepare(Camera camera, Scene scene, bool expectInitializationDiagnostics)
+        {
             var additional = camera.GetComponent<UniversalAdditionalCameraData>();
             Assert.That(additional, Is.Not.Null, "The saved camera must have URP camera data.");
             Assert.That(additional.renderPostProcessing, Is.False,
@@ -44,16 +51,19 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 return;
             }
 
+            // The owned sceneLoaded callback already registers first-use logs
+            // for exploration. Its captures must repeat every inactivity check
+            // without queuing the same messages while ordinary rendering is hidden.
+            if (!expectInitializationDiagnostics) return;
+
             // Pinned URP17.6 constructs inactive pass materials on first use.
             // Expect only the observed exact LogType.Log count, and only for an
             // unavailable shader. Missing profiles, active effects and other logs fail.
             ExpectUnavailableShader("Hidden/Universal Render Pipeline/GaussianDepthOfField", "GaussianDepthOfField", 2);
             ExpectUnavailableShader("Hidden/Universal Render Pipeline/BokehDepthOfField", "BokehDepthOfField", 1);
             ExpectUnavailableShader("Hidden/Universal Render Pipeline/PaniniProjection", "PaniniProjection", 1);
-#endif
         }
 
-#if !UNITY_EDITOR
         private static void AssertEffectsInactive(VolumeProfile profile, bool requireEffects)
         {
             if (profile == null) { Assert.That(requireEffects, Is.False); return; }
