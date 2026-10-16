@@ -156,7 +156,7 @@ namespace ForsakenPassiveAudioLifecycleTestSupport
         private void TryAttachExit()
         {
             if (!ReferenceEquals(exit, null) || quitting || audioClosed) return;
-            var candidates = Object.FindObjectsByType<StandaloneRenderedRoutePlayerExit>(FindObjectsInactive.Include);
+            var candidates = Resources.FindObjectsOfTypeAll<StandaloneRenderedRoutePlayerExit>();
             if (candidates.Length > 1) throw new InvalidOperationException("Ambiguous rendered-route exit owner.");
             if (candidates.Length == 1)
             {

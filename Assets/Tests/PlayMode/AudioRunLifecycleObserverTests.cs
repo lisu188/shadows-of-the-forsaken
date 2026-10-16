@@ -60,6 +60,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 exitOwner = new GameObject("Standalone rendered-route test completion") { hideFlags = HideFlags.HideAndDontSave };
                 Object.DontDestroyOnLoad(exitOwner);
                 var exit = exitOwner.AddComponent<StandaloneRenderedRoutePlayerExit>();
+                Assert.That(Object.FindObjectsByType<StandaloneRenderedRoutePlayerExit>(FindObjectsInactive.Include), Has.No.Member(exit));
+                Assert.That(Resources.FindObjectsOfTypeAll<StandaloneRenderedRoutePlayerExit>(), Has.Member(exit));
                 yield return null; // Exercise actual discovery and GameObject ownership checks.
                 Assert.That(sink.rows.FindAll(item => item.kind == "exit-attached"), Has.Count.EqualTo(1));
                 exit.PrepareToQuit(); exit.PrepareToQuit();
