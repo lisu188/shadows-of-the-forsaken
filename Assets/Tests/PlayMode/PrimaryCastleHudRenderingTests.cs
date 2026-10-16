@@ -427,15 +427,40 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             private readonly RenderTexture ownedTarget;
             private readonly List<int> allBeginFrames = new List<int>(FrameLimit), allEndFrames = new List<int>(FrameLimit);
             private readonly List<int> ownedBeginFrames = new List<int>(FrameLimit), ownedEndFrames = new List<int>(FrameLimit);
+            private readonly List<NativeHudContextSample> contextBegin = new List<NativeHudContextSample>(FrameLimit);
+            private readonly List<NativeHudContextSample> contextEnd = new List<NativeHudContextSample>(FrameLimit);
             private readonly List<NativeHudRenderPhase> phases = new List<NativeHudRenderPhase>(3);
             private int allBeginCount, allEndCount, ownedBeginCount, ownedEndCount;
+            private int contextBeginCount, contextEndCount;
             private bool disposed, frameLimitReached;
 
             public NativeHudRenderProbe(Camera camera, RenderTexture texture)
             {
                 ownedCamera = camera; ownedTarget = texture;
+                RenderPipelineManager.beginContextRendering += BeginContext;
+                RenderPipelineManager.endContextRendering += EndContext;
                 RenderPipelineManager.beginCameraRendering += Begin;
                 RenderPipelineManager.endCameraRendering += End;
+            }
+
+            private void BeginContext(ScriptableRenderContext context, List<Camera> cameras)
+            {
+                contextBeginCount++; RecordContext(contextBegin, cameras);
+            }
+
+            private void EndContext(ScriptableRenderContext context, List<Camera> cameras)
+            {
+                contextEndCount++; RecordContext(contextEnd, cameras);
+            }
+
+            private void RecordContext(List<NativeHudContextSample> samples, List<Camera> cameras)
+            {
+                if (samples.Count >= FrameLimit) { frameLimitReached = true; return; }
+                samples.Add(new NativeHudContextSample
+                {
+                    frame = Time.frameCount, cameraCount = cameras?.Count ?? -1,
+                    ownedCameraPresent = cameras != null && cameras.Contains(ownedCamera)
+                });
             }
 
             private void Begin(ScriptableRenderContext context, Camera camera)
@@ -459,6 +484,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             public void RecordPhase(string name)
             {
                 if (phases.Count == 3) return;
+                var enabledCameras = Camera.allCameras;
+                var displays = Display.displays;
                 phases.Add(new NativeHudRenderPhase
                 {
                     name = name, frame = Time.frameCount,
@@ -471,8 +498,35 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                     applicationIsFocused = Application.isFocused, applicationRunInBackground = Application.runInBackground,
                     pipelineType = RenderPipelineManager.currentPipeline?.GetType().FullName ?? "<null>",
                     allBeginCount = allBeginCount, allEndCount = allEndCount,
-                    ownedBeginCount = ownedBeginCount, ownedEndCount = ownedEndCount
+                    ownedBeginCount = ownedBeginCount, ownedEndCount = ownedEndCount,
+                    contextBeginCount = contextBeginCount, contextEndCount = contextEndCount,
+                    renderFrameInterval = OnDemandRendering.renderFrameInterval,
+                    onDemandWillCurrentFrameRender = OnDemandRendering.willCurrentFrameRender,
+                    screenWidth = Screen.width, screenHeight = Screen.height,
+                    cameraType = ownedCamera != null ? ownedCamera.cameraType.ToString() : "<null>",
+                    targetDisplay = ownedCamera != null ? ownedCamera.targetDisplay : -1,
+                    pixelWidth = ownedCamera != null ? ownedCamera.pixelWidth : 0,
+                    pixelHeight = ownedCamera != null ? ownedCamera.pixelHeight : 0,
+                    pixelRect = ownedCamera != null ? ownedCamera.pixelRect : default,
+                    enabledCameraCount = enabledCameras.Length,
+                    ownedInEnabledCameraList = enabledCameras.Contains(ownedCamera),
+                    finishFrameRenderingLoopCount = CountFinishFrameRendering(UnityEngine.LowLevel.PlayerLoop.GetCurrentPlayerLoop()),
+                    displayCount = displays.Length,
+                    displays = displays.Take(FrameLimit).Select((item, index) => new NativeHudDisplayState
+                    {
+                        index = index, active = item.active,
+                        renderingWidth = item.renderingWidth, renderingHeight = item.renderingHeight,
+                        systemWidth = item.systemWidth, systemHeight = item.systemHeight
+                    }).ToArray()
                 });
+            }
+
+            private static int CountFinishFrameRendering(UnityEngine.LowLevel.PlayerLoopSystem loop)
+            {
+                int count = loop.type == typeof(UnityEngine.PlayerLoop.PostLateUpdate.FinishFrameRendering) ? 1 : 0;
+                if (loop.subSystemList != null)
+                    foreach (var child in loop.subSystemList) count += CountFinishFrameRendering(child);
+                return count;
             }
 
             public NativeHudRendering Snapshot() => new NativeHudRendering
@@ -480,6 +534,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 frameLimit = FrameLimit, frameLimitReached = frameLimitReached,
                 allBeginCount = allBeginCount, allEndCount = allEndCount,
                 ownedBeginCount = ownedBeginCount, ownedEndCount = ownedEndCount,
+                contextBeginCount = contextBeginCount, contextEndCount = contextEndCount,
+                contextBegin = contextBegin.ToArray(), contextEnd = contextEnd.ToArray(),
                 allBeginFrames = allBeginFrames.ToArray(), allEndFrames = allEndFrames.ToArray(),
                 ownedBeginFrames = ownedBeginFrames.ToArray(), ownedEndFrames = ownedEndFrames.ToArray(), phases = phases.ToArray()
             };
@@ -488,6 +544,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             {
                 if (disposed) return;
                 disposed = true;
+                RenderPipelineManager.beginContextRendering -= BeginContext;
+                RenderPipelineManager.endContextRendering -= EndContext;
                 RenderPipelineManager.beginCameraRendering -= Begin;
                 RenderPipelineManager.endCameraRendering -= End;
             }
@@ -495,19 +553,38 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         [Serializable] private sealed class NativeHudRendering
         {
-            public string scope = "Native-only read-only SRP camera callbacks and phase state; no render, focus, time, pose or gameplay changes. Callbacks are not GPU completion or display proof.";
+            public string scope = "Native-only read-only SRP context/camera callbacks, scheduling/display and phase state; no render, focus, time, pose or gameplay changes. Callbacks and OnDemandRendering predictions are not GPU completion or display proof.";
             public int frameLimit, allBeginCount, allEndCount, ownedBeginCount, ownedEndCount;
+            public int contextBeginCount, contextEndCount;
             public bool frameLimitReached;
             public int[] allBeginFrames, allEndFrames, ownedBeginFrames, ownedEndFrames;
+            public NativeHudContextSample[] contextBegin, contextEnd;
             public NativeHudRenderPhase[] phases;
         }
 
         [Serializable] private sealed class NativeHudRenderPhase
         {
-            public string name, pipelineType;
+            public string name, pipelineType, cameraType;
             public int frame, allBeginCount, allEndCount, ownedBeginCount, ownedEndCount;
+            public int contextBeginCount, contextEndCount, renderFrameInterval, screenWidth, screenHeight;
+            public int targetDisplay, pixelWidth, pixelHeight, enabledCameraCount, displayCount, finishFrameRenderingLoopCount;
             public bool cameraEnabled, cameraActiveSelf, cameraActiveInHierarchy, cameraIsActiveAndEnabled;
             public bool targetIsCreated, targetMatchesCamera, applicationIsFocused, applicationRunInBackground;
+            public bool onDemandWillCurrentFrameRender, ownedInEnabledCameraList;
+            public Rect pixelRect;
+            public NativeHudDisplayState[] displays;
+        }
+
+        [Serializable] private sealed class NativeHudContextSample
+        {
+            public int frame, cameraCount;
+            public bool ownedCameraPresent;
+        }
+
+        [Serializable] private sealed class NativeHudDisplayState
+        {
+            public int index, renderingWidth, renderingHeight, systemWidth, systemHeight;
+            public bool active;
         }
 #endif
         private sealed class ActorPartPose
