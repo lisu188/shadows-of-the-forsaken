@@ -1,0 +1,73 @@
+# Lower-junction camera minimum travel — 2026-10-16
+
+The unchanged real-Unity regression now passes after a conservative `CameraFollow` correction. The test generates a clear shortened camera view, applies the recorded tiny ground-height change, and verifies continued rendering, unchanged collision clearance and ordinary recovery of the full authored boom. This addresses the demonstrated DOCX §§3/7 exploration/visibility defect. The numerical construction and replay method are implementation choices; the DOCX does not specify a camera algorithm.
+
+## Original full-suite failure
+
+The full PlayMode repeat at source `801a214818009d2d61a7d0790dd6b50f896d07f3` **failed 234/235**, with no skips: **691.3926297 s XML / 709.625 s runner**, Unity PID **28716** self-exit **2**, restored wake request. Its 754 Unity inputs match the previously delivered `90c5c9c` source. The only failing case was `CastleCameraExplorationTests.LowerRoomsRetainVisibleCameraDuringUnsnappedInputExploration`.
+
+At frame **74001**, in the first-encounter north-wall/lower-junction phase, the observer records one unsafe frame and one blocked-camera warning. Feet were approximately `(-9.319279, 0.020000, 16.066011)`, yaw `95.269058°`, with the unchanged **16:9 aspect / 0.55719787 m conservative camera radius**. Rendering recovered at frame **74002**; recovery does not pass the failed assertion. The original [XML](../../artifacts/goal-20261014/current-delivery-full-playmode-235-20261016/results.xml), [terminal/provenance audit](../../artifacts/goal-20261014/current-full235-terminal-audit-20261016.json) and [failure-bundle audit](../../artifacts/goal-20261014/current-full235-camera-failure-bundle-audit-20261016.json) remain retained.
+
+The [closed audio-history union](../../artifacts/goal-20261014/current-full235-audio-union-audit-20261016.json) covers that engine run with **4,513 samples**. All three default roles stayed on the same active **LG/NVIDIA HDMI endpoint** (`ccb131…`), with unchanged endpoint states and no HRESULT failure or observed transition. No FMOD/native-fatal/requested-crash artifact was detected. This interval is separate from the focused RED's stable Realtek interval below.
+
+## Cause and bounded correction
+
+`TryResolve` could accept its terminal sampled point after reconstructing `pivot + direction * minimum`, even when world-space float rounding made that point's actual distance slightly less than `minimum`. The next call rejects incoming lengths at or below the strict minimum before rechecking the held view. In the original recording, the last-safe held view measured approximately **0.349999696 m**, below the float minimum **0.350000024 m**. The tiny ground-height transition exposed the inconsistency while the view remained physically clear.
+
+Source `23b3ac05322983ecdbbeb72551d5260f9c20796d` changes [CameraFollow.cs](../../Assets/CameraFollow.cs) by sixteen additive lines:
+
+- Only terminal attempt 24 adds `2 × 2^-23 × max(1, absolute pivot/requested coordinates)` to the construction distance, clamped to the already checked cast limit. Earlier sample distances are unchanged.
+- Every reconstructed endpoint must have a finite actual distance **strictly greater than the original minimum and no greater than the cast limit** before the existing padded-overlap check. A rounded point beyond the validated distance is rejected.
+- The incoming strict minimum checks, exact uncut-endpoint branch, ray/sphere sweeps, conservative near-plane radius, collision padding, obstruction rules and bounded attempt count remain intact.
+
+The margin derives from float32 world-coordinate precision rather than the captured coordinates. The correction raises the terminal construction distance; it does not lower the minimum or reduce physical clearance. Scene geometry, colliders, camera serialized fields, navigation, progression and the exploration route are unchanged. The [independent source review](../../artifacts/goal-20261014/lower-junction-camera-margin-source-independent-review-20261016.json) records this scope; its pre-GREEN status is historical.
+
+## Same-fixture Unity RED and GREEN
+
+[MinimumTravelEndpointSurvivesLowerJunctionGroundMicrostep](../../Assets/Tests/PlayMode/CameraFollowTests.cs) instantiates **21 saved static box bounds**, including adjacent floors/walls, the higher junction ceiling and passage frame/lintel. The encounter gate is already open after `FirstEnemyDefeated`. The replay initializes ordinary tracking, restores a public candidate extended along the recorded boom, and lets the real solver generate its own shortened endpoint. It does not inject the final endpoint or write private tracking state. Extending the candidate is a fixture choice, not a claim to replay the complete original input sequence.
+
+Before the microstep, the test verifies that the solver actually shortened the request and produced the recorded boundary pose within 10 μm. It checks the unchanged padded sphere, complete boom and all actual near-plane corners against the saved obstacles. After the recorded ground-height/yaw transition, it requires a safe enabled camera with the same clearance, then **300 ordinary departure steps and 360 settling steps**, ending at the full authored boom without a snap.
+
+| Actual focused run | Source and result | Camera observation |
+| --- | --- | --- |
+| [RED XML](../../artifacts/goal-20261014/lower-junction-observer-focused-red-20261016/results.xml) | `4592d30688e28e2c5ca03fc9b3c27fad4353b5b3`; **2 passed / 1 failed**, no skips; **0.0890209 s XML / 22.719 s runner**; Unity **9608** self-exit **2** | Generated clear cut **0.349999845 m**; next held distance **0.349999934 m**, `safe=False`, camera disabled. The failure occurs at the intended microstep assertion after the generated-cut and clearance checks pass. Both passive-audio observer cases pass. |
+| [GREEN XML](../../artifacts/goal-20261014/lower-junction-observer-focused-green-20261016/results.xml) | `23b3ac05322983ecdbbeb72551d5260f9c20796d`; **3/3 passed**, no skips; **0.1958873 s XML / 23.218 s runner**; Unity **18168** self-exit **0** | Generated cut **0.350004762 m**; next held distance **0.350004852 m**, `safe=True`, camera enabled. All clearance, 660 departure/settling and full-boom assertions pass. Both observer cases pass. |
+| [Camera-family XML](../../artifacts/goal-20261014/lower-junction-camera-family-green-20261016/results.xml) | Same `23b3ac0`; **50/50 passed**, no skips; **100.2693786 s XML / 119.797 s runner**; Unity **26744** self-exit **0**, wake owner/release **664**, restored | All 46 camera component cases, both exploration cases and both passive-audio observer cases pass. Fresh unsnapped exploration completes **118,502 observed LateUpdate frames / 0 unsafe frames / 0 blocked warnings / 9 captures**, plus one separate saved-controller component capture. |
+
+The entire tested LF `CameraFollowTests.cs` is byte-identical between RED and GREEN: SHA-256 **`5fcf8bc0bb9f43fad4764fdb1ea9d21baf592d9175f3c110c5a1d8ff3a9467e8`**. Its main-worktree CRLF form remains **`030b2c6de7fc04b85e4c88c1e25c3b4e335f6886e366407dd3dc40cb6dc4891d`**. No assertion, obstacle, radius, pose tolerance or route was weakened to obtain GREEN.
+
+The [independent RED audit](../../artifacts/goal-20261014/lower-junction-observer-focused-red-audit-20261016.json) and [RED support audit](../../artifacts/goal-20261014/lower-junction-observer-focused-red-support-audit-20261016.json) verify the failed run, corrected committed-LF source capsule and retained initial CRLF archive. The support audit also verifies a closed **452-sample / 120.0303373-second** audio history covering the focused RED: all three roles active on stable **Realtek** (`071325…`), all 19 endpoint-state sets unchanged and all HRESULTs zero. Neither audio interval proves physical audibility or device-transition recovery.
+
+The [independent GREEN audit](../../artifacts/goal-20261014/lower-junction-observer-focused-green-audit-20261016.json) verifies all **758 committed source payloads / 759 imported payloads**, CRC/SHA identities, **503 unchanged critical inputs**, sixteen reviewed import pairs and the same LF fixture. The sole Unity-source change from RED is `CameraFollow.cs`. Source capsule SHA-256 is `3e7f4e13ee4aff4bafcdf53e21c517d6b93a87d50e91e24e2c43f0176c4004a1`; imported archive SHA-256 is `e4208d19eeddbc8dadaec113ffe89794e50675ad845c9143e7fc0ec8ab5b0d07`.
+
+The [independent camera-family audit](../../artifacts/goal-20261014/lower-junction-camera-family-green-independent-audit-20261016.json) verifies the exact fifty named cases selected from catalog 238, completed fresh exploration, all ten PNGs and all **758 source / 759 imported payloads / 503 critical inputs**, with **44 reviewed import pairs and 15 preserved backups**. Its source capsule is an explicitly recorded byte copy of the independently qualified same-commit GREEN3 capsule, not a claim of independent regeneration. The family imported archive SHA-256 is `577ed6ee0c752277ff5519a29299bc0aaf621a6c5e9859df94eb0b67b098e475`.
+
+The [closed GREEN3/camera-family audio audit](../../artifacts/goal-20261014/lower-junction-green3-family50-audio-independent-audit-20261016.json) supplies **1,127 samples / 300.0324531 seconds**, covering both full engine/UTF intervals and all 53 executed case intervals. All three default roles remain active on stable Realtek (`071325…`), with unchanged endpoint states, zero observed transitions and all HRESULTs zero. Despite the watcher's directory name, this history **does not cover the later native mixer run**. The original HDMI full-suite interval and the separate RED Realtek interval remain distinct evidence.
+
+## Complete current-source regression
+
+The subsequent hidden full PlayMode run at the same **`23b3ac05322983ecdbbeb72551d5260f9c20796d`** passes **238/238, zero skipped**. The [independent terminal audit](../../artifacts/goal-20261014/current-full238-terminal-independent-audit-20261016.json), SHA-256 `6d6152168aad9369fa795469a448a6d37669433ab77e5bca5aa3c2494d9418e3`, verifies the exact catalog, all 758 committed LF source payloads, 759 imported payloads, 503 critical inputs and complete normalized import pairs. Source ZIP `3e7f4e13ee4aff4bafcdf53e21c517d6b93a87d50e91e24e2c43f0176c4004a1` and imported ZIP `2290923ed6bbf307c17acae64451492253506f46324a5fbdc6a0041236c83201` remain retained.
+
+Actual Editor PID 12680 exits **0** without intervention, with same-thread wake restoration. XML duration is **729.1633691 seconds**; the measured runner interval is **745.610 seconds**, from 15:30:18.282414 to 15:42:43.873887 UTC. The unchanged exploration case passes with **123,246 observed frames / zero unsafe frames / zero blocked warnings**, nine safe checkpoints and a complete capture bundle. All **65 PNGs** in the full suite pass structural and CRC checks. Basic/secret automated routes finish in **81.655178 / 121.252999 seconds**; these are not human pacing results. No known FMOD or native-fatal marker is detected. Raw shutdown diagnostics remain in the Editor log; this is not a claim that the complete log contains no warnings.
+
+The separate [closed full238 audio union](../../artifacts/goal-20261014/current-full238-audio-union-independent-audit-20261016.json), SHA-256 `6a8638378108d0709fa18b5de419b4e217789e6919b4dd81c32a758fb630aab9`, verifies **4,520 samples** from two closed 600-second histories, with **28.8289216 seconds of actual overlap** and no segment-envelope gaps. It covers the entire measured Editor wrapper, UTF suite and every case interval. All three roles remain on the same active Realtek endpoint, with one endpoint/default-state signature, zero observed transitions and zero HRESULT failures. Maximum sample-start gap is **0.3292485 seconds**. These discrete host observations do not prove stream continuity, physical output or device-transition recovery.
+
+## Qualification frontier
+
+The focused GREEN, independently reviewed **50/50 camera family** and subsequent **238/238 full PlayMode** establish the demonstrated component correction and fresh Editor exploration at `23b3ac0`. Fresh native presentation **3-case / route 10-case** coverage and a newly built ordinary Release remain **pending** at this report checkpoint. A separate [native audio diagnostic](../../artifacts/goal-20261014/audio-configuration-telemetry-native-20261016/execution.json) has an actual **1/1 pass / all sixteen gates** at the same source; that mixer/telemetry scope does not supply camera-route coverage. The original 234/235 failure remains retained.
+
+The current delivered ZIP/recorder still select the separately qualified `90c5c9c` package described in the [Release report](throne-columns-release-2026-10-16.md); they do not contain this production correction. Earlier FMOD device-transition/no-sound failures and the historical native shutdown cause remain unresolved. This camera correction does not establish human pacing, first-time wayfinding, physical audio or hardware performance acceptance.
+
+| Independent receipt | SHA-256 |
+| --- | --- |
+| Original full235 terminal/provenance | `c191444e9c8d5ecc556091980b8629d04201bbe06bef268000f5e43f828b50e9` |
+| Original failure bundle | `4fd9a7d52a95bc6d2674eed10f64fb4778edff48ba46e212948a359ffeff542a` |
+| Original closed audio union | `dacc43944a86f611ea090db2d53ff5439f5529af58923884104072a099654deb` |
+| Focused RED | `9ae0fc33f8c9bfcfcc5d5b5a758a3ab3bfce1d45747c411e5228df85f1caea7d` |
+| RED audio/archive support | `868d11b068b740faf0231e45eaa6232ae42af24667fef13649ae0495db7275f7` |
+| Production source review | `b34d997096eef26c572262443633b647e4222e5a9196dfa1a48a05a16e3625f7` |
+| Focused GREEN | `965a20cf07c5080b4e06a7e24b11bd6389369134a97845294aa9936b0e0a65e1` |
+| Camera family fifty-case audit | `cd44dfcf9167722bfbec64513cc8038c3d0a56fe11e31f9a1cfc0276e1920271` |
+| Closed GREEN3/camera-family audio audit | `0739762ac711720daf21cb5952b7248360b2eacb00542c24761752c5aa5af5fc` |
+| Full 238-case terminal/provenance audit | `6d6152168aad9369fa795469a448a6d37669433ab77e5bca5aa3c2494d9418e3` |
+| Closed full238 audio union | `6a8638378108d0709fa18b5de419b4e217789e6919b4dd81c32a758fb630aab9` |
