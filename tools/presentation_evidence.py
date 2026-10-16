@@ -80,7 +80,7 @@ def vector(value, label, quaternion=False):
 
 
 def decode_png(raw, expected_size):
-    """Bounded CRC-checked 8-bit RGB/RGBA Unity PNG decoder, top-down rows."""
+    """Bounded CRC-checked RGB24 Unity fixture PNG decoder, top-down rows."""
     require(len(raw) <= MAX_FILE_BYTES and raw.startswith(b"\x89PNG\r\n\x1a\n"), "Invalid PNG signature/size")
     cursor, compressed, header, ended = 8, [], None, False
     while cursor < len(raw):
@@ -94,15 +94,16 @@ def decode_png(raw, expected_size):
         if header is None:
             require(kind == b"IHDR" and size == 13, "PNG header must be first")
             w, h, depth, color, comp, filt, interlace = struct.unpack(">IIBBBBB", payload)
-            require((w, h) == expected_size and depth == 8 and color in (2, 6) and
+            require((w, h) == expected_size and depth == 8 and color == 2 and
                     comp == filt == interlace == 0, "Unsupported PNG dimensions/encoding")
-            header = w, h, 3 if color == 2 else 4
+            header = w, h, 3
         elif kind == b"IDAT":
             compressed.append(payload)
         elif kind == b"IEND":
             require(size == 0 and cursor == len(raw), "Invalid PNG ending/trailing bytes")
             ended = True
         else:
+            require(kind != b"tRNS", "Fixture RGB24 PNG must not contain transparency")
             require(kind != b"IHDR" and kind[0] & 32, "Unknown critical PNG chunk")
     require(ended and compressed, "Incomplete PNG")
     w, h, bpp = header
@@ -173,8 +174,18 @@ def validate_hud(value, images):
     for key, expected in zip(("playerPosition", "cameraPosition", "recordedCameraRotation"), POSES[value["pose"]]):
         actual = vector(value[key], key, key.endswith("Rotation"))
         require(all(math.isclose(a, b, abs_tol=.0001) for a, b in zip(actual, expected)), "HUD recorded pose differs: " + key)
-    require(all(math.isclose(value["cameraRotation"][k], value["assignedCameraRotation"][k], abs_tol=.0001)
-                for k in ("x", "y", "z", "w")), "HUD camera changed during paired capture")
+    expected_rotation = POSES[value["pose"]][2]
+    expected_length = math.sqrt(sum(component * component for component in expected_rotation))
+    expected_rotation = [component / expected_length for component in expected_rotation]
+    for key in ("cameraRotation", "assignedCameraRotation"):
+        actual = vector(value[key], key, True)
+        length = math.sqrt(sum(component * component for component in actual))
+        actual = [component / length for component in actual]
+        # Unity normalizes the assigned recorded quaternion; q and -q represent
+        # the same orientation, but both actual fields must match that pose.
+        sign = 1 if sum(a * b for a, b in zip(actual, expected_rotation)) >= 0 else -1
+        require(all(math.isclose(a, sign * b, rel_tol=0, abs_tol=.0001)
+                    for a, b in zip(actual, expected_rotation)), "HUD camera orientation differs from recorded pose: " + key)
     number(value.get("fieldOfView"), "field of view", 1, 179)
     require(value.get("minimumChangedPixels") == 32, "HUD difference threshold changed")
     regions = value.get("regions")
@@ -277,7 +288,7 @@ def case_intervals(events, start, end):
         require(len(events) <= 8 * 1024 * 1024, "Excessive callback events")
         events = [json.loads(line, object_pairs_hook=unique_json) for line in events.decode("utf-8-sig").splitlines() if line.strip()]
     require(isinstance(events, list) and 8 <= len(events) <= 128, "Missing bounded presentation case events")
-    starts, finishes, previous = {}, {}, start
+    starts, finishes, previous, active = {}, {}, start, None
     for event in events:
         stamp = utc(event["utc"])
         require(previous <= stamp <= end, "Callback event is stale/reversed/outside run")
@@ -288,12 +299,18 @@ def case_intervals(events, start, end):
         case = event["full_name"]
         target = starts if event["kind"] == "test-started" else finishes
         require(case not in target, "Duplicate leaf case event")
+        if target is starts:
+            require(active is None, "Overlapping presentation leaf cases")
+            active = case
+        else:
+            require(active == case, "Presentation leaf finished outside its active interval")
+            active = None
         target[case] = stamp
         if target is finishes:
             require(case in starts and stamp >= starts[case] and event.get("result") == "Passed" and
                     all(type(event.get(k)) is int and event[k] == n for k, n in (("passed", 1), ("failed", 0), ("skipped", 0), ("inconclusive", 0))),
                     "Presentation case/teardown did not pass")
-    require(set(starts) == set(finishes) == EXPECTED, "Missing presentation case boundary")
+    require(active is None and set(starts) == set(finishes) == EXPECTED, "Missing presentation case boundary")
     return {case: (starts[case], finishes[case]) for case in EXPECTED}
 
 

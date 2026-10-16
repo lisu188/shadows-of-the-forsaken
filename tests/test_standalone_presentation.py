@@ -72,18 +72,22 @@ def hud(pose_name):
                 assignedCameraRotation=vec(positions[2]), regions=regions)
 
 
-def png(width, height, patches=False):
-    rows = [bytearray([20, 20, 20] * width) for _ in range(height)]
+def png(width, height, patches=False, alpha=None, transparent_rgb=False):
+    channels = 3 if alpha is None else 4
+    background = [20, 20, 20] + ([] if alpha is None else [alpha])
+    patch = bytes([100, 100, 100] + ([] if alpha is None else [alpha]))
+    rows = [bytearray(background * width) for _ in range(height)]
     if patches:
         for i in range(3):
             for y in range(146, 150):
                 for x in range(130 + 384 * i, 146 + 384 * i):
-                    rows[height - 1 - y][3 * x:3 * x + 3] = bytes((100, 100, 100))
+                    rows[height - 1 - y][channels * x:channels * (x + 1)] = patch
 
     def chunk(kind, data):
         return struct.pack(">I", len(data)) + kind + data + struct.pack(">I", zlib.crc32(kind + data) & 0xffffffff)
 
-    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2, 0, 0, 0)) +
+    transparency = chunk(b"tRNS", struct.pack(">HHH", 20, 20, 20)) if transparent_rgb else b""
+    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", width, height, 8, 2 if alpha is None else 6, 0, 0, 0)) + transparency +
             chunk(b"IDAT", zlib.compress(b"".join(b"\0" + row for row in rows))) + chunk(b"IEND", b""))
 
 
@@ -194,6 +198,30 @@ class PresentationEvidenceTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             evidence.decode_png(bomb, (1, 1))
 
+    def test_png_alpha_and_rgb_transparency_cannot_qualify_visible_world(self):
+        # Every fixture writes RGB24. RGB values in invisible alpha-zero images
+        # or a transparent RGB background must never supply visible-world proof.
+        for settings in (dict(alpha=0), dict(alpha=255), dict(transparent_rgb=True)):
+            with self.subTest(settings=settings), self.assertRaises(ValueError):
+                evidence.decode_png(png(1280, 720, True, **settings), (1280, 720))
+
+    def test_hud_actual_and_assigned_rotations_must_match_recorded_orientation(self):
+        name = next(iter(evidence.HUD_CASES))
+        for changed in (("cameraRotation",), ("assignedCameraRotation",), ("cameraRotation", "assignedCameraRotation")):
+            value = hud(name)
+            for key in changed:
+                value[key] = vec((0, 0, 0, 1))
+            with self.subTest(changed=changed), self.assertRaises(ValueError):
+                evidence.validate_hud(value, self.images)
+        # Independent sign choices and Unity's normalization preserve the same
+        # recorded orientation; they must not become false failures.
+        for actual_sign, assigned_sign in ((-1, 1), (1, -1), (-1, -1)):
+            value = hud(name)
+            for key, sign in (("cameraRotation", actual_sign), ("assignedCameraRotation", assigned_sign)):
+                value[key] = {axis: component * sign * 1.00002 for axis, component in value[key].items()}
+            with self.subTest(actual_sign=actual_sign, assigned_sign=assigned_sign):
+                evidence.validate_hud(value, self.images)
+
     def test_unsafe_incomplete_wrong_route_unreleased_input_and_bad_clocks_cannot_qualify(self):
         mutations = [lambda d: d.update(completed=False), lambda d: d.update(unsafeFrames=1),
                      lambda d: d.update(blockedWarnings=1), lambda d: d.update(episodes=[{}]),
@@ -268,6 +296,17 @@ class PresentationEvidenceTests(unittest.TestCase):
                 rows[2]["utc"] = START
             with self.subTest(mutation=mutation), self.assertRaises(ValueError):
                 evidence.case_intervals(encoded_events(rows), evidence.utc(START), evidence.utc(END))
+
+    def test_case_time_binding_rejects_overlapping_leaf_intervals(self):
+        rows = event_rows()
+        rows[2]["utc"] = "2026-10-14T10:00:29Z"
+        rows[3]["utc"] = "2026-10-14T10:00:22Z"
+        rows[2], rows[3] = rows[3], rows[2]
+        # All cases pass once and timestamps stay ordered, but two leaves are
+        # active together. Their overlapping file-attribution windows are invalid.
+        runner.validate_events(encoded_events(rows))
+        with self.assertRaises(ValueError):
+            evidence.case_intervals(encoded_events(rows), evidence.utc(START), evidence.utc(END))
 
 
 class PresentationRunnerTests(unittest.TestCase):
