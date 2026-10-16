@@ -231,11 +231,27 @@ public class CameraFollow : MonoBehaviour
         for (int attempt = 0; attempt <= 24; attempt++)
         {
             float travel = Mathf.Lerp(limit, minimum, attempt / 24f);
+            if (attempt == 24)
+            {
+                // A world-space float round trip can put the terminal minimum
+                // just below its own strict revalidation threshold. Leave two
+                // relative float32 precision units for that construction, while
+                // keeping the requested travel inside the checked cast limit.
+                float scale = Mathf.Max(1f, Mathf.Max(
+                    Mathf.Max(Mathf.Abs(pivot.x), Mathf.Max(Mathf.Abs(pivot.y), Mathf.Abs(pivot.z))),
+                    Mathf.Max(Mathf.Abs(requested.x), Mathf.Max(Mathf.Abs(requested.y), Mathf.Abs(requested.z)))));
+                float roundoff = scale * (2f / 8388608f);
+                travel = Mathf.Min(limit, minimum + roundoff);
+            }
             // Keep an uncut endpoint exact: rebuilding it can round a clear
             // tangent position into the padded overlap volume.
             Vector3 position = attempt == 0 && limit >= length
                 ? requested
                 : pivot + direction * travel;
+            float resolvedLength = (position - pivot).magnitude;
+            // Reconstructed endpoints must satisfy the same strict minimum on
+            // the next call and must not round beyond the validated cast limit.
+            if (!Finite(resolvedLength) || resolvedLength <= minimum || resolvedLength > limit) continue;
             count = Overlap(position, radius + collisionPadding * 0.5f);
             if (count < 0) return false;
             bool clear = true;
