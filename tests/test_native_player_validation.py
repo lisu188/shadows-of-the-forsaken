@@ -1,5 +1,6 @@
 """Native lifecycle rejection/cleanup regressions; never launch a real player."""
 import copy
+import datetime as dt
 import importlib.util
 from pathlib import Path
 import subprocess
@@ -12,8 +13,11 @@ native = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(native)
 
 
-def state(sequence=1):
-    return dict(phase='Running', room='Courtyard', objectiveFlags=0, sequence=sequence,
+def state(sequence=1, published_seconds=None):
+    published = dt.datetime(2026, 10, 16, tzinfo=dt.timezone.utc) + dt.timedelta(
+        seconds=sequence - 1 if published_seconds is None else published_seconds)
+    return dict(utc=published.isoformat().replace('+00:00', 'Z'),
+                phase='Running', room='Courtyard', objectiveFlags=0, sequence=sequence,
                 sessionId='90323dc2-7cc5-4999-b5f2-7267392b72fc', ioFailureCount=0,
                 player=dict(health=200, maximumHealth=200),
                 hardware=dict(unityVersion='6000.6.3f1', isEditor=False, graphicsApi='Direct3D11'),
@@ -25,6 +29,10 @@ def state(sequence=1):
 
 def record():
     return dict(startup_state_observed=True, errors=[], build_identity_unchanged=True,
+                observation_seconds_required=120, matching_fresh_snapshot_count=121,
+                startup_observation=dict(first_published_utc='2026-10-16T00:00:00.0000000Z',
+                    last_published_utc='2026-10-16T00:02:00.0000000Z', published_span_100ns=1200000000,
+                    published_span_seconds=120, monotonic_span_seconds=120, matching_fresh_snapshot_count=121),
                 foreground_or_visible_window_violation=False,
                 normal_exit_event_observed=True, integrity_before_launch=dict(normal_integrity=True),
                 child_integrity=dict(normal_integrity=True), power_request=dict(restored=True),
@@ -151,7 +159,80 @@ used by your application.
         self.assertFalse(observation.accept(state(1), 0))
         self.assertFalse(observation.accept(state(2), 1))
         self.assertFalse(observation.accept(state(2), 2))
-        self.assertTrue(observation.accept(state(3), 3))
+        self.assertTrue(observation.accept(state(3, 3), 3))
+
+    def test_poll_span_120_cannot_qualify_published_span_119_point_9(self):
+        observation = native.StartupObservation(120)
+        for second in range(120):
+            self.assertFalse(observation.accept(state(second + 1, second), second))
+        self.assertFalse(observation.accept(state(121, 119.9), 120),
+                         'Runner polling for120s cannot replace120s of published observations.')
+        self.assertTrue(observation.accept(state(122, 120.15), 120.25))
+
+    def test_published_span_cannot_replace_the_required_monotonic_span(self):
+        observation = native.StartupObservation(120)
+        for second in range(120):
+            self.assertFalse(observation.accept(state(second + 1, second * 1.01), second))
+        self.assertFalse(observation.accept(state(121, 121.2), 119.9))
+        self.assertTrue(observation.accept(state(122, 121.45), 120.15))
+
+    def test_seventh_fractional_digit_is_retained_at_duration_boundary(self):
+        observation = native.StartupObservation(2)
+        samples = [('2026-10-16T00:00:00.0000001Z', 0),
+                   ('2026-10-16T00:00:01.0000001+00:00', 1),
+                   ('2026-10-16T00:00:02.0000000Z', 2),
+                   ('2026-10-16T00:00:02.0000001Z', 2.25)]
+        outcomes = [observation.accept({**state(index + 1), 'utc': stamp}, now)
+                    for index, (stamp, now) in enumerate(samples)]
+        self.assertEqual(outcomes, [False, False, False, True])
+
+    def test_aware_offset_timestamps_are_compared_as_utc_instants(self):
+        observation = native.StartupObservation(2)
+        self.assertFalse(observation.accept({**state(1), 'utc': '2026-10-16T02:00:00+02:00'}, 0))
+        self.assertFalse(observation.accept({**state(2), 'utc': '2026-10-16T00:00:01Z'}, 1))
+        self.assertTrue(observation.accept({**state(3), 'utc': '2026-10-15T23:00:02-01:00'}, 2))
+
+    def test_120_second_window_short_by_one_100ns_tick_cannot_round_up(self):
+        observation = native.StartupObservation(120)
+        began = dt.datetime(2026, 10, 16)
+        for second in range(120):
+            stamp = (began + dt.timedelta(seconds=second)).strftime('%Y-%m-%dT%H:%M:%S') + '.0000001Z'
+            self.assertFalse(observation.accept({**state(second + 1), 'utc': stamp}, second))
+        self.assertFalse(observation.accept({**state(121), 'utc': '2026-10-16T00:02:00.0000000Z'}, 120))
+        self.assertTrue(observation.accept({**state(122), 'utc': '2026-10-16T00:02:00.0000001Z'}, 120.25))
+
+    def test_missing_invalid_or_naive_published_timestamps_fail_closed(self):
+        for stamp in [None, '', 1, [], 'not-a-date', '2026-10-16T00:00:00',
+                      '2026-13-16T00:00:00Z', '2026-10-16T00:00:00+25:00',
+                      '2026-10-16T00:00:00+00:99']:
+            with self.subTest(stamp=stamp):
+                observation = native.StartupObservation(2)
+                with self.assertRaisesRegex(ValueError, 'published UTC timestamp'):
+                    observation.accept({**state(), 'utc': stamp}, 0)
+
+    def test_published_time_must_advance_with_sequence_and_not_change_without_it(self):
+        for sequence, published in [(2, 0), (2, -.1), (1, .1), (1, -.1)]:
+            with self.subTest(sequence=sequence, published=published):
+                observation = native.StartupObservation(2)
+                observation.accept(state(1, 0), 0)
+                with self.assertRaisesRegex(ValueError, 'published UTC timestamp'):
+                    observation.accept(state(sequence, published), .25)
+
+    def test_lifecycle_requires_both_duration_spans_even_when_startup_bool_is_true(self):
+        for change in [dict(last_published_utc='2026-10-16T00:01:59.9000000Z',
+                            published_span_100ns=1199000000, published_span_seconds=119.9),
+                       dict(monotonic_span_seconds=119.9),
+                       dict(published_span_seconds=121), dict(matching_fresh_snapshot_count=2),
+                       dict(first_published_utc=None), dict(monotonic_span_seconds=float('nan'))]:
+            with self.subTest(change=change):
+                evidence = record()
+                evidence['startup_observation'].update(change)
+                self.assertFalse(native.finish_record(evidence))
+                self.assertTrue(evidence['startup_state_observed'])
+                self.assertIn('Startup duration', '\n'.join(evidence['errors']))
+        evidence = record()
+        evidence.pop('startup_observation')
+        self.assertFalse(native.finish_record(evidence))
 
     def test_stalled_snapshot_cannot_satisfy_the_observation_window(self):
         observation = native.StartupObservation(3)

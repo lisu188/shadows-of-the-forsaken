@@ -13,6 +13,7 @@ import datetime as dt
 import hashlib
 import importlib.util
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -219,15 +220,36 @@ def player_command(player, output, graphics_mode="default", parent_handle=None, 
             "-crash-report-folder", str(output / "crashes")]
 
 
+def published_utc_ticks(value):
+    """Parse aware ISO timestamps without losing the observer's seventh digit."""
+    require(isinstance(value, str), "Observer published UTC timestamp is missing or invalid")
+    match = re.fullmatch(r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})(?:\.(\d{1,7}))?(Z|[+-]\d{2}:\d{2})", value)
+    require(match is not None, "Observer published UTC timestamp must be valid aware ISO-8601")
+    base, fraction, zone = match.groups()
+    try:
+        if zone != "Z":
+            require(int(zone[1:3]) <= 23 and int(zone[4:6]) <= 59,
+                    "Observer published UTC timestamp has an invalid offset")
+        stamp = dt.datetime.fromisoformat(base + ("+00:00" if zone == "Z" else zone))
+        stamp = stamp.astimezone(dt.timezone.utc)
+        delta = stamp - dt.datetime(1970, 1, 1, tzinfo=dt.timezone.utc)
+    except (ValueError, OverflowError) as error:
+        raise ValueError("Observer published UTC timestamp is invalid") from error
+    return (delta.days * 86400 + delta.seconds) * 10000000 + int((fraction or "").ljust(7, "0"))
+
+
 class StartupObservation:
-    """Require advancing same-session snapshots throughout a bounded interval."""
+    """Require both polling and advancing published-time spans to meet duration."""
     def __init__(self, seconds, maximum_gap=2):
         self.seconds, self.maximum_gap = seconds, maximum_gap
         self.first_at = self.last_at = self.sequence = self.session = None
+        self.first_published_ticks = self.last_published_ticks = None
+        self.first_published_utc = self.last_published_utc = None
         self.count = 0
 
     def check_freshness(self, now):
         if self.last_at is not None:
+            require(now >= self.last_at, "Startup observation monotonic clock moved backwards")
             require(now - self.last_at <= self.maximum_gap, "Startup observer stopped publishing fresh snapshots")
 
     def accept(self, state, now):
@@ -241,14 +263,34 @@ class StartupObservation:
             require(all(checks.values()), "Previously matched startup state changed: " + json.dumps(checks))
         if not all(checks.values()):
             return False
+        published = published_utc_ticks(state.get("utc"))
         if self.session is None:
             self.first_at = now
             self.session = state["sessionId"]
+            self.first_published_ticks = published
+            self.first_published_utc = state["utc"]
+        elif self.sequence == sequence:
+            require(published == self.last_published_ticks,
+                    "Observer published UTC timestamp changed without an advancing sequence")
+        else:
+            require(published > self.last_published_ticks,
+                    "Observer published UTC timestamp did not advance with its sequence")
         if self.sequence != sequence:
             self.last_at, self.sequence = now, sequence
+            self.last_published_ticks, self.last_published_utc = published, state["utc"]
             self.count += 1
-            return now - self.first_at >= self.seconds and self.count >= 3
+            published_span = (published - self.first_published_ticks) / 10000000
+            return now - self.first_at >= self.seconds and published_span >= self.seconds and self.count >= 3
         return False
+
+    def summary(self):
+        ticks = (self.last_published_ticks - self.first_published_ticks
+                 if self.last_published_ticks is not None else None)
+        return {"first_published_utc": self.first_published_utc, "last_published_utc": self.last_published_utc,
+                "published_span_100ns": ticks, "published_span_seconds": ticks / 10000000 if ticks is not None else None,
+                "monotonic_span_seconds": self.last_at - self.first_at if self.last_at is not None else None,
+                "matching_fresh_snapshot_count": self.count,
+                "scope": "Both the monotonic polling span and advancing same-session published UTC span must meet the requested duration; snapshot count/freshness are independent guards."}
 
 
 def check_events(events, session):
@@ -265,6 +307,32 @@ def check_events(events, session):
 
 
 def finish_record(record):
+    duration = record.get("startup_observation", {})
+    if not isinstance(duration, dict):
+        duration = {}
+    required = record.get("observation_seconds_required")
+    polling = duration.get("monotonic_span_seconds")
+    reported = duration.get("published_span_seconds")
+    valid_required = type(required) in (int, float) and math.isfinite(required) and 1 <= required <= 120
+    valid_polling = type(polling) in (int, float) and math.isfinite(polling) and polling >= 0
+    ticks = None
+    try:
+        ticks = published_utc_ticks(duration.get("last_published_utc")) - published_utc_ticks(duration.get("first_published_utc"))
+    except ValueError:
+        pass
+    count = duration.get("matching_fresh_snapshot_count")
+    checks = record["startup_duration_checks"] = {
+        "valid_requested_seconds": valid_required,
+        "valid_source_utc_span": ticks is not None and ticks >= 0,
+        "published_span_meets_required": valid_required and ticks is not None and ticks / 10000000 >= required,
+        "reported_published_span_matches_source": ticks is not None and
+            type(duration.get("published_span_100ns")) is int and duration["published_span_100ns"] == ticks and
+            type(reported) in (int, float) and math.isfinite(reported) and reported == ticks / 10000000,
+        "monotonic_span_meets_required": valid_required and valid_polling and polling >= required,
+        "matching_distinct_snapshot_count": type(count) is int and count >= 3 and
+            type(record.get("matching_fresh_snapshot_count")) is int and record["matching_fresh_snapshot_count"] == count}
+    if not all(checks.values()):
+        record["errors"].append("Startup duration lacks matching published UTC and monotonic observation proof: " + json.dumps(checks))
     close = record.get("closure", {})
     record["graceful_player_exit"] = (close.get("forced") is False and close.get("mode") == "WM_CLOSE" and
         close.get("exit_code") == 0 and record.get("normal_exit_event_observed") is True and
@@ -643,6 +711,7 @@ def main():
     record["observed_snapshot_count"] = observations
     record["matched_session_id"] = tracker.session
     record["matching_fresh_snapshot_count"] = tracker.count
+    record["startup_observation"] = tracker.summary()
     record["last_observed_state_checks"] = state_check(last_state) if last_state else None
     if last_state:
         write_new(out / "last-observed-status.json", last_state)
