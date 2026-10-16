@@ -47,6 +47,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private float previousTimeScale;
 #if !UNITY_EDITOR
         private static bool playerCapturePipelinePrepared;
+        private ForsakenStandaloneRenderedRouteSupport.RenderedRouteProbe renderedRouteProbe;
 #endif
 
         [SetUp]
@@ -86,6 +87,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator Restore()
         {
+#if !UNITY_EDITOR
+            Exception renderedProbeFailure = null;
+            try { renderedRouteProbe?.Dispose(); }
+            catch (Exception error) { renderedProbeFailure = error; }
+            finally { renderedRouteProbe = null; }
+#endif
             try
             {
                 if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
@@ -108,6 +115,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 suspendedColliders.Clear(); suspendedRenderers.Clear(); suspendedBehaviours.Clear();
             }
             Assert.That(sceneLoad?.CleanupFailure, Is.Null);
+#if !UNITY_EDITOR
+            if (renderedProbeFailure != null)
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(renderedProbeFailure).Throw();
+#endif
         }
 
         private LevelProgressionController progression;
@@ -503,6 +514,19 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             if (bridge != null) Call(bridge, "OnApplicationFocus", true);
             Input(); yield return null; Input();
             Physics.SyncTransforms();
+#if !UNITY_EDITOR
+            if (ForsakenStandaloneRenderedRouteSupport.RenderedRouteBinding.Active)
+            {
+                var ownedSession = Find("LevelSessionController");
+                var ownedProgression = Field<LevelProgressionController>(ownedSession, "progression");
+                var running = (Func<bool>)Delegate.CreateDelegate(typeof(Func<bool>), ownedSession,
+                    ownedSession.GetType().GetProperty("IsRunning").GetGetMethod());
+                bool pipelineBefore = RenderPipelineManager.currentPipeline != null;
+                PreparePlayerCapturePipeline();
+                renderedRouteProbe = ForsakenStandaloneRenderedRouteSupport.RenderedRouteProbe.Begin(scene, camera,
+                    ownedProgression, running, pipelineBefore, RenderPipelineManager.currentPipeline != null);
+            }
+#endif
         }
 
         private void Input(bool attack = false, params Key[] keys)
@@ -598,6 +622,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 #endif
         private FramingEvidence Capture(string name, Component framingEnemy = null)
         {
+#if !UNITY_EDITOR
+            using (var renderedCapture = renderedRouteProbe?.Capture(name))
+            {
+#endif
             string directory = Environment.GetEnvironmentVariable("SHADOWS_CAPTURE_DIR");
             bool saveImage = !string.IsNullOrWhiteSpace(directory);
             if (!saveImage && framingEnemy == null) return null;
@@ -697,6 +725,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 texture.Release(); Object.DestroyImmediate(texture);
             }
             return framing;
+#if !UNITY_EDITOR
+            }
+#endif
         }
 
         private void PrepareEmissiveCapturePasses()

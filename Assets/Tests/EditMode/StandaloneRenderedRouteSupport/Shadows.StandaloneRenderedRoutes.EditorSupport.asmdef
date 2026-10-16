@@ -1,0 +1,24 @@
+{
+  "name": "Shadows.StandaloneRenderedRoutes.EditorSupport",
+  "rootNamespace": "ShadowsOfTheForsaken.Tests.EditMode",
+  "references": [
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner",
+    "Shadows.StandaloneRenderedRoutes.PlayerSupport"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
