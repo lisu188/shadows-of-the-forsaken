@@ -105,7 +105,9 @@ namespace ForsakenStandalonePresentationTestSupport
                 !string.Equals(Path.GetFullPath(captures), Path.Combine(directory, "captures"), StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Native presentation captures must use this run's captures directory.");
             Directory.CreateDirectory(directory);
-            events = new StreamWriter(new FileStream(Path.Combine(directory, "events.jsonl"), FileMode.CreateNew, FileAccess.Write), new UTF8Encoding(false));
+            // The concealed native host observes flushed UTF callbacks while this
+            // writer stays open; readers must not wait until RunFinished.
+            events = new StreamWriter(new FileStream(Path.Combine(directory, "events.jsonl"), FileMode.CreateNew, FileAccess.Write, FileShare.Read), new UTF8Encoding(false));
             SaveNew("runtime.json", new Runtime
             {
                 recorded_utc = Utc(), unity_version = Application.unityVersion, platform = Application.platform.ToString(),
