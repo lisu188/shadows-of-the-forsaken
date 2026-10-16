@@ -48,6 +48,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 #endif
         private float previousTimeScale;
         private bool settingsCaptured, observing, recordedInitial, completed;
+        private bool sceneLeaseReleased = true, directComponentEvidence;
         private Component movement, follow, session, health;
         private LevelProgressionController progression;
         private Camera camera;
@@ -60,12 +61,33 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private PoseSample lastSafe;
         private ViewportSetup viewport;
         private string directory, phase, currentInput, pendingCapture;
+        private string evidenceCaseName;
         private int observedFrames, unsafeFrames, warningCount;
         private double started, ended, nextPeriodicSample;
 
         [SetUp]
         public void Prepare()
         {
+            // NUnit reuses this fixture. Do not inherit another case's evidence
+            // or discard a scene lease whose teardown did not finish.
+            directory = null; // A setup guard failure must not rewrite the preceding case's bundle.
+            OwnedSceneLoad.RequireNoPendingCleanup();
+            Assert.That(sceneLeaseReleased && suspendedBehaviours.Count == 0 && suspendedColliders.Count == 0 &&
+                suspendedRenderers.Count == 0 && observer == null && input == null &&
+                (keyboard == null || !keyboard.added) && (mouse == null || !mouse.added), Is.True,
+                "An earlier camera fixture still owns resources; refusing to overwrite its cleanup state.");
+            samples.Clear(); episodes.Clear(); warnings.Clear(); inputs.Clear(); captures.Clear();
+            currentEpisode = null; lastSafe = null; viewport = null;
+            observedFrames = unsafeFrames = warningCount = 0;
+            settingsCaptured = observing = recordedInitial = completed = false;
+            started = ended = nextPeriodicSample = 0;
+            directory = phase = currentInput = pendingCapture = null;
+            sceneLoad = null; previousScene = scene = default;
+            movement = follow = session = health = null; progression = null;
+            camera = null; observer = null; input = null; keyboard = null; mouse = null;
+            safePoseProperty = radiusProperty = null;
+            evidenceCaseName = TestContext.CurrentContext.Test.Name;
+            directComponentEvidence = evidenceCaseName == nameof(PrimarySavedControllerRetainsGroundContactAtMicrosteps);
             previousScene = SceneManager.GetActiveScene();
             previousMode = InputSystem.settings.updateMode;
             previousBackground = InputSystem.settings.backgroundBehavior;
@@ -94,9 +116,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 if (item.enabled) { suspendedRenderers.Add(item); item.enabled = false; }
             string requested = Environment.GetEnvironmentVariable("SHADOWS_CAPTURE_DIR");
             directory = Path.Combine(string.IsNullOrWhiteSpace(requested) ? Application.temporaryCachePath : requested,
-                "camera-exploration-" + Guid.NewGuid().ToString("N"));
+                (directComponentEvidence ? "saved-controller-microstep-" : "camera-exploration-") + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(directory);
-            TestContext.WriteLine("Unsnapped camera evidence: " + directory);
+            TestContext.WriteLine((directComponentEvidence ? "Direct saved-component setup evidence: " : "Unsnapped camera evidence: ") + directory);
         }
 
         [UnityTearDown]
@@ -121,7 +143,11 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 catch (Exception error) { evidenceFailure = error; }
                 if (camera != null && viewport != null) camera.aspect = viewport.originalAspect;
                 if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
-                if (sceneLoad != null) yield return sceneLoad.Cleanup();
+                if (sceneLoad != null)
+                {
+                    yield return sceneLoad.Cleanup();
+                    sceneLeaseReleased = sceneLoad.CleanupFailure == null;
+                }
             }
             finally
             {
@@ -314,6 +340,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 
         private IEnumerator Load()
         {
+            sceneLeaseReleased = false;
             sceneLoad = new OwnedSceneLoad();
 #if UNITY_EDITOR
             yield return sceneLoad.Load(ScenePath, () => EditorSceneManager.LoadSceneAsyncInPlayMode(ScenePath,
@@ -705,7 +732,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             var evidence = new Evidence { completed = completed, observedFrames = observedFrames, unsafeFrames = unsafeFrames,
                 blockedWarnings = warningCount, elapsedObservedSeconds = observedFrames == 0 ? 0 : (observing ? Time.realtimeSinceStartupAsDouble : ended) - started,
                 viewport = viewport, samples = samples.ToArray(), inputs = inputs.ToArray(), episodes = episodes.ToArray(), warnings = warnings.ToArray(), captures = captures.ToArray(),
-                limitations = "Focused real-input lower-room Editor/Unity-test observation; no manual camera advance or snap. Warning callback snapshots are during CameraFollow.LateUpdate; ordinary samples are after LateUpdate. First human warnings were unlocated. No human pacing/art/audio/performance acceptance is established. A disabled camera is never forcibly rendered." };
+                limitations = directComponentEvidence
+                    ? "Direct saved-component diagnostic " + typeof(CastleCameraExplorationTests).FullName + "." + evidenceCaseName + ": real PlayerMovement.Simulate/CharacterController microsteps. These camera arrays retain shared saved-spawn setup observations only; the synchronous movement measurements are in NUnit output. This is not completed input-route, ordinary-render or performance evidence."
+                    : "Focused real-input lower-room Editor/Unity-test observation; no manual camera advance or snap. Warning callback snapshots are during CameraFollow.LateUpdate; ordinary samples are after LateUpdate. First human warnings were unlocated. No human pacing/art/audio/performance acceptance is established. A disabled camera is never forcibly rendered." };
             File.WriteAllText(Path.Combine(directory, "evidence.json"), JsonUtility.ToJson(evidence, true));
         }
 
