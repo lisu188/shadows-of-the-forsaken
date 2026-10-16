@@ -534,6 +534,67 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             LogAssert.NoUnexpectedReceived();
         }
 
+        [Test]
+        public void HeldCeilingTangentViewSurvivesRunePlinthNorthEdge()
+        {
+            // DOCX 3/7: component replay of the actual native exploration
+            // failure, preserving all six recorded obstacle bounds. This is
+            // separate from the unsnapped input route and rendered-player proof.
+            camera.nearClipPlane = .3f;
+            camera.fieldOfView = 75f;
+            camera.aspect = 16f / 9f;
+            Set("distance", 3f); Set("height", 4f);
+            Set("shoulderOffset", -1.8f); Set("shoulderAimFraction", .5f);
+            Set("lookHeightOffset", 1.5f); Set("smoothSpeed", 0f);
+            var wall = Box(new Vector3(-12.2f, 2.25f, 24), new Vector3(.4f, 4.5f, 8)).GetComponent<Collider>();
+            var floor = Box(new Vector3(-11, -.25f, 24), new Vector3(2, .5f, 8)).GetComponent<Collider>();
+            var northWall = Box(new Vector3(-8, 2.25f, 28.2f), new Vector3(8, 4.5f, .4f)).GetComponent<Collider>();
+            var plinth = Box(new Vector3(-10.5f, .55f, 25.5f), new Vector3(1, 1.1f, 1)).GetComponent<Collider>();
+            var otherFloor = Box(new Vector3(-8, -.25f, 23), new Vector3(4, .5f, 10)).GetComponent<Collider>();
+            var ceiling = Box(new Vector3(-8, 4.75f, 24), new Vector3(8, .5f, 8)).GetComponent<Collider>();
+            var obstacles = new[] { wall, floor, northWall, plinth, otherFloor, ceiling };
+            player.transform.position = new Vector3(-11.698975563049316f, .019999980926513672f, 26.88897132873535f);
+            player.transform.rotation = Quaternion.Euler(0, 270, 0);
+            Assert.That(Step(), Is.True, "Initialize ordinary tracking facing away from the west wall.");
+
+            // As in the landing replay above, retain the actual previously
+            // validated view without writing private solver/tracking state.
+            var held = new Vector3(-11.411373138427734f, 3.917802095413208f, 23.405685424804688f);
+            camera.transform.SetPositionAndRotation(held,
+                new Quaternion(.1799580454826355f, -.162643164396286f, .030184580013155937f, .96966552734375f));
+            player.transform.rotation = Quaternion.Euler(0, 357.06304931640625f, 0);
+            Assert.That(Step(), Is.True, "The recorded last-safe endpoint must remain safe before the tiny target step.");
+            AssertBoomAndNearPlaneClear(obstacles);
+            Assert.That(Get<float>("EffectiveCollisionRadius"), Is.EqualTo(.55719787f).Within(.00001f));
+
+            player.transform.position = new Vector3(-11.698975563049316f, .01999986171722412f, 26.89211654663086f);
+            bool safe = Step();
+            TestContext.WriteLine("Recorded ceiling-tangent transition: safe=" + safe + "; enabled=" + camera.enabled +
+                "; radius=" + Get<float>("EffectiveCollisionRadius").ToString("R") +
+                "; requestedY=" + held.y.ToString("R") + "; observedY=" + camera.transform.position.y.ToString("R"));
+            Assert.That(safe, Is.True, "The tiny recorded target step must not lose an otherwise clear held view.");
+            Assert.That(camera.enabled, Is.True);
+            AssertBoomAndNearPlaneClear(obstacles);
+            float paddedRadius = Get<float>("EffectiveCollisionRadius") + .025f;
+            foreach (var obstacle in new[] { wall, ceiling })
+                Assert.That(Vector3.Distance(obstacle.ClosestPoint(camera.transform.position), camera.transform.position),
+                    Is.GreaterThanOrEqualTo(paddedRadius), "The original padded clearance is retained.");
+
+            Set("smoothSpeed", 2f);
+            for (int frame = 0; frame < 300; frame++)
+            {
+                player.transform.position += Vector3.right * .05f;
+                Assert.That(Step(), Is.True, "Ordinary departure frame " + frame);
+                AssertBoomAndNearPlaneClear(obstacles);
+            }
+            for (int frame = 0; frame < 360; frame++) Assert.That(Step(), Is.True);
+            Vector3 fullBoom = player.transform.position - player.transform.forward * 3f + Vector3.up * 4f - player.transform.right * 1.8f;
+            Assert.That(Vector3.Distance(camera.transform.position, fullBoom), Is.LessThan(.001f),
+                "The full authored view recovers after leaving the confined geometry without a snap.");
+            Assert.That(camera.enabled && Get<bool>("HasSafePose"), Is.True);
+            LogAssert.NoUnexpectedReceived();
+        }
+
         private void AssertBoomAndNearPlaneClear(params Collider[] obstacles)
         {
             Vector3 pivot = player.transform.position + Vector3.up * (float)followType.GetField("pivotHeight").GetValue(follow);

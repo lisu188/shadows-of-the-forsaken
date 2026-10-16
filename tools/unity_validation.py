@@ -142,6 +142,7 @@ EXPECTED_TESTS = {
         'CameraFollowTests.DestroyedTargetCanBeReplacedWithoutOldSmoothingState': ('',),
         'CameraFollowTests.EmbeddedPivotFailsSafelyAndRestoresRenderingAfterRecovery': ('',),
         'CameraFollowTests.LandingBesideLowPlinthRetainsClearCameraAndRecoversFullBoom': ('',),
+        'CameraFollowTests.HeldCeilingTangentViewSurvivesRunePlinthNorthEdge': ('',),
         'CameraFollowTests.LockedGateTurnDuringJumpRetainsAValidatedPreviousCameraPose': ('(5.0f,2.0f,0.0f,1.4f,1.0f,60.0f)', '(3.0f,4.0f,1.5f,-1.8f,0.5f,75.0f)'),
         'CameraFollowTests.LookHeightOffsetChangesOnlyAimAndRetainsTheCollisionPivot': ('(0.0f,0.0f)', '(1.3f,1.3f)', '(-1.0f,0.0f)', '(3.0f,2.0f)', '(float.NaN,0.0f)', '(float.PositiveInfinity,0.0f)', '(float.NegativeInfinity,0.0f)'),
         'CameraFollowTests.LowCeilingAndCornerLeaveCollisionVolumeClear': ('',),
