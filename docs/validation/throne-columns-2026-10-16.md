@@ -1,0 +1,46 @@
+# Destroyed throne-room columns — 2026-10-16
+
+DOCX §4 explicitly calls for destroyed columns in the ruined throne room. The [fresh requirement audit](../../artifacts/goal-20261014/docx-requirement-audit-20261016-current/audit.json) inspected the original paragraphs, all six embedded images, the saved scene and nine actual native captures. The two shortened pillars had symmetrical complete capitals; shortening alone did not clearly express the required damage. The audit found no missing mandatory room, fight or progression mechanism.
+
+The fracture shape is an implementation choice. Only the two existing short throne pillars receive uneven stone tops in place of their complete upper capitals. The taller pillars, lower collars, original physical bounds and all other presentation assets are preserved. There is no external rubble, new asset, collider, navigation change, route change or new progression rule. The original DOCX, mandatory library/final fight and optional bonus/return shortcut remain unchanged.
+
+## Actual red regression
+
+The unchanged saved-mesh test `CastlePresentationSceneTests.ThroneRuinedColumnsHaveFracturedTopsInsideOriginalPhysicalBounds` samples upward-facing visible triangles at equal-radius points around each shaft. It requires angular height variation, absence of the enlarged upper capital, the original collider bounds and unchanged wide, flat caps on both taller columns. It does not inspect generator coefficients or mistake bevel-side vertices for a broken top.
+
+Clean LF source **`c3cebfb9a8bbd8a4bb134e6b80e5a90efd1792ef`**, with the old builder and mesh, [failed 0/1 in real Unity EditMode](../../artifacts/goal-20261014/throne-columns-red-20261016/results.xml): the first short pillar's sampled top was **2.1–2.1 m**, giving **0.0 m** variation against the required `> 0.12 m`. XML duration was **0.2010765 s**, runner **18.578 s**. Owned Unity PID 16012 exited **2** for this assertion failure, without intervention, with same-thread wake restoration. Its 755-input imported ZIP is retained with SHA-256 `1d9fcaef27b592d2327c71ebc7b43b29b85953bfd2ff3113f2636f1c82da09a6`. This controlled red result is not a native crash.
+
+## Targeted authoring and frozen geometry review
+
+Builder source **`2b1dbfa627e239a95e616b6172d1e8e4e3c74285`** adds `CastlePresentationBuilder.BuildBrokenColumnsForBatch`. The entry point owns a temporary additive scene, loads existing materials, regenerates architecture drafts and saves only the existing `Throne_CarvedStone.asset` through the GUID guard. It always discards temporary scene changes. Only the two exact short-pillar names select the fractured treatment; the original taller-column method remains unchanged.
+
+The [hidden authoring run](../../artifacts/goal-20261014/throne-columns-authoring-20261016/execution.json), clean LF source **`602ad7763bddb169c52e39f920dd0058506b2f08`**, completed in **19.765 s**. Owned PID 12756 exited **0**, without a stop, with same-thread wake restoration. The preceding exact UTF scene/meta pair was preserved outside cache Assets. All **754 source / 755 completed imported inputs** are frozen; imported ZIP SHA-256 is `8b9264191964828267dc602ab62450498ccd7d347543ef4d22b099f732ed5870`.
+
+The [independent frozen review](../../artifacts/goal-20261014/throne-columns-authoring-independent-review-20261016.json), SHA-256 `bcf92d3bda44e7fe53ead52d26932fb92b803ffe2de800133f586c3b6acebc89`, verifies every ZIP payload/CRC, the one authored mesh and fourteen recorded known import pairs. It separately verifies fixed material file IDs and unique document IDs. Actual decoded mesh evidence shows:
+
+- **1,216 → 1,192 triangles**; each short pillar changes from 304 to 292.
+- Short-pillar top samples span **1.80624–2.01360 m**, about **0.20736 m** of angular variation. All eight wide upper-capital probes miss.
+- Both taller pillars retain the exact oriented position, normal and UV triangle payloads. All four lower collars also retain their exact payloads.
+- Every triangle remains within its original pillar bounds, with no degenerate triangle or winding/normal disagreement.
+
+The [bounds addendum](../../artifacts/goal-20261014/throne-columns-authoring-bounds-addendum-20261016.json), SHA-256 `902342dd5e0f6c22d6a8bb374ea1c6b61a5f42bf00fe41c984d5d961ad9efb9e`, confirms unchanged serialized culling bounds matching actual vertex extrema. The single submesh and saved scene/material binding remain intact. These are frozen geometry checks, separate from Unity execution and rendered visual assessment.
+
+Root [copied back only the reviewed existing mesh](../../artifacts/goal-20261014/throne-columns-copyback-20261016.json), SHA-256 `391a3286a2e6f79ca0ed1aac95fb2219e6aedd8d1722eb9570e133e1a87a7bdc`, preserving its metadata. Mesh commit **`3cebb6ad6ab4477cdc3ebfb378878e5b695fa937`** contains candidate SHA-256 `f0ecb905e72534d402d6f146a7bd3acc69fcee82c81991cbacbfbcba785d4784`. The original working mesh differed only by checkout CRLF normalization; its committed bytes are preserved in the source capsule.
+
+## Current qualification
+
+The full [current-source EditMode run](../../artifacts/goal-20261014/throne-columns-green-editmode-188-20261016/results.xml), clean LF **`dca574062bc360cf5bcbc13a0a518f8ee308a6d4`**, passed **188/188**, zero failures/skips, **1.1124419 s** XML / **20.890 s** runner. The unchanged fracture regression passed in **0.061604 s**. Owned Unity PID 42204 exited 0 without intervention, with wake restoration on its original thread. Actual committed fixture SHA-256 is identical in red and green: `5313caf9caa22aac56093fb7d74281374c7cfcb7e572040cc4698405f7926c71`; the earlier static-compile copy's different hash reflects checkout line endings.
+
+The [independent green review](../../artifacts/goal-20261014/throne-columns-green-editmode-independent-review-20261016.json), SHA-256 `86dab966895186a5ccb120d66f4dd5f0d57e5f400443bd85ea254925e1924068`, verifies all 754 source / 755 imported payloads and CRCs, all 499 critical imports, exact catalog/fixture identities and **22 tracked import pairs**: 21 complete known material documents and the existing settings normalization. The separate generated SceneTemplate entry retains its exact known hash. Imported ZIP SHA-256 is `b3bbfb4d82e2d62d3975571e7a31f4087ab066b6f691a89f9c6d631e6cc50061`.
+
+The subsequent [basic Editor route](../../artifacts/goal-20261014/throne-columns-basic-route-20261016/results.xml), on the same source, remains **failed 0/1**: FMOD could not initialize the output device, error **60**, and fell back to `nosound` after a logged default-device change. XML duration was **82.7973943 s**, runner **99.062 s**; PID 27604 exited 2 for the failed test without intervention, with same-thread wake restoration. This does not establish that the mesh caused the audio failure, and no audio assertion was weakened.
+
+The case retained a complete mandatory-route trace to Exit at **200 HP / 81.757782 s** and eleven actual explicit-render PNGs. The [failed-run capture review](../../artifacts/goal-20261014/throne-columns-basic-route-failed-capture-review-20261016.json), SHA-256 `bc4a2663f0cb8664c20981d4f6ac3259e472271f1cf8ff93be679dfe120f7cfc`, verifies the trace, all PNG CRCs/full decoding and unchanged source scene/new mesh. The throne image shows the new uneven pillar edge, but the overall test remains failed; images and completed movement do not qualify audio, ordinary native frames or the whole playthrough.
+
+![New fractured pillar in an explicit Editor capture from the failed audio run](C:/Users/andrz/git/shadows-of-the-forsaken/artifacts/goal-20261014/throne-columns-basic-route-20261016/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-throne.png)
+
+Qualifying PlayMode integration after the audio failure, new native traversal and ordinary Release build/runtime/package verification remain pending for this mesh. The valid EditMode 188/188 result remains separate from that failed PlayMode attempt.
+
+The subsequent [concealed native rendering investigation](concealed-native-rendering-2026-10-16.md) restores ordinary frames and passes both HUD cases, while the fresh complete profile on `a5e4a26` remains **failed 2/3** on FMOD error 60 in exploration. The matching never-shown profile remains **1/3**, with exploration passing and both ordinary HUD targets empty. The [concurrent read-only audio audit](../../artifacts/goal-20261014/fmod-recurrence-host-audit-20261016/native-fmod-correlation.json) records actual default render-role changes between Realtek and HDMI near `RemoteConnection` events. The failed Editor route and later concealed native run are two recent audio failures; timing correlation does not establish engine-internal causality or connect either failure to this mesh. No system default-device change has been applied, and no fresh 3/3 native or full 235-case PlayMode result is claimed.
+
+The currently qualified shipping package and recorder pins remain **`0b9e160`**. Its earlier 235/187 suites, native routes and Release lifecycle do not automatically qualify the new art. Native rendering diagnostics and historical Mono/FMOD crash causality remain separate from this DOCX §4 correction. The level's first-time pacing, physical audibility, performance and owner acceptance are not established by these mesh checks.
