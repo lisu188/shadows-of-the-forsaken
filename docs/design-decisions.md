@@ -99,3 +99,23 @@ Właściciel wybrał pełną trasę, proste mechanizmy „znajdź i uruchom”, 
 - **§3, §7 — sesja:** porażka i ukończenie zatrzymują rozgrywkę, a R lub przycisk uruchamia pełny reset. Ukończenie następuje przez wejście żywego gracza do wyjścia po wymaganych walkach i mechanizmach.
 
 Główna trasa nadal wymaga pięciu dotychczasowych celów; kontrakt JSON i hash źródłowego DOCX nie zmieniają się. Implementacja blockoutu i odbiór finalnej oprawy pozostają odrębnymi etapami.
+
+## Detale końcowej oprawy — 2026-10-08
+
+DOCX §4 wymaga śladów kultu w katakumbach, a §7 kończy scenariusz przy wyjściu. W podstawowej scenie `ForsakenCastle` świetlisty kwadrat zastępuje teraz niewielki pierścień z rozgałęzionym glifem; widoczna ściana za końcowym progiem otrzymuje ostrołukowe otwarcie na istniejące nocne niebo. Kształt glifu i rama wyjścia są wyborami wykonawczymi, nie dodatkowymi symbolami ani geometrią z DOCX.
+
+Zmiana dotyczy dwóch istniejących siatek prezentacji. Zachowuje ich GUID-y, zapisaną scenę, fizyczną ścianę graniczną, nawigację, triggery, wszystkie warunki postępu i opcjonalność sekretu. Ukończenie nadal zatrzymuje gracza przed fizyczną granicą świata; otwarcie jest widokiem końcowym, bez następnego poziomu i bez obowiązkowej cutscenki. Jawny `CastlePresentationBuilder.BuildCompletionDetailsForBatch` odtwarza wyłącznie te dwie siatki. Kontrakt JSON i źródłowy DOCX pozostają bez zmian. Testy renderowanych trójkątów sprawdzają glif, otwarcie, ramę i górną powierzchnię muru osobno od zachowanego collidera. Wyniki wykonania i obrazy opisuje raport bieżącej dostawy.
+
+## Małe kroki ruchu kontrolera — 2026-10-16
+
+DOCX §3 wymaga eksploracji poziomu; model ruchu i skok są decyzjami implementacyjnymi #4. Podstawowy zapisany `CharacterController` miał próg `minMoveDistance = 0.001`. Rzeczywisty test komponentu w przypiętym Unity, na niezmienionej podłodze dziedzińca, odtworzył utratę kontaktu z podłożem w 32/32 dodatnich krokach po 0.0001 s oraz odrzucenie kolejnego skoku, bez fizycznego uniesienia postaci.
+
+Zapisana scena `ForsakenCastle` i jej `CastleLayoutBuilder` wybierają teraz `minMoveDistance = 0`, aby kontroler nie odrzucał drobnych przemieszczeń. To ustawienie techniczne, nie nowa liczba z DOCX; [dokumentacja Unity](https://docs.unity3d.com/6000.0/Documentation/Manual/class-CharacterController.html) również zaleca zero w większości przypadków. Alternatywny `ForsakenLevel` już używał zera. Prędkość, obrót, grawitacja, siła skoku, bryła kontrolera, geometria, nawigacja i postęp sesji pozostają bez zmian.
+
+Regresja `PrimarySavedControllerRetainsGroundContactAtMicrosteps` używa rzeczywistego zapisanego kontrolera oraz `PlayerMovement.Simulate`, bez nadpisywania progu, położenia ani podłogi. To sterowany test komponentu silnika, odrębny od naturalnego przebiegu klatek, trasy wejścia, renderowania i wydajności. Wynik przed poprawką pozostaje niezaliczony; weryfikację poprawki opisuje [osobny raport](validation/controller-grounding-2026-10-16.md).
+
+## Dokładna pozycja kamery przy przeszkodzie — 2026-10-16
+
+DOCX §3/7 wymaga czytelnej eksploracji; solver kolizji kamery jest wyborem wykonawczym. Ukryta eksploracja odtworzyła zanik kamery przy północnym brzegu piedestału runy. Rzeczywista regresja Unity potwierdziła, że bardzo mały krok postaci unieważniał istniejącą bezpieczną pozycję kamery przez zaokrąglenie po normalizacji i ponownym złożeniu wektora.
+
+Gdy niezmienione zapytania sferyczne i promieniowe dopuszczają pełną długość ramienia, pierwsza próba solvera sprawdza teraz dokładną żądaną pozycję. Skrócone ramiona nadal używają dotychczasowego wyszukiwania. Margines, promień płaszczyzny bliskiej, filtry przeszkód, limity zapytań i awaryjne wyłączenie renderowania pozostają bez zmian. Nie zmieniamy geometrii ani widoku sceny. [Osobny raport red/green](validation/camera-tangent-2026-10-16.md) rozdziela tę poprawkę od zwykłych klatek native, dawnej awarii Mono/FMOD i odbioru właściciela.

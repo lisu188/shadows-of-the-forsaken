@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+  "unity": "6000.6.3f1",
+  "capture_method": "Original saved-scene camera and camera-space HUD, URP render request during automated hidden Unity Editor PlayMode controls-driven fixture; no image edits.",
+  "execution": {
+    "path": "artifacts/goal-20261014/hidden-routes/execution.json",
+    "bytes": 97545,
+    "sha256": "892d8d2f1402202ec291cdedea3ad872d44abbaa407f589a5a5237faf21a5aaf"
+  },
+  "results_xml": {
+    "path": "artifacts/goal-20261014/hidden-routes/results.xml",
+    "bytes": 62605,
+    "sha256": "2b90ba09bcc9b6e52b722536b1f35ad7016b374a1d26a8b120943567b88c8e1f"
+  },
+  "source_snapshot": {
+    "path": "artifacts/goal-20261014/hidden-routes/source-snapshot.json",
+    "bytes": 95146,
+    "sha256": "e78727ad526e567730d7c7356c8b7cd8e5a52e5e348d189c47b58f16fec88e64"
+  },
+  "filtered_verification": {
+    "path": "artifacts/goal-20261014/hidden-routes/filtered-verification.json",
+    "bytes": 30785,
+    "sha256": "8c3bc47b164aacdb6696078dd7a3a9743742a2bf9834a1890354fc26cbd4e2da"
+  },
+  "images": [
+    {
+      "file": "01-main-miniboss.png",
+      "source": {
+        "path": "artifacts/goal-20261014/hidden-routes/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-MinibossDefeated.png",
+        "bytes": 473670,
+        "sha256": "414836382cc53ea115e5d3458bdaa043cf99f45a7d64997072778ed14919a5ba"
+      },
+      "copy": {
+        "path": "docs/validation/hidden-routes-2026-10-14/01-main-miniboss.png",
+        "bytes": 473670,
+        "sha256": "414836382cc53ea115e5d3458bdaa043cf99f45a7d64997072778ed14919a5ba"
+      },
+      "width": 960,
+      "height": 540,
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "docx_connection": "DOCX §§4/6 throne-room miniboss",
+      "bytes_copied_without_image_edits": true
+    },
+    {
+      "file": "02-library-sealed.png",
+      "source": {
+        "path": "artifacts/goal-20261014/hidden-routes/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-library-sealed.png",
+        "bytes": 472088,
+        "sha256": "dda720361ba000f5797183764040f5cc80183fa411f6e39d597fe90e473016c2"
+      },
+      "copy": {
+        "path": "docs/validation/hidden-routes-2026-10-14/02-library-sealed.png",
+        "bytes": 472088,
+        "sha256": "dda720361ba000f5797183764040f5cc80183fa411f6e39d597fe90e473016c2"
+      },
+      "width": 960,
+      "height": 540,
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "docx_connection": "DOCX §4 forbidden library and concealed gate",
+      "bytes_copied_without_image_edits": true
+    },
+    {
+      "file": "03-secret-relic.png",
+      "source": {
+        "path": "artifacts/goal-20261014/hidden-routes/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-relic.png",
+        "bytes": 460428,
+        "sha256": "8974602cba82889a5935e2071c207680650ac5017088acfea031ed609a975ce5"
+      },
+      "copy": {
+        "path": "docs/validation/hidden-routes-2026-10-14/03-secret-relic.png",
+        "bytes": 460428,
+        "sha256": "8974602cba82889a5935e2071c207680650ac5017088acfea031ed609a975ce5"
+      },
+      "width": 960,
+      "height": 540,
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "docx_connection": "DOCX §§6/8 optional upper bonus branch",
+      "bytes_copied_without_image_edits": true
+    },
+    {
+      "file": "04-main-complete.png",
+      "source": {
+        "path": "artifacts/goal-20261014/hidden-routes/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-complete-main.png",
+        "bytes": 369172,
+        "sha256": "530bee273e568469676cdbe3ac42494075e7a0135fa6614fb3a12e35304515c2"
+      },
+      "copy": {
+        "path": "docs/validation/hidden-routes-2026-10-14/04-main-complete.png",
+        "bytes": 369172,
+        "sha256": "530bee273e568469676cdbe3ac42494075e7a0135fa6614fb3a12e35304515c2"
+      },
+      "width": 960,
+      "height": 540,
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "docx_connection": "DOCX §§6–8 required final fight and exit",
+      "bytes_copied_without_image_edits": true
+    }
+  ],
+  "evidence_boundary": "Editor test captures only; not standalone OS-input, human pacing/readability/audio or hardware performance acceptance."
+}

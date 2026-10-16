@@ -326,6 +326,9 @@ class NUnitEvidenceTests(unittest.TestCase):
             ("playmode", "LevelInteractionTests"),
             ("playmode", "WorldTextTests"),
             ("playmode", "LevelHudLayoutTests"),
+            ("playmode", "PrimaryCastleHudRenderingTests"),
+            ("playmode", "AudioMixerPlaybackTests"),
+            ("playmode", "AudioConfigurationTelemetryTests"),
         ]:
             with self.subTest(mode=mode, fixture=fixture):
                 report = report_for(mode)
@@ -404,14 +407,23 @@ class NUnitEvidenceTests(unittest.TestCase):
             case = next(c for c in suite if
                         f".PlayerValidationPerformanceTests.{room_method}" in c.get("fullname", ""))
             suite.remove(case)
-        alternate_fixtures = (
+        later_fixtures = (
             ".CombatControllerTests.", ".ForsakenLevelTests.", ".LevelHudLayoutTests.",
-            ".LevelInteractionTests.", ".WorldTextTests.",
+            ".LevelInteractionTests.", ".WorldTextTests.", ".CastleCameraExplorationTests.",
+            ".PrimaryCastleHudRenderingTests.", ".AudioMixerPlaybackTests.",
+            ".AudioConfigurationTelemetryTests.", ".AudioRunLifecycleObserverTests.",
+        )
+        # The later plinth-landing and held-ceiling regressions also did not exist
+        # in this historical report. Preserve its original 193 cases as the catalog grows.
+        later_camera_methods = (
+            ".CameraFollowTests.MinimumTravelEndpointSurvivesLowerJunctionGroundMicrostep",
+            ".CameraFollowTests.LandingBesideLowPlinthRetainsClearCameraAndRecoversFullBoom",
+            ".CameraFollowTests.HeldCeilingTangentViewSurvivesRunePlinthNorthEdge",
         )
         for case in list(suite):
             name = case.get("fullname", "")
-            if any(fixture in name for fixture in alternate_fixtures) or name.endswith(
-                    ".PlayerMovementTests.MouseAttackFiresOncePerPressThroughOwnedActionMap"):
+            if any(fixture in name for fixture in later_fixtures) or name.endswith(
+                    ".PlayerMovementTests.MouseAttackFiresOncePerPressThroughOwnedActionMap") or name.endswith(later_camera_methods):
                 suite.remove(case)
         count = len(list(report.iter("test-case")))
         self.assertEqual(193, count)
@@ -430,6 +442,22 @@ class NUnitEvidenceTests(unittest.TestCase):
                                 f".PlayerValidationPerformanceTests.{method}" in c.get("fullname", ""))
                     # Keep the total and passing count: only the required named
                     # method in the correct fixture can satisfy this regression.
+                    case.set("fullname", f"ShadowsOfTheForsaken.Tests.PlayMode.UnrelatedFixture.{substitute}")
+                    self.save(report)
+                    with self.assertRaisesRegex(validation.ValidationError, method):
+                        validation.validate_results(self.path, "playmode")
+
+    def test_audio_lifecycle_cases_require_their_exact_fixture(self):
+        methods = (
+            "RunLeaseRetainsPostCaseCallbackAndSealsBeforeQuit",
+            "BypassedQuitAndSetupFaultDetachWithoutLateConfigurationReads",
+        )
+        for method in methods:
+            for substitute in ("PassingUnrelatedCase", method):
+                with self.subTest(method=method, substitute=substitute):
+                    report = report_for("playmode")
+                    case = next(c for c in report.iter("test-case") if
+                                f".AudioRunLifecycleObserverTests.{method}" in c.get("fullname", ""))
                     case.set("fullname", f"ShadowsOfTheForsaken.Tests.PlayMode.UnrelatedFixture.{substitute}")
                     self.save(report)
                     with self.assertRaisesRegex(validation.ValidationError, method):
