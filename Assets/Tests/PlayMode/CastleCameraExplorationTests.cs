@@ -352,6 +352,51 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             LogAssert.NoUnexpectedReceived();
         }
 
+#if !UNITY_EDITOR
+        [Serializable]
+        private sealed class NativeDiagnosticsReady
+        {
+            public int schema_version = 1, pid, owned_camera_count;
+            public string test_profile = "presentation", recorded_utc, case_full_name, output_directory;
+            public string scene_path, scene_name, camera_name, camera_scene_path;
+            public bool owned_scene_prepared, camera_post_processing;
+            public bool pipeline_at_preparation, pipeline_after_preparation, pipeline_at_publication;
+        }
+
+        private void PublishNativeDiagnosticsReady(Scene ownedScene, Camera ownedCamera,
+            bool pipelineAtPreparation, bool pipelineAfterPreparation)
+        {
+            string requested = Environment.GetEnvironmentVariable("SHADOWS_PRESENTATION_PLAYER_OUTPUT");
+            if (string.IsNullOrWhiteSpace(requested)) return;
+            Assert.That(Application.platform, Is.EqualTo(RuntimePlatform.WindowsPlayer));
+            Assert.That(Path.IsPathRooted(requested), Is.True);
+            string output = Path.GetFullPath(requested);
+            Assert.That(Path.GetDirectoryName(directory), Is.EqualTo(Path.Combine(output, "captures")).IgnoreCase,
+                "Readiness must belong to this native presentation capture directory.");
+            string caseName = TestContext.CurrentContext.Test.FullName;
+            Assert.That(caseName, Is.EqualTo(typeof(CastleCameraExplorationTests).FullName + "." +
+                nameof(LowerRoomsRetainVisibleCameraDuringUnsnappedInputExploration)));
+            var ready = new NativeDiagnosticsReady
+            {
+                pid = System.Diagnostics.Process.GetCurrentProcess().Id,
+                recorded_utc = DateTime.UtcNow.ToString("o", System.Globalization.CultureInfo.InvariantCulture),
+                case_full_name = caseName, output_directory = output, scene_path = ownedScene.path,
+                scene_name = ownedScene.name, camera_name = ownedCamera.name,
+                camera_scene_path = ownedCamera.gameObject.scene.path, owned_camera_count = 1,
+                owned_scene_prepared = true,
+                camera_post_processing = ownedCamera.GetComponent<UnityEngine.Rendering.Universal.UniversalAdditionalCameraData>().renderPostProcessing,
+                pipeline_at_preparation = pipelineAtPreparation, pipeline_after_preparation = pipelineAfterPreparation,
+                pipeline_at_publication = RenderPipelineManager.currentPipeline != null
+            };
+            // Publish only after the exact owned scene/camera/profile checks and
+            // first-use expectations succeed. The host waits for this closed file
+            // before showing either parent or child; callback-start remains true.
+            using (var stream = new FileStream(Path.Combine(output, "diagnostics-ready.json"),
+                FileMode.CreateNew, FileAccess.Write, FileShare.None))
+            using (var writer = new StreamWriter(stream, new System.Text.UTF8Encoding(false)))
+                writer.WriteLine(JsonUtility.ToJson(ready, true));
+        }
+#endif
         private IEnumerator Load()
         {
             sceneLeaseReleased = false;
@@ -368,6 +413,8 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 .Select(index => SceneManager.GetSceneAt(index)));
             int preparedSceneCount = 0;
             Scene preparedScene = default;
+            Camera preparedCamera = null;
+            bool pipelineAtPreparation = false, pipelineAfterPreparation = false;
             Exception pipelinePreparationFailure = null;
             UnityEngine.Events.UnityAction<Scene, LoadSceneMode> prepareNativePipeline = (loaded, mode) =>
             {
@@ -382,8 +429,11 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                         .SelectMany(root => root.GetComponentsInChildren<Camera>(true)).ToArray();
                     Assert.That(savedCameras.Length, Is.EqualTo(1), "The owned saved castle has one scene camera.");
                     Assert.That(savedCameras[0].gameObject.scene, Is.EqualTo(loaded));
+                    pipelineAtPreparation = RenderPipelineManager.currentPipeline != null;
                     NativePresentationPipelineDiagnostics.Prepare(savedCameras[0], loaded);
+                    pipelineAfterPreparation = RenderPipelineManager.currentPipeline != null;
                     preparedScene = loaded;
+                    preparedCamera = savedCameras[0];
                 }
                 catch (Exception error)
                 {
@@ -407,6 +457,11 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
 #endif
             scene = sceneLoad.Scene;
             Assert.That(sceneLoad.LoadedWithinDeadline && scene.IsValid() && scene.isLoaded, Is.True, "Saved castle load exceeded 30 s.");
+#if !UNITY_EDITOR
+            Assert.That(preparedCamera, Is.Not.Null, "Retain the camera whose native pipeline diagnostics were prepared.");
+            Assert.That(preparedCamera.gameObject.scene, Is.EqualTo(scene));
+            PublishNativeDiagnosticsReady(scene, preparedCamera, pipelineAtPreparation, pipelineAfterPreparation);
+#endif
             Assert.That(SceneManager.SetActiveScene(scene), Is.True);
             yield return null;
             Assert.That(Object.FindObjectsByType<Canvas>()
