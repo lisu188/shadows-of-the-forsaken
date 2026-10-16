@@ -36,4 +36,10 @@ The recorder's [six-pin proof](../../artifacts/goal-20261014/ready-release-recor
 
 The older [camera delivery](camera-tangent-2026-10-16.md) retains its source-scoped `0b9e160` **235/235 PlayMode / 187/187 EditMode** and earlier package. The current correction separately has **188/188 EditMode** at `dca5740`, the affected Editor route **1/1**, native routes **10/10** and concealed presentation **3/3** at `90c5c9c`. No full 235-case PlayMode rerun for the new source is claimed.
 
+## FMOD recovery investigation
+
+The [primary-source follow-up](../../artifacts/goal-20261014/fmod60-public-api-primary-source-review-20261016.json), SHA-256 `e352dad43abd9ba37918d1d976cb898927c6d4b2a9d7530dc14445916dc782c7`, reviews fourteen official sources and both retained failure logs. It establishes no matching engine fix or guaranteed recovery from this FMOD 60 failure. Unity's [pinned-version reset API](https://docs.unity3d.com/6000.6/Documentation/ScriptReference/AudioSettings.Reset.html) reports whether settings were applied; the [audio settings manual](https://docs.unity3d.com/6000.6/Documentation/Manual/class-AudioSettings.html) also documents loss of generated clips and playback state during reconfiguration. A successful reset return alone would not qualify restored hardware output.
+
+The failed local logs already contain Unity's reset and repeated 48000 Hz initialization fallback before no-sound output. No additional production reset loop, forced sample rate or engine upgrade was introduced without supporting evidence. The supported next diagnostic is bounded test-only configuration-change telemetry correlated with the passive endpoint history; it has not been implemented or presented as a recovery result.
+
 Earlier FMOD device-transition failures remain retained. Current stable-endpoint native passes do not prove hotplug recovery, physical audibility or the historical crash cause. Full ordinary Release controls/traversal, first-time human pacing/readability, hardware performance and owner acceptance remain distinct open checks.
