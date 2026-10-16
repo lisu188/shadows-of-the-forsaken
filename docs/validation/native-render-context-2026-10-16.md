@@ -10,6 +10,37 @@ Pinned URP 17.6 enters its context callback scope before iterating the camera li
 
 [Pinned API compilation](../../artifacts/goal-20261014/native-context-probe-api-compile-20261016/summary.json) passed Editor/native **2/2**, with no compiler output. The selected Editor source remains byte-identical to the preceding candidate after preprocessing (`22786089b95bf6fbef3f05629102c7ece2dcf7624b8d925ebc81110cc307dba0`); the native fixture source has SHA-256 `6357c5a96171a38a7f630abe64430efebe69b50acd8c550b28050116c1ab6ef9`. This is API/source proof, not engine execution.
 
-## Pending engine evidence
+Independent [source review](../../artifacts/goal-20261014/native-context-probe-source-independent-review-20261016-v2.json), SHA-256 `f4aff1acc7340e7c5312bb5ddbfa3d31652c579d126324fbbe34d696539015d8`, reproduces the selected Editor identity, original-method identity and bounded observer lifecycle. The ordinary production selection is empty without test symbols.
 
-A fresh exact-source native presentation build and hidden three-case execution are pending. No new runtime result, ordinary rendering, human timing/audio, hardware performance or historical Mono crash causality is claimed. The qualified ordinary Release and recorder pins remain unchanged; failed runs, imports, players and screenshots remain preserved.
+## Observed engine evidence
+
+The [new exact-source build](../../artifacts/goal-20261014/native-context-probe-build-20261016/execution.json) binds clean LF **`56d3cddb7d999e2a18d10391bdff2f9d76dfce4b`**, 754 committed inputs, test report SHA-256 `5257c5f9696c3a26d5e6ba2170e809269db29bc2aaa8be3afbfcc3e9d407074e` and the 757-input imported ZIP SHA-256 `c95dbc4cd76e2f4e0cd195ebb3b3d7b105e138b0590ee03f66ef4eb39a8d1c34`. BuildReport has zero errors/warnings. PID 33640 exited 0, no stop, with wake restoration and terminal-before-snapshot; runner elapsed **72.984 s**. The preceding exact UTF pair was preserved before source copy.
+
+The [hidden native run](../../artifacts/goal-20261014/native-context-probe-20261016/results.xml) remains **failed 1/3**, **99.7678101 s** XML / **103.875 s** runner. Exploration passed in **99.461770 s**; both ordinary-frame HUD cases failed with zero world/text pixels. Fifteen PNGs and three JSON capture records remain retained. PID 10516 self-exited 1 from failed test callbacks, without intervention. Medium integrity, actual never-shown parentage, unchanged 348-file player identity, host destruction and wake restoration were verified, with no detected FMOD/native-fatal/requested-crash artifact.
+
+Every one of the six HUD phase snapshots reports:
+
+| Read-only observation | Actual state |
+| --- | --- |
+| SRP context begin/end and all/owned camera begin/end | **0**; context sample arrays empty |
+| OnDemandRendering interval / prediction | **1 / true**; prediction is not rendered-frame proof |
+| Screen, camera pixel viewport and bound target | **1280 × 720**, pixel origin (0, 0) |
+| Camera enumeration | One enabled Game camera, owned camera present, target display 0 |
+| Display 0 | Active, rendering 1280 × 720, system 3840 × 2160 |
+| Display 1 | Inactive, rendering/system 1920 × 1080 |
+| Current player loop | One `FinishFrameRendering` entry |
+| Existing state observations | Camera active/enabled, target created/bound, URP initialized, Unity focus/background true |
+
+The [independent build/runtime review](../../artifacts/goal-20261014/native-context-probe-independent-review-20261016.json), SHA-256 `6ec77fb927dde490a2bdf3031e304d99fc2646ac10bda9f0d50fbc7d41a52158`, verifies all source/pre-import/critical inputs, all frozen ZIP payloads/CRCs and 21 import pairs, player files, exact result/event/completion records, PNGs, new phase values and cleanup. The only Unity input differing from the prior qualified presentation build is this native HUD fixture branch. The complete 234/187 Editor suites were not rerun for this native-only observer; their existing production/Editor evidence remains separately bound to the unchanged code and selected Editor source.
+
+No empty-camera render context was observed. These measurements make an altered OnDemand interval, zero viewport, missing active display, missing enabled camera or missing loop node unsupported explanations for this run. They do not identify the native gate or rule out failure before URP's context scope. The qualified ordinary Release and recorder pins remain unchanged; human timing/audio, ordinary rendering, hardware performance and historical Mono crash causality remain unqualified.
+
+## Separate transparent offscreen capability contrast
+
+A distinct transparent offscreen host diagnostic kept the desktop visually untouched using readback alpha zero, a host rectangle entirely outside the virtual desktop and nonactivation/tool-window styles. It performed a nonactivating Win32 show only after verifying actual owned Unity child parentage. Continued readback rejected lost opacity, changed position, foreground ownership, player-window escape and taskbar/topmost styles. Its explicit `WS_VISIBLE=true` condition differs from the original never-shown host and does not relabel that failure or change test assertions.
+
+The [contrast run](../../artifacts/goal-20261014/transparent-offscreen-presentation-capability-20261016/results.xml) **failed 0/3**, **96.6917894 s** XML / **100.5 s** runner. Both ordinary HUD targets remained black with zero context/camera callbacks; the visible bit alone did not restore ordinary rendering in this run. Exploration additionally lost its safe production camera beside the rune plinth: feet `(-11.6989756, 0.01999986, 26.8921165)`, yaw `357.06305`, first unsafe frame 156773. There were 1,061 unsafe observations spanning about 0.540587 sampled seconds, unrecovered before teardown. Eight completed route PNGs and six failed HUD PNGs remain retained; the unsafe-view capture was correctly skipped because the camera was disabled. This is a new confirmed production-camera failure, not evidence that the host caused it.
+
+All 396 hiding samples passed. The initial sample was unshown, followed by 395 Win32-visible samples with alpha zero and offscreen geometry. PID 36640 self-exited 1 after test failures, with actual parent receipt, Medium integrity, unchanged 348-file identity, destroyed host and restored wake request. No detected FMOD/native-fatal/requested-crash artifact appeared. The [independent contrast audit](../../artifacts/goal-20261014/transparent-offscreen-presentation-capability-independent-review-20261016.json), SHA-256 `eee41c1af78cc351c5d950b47f6a0d116944b63dd4076fa30625eaf570e6e20d`, verifies source/import archives, raw guard history, results, captures and lifecycle. Its live process check arrived after exit; the history does not serialize every individual `IsChild` return, which is checked by the frozen launcher. The strict-hidden result remains failed 1/3.
+
+The exact camera transition now has a separate Unity component regression. Its production correction and broader verification are tracked separately; neither explicit captures nor a camera fix qualify the unresolved ordinary native rendering gate.
