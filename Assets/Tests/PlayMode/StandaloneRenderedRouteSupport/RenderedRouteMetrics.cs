@@ -3,6 +3,25 @@ using System.Collections.Generic;
 
 namespace ForsakenStandaloneRenderedRouteSupport
 {
+    public struct RenderedProfilerCandidate
+    {
+        public string name, category;
+    }
+    public static class RenderedProfilerSelection
+    {
+        // Counter names are not unique across categories (for example, UI Toolkit
+        // also exposes Draw Calls Count). Never substitute a same-name counter.
+        public static int FindExact(IReadOnlyList<RenderedProfilerCandidate> candidates, string expectedCategory, string expectedName)
+        {
+            if (candidates == null || candidates.Count > 4096 || string.IsNullOrEmpty(expectedCategory) || string.IsNullOrEmpty(expectedName))
+                throw new ArgumentException("Invalid bounded profiler selection.");
+            for (int i = 0; i < candidates.Count; i++)
+                if (string.Equals(candidates[i].category, expectedCategory, StringComparison.Ordinal) &&
+                    string.Equals(candidates[i].name, expectedName, StringComparison.Ordinal)) return i;
+            return -1;
+        }
+    }
+
     // Test-only, Unity-free statistics. Raw and warm lanes share one histogram
     // implementation; the warm lane matches PlayerFrameMetrics' existing policy.
     public sealed class RenderedRouteHistogram

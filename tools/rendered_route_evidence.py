@@ -270,6 +270,7 @@ COMMON_READY = frozenset(("schema_version", "pid", "owned_camera_count", "test_p
 READY_FIELDS = COMMON_READY | {"case_key", "scene_handle", "camera_entity_id", "frame", "session_id", "realtime_seconds"}
 COUNTERS = ("context_begin", "context_end", "all_camera_begin", "all_camera_end", "owned_camera_begin", "owned_camera_end")
 METRICS = {"Main Thread", "Render Thread", "Draw Calls Count", "SetPass Calls Count", "Shadow Casters Count", "Triangles Count"}
+METRIC_CATEGORIES = {name: "Internal" if name in ("Main Thread", "Render Thread") else "Render" for name in METRICS}
 
 
 def session(value):
@@ -334,7 +335,8 @@ def validate_configuration(value):
     number(value.get("aspect"), "camera aspect", minimum=1e-9)
     number(value.get("render_scale"), "render scale", maximum=10)
     rect = value.get("pixel_rect")
-    require(type(rect) is dict and set(rect) == {"x", "y", "width", "height"}, "Invalid camera pixel rectangle")
+    require(type(rect) is dict and set(rect) == {"serializedVersion", "x", "y", "width", "height"} and
+            rect["serializedVersion"] == "2", "Invalid pinned Unity camera pixel rectangle")
     for field in ("x", "y"):
         number(rect[field], "pixel rectangle " + field, minimum=None)
     for field in ("width", "height"):
@@ -509,6 +511,9 @@ def validate_case(value, key, ready, pid, output, start_event, finish_event):
             for field in ("category", "unit", "attribution"):
                 text(metric.get(field), "profiler " + field)
             available = boolean(metric.get("available"), "profiler availability")
+            require(metric.get("expected_category") == METRIC_CATEGORIES[metric["name"]], "Profiler intended category differs")
+            require(not available or metric["category"] == metric["expected_category"],
+                    "Profiler selected a same-name counter in another category")
             valid = boolean(metric.get("valid"), "profiler validity")
             count = integer(metric.get("count"), "profiler retained count", maximum=1)
             integer(metric.get("value"), "profiler counter", maximum=2**63 - 1)

@@ -31,7 +31,7 @@ def configuration():
                 fullscreen_mode="Windowed", quality_name="High", camera_type="Game", pipeline_type="URP", pipeline_asset="URP",
                 target_is_null=True, camera_active=True, camera_post_processing=False, hdr_supported=False, display_active=True,
                 on_demand_will_render=True, run_in_background=True, aspect=1280/720, render_scale=1,
-                pixel_rect=dict(x=0, y=0, width=1280, height=720))
+                pixel_rect=dict(serializedVersion="2", x=0, y=0, width=1280, height=720))
 
 
 def ready(key="main"):
@@ -81,7 +81,7 @@ def case_value(key="main"):
         time_scale=1, running=True, application_focused=False, paused=False, configuration=configuration(),
         memory=dict(managed_estimated_bytes=0, unity_used_bytes=0, unity_reserved_bytes=0, unity_unused_reserved_bytes=0,
                     unity_allocator_available=False, meaning="Sampled allocator estimate"),
-        profiler=[dict(name=name, category="unavailable", unit="unavailable", attribution="Origin unassigned",
+        profiler=[dict(name=name, category="unavailable", expected_category=e.METRIC_CATEGORIES[name], unit="unavailable", attribution="Origin unassigned",
                        available=False, valid=False, count=0, value=0) for name in sorted(e.METRICS)])]
     result["worst_intervals"] = [dict(session_id=SESSION, room="Courtyard", visit=1, frame=2, realtime=2, milliseconds=1000, warm=False)]
     return result
@@ -260,6 +260,32 @@ class RenderedEvidenceTests(unittest.TestCase):
             value, results, history = self.completion(); mutation(value)
             with self.subTest(hash=value["events_sha256"]), self.assertRaises(ValueError):
                 e.validate_completion(value, results, history, STAMP, END)
+
+    def test_pinned_unity_rect_serialization_version_is_required(self):
+        value = configuration()
+        self.assertEqual(e.validate_configuration(value)["pixel_rect"]["serializedVersion"], "2")
+        for version in (None, 2, "1", "3"):
+            changed = copy.deepcopy(value)
+            if version is None: del changed["pixel_rect"]["serializedVersion"]
+            else: changed["pixel_rect"]["serializedVersion"] = version
+            with self.subTest(version=version), self.assertRaises(ValueError): e.validate_configuration(changed)
+
+    def test_rect_extra_fields_and_invalid_dimensions_are_rejected(self):
+        for field, replacement in (("extra", 0), ("width", 0), ("height", float("nan"))):
+            value = configuration(); value["pixel_rect"][field] = replacement
+            with self.subTest(field=field), self.assertRaises(ValueError): e.validate_configuration(value)
+
+    def test_ui_toolkit_same_name_counter_cannot_pass_as_render_counter(self):
+        value = case_value()
+        metric = next(item for item in value["samples"][0]["profiler"] if item["name"] == "Draw Calls Count")
+        metric.update(available=True, valid=True, count=1, value=0, unit="Count", category="UI Toolkit")
+        with self.assertRaisesRegex(ValueError, "same-name counter"):
+            e.validate_case(value, "main", ready(), 1234, OUTPUT, {"utc": STAMP}, {"utc": END})
+
+    def test_missing_intended_profiler_category_is_rejected(self):
+        value = case_value(); del value["samples"][0]["profiler"][0]["expected_category"]
+        with self.assertRaisesRegex(ValueError, "intended category"):
+            e.validate_case(value, "main", ready(), 1234, OUTPUT, {"utc": STAMP}, {"utc": END})
 
 
 if __name__ == "__main__":

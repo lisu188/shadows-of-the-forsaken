@@ -8,6 +8,46 @@ namespace RenderedRoutePureTests
     public sealed class RenderedRouteMetricsTests
     {
         private const string Token = "177a4ab6-5417-47c0-936b-0a171e177344";
+        [TestCase(false)] [TestCase(true)]
+        public void SameNameUiCounterCannotSubstituteForRenderCounterInEitherEnumerationOrder(bool renderFirst)
+        {
+            var render = new RenderedProfilerCandidate { name = "Draw Calls Count", category = "Render" };
+            var ui = new RenderedProfilerCandidate { name = "Draw Calls Count", category = "UI Toolkit" };
+            var available = renderFirst ? new[] { render, ui } : new[] { ui, render };
+            int selected = RenderedProfilerSelection.FindExact(available, "Render", "Draw Calls Count");
+            Assert.That(selected, Is.EqualTo(renderFirst ? 0 : 1));
+            Assert.That(available[selected].category, Is.EqualTo("Render"));
+        }
+
+        [Test]
+        public void MissingExactRenderPairRemainsUnavailableDespiteSameNameAndOtherRenderCounters()
+        {
+            var available = new[] {
+                new RenderedProfilerCandidate { name = "Draw Calls Count", category = "UI Toolkit" },
+                new RenderedProfilerCandidate { name = "Triangles Count", category = "Render" } };
+            Assert.That(RenderedProfilerSelection.FindExact(available, "Render", "Draw Calls Count"), Is.EqualTo(-1));
+        }
+
+        [TestCase("internal", "Main Thread")] [TestCase("Internal", "main thread")]
+        [TestCase("Render", "Main Thread")]
+        public void ThreadSelectionRequiresExactCaseSensitiveCategoryAndName(string category, string name)
+        {
+            var available = new[] { new RenderedProfilerCandidate { category = category, name = name } };
+            Assert.That(RenderedProfilerSelection.FindExact(available, "Internal", "Main Thread"), Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void ProfilerSelectionAcceptsExactInternalThreadAndRejectsUnboundedOrUnidentifiedQueries()
+        {
+            var available = new[] { new RenderedProfilerCandidate { category = "Internal", name = "Main Thread" } };
+            Assert.That(RenderedProfilerSelection.FindExact(available, "Internal", "Main Thread"), Is.EqualTo(0));
+            Assert.That(RenderedProfilerSelection.FindExact(Array.Empty<RenderedProfilerCandidate>(), "Internal", "Render Thread"), Is.EqualTo(-1));
+            Assert.Throws<ArgumentException>(() => RenderedProfilerSelection.FindExact(new RenderedProfilerCandidate[4097], "Render", "Draw Calls Count"));
+            Assert.Throws<ArgumentException>(() => RenderedProfilerSelection.FindExact(null, "Render", "Draw Calls Count"));
+            Assert.Throws<ArgumentException>(() => RenderedProfilerSelection.FindExact(available, "", "Main Thread"));
+            Assert.Throws<ArgumentException>(() => RenderedProfilerSelection.FindExact(available, "Internal", ""));
+        }
+
         private static RenderedRouteVisitMetrics Visit() => new RenderedRouteVisitMetrics(Token, "Library", 1, 0);
         private static void Account(RenderedVisitSummary value)
         {

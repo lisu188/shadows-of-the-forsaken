@@ -334,14 +334,22 @@ namespace ForsakenStandaloneRenderedRouteSupport
         {
             var handles = new List<ProfilerRecorderHandle>(); ProfilerRecorderHandle.GetAvailable(handles);
             if (handles.Count > 4096) throw new InvalidOperationException("Profiler metric enumeration limit exceeded.");
+            var descriptions = new ProfilerRecorderDescription[handles.Count];
+            var candidates = new RenderedProfilerCandidate[handles.Count];
+            for (int i = 0; i < handles.Count; i++)
+            {
+                descriptions[i] = ProfilerRecorderHandle.GetDescription(handles[i]);
+                candidates[i] = new RenderedProfilerCandidate { name = descriptions[i].Name, category = descriptions[i].Category.ToString() };
+            }
             foreach (string name in new[] { "Main Thread", "Render Thread", "Draw Calls Count", "SetPass Calls Count", "Shadow Casters Count", "Triangles Count" })
             {
-                var lease = new MetricLease { name = name, unit = "unavailable", category = "unavailable", unavailableReason = "not-enumerated" };
+                string expectedCategory = name == "Main Thread" || name == "Render Thread" ? "Internal" : "Render";
+                var lease = new MetricLease { name = name, expectedCategory = expectedCategory, unit = "unavailable", category = "unavailable", unavailableReason = "not-enumerated" };
                 recorders.Add(lease);
-                foreach (var handle in handles)
+                int index = RenderedProfilerSelection.FindExact(candidates, expectedCategory, name);
+                if (index >= 0)
                 {
-                    var description = ProfilerRecorderHandle.GetDescription(handle);
-                    if (description.Name != name) continue;
+                    var description = descriptions[index];
                     lease.category = description.Category.ToString(); lease.unit = description.UnitType.ToString();
                     try
                     {
@@ -350,15 +358,14 @@ namespace ForsakenStandaloneRenderedRouteSupport
                         lease.unavailableReason = lease.available ? null : "recorder-invalid";
                     }
                     catch (Exception error) { lease.unavailableReason = "recorder-start-" + error.GetType().Name; }
-                    break;
                 }
             }
         }
         private sealed class MetricLease : IDisposable
         {
-            public string name, unit, category, unavailableReason; public bool available; public ProfilerRecorder recorder;
+            public string name, expectedCategory, unit, category, unavailableReason; public bool available; public ProfilerRecorder recorder;
             public RenderedProfilerSample Read() => new RenderedProfilerSample
-            { name = name, category = category, unit = unit, available = available, valid = available && recorder.Valid, unavailable_reason = unavailableReason,
+            { name = name, expected_category = expectedCategory, category = category, unit = unit, available = available, valid = available && recorder.Valid, unavailable_reason = unavailableReason,
                 count = available && recorder.Valid ? recorder.Count : 0, value = available && recorder.Valid && recorder.Count > 0 ? recorder.LastValue : 0 };
             public void Dispose() { if (recorder.Valid) recorder.Dispose(); }
         }
@@ -501,7 +508,7 @@ namespace ForsakenStandaloneRenderedRouteSupport
     [Serializable] public sealed class RenderedMemory
     { public long managed_estimated_bytes, unity_used_bytes, unity_reserved_bytes, unity_unused_reserved_bytes; public bool unity_allocator_available; public string meaning = "Sampled managed estimate and Unity allocator pools; not complete native/process/GPU memory. No forced GC; short peaks may be missed."; }
     [Serializable] public sealed class RenderedProfilerSample
-    { public string name, category, unit, unavailable_reason; public bool available, valid; public int count; public long value; public string attribution = "Completed-frame statistic at read time; originating frame/room unassigned."; }
+    { public string name, expected_category, category, unit, unavailable_reason; public bool available, valid; public int count; public long value; public string attribution = "Completed-frame statistic at read time; originating frame/room unassigned."; }
     [Serializable] public sealed class RenderedStateSample
     {
         public string utc, session_id, room; public int frame, capture_depth; public double realtime; public float time_scale;
