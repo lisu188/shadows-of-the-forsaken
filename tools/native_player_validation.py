@@ -895,6 +895,11 @@ def state_check(state):
     return checks
 
 
+def soak_player_command(player, output, parent_handle):
+    """Add documented diagnostic log timestamps only to the explicit soak."""
+    return player_command(player, output, "legacy", parent_handle, "embedded") + ["-timestamps"]
+
+
 def parse_arguments(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--player", type=Path, required=True)
@@ -1006,8 +1011,9 @@ def main():
                 if args.parent_mode == "owned":
                     parent = HiddenParentWindow(kernel, user, record)
                     parent.create()
-                command = player_command(player, out, args.graphics_mode, parent.handle if parent is not None else None,
-                                         args.player_mode)
+                command = (soak_player_command(player, out, parent.handle) if soak else
+                           player_command(player, out, args.graphics_mode, parent.handle if parent is not None else None,
+                                          args.player_mode))
                 if soak:
                     record["no_overlap_preflight"].append(no_validation_overlap(kernel))
                 record["command"] = command

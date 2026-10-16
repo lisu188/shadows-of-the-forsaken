@@ -71,6 +71,16 @@ class NativeSoakTests(unittest.TestCase):
                       ("--graphics-mode", "default")]:
             with self.subTest(extra=extra), self.assertRaises(ValueError): self.arguments("--profile", native.SOAK_PROFILE, *extra)
 
+    def test_soak_adds_only_timestamps_to_unchanged_original_command(self):
+        player, output = Path("ShadowsOfTheForsaken.exe"), Path("evidence")
+        original = native.player_command(player, output, "legacy", 900, "embedded")
+        actual = native.soak_player_command(player, output, 900)
+        self.assertEqual(actual, original + ["-timestamps"])
+        self.assertEqual(actual.count("-timestamps"), 1)
+        self.assertNotIn("-timestamps", original)
+        self.assertNotIn("-timestamps", native.player_command(player, output))
+        self.assertNotIn("-noaudio", actual)
+
     def test_fixed_observer_requires_each_full_clock_and_exact_seventh_digit(self):
         for kind in ("published-short", "poll-short", "exact"):
             observer = native.SoakObservation()
