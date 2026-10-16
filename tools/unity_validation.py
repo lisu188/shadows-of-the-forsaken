@@ -219,6 +219,7 @@ EXPECTED_TESTS = {
         'ForsakenLevelTests.MainRouteWinsWithoutSecretAndVictoryRestartRestoresTheWholeScene': ('',),
         'ForsakenLevelTests.OptionalRelicAndPhysicalConcealedRampReturnStillRequireTheFinalFight': ('',),
         'CastleCameraExplorationTests.LowerRoomsRetainVisibleCameraDuringUnsnappedInputExploration': ('',),
+        'CastleCameraExplorationTests.PrimarySavedControllerRetainsGroundContactAtMicrosteps': ('',),
         'PrimaryCastleHudRenderingTests.PrimaryHudRendersAtRecordedPuzzleNorthwestCornerPose': ('',),
         'PrimaryCastleHudRenderingTests.PrimaryHudRendersAtRecordedPuzzleWestWallPose': ('',),
         'FullCastleRouteTests.CastleFinalFightDeathRestartsTheSavedWorld': ('',),

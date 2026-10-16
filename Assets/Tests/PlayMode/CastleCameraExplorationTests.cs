@@ -23,8 +23,9 @@ using Object = UnityEngine.Object;
 namespace ShadowsOfTheForsaken.Tests.PlayMode
 {
     // DOCX 3, 7-8: explore the lower rooms visited by the first human attempt.
-    // Unlike point-capture fixtures, this never snaps or manually advances the
-    // camera. Real updates, W/A/D/Space/LMB/E and saved collisions run throughout.
+    // The unsnapped route never manually advances the camera: real updates,
+    // W/A/D/Space/LMB/E and saved collisions run throughout. The separate saved
+    // controller regression below explicitly uses direct component simulation.
     public sealed class CastleCameraExplorationTests
     {
         private const string ScenePath = "Assets/Scenes/ForsakenCastle.unity";
@@ -248,6 +249,67 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             LogAssert.NoUnexpectedReceived();
             completed = true;
             SaveEvidence();
+        }
+
+        [UnityTest, Timeout(60000)]
+        public IEnumerator PrimarySavedControllerRetainsGroundContactAtMicrosteps()
+        {
+            // DOCX 3: stable movement and jump controls on the actual saved floor.
+            // This is direct engine-component simulation, not an input-route,
+            // ordinary-render or performance test. Never replace saved geometry,
+            // move the player, or override CharacterController.minMoveDistance.
+            yield return Load();
+            phase = "saved controller direct-component microstep diagnostic";
+            var character = movement.GetComponent<CharacterController>();
+            Assert.That(character, Is.Not.Null);
+            float minimumMoveDistance = character.minMoveDistance;
+            for (int i = 0; i < 60; i++)
+            {
+                Input();
+                Call(movement, "Simulate", 1f / 60f);
+            }
+            Assert.That(character.isGrounded, Is.True, "Normal steps must first settle on the saved courtyard floor.");
+            float settledY = movement.transform.position.y;
+            float settledVelocity = Get<float>(movement, "VerticalVelocity");
+            const float microstep = .0001f;
+            const int neutralSteps = 32;
+            int lostGroundSamples = 0, firstLostGroundStep = -1;
+            for (int i = 0; i < neutralSteps; i++)
+            {
+                Input();
+                Call(movement, "Simulate", microstep);
+                if (!character.isGrounded)
+                {
+                    lostGroundSamples++;
+                    if (firstLostGroundStep < 0) firstLostGroundStep = i;
+                }
+            }
+            float neutralY = movement.transform.position.y;
+            Input(false, Key.Space);
+            Call(movement, "Simulate", microstep);
+            float jumpVelocity = Get<float>(movement, "VerticalVelocity");
+            const int jumpSteps = 2000;
+            float highestY = movement.transform.position.y;
+            for (int i = 0; i < jumpSteps; i++)
+            {
+                Input();
+                Call(movement, "Simulate", microstep);
+                highestY = Mathf.Max(highestY, movement.transform.position.y);
+            }
+            string diagnostic = "Direct saved-component simulation; minMoveDistance=" + minimumMoveDistance.ToString("R") +
+                "; step=" + microstep.ToString("R") + "; neutralSteps=" + neutralSteps +
+                "; lostGroundSamples=" + lostGroundSamples + "; firstLostGroundStep=" + firstLostGroundStep +
+                "; settledY=" + settledY.ToString("R") + "; neutralY=" + neutralY.ToString("R") +
+                "; settledVelocity=" + settledVelocity.ToString("R") + "; jumpVelocity=" + jumpVelocity.ToString("R") +
+                "; jumpSteps=" + jumpSteps + "; highestY=" + highestY.ToString("R") +
+                "; physicalJumpLift=" + (highestY - neutralY).ToString("R");
+            TestContext.WriteLine(diagnostic);
+            Assert.That(lostGroundSamples, Is.Zero, "Neutral positive microsteps must retain saved-floor contact. " + diagnostic);
+            Assert.That(settledVelocity, Is.LessThan(0), "Normal steps must actually advance the production movement component. " + diagnostic);
+            Assert.That(jumpVelocity, Is.GreaterThan(0), "A fresh jump after neutral microsteps must be accepted. " + diagnostic);
+            Assert.That(highestY - neutralY, Is.GreaterThan(.5f), "Microsteps must physically lift the saved controller, not only its motor velocity. " + diagnostic);
+            Assert.That(character.minMoveDistance, Is.EqualTo(minimumMoveDistance), "The regression must retain the authored controller setting.");
+            LogAssert.NoUnexpectedReceived();
         }
 
         private IEnumerator Load()
