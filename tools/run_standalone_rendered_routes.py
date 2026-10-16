@@ -296,6 +296,7 @@ def main(argv=None):
         with native.keep_awake(kernel, record), (out / "launcher-stdout.log").open("xb") as stdout, (out / "launcher-stderr.log").open("xb") as stderr:
             try:
                 parent = host_class(kernel, user, record)
+                parent.child_guard["poll_seconds"] = record["poll_seconds"]
                 parent.create()
                 record["command"] = native.player_command(player, out, "legacy", parent.handle, "embedded")
                 process = subprocess.Popen(record["command"], cwd=player.parent, env=player_environment(out),
