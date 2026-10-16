@@ -564,6 +564,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 new Quaternion(.1799580454826355f, -.162643164396286f, .030184580013155937f, .96966552734375f));
             player.transform.rotation = Quaternion.Euler(0, 357.06304931640625f, 0);
             Assert.That(Step(), Is.True, "The recorded last-safe endpoint must remain safe before the tiny target step.");
+            Assert.That(camera.transform.position, Is.EqualTo(held), "Revalidation must retain the exact recorded held endpoint.");
             AssertBoomAndNearPlaneClear(obstacles);
             Assert.That(Get<float>("EffectiveCollisionRadius"), Is.EqualTo(.55719787f).Within(.00001f));
 
@@ -574,6 +575,7 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 "; requestedY=" + held.y.ToString("R") + "; observedY=" + camera.transform.position.y.ToString("R"));
             Assert.That(safe, Is.True, "The tiny recorded target step must not lose an otherwise clear held view.");
             Assert.That(camera.enabled, Is.True);
+            Assert.That(camera.transform.position, Is.EqualTo(held), "The uncut endpoint survives without reconstruction rounding.");
             AssertBoomAndNearPlaneClear(obstacles);
             float paddedRadius = Get<float>("EffectiveCollisionRadius") + .025f;
             foreach (var obstacle in new[] { wall, ceiling })
