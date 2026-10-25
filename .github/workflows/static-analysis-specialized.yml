@@ -1,0 +1,43 @@
+name: Unity-specific Roslyn analyzers
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unity-csharp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+      - name: Inject Unity and NUnit analyzers into .NET test projects
+        continue-on-error: true
+        shell: bash
+        run: |
+          mkdir -p analyzer-results
+          mapfile -d '' projects < <(git ls-files -z -- 'tests/**/*.csproj')
+          for project in "${projects[@]}"; do
+            dotnet add "$project" package Microsoft.Unity.Analyzers --version 1.28.0 --no-restore
+            dotnet add "$project" package NUnit.Analyzers --version 4.15.0 --no-restore
+          done
+          for project in "${projects[@]}"; do
+            name="${project//\//_}"
+            dotnet build "$project" --nologo -p:EnableNETAnalyzers=true -p:AnalysisLevel=latest -p:TreatWarningsAsErrors=false > "analyzer-results/$name.txt" 2>&1 || true
+          done
+          test ${#projects[@]} -gt 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unity-roslyn-reports
+          path: analyzer-results/
+          if-no-files-found: ignore
