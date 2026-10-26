@@ -126,6 +126,78 @@ class PlayerBuildManifestTests(unittest.TestCase):
         self.assertEqual('verified', manifest.verify(self.player, hashed, self.source, self.commit)['status'])
         self.assertNotIn(manifest.RECEIPT, [x['path'] for x in receipt['engine_files']])
 
+    def direct_command(self, editor=None):
+        if editor is None:
+            editor = self.root / 'Unity/6000.6.3f1/Editor/Unity.exe'
+            editor.parent.mkdir(parents=True, exist_ok=True)
+            editor.write_bytes(b'synthetic editor fixture; never executed')
+        return [str(editor), '-batchmode', '-quit', '-projectPath', str(self.project),
+                '-logFile', str(self.log), '-executeMethod', 'CastlePlayerBuild.BuildForBatch']
+
+    def test_direct_absolute_pinned_editor_creates_and_verifies_same_receipt(self):
+        command = self.direct_command()
+        self.write_execution(command=command)
+        self.capture()
+        self.assertEqual(str(Path(command[0]).resolve()), manifest.pinned_build_editor(command, '6000.6.3f1'))
+        receipt = self.create()
+        self.assertEqual('6000.6.3f1', receipt['unity'])
+        hashed = manifest.write_once(self.player / manifest.RECEIPT, receipt)
+        self.assertEqual('verified', manifest.verify(self.player, hashed, self.source, self.commit)['status'])
+
+    def test_direct_build_rejects_wrong_pin_nonexistent_relative_and_lookalike_paths(self):
+        valid = Path(self.direct_command()[0])
+        wrong_pin = self.root / 'Unity/6000.6.2f1/Editor/Unity.exe'
+        lookalike = valid.with_name('OtherUnity.exe')
+        missing = self.root / 'Missing/6000.6.3f1/Editor/Unity.exe'
+        for path in (wrong_pin, lookalike):
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(b'wrong editor fixture; never executed')
+        for editor in (wrong_pin, lookalike, missing, 'Unity.exe', str(valid.parent / '..' / 'Editor/Unity.exe')):
+            with self.subTest(editor=str(editor)):
+                self.write_execution(command=self.direct_command(editor))
+                self.capture()
+                with self.assertRaises((ValueError, OSError)):
+                    self.create()
+                self.assertFalse((self.player / manifest.RECEIPT).exists())
+
+    def test_direct_build_rejects_missing_duplicate_or_other_project_selection(self):
+        valid = self.direct_command()
+        missing = list(valid)
+        at = missing.index('-projectPath')
+        del missing[at:at + 2]
+        for command in (missing, valid + ['-projectPath', str(self.project)],
+                        valid + ['--editor-path', valid[0]], valid + ['run', str(self.project)]):
+            with self.subTest(command=command):
+                self.write_execution(command=command)
+                with self.assertRaises(ValueError):
+                    self.capture()
+                    self.create()
+
+    def test_hub_build_keeps_explicit_editor_route_and_rejects_fake_or_ambiguous_wrappers(self):
+        original = json.loads(self.execution.read_text())['command']
+        self.assertEqual('/Unity/6000.6.3f1/Editor/Unity.exe', manifest.pinned_build_editor(original, '6000.6.3f1'))
+        installed = list(original)
+        installed[0] = 'C:/Program Files/Unity Hub/resources/unity.exe'
+        self.write_execution(command=installed)
+        self.capture()
+        self.assertEqual('6000.6.3f1', self.create()['unity'])
+        mutations = []
+        for executable in ('fake-hub.exe', str(self.root / 'resources/unity.exe'), self.direct_command()[0]):
+            command = list(original)
+            command[0] = executable
+            mutations.append(command)
+        mutations += [original + ['-projectPath', str(self.project)],
+                      original + ['--editor-path', '/Unity/6000.6.3f1/Editor/Unity.exe']]
+        wrong_pin = list(original)
+        wrong_pin[wrong_pin.index('--editor-path') + 1] = '/Unity/6000.6.2f1/Editor/Unity.exe'
+        mutations.append(wrong_pin)
+        for command in mutations:
+            with self.subTest(command=command):
+                self.write_execution(command=command)
+                with self.assertRaises(ValueError):
+                    self.capture()
+                    self.create()
+
     def test_rejects_wrong_commit(self):
         self.commit = 'f' * 40
         with self.assertRaisesRegex(ValueError, 'HEAD differs'):

@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_INCLUDE_TESTS
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,8 +8,10 @@ using System.Reflection;
 using NUnit.Framework;
 using ShadowsOfTheForsaken.Combat;
 using ShadowsOfTheForsaken.Progression;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
+#endif
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -17,6 +19,9 @@ using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
+#if !UNITY_EDITOR
+using UnityEngine.Rendering.Universal;
+#endif
 
 namespace ShadowsOfTheForsaken.Tests.PlayMode
 {
@@ -36,8 +41,14 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private Mouse mouse;
         private InputSettings.UpdateMode previousMode;
         private InputSettings.BackgroundBehavior previousBackground;
+#if UNITY_EDITOR
         private InputSettings.EditorInputBehaviorInPlayMode previousEditorInput;
+#endif
         private float previousTimeScale;
+#if !UNITY_EDITOR
+        private static bool playerCapturePipelinePrepared;
+        private ForsakenStandaloneRenderedRouteSupport.RenderedRouteProbe renderedRouteProbe;
+#endif
 
         [SetUp]
         public void Prepare()
@@ -47,10 +58,14 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             previousScene = SceneManager.GetActiveScene();
             previousMode = InputSystem.settings.updateMode;
             previousBackground = InputSystem.settings.backgroundBehavior;
+#if UNITY_EDITOR
             previousEditorInput = InputSystem.settings.editorInputBehaviorInPlayMode;
+#endif
             previousTimeScale = Time.timeScale;
             InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+#if UNITY_EDITOR
             InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+#endif
             InputSystem.settings.updateMode = InputSettings.UpdateMode.ProcessEventsManually;
             Time.timeScale = 1;
             // Keep the test runner alive while isolating pre-existing gameplay,
@@ -72,6 +87,12 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         [UnityTearDown]
         public IEnumerator Restore()
         {
+#if !UNITY_EDITOR
+            Exception renderedProbeFailure = null;
+            try { renderedRouteProbe?.Dispose(); }
+            catch (Exception error) { renderedProbeFailure = error; }
+            finally { renderedRouteProbe = null; }
+#endif
             try
             {
                 if (previousScene.IsValid() && previousScene.isLoaded) SceneManager.SetActiveScene(previousScene);
@@ -84,7 +105,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 if (mouse != null && mouse.added) InputSystem.RemoveDevice(mouse);
                 InputSystem.settings.updateMode = previousMode;
                 InputSystem.settings.backgroundBehavior = previousBackground;
+#if UNITY_EDITOR
                 InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInput;
+#endif
                 Time.timeScale = previousTimeScale;
                 foreach (var item in suspendedColliders) if (item != null) item.enabled = true;
                 foreach (var item in suspendedRenderers) if (item != null) item.enabled = true;
@@ -92,6 +115,10 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 suspendedColliders.Clear(); suspendedRenderers.Clear(); suspendedBehaviours.Clear();
             }
             Assert.That(sceneLoad?.CleanupFailure, Is.Null);
+#if !UNITY_EDITOR
+            if (renderedProbeFailure != null)
+                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(renderedProbeFailure).Throw();
+#endif
         }
 
         private LevelProgressionController progression;
@@ -212,11 +239,13 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             yield return MoveTo(new Vector3(16, 0, 32));
             yield return MoveTo(new Vector3(16, 0, 36));
             yield return MoveTo(new Vector3(16, -2, 39));
+            Capture("route-library-sealed");
             yield return Use(ObjectiveTarget(LevelObjective.LibraryOpened));
             Assert.That(Has(LevelObjective.LibraryOpened), Is.True);
             Capture("route-library");
             yield return MoveTo(new Vector3(16, -4, 44));
             yield return MoveTo(new Vector3(16, -4, 48));
+            Capture("route-catacombs");
             if (secret)
             {
                 yield return Use(ObjectiveTarget(LevelObjective.SecretLeverPulled));
@@ -452,8 +481,14 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
         private IEnumerator Load(string path)
         {
             sceneLoad = new OwnedSceneLoad();
+#if UNITY_EDITOR
             yield return sceneLoad.Load(path, () => EditorSceneManager.LoadSceneAsyncInPlayMode(path,
                 new LoadSceneParameters(LoadSceneMode.Additive)));
+#else
+            Assert.That(SceneUtility.GetBuildIndexByScenePath(path), Is.GreaterThanOrEqualTo(0),
+                "The test player must include the saved primary scene in Build Settings: " + path);
+            yield return sceneLoad.Load(path, () => SceneManager.LoadSceneAsync(path, LoadSceneMode.Additive));
+#endif
             scene = sceneLoad.Scene;
             Assert.That(sceneLoad.LoadedWithinDeadline && scene.IsValid() && scene.isLoaded, Is.True,
                 "Saved castle did not load within 30 s: " + path);
@@ -479,6 +514,19 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             if (bridge != null) Call(bridge, "OnApplicationFocus", true);
             Input(); yield return null; Input();
             Physics.SyncTransforms();
+#if !UNITY_EDITOR
+            if (ForsakenStandaloneRenderedRouteSupport.RenderedRouteBinding.Active)
+            {
+                var ownedSession = Find("LevelSessionController");
+                var ownedProgression = Field<LevelProgressionController>(ownedSession, "progression");
+                var running = (Func<bool>)Delegate.CreateDelegate(typeof(Func<bool>), ownedSession,
+                    ownedSession.GetType().GetProperty("IsRunning").GetGetMethod());
+                bool pipelineBefore = RenderPipelineManager.currentPipeline != null;
+                PreparePlayerCapturePipeline();
+                renderedRouteProbe = ForsakenStandaloneRenderedRouteSupport.RenderedRouteProbe.Begin(scene, camera,
+                    ownedProgression, running, pipelineBefore, RenderPipelineManager.currentPipeline != null);
+            }
+#endif
         }
 
         private void Input(bool attack = false, params Key[] keys)
@@ -498,8 +546,86 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             Assert.That(InputState.currentUpdateType, Is.EqualTo(InputUpdateType.Manual));
         }
 
+#if !UNITY_EDITOR
+        private void PreparePlayerCapturePipeline()
+        {
+            if (playerCapturePipelinePrepared) return;
+            var additional = camera.GetComponent<UniversalAdditionalCameraData>();
+            Assert.That(additional, Is.Not.Null, "The saved camera must have URP camera data.");
+            Assert.That(additional.renderPostProcessing, Is.False,
+                "Inactive-pass startup diagnostics cannot be expected for a post-processing camera.");
+            var pipeline = GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
+            Assert.That(pipeline, Is.Not.Null, "The saved scene must use its pinned URP pipeline.");
+            Assert.That(GraphicsSettings.TryGetRenderPipelineSettings<URPDefaultVolumeProfileSettings>(out var defaults), Is.True);
+            Assert.That(defaults.volumeProfile, Is.Not.Null, "The configured URP default volume profile must exist.");
+            AssertPlayerCaptureEffectsInactive(defaults.volumeProfile, true);
+            AssertPlayerCaptureEffectsInactive(pipeline.volumeProfile, false);
+            foreach (var volume in scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<Volume>(true)))
+                if (volume.isActiveAndEnabled && volume.weight > 0)
+                    AssertPlayerCaptureEffectsInactive(volume.HasInstantiatedProfile() ? volume.profile : volume.sharedProfile, false);
+
+            // URP's CreatePipeline initializes its renderer array before returning.
+            // An automatic render may already have done that before this request;
+            // do not enqueue startup messages that can no longer be produced.
+            if (RenderPipelineManager.currentPipeline != null)
+            {
+                Assert.That(RenderPipelineManager.currentPipeline, Is.TypeOf<UniversalRenderPipeline>());
+                Assert.That(UniversalRenderPipeline.asset, Is.SameAs(pipeline));
+                Assert.That(pipeline.renderers.Length, Is.GreaterThan(0));
+                for (int i = 0; i < pipeline.renderers.Length; i++)
+                    Assert.That(pipeline.renderers[i], Is.Not.Null, "An existing URP pipeline must have initialized renderers.");
+                playerCapturePipelinePrepared = true;
+                return;
+            }
+
+            // Pinned URP17.6 constructs these inactive pass materials on the first
+            // SupportsRenderRequest. Gaussian has two LoadShader calls. Expect
+            // only the exact LogType.Log messages observed for unavailable shaders;
+            // missing resources, active effects and every other log still fail.
+            ExpectUnavailablePlayerCaptureShader("Hidden/Universal Render Pipeline/GaussianDepthOfField", "GaussianDepthOfField", 2);
+            ExpectUnavailablePlayerCaptureShader("Hidden/Universal Render Pipeline/BokehDepthOfField", "BokehDepthOfField", 1);
+            ExpectUnavailablePlayerCaptureShader("Hidden/Universal Render Pipeline/PaniniProjection", "PaniniProjection", 1);
+            playerCapturePipelinePrepared = true;
+        }
+
+        private static void AssertPlayerCaptureEffectsInactive(VolumeProfile profile, bool requireEffects)
+        {
+            if (profile == null) { Assert.That(requireEffects, Is.False); return; }
+            bool hasDepthOfField = profile.TryGet<DepthOfField>(out var depthOfField);
+            bool hasPanini = profile.TryGet<PaniniProjection>(out var panini);
+            if (requireEffects)
+            {
+                Assert.That(hasDepthOfField, Is.True, profile.name + " default DepthOfField");
+                Assert.That(hasPanini, Is.True, profile.name + " default PaniniProjection");
+            }
+            if (hasDepthOfField)
+            {
+                Assert.That(depthOfField.mode.value, Is.EqualTo(DepthOfFieldMode.Off), profile.name + " DepthOfField mode");
+                Assert.That(depthOfField.IsActive(), Is.False, profile.name + " DepthOfField must be inactive");
+            }
+            if (hasPanini)
+            {
+                Assert.That(panini.distance.value, Is.EqualTo(0f), profile.name + " Panini distance");
+                Assert.That(panini.IsActive(), Is.False, profile.name + " Panini must be inactive");
+            }
+        }
+
+        private static void ExpectUnavailablePlayerCaptureShader(string name, string pass, int count)
+        {
+            var shader = Shader.Find(name);
+            bool unavailable = shader == null || !shader.isSupported;
+            TestContext.WriteLine("Player capture pipeline shader: " + name + "; unavailable=" + unavailable);
+            if (!unavailable) return;
+            string message = "Shader '" + name + "' is not supported or has been stripped from the build (in '" + pass + "'). PostProcessing render passes will not execute.";
+            for (int i = 0; i < count; i++) LogAssert.Expect(LogType.Log, message);
+        }
+#endif
         private FramingEvidence Capture(string name, Component framingEnemy = null)
         {
+#if !UNITY_EDITOR
+            using (var renderedCapture = renderedRouteProbe?.Capture(name))
+            {
+#endif
             string directory = Environment.GetEnvironmentVariable("SHADOWS_CAPTURE_DIR");
             bool saveImage = !string.IsNullOrWhiteSpace(directory);
             if (!saveImage && framingEnemy == null) return null;
@@ -513,7 +639,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
             var occlusion = follow.GetComponent(RuntimeType("CameraPlayerOcclusion"));
             var originalTarget = camera.targetTexture;
             var originalActive = RenderTexture.active;
+#if UNITY_EDITOR
             bool originalAsyncCompilation = ShaderUtil.allowAsyncCompilation;
+#endif
             var canvases = scene.GetRootGameObjects().SelectMany(root => root.GetComponentsInChildren<Canvas>()).ToArray();
             var modes = canvases.Select(c => c.renderMode).ToArray();
             var cameras = canvases.Select(c => c.worldCamera).ToArray();
@@ -528,7 +656,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 // for this render only; preserve the editor's surrounding policy.
                 if (saveImage)
                 {
+#if UNITY_EDITOR
                     ShaderUtil.allowAsyncCompilation = false;
+#endif
                     texture.Create();
                 }
                 // Establish the destination before camera clearance and UI layout.
@@ -551,13 +681,25 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 if (!saveImage) return framing;
                 for (int i = 0; i < canvases.Length; i++)
                 {
+                    // Preserve the primary HUD's actual camera-space depth.
+                    // Moving it for a capture can hide wall-occlusion defects.
+                    if (canvases[i].renderMode != RenderMode.ScreenSpaceOverlay) continue;
                     canvases[i].renderMode = RenderMode.ScreenSpaceCamera;
                     canvases[i].worldCamera = camera;
-                    canvases[i].planeDistance = camera.nearClipPlane + .1f;
+                    canvases[i].planeDistance = camera.nearClipPlane + .001f;
                 }
                 Canvas.ForceUpdateCanvases();
                 var request = new RenderPipeline.StandardRequest { destination = texture };
+#if !UNITY_EDITOR
+                PreparePlayerCapturePipeline();
+#endif
                 Assert.That(RenderPipeline.SupportsRenderRequest(camera, request), Is.True, "The scene pipeline must support a camera render request.");
+                // A Game View render can already have queued a variant before
+                // this capture disables asynchronous compilation. Resolve the
+                // actual emissive passes after a warmup render, then render the
+                // same state again. No Update, input or gameplay clock advances.
+                RenderPipeline.SubmitRenderRequest(camera, request);
+                PrepareEmissiveCapturePasses();
                 RenderPipeline.SubmitRenderRequest(camera, request);
                 RenderTexture.active = texture;
                 pixels = new Texture2D(960, 540, TextureFormat.RGB24, false);
@@ -571,7 +713,9 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 {
                     canvases[i].renderMode = modes[i]; canvases[i].worldCamera = cameras[i]; canvases[i].planeDistance = distances[i];
                 }
+#if UNITY_EDITOR
                 ShaderUtil.allowAsyncCompilation = originalAsyncCompilation;
+#endif
                 camera.targetTexture = originalTarget;
                 Call(follow, "SnapToTarget");
                 if (occlusion != null) Call(occlusion, "RefreshVisibility");
@@ -581,6 +725,39 @@ namespace ShadowsOfTheForsaken.Tests.PlayMode
                 texture.Release(); Object.DestroyImmediate(texture);
             }
             return framing;
+#if !UNITY_EDITOR
+            }
+#endif
+        }
+
+        private void PrepareEmissiveCapturePasses()
+        {
+            var materials = scene.GetRootGameObjects()
+                .SelectMany(root => root.GetComponentsInChildren<Renderer>())
+                .Where(renderer => renderer.enabled)
+                .SelectMany(renderer => renderer.sharedMaterials)
+                .Where(material => material != null && material.IsKeywordEnabled("_EMISSION"))
+                .Distinct().ToArray();
+            foreach (var material in materials)
+            {
+                Assert.That(material.shader, Is.Not.Null, material.name + " capture shader");
+                Assert.That(material.shader.isSupported, Is.True, material.name + " capture shader support");
+#if UNITY_EDITOR
+                for (int pass = 0; pass < material.passCount; pass++)
+                {
+                    string passName = material.GetPassName(pass);
+                    if ((passName != "ForwardLit" && passName != "GBuffer") || !material.GetShaderPassEnabled(passName)) continue;
+                    bool readyBefore = ShaderUtil.IsPassCompiled(material, pass);
+                    ShaderUtil.CompilePass(material, pass, true);
+                    Assert.That(ShaderUtil.IsPassCompiled(material, pass), Is.True,
+                        material.name + "/" + passName + " must compile before capturing emission");
+                    Assert.That(ShaderUtil.ShaderHasError(material.shader), Is.False,
+                        material.name + "/" + passName + " capture shader errors");
+                    TestContext.WriteLine("Capture shader readiness: " + material.name + "/" + passName +
+                        "; before=" + readyBefore + "; after=True");
+                }
+#endif
+            }
         }
 
         [Serializable] private sealed class FramingRegion

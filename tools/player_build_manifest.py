@@ -175,6 +175,45 @@ def argument(command, name):
     return command[index + 1]
 
 
+def pinned_build_editor(command, version):
+    """Validate the recorded Hub route or an explicit native editor path.
+
+    A direct invocation must name the installed regular file itself. It cannot
+    inherit Hub's PATH lookup, masquerade as a Hub wrapper, or provide both
+    forms of project selection.
+    """
+    require(command, "Missing build command")
+    executable = command[0].replace("\\", "/")
+    suffix = "/" + version + "/Editor/Unity.exe"
+    if "--editor-path" in command:
+        basename = executable.rsplit("/", 1)[-1].casefold()
+        bare_hub = executable.casefold() in ("unity", "unity.exe")
+        installed_hub = executable.casefold().endswith("/unity hub/resources/unity.exe")
+        require((bare_hub or installed_hub) and basename in ("unity", "unity.exe") and
+                len(command) > 2 and command[1] == "run" and command.count("run") == 1 and
+                command.count("--") == 1 and "-projectPath" not in command,
+                "Invalid or ambiguous Unity Hub build command")
+        separator = command.index("--")
+        require(command.index("--editor-path") < separator < command.index("-executeMethod"),
+                "Invalid Unity Hub editor/execute argument placement")
+        project = argument(command, "run")
+        require(Path(project).is_absolute() or re.match(r"^[A-Za-z]:[/\\]", project),
+                "Unity Hub project must be absolute")
+        editor = argument(command, "--editor-path").replace("\\", "/")
+        require(editor.endswith(suffix), "Recorded editor differs from pinned Unity version")
+        return editor
+    require("run" not in command and "--" not in command and "--log-file" not in command,
+            "Invalid or ambiguous direct Unity editor command")
+    project = argument(command, "-projectPath")
+    require(Path(project).is_absolute(), "Direct Unity project must be absolute")
+    argument(command, "-logFile")
+    path = Path(command[0])
+    require(path.is_absolute() and path.resolve() == path.absolute() and executable.endswith(suffix),
+            "Direct build requires an exact absolute pinned Unity editor path")
+    regular(path)
+    return str(path.resolve())
+
+
 def execution_evidence(execution_path, log_path, runner_path, player):
     execution = read_json(execution_path)
     require(execution.get("mode") == "build" and execution.get("exit_code") == 0 and
@@ -294,8 +333,7 @@ def create(repo, commit, source_archive, imported_archive, review, completion, e
     version_text = (Path(repo) / "ProjectSettings/ProjectVersion.txt").read_text(encoding="utf-8")
     match = re.search(r"^m_EditorVersion: (\S+)$", version_text, re.M)
     require(match is not None, "Missing pinned Unity version")
-    editor = argument(run["command"], "--editor-path").replace("\\", "/")
-    require("/" + match[1] + "/Editor/Unity.exe" in editor, "Recorded editor differs from pinned Unity version")
+    pinned_build_editor(run["command"], match[1])
     # Recheck source and outputs before publishing. No source or engine file is written.
     require(committed_inputs(repo, commit) == original and file_tree(player_dir, exclude_receipt=True) == files,
             "Source or player changed during receipt validation")

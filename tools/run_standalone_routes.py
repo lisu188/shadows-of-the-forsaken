@@ -1,0 +1,383 @@
+"""Run the instrumented primary-scene test player hidden, with exact results.
+
+This is fixture-controlled standalone gameplay, not OS-input or human acceptance.
+The child must finish its own tests and exit; runner intervention never qualifies.
+"""
+import argparse
+import ctypes
+from ctypes import wintypes
+import datetime as dt
+import hashlib
+import importlib.util
+import json
+import math
+import os
+from pathlib import Path
+import re
+import shutil
+import subprocess
+import sys
+import time
+import xml.etree.ElementTree as ET
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load_tool(name):
+    spec = importlib.util.spec_from_file_location(name, ROOT / "tools" / (name + ".py"))
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+native = load_tool("native_player_validation")
+unity = load_tool("unity_validation")
+PREFIX = "ShadowsOfTheForsaken.Tests.PlayMode."
+EXPECTED = frozenset(PREFIX + name for name in unity.EXPECTED_CASES["playmode"]
+                     if name.startswith("FullCastleRouteTests."))
+RESERVE = 32 * 2**30
+GROWTH_LIMIT = 5 * 2**30
+require = native.require
+
+
+def exact_cases(names):
+    require(len(names) == len(EXPECTED) and len(set(names)) == len(names) and set(names) == EXPECTED,
+            "Expected exactly the ten FullCastleRouteTests cases, including arguments")
+
+
+def successful_counts(value, total=10):
+    for key, expected in (("passed", total), ("failed", 0), ("skipped", 0), ("inconclusive", 0)):
+        require(type(value.get(key)) is int and value[key] == expected,
+                "Invalid successful result counter: " + key)
+
+
+def validate_results(raw):
+    require(len(raw) <= 10_000_000, "NUnit XML exceeds the 10 MB limit")
+    require(b"<!DOCTYPE" not in raw.upper() and b"<!ENTITY" not in raw.upper(), "DTD/entities refused")
+    root = ET.fromstring(raw)
+    require(root.tag in ("test-run", "test-suite"), "Unexpected NUnit result root")
+    require(root.get("result") == "Passed", "NUnit root did not pass")
+    counts = {key: int(root.attrib[key]) for key in ("total", "passed", "failed", "skipped", "inconclusive")}
+    require(counts["total"] == len(EXPECTED), "Unexpected NUnit total")
+    successful_counts(counts)
+    cases = list(root.iter("test-case"))
+    names = [case.get("fullname") for case in cases]
+    exact_cases(names)
+    require(all(node.get("result") == "Passed" for node in [*cases, *root.iter("test-suite")]),
+            "A case or suite did not pass")
+    duration = float(root.get("duration", "nan"))
+    require(math.isfinite(duration) and duration >= 0, "Invalid NUnit duration")
+    return {"root": root.tag, "counts": counts, "case_names": sorted(names),
+            "duration_seconds": duration, "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def validate_runtime(value, pid, output):
+    require(value.get("schema_version") == 1, "Unknown runtime evidence schema")
+    require(value.get("is_editor") is False and value.get("batch_mode") is False,
+            "Expected a non-editor, non-batch embedded player")
+    require(value.get("unity_version") == "6000.6.3f1" and value.get("platform") == "WindowsPlayer",
+            "Runtime pin/platform differs")
+    require(value.get("graphics_api") == "Direct3D11", "Expected observed Direct3D11")
+    require(value.get("pid") == pid, "Runtime evidence belongs to another process")
+    require(Path(value.get("output_directory", "")).absolute() == output, "Runtime output directory differs")
+    require(value.get("expected_case_count") == 10, "Runtime selected case count differs")
+    require(value.get("test_input_source") == "Fixture-controlled InputSystem events", "Input origin differs")
+    require(isinstance(value.get("hardware"), dict) and bool(value["hardware"]), "Missing hardware metadata")
+    return value
+
+
+def validate_events(raw):
+    require(len(raw) <= 8 * 1024 * 1024, "Callback events exceed the bounded input limit")
+    events = [json.loads(line, object_pairs_hook=native.manifest.unique_json)
+              for line in raw.decode("utf-8-sig").splitlines() if line.strip()]
+    require(2 <= len(events) <= 128, "Missing or excessive callback events")
+    require(events[0].get("kind") == "run-started" and events[-1].get("kind") == "run-finished",
+            "Callback run start/finish proof missing")
+    require(sum(event.get("kind") == "run-started" for event in events) == 1 and
+            sum(event.get("kind") == "run-finished" for event in events) == 1, "Duplicate callback run boundary")
+    starts, finishes = {}, {}
+    for index, event in enumerate(events):
+        require(event.get("kind") in ("run-started", "test-started", "test-finished", "run-finished"),
+                "Unknown callback event")
+        stamp = dt.datetime.fromisoformat(event["utc"].replace("Z", "+00:00"))
+        require(stamp.tzinfo is not None, "Callback UTC timestamp lacks offset")
+        if event["kind"] in ("test-started", "test-finished"):
+            require(type(event.get("is_suite")) is bool, "Callback suite classification missing")
+            if event["is_suite"]:
+                if event["kind"] == "test-finished":
+                    require(event.get("result") == "Passed", "Callback suite failed")
+                continue
+            name = event.get("full_name")
+            target = starts if event["kind"] == "test-started" else finishes
+            require(name not in target, "Duplicate callback case event")
+            target[name] = index
+            if event["kind"] == "test-finished":
+                require(event.get("result") == "Passed", "Callback case failed")
+                successful_counts(event, 1)
+    exact_cases(list(starts))
+    exact_cases(list(finishes))
+    require(all(starts[name] < finishes[name] for name in starts), "Case finished before it started")
+    require(events[-1].get("result") == "Passed", "Callback run did not pass")
+    successful_counts(events[-1])
+    return {"count": len(events), "case_names": sorted(finishes),
+            "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def validate_completion(value, results, events):
+    require(value.get("schema_version") == 1, "Unknown completion schema")
+    require(type(value.get("total")) is int and value["total"] == 10, "Completion total differs")
+    successful_counts(value)
+    exact_cases(value.get("case_names", []))
+    require(value.get("exit_code") == 0, "Callback did not request a successful exit")
+    require(value.get("results_sha256") == results["sha256"] and
+            value.get("events_sha256") == events["sha256"], "Completion artifact hashes differ")
+    return value
+
+
+def validate_build_report(value, player):
+    require(value.get("schema_version") == 1 and value.get("result") == "Succeeded", "Build did not succeed")
+    require(value.get("target") == "StandaloneWindows64" and type(value.get("errors")) is int and value["errors"] == 0,
+            "Expected an error-free Windows x64 test build")
+    require(type(value.get("bytes")) is int and value["bytes"] > 0, "Build size is not a final positive value")
+    duration = value.get("duration_seconds")
+    require(type(duration) in (int, float) and math.isfinite(duration) and duration > 0,
+            "Build duration is not a final positive finite value")
+    require(value.get("include_test_assemblies") is True and value.get("auto_run_player") is False,
+            "Build must include tests without autorunning the player")
+    require(value.get("connect_to_host") is False and value.get("development") is True,
+            "Expected a disconnected development test player")
+    require(Path(value.get("output_path", "")).absolute() == player, "Actual build output differs from player")
+    scenes = value.get("scenes", [])
+    require(isinstance(scenes, list) and len(scenes) == 2 and
+            isinstance(scenes[0], str) and re.fullmatch(
+                r"Assets/InitTestScene[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.unity", scenes[0]) and
+            scenes[1] == "Assets/Scenes/ForsakenCastle.unity", "Expected exactly the UTF bootstrap then primary scene")
+    return value
+
+
+def snapshot_player(player):
+    require(player.suffix.lower() == ".exe", "Expected a Windows test executable")
+    native.manifest.regular(player)
+    rows = native.manifest.file_tree(player.parent)
+    require(any(row["path"].endswith("/Shadows.PlayMode.Tests.dll") for row in rows),
+            "Instrumented PlayMode test assembly missing")
+    return rows
+
+
+def compare_identity(before, after):
+    require(bool(before) and before == after, "Test-player files changed, were added, or were removed")
+    return True
+
+
+def stop_reason(elapsed, timeout, initial_free, current_free):
+    if elapsed >= timeout:
+        return "timeout"
+    if current_free < RESERVE:
+        return "disk reserve"
+    if initial_free - current_free > GROWTH_LIMIT:
+        return "disk growth limit"
+    return None
+
+
+def player_environment(output, inherited=None):
+    environment = dict(os.environ if inherited is None else inherited)
+    environment["SHADOWS_ROUTE_PLAYER_OUTPUT"] = str(output)
+    environment["SHADOWS_CAPTURE_DIR"] = str(output / "captures")
+    environment.pop("SHADOWS_PLAYER_EVIDENCE_DIR", None)
+    return environment
+
+
+def observe_parent(user, callback, pid, host):
+    """Read actual ownership/parentage; command flags alone are not evidence."""
+    windows = native.own_windows(user, callback, pid, host)
+    rows = native.describe_windows(user, windows, pid, user.GetForegroundWindow())
+    for row in rows:
+        if row["owner_pid"] == pid:
+            row["actual_parent"] = int(user.GetParent(row["window"]) or 0)
+    matches = [row for row in rows if row.get("actual_parent") == host and
+               row.get("class") == "UnityWndClass" and row.get("style", 0) & 0x40000000]
+    return {"utc": native.utc(), "player_pid": pid, "host_handle": host,
+            "rows": rows, "matching_parent_observed": bool(matches)}
+
+
+def finish_process(process, user, callback, record, parent):
+    if process is not None and process.poll() is not None:
+        record["closure"] = {"mode": "self_exit", "forced": False, "pid": process.pid,
+            "exit_code": process.poll(), "wm_close": [], "completed_utc": native.utc()}
+        if parent is not None:
+            try:
+                parent.close(process)
+            except Exception as error:
+                record["errors"].append("Owned host cleanup: " + str(error))
+    else:
+        record["cleanup_intervened"] = True
+        record["errors"].append("Runner intervention was required; this is not a qualifying self-exit")
+        native.cleanup_owned_resources(process, user, callback, record, parent)
+
+
+def qualify(record):
+    conditions = {
+        "exact_results_verified": record.get("results_verified") is True,
+        "runtime_callback_verified": record.get("runtime_verified") is True and record.get("events_verified") is True
+            and record.get("completion_verified") is True,
+        "normal_integrity": all(record.get(key, {}).get("normal_integrity") is True
+                                for key in ("integrity_before_launch", "child_integrity")),
+        "self_exit_zero": record.get("closure", {}).get("mode") == "self_exit"
+            and record["closure"].get("exit_code") == 0 and record["closure"].get("forced") is False,
+        "no_intervention": not record.get("cleanup_intervened", False),
+        "hidden_guard": record.get("foreground_or_visible_window_violation") is False,
+        "owned_host_destroyed": record.get("hidden_parent", {}).get("destroyed") is True,
+        "actual_owned_parent_verified": record.get("parent_relation_verified") is True,
+        "power_restored": record.get("power_request", {}).get("restored") is True,
+        "identity_unchanged": record.get("identity_unchanged") is True,
+        "logs_reviewed": record.get("logs_scanned") is True,
+        "observed_normal_renderer": any(row.get("mode") == "kGfxThreadingModeClientWorkerJobs"
+                                        for row in record.get("graphics_threading_observations", [])),
+        "no_fatal_audio_or_dump": not record.get("native_fatal_markers") and
+            not record.get("audio_failure_markers") and record.get("crash_reports") == [],
+        "no_callback_failure": record.get("callback_failure_present") is False,
+    }
+    record["qualification_checks"] = conditions
+    record["errors"].extend("Qualification failed: " + key for key, okay in conditions.items() if not okay)
+    passed = all(conditions.values()) and not record["errors"]
+    record["status"] = "standalone_fixture_verified" if passed else "standalone_fixture_failed"
+    return passed
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--player", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--build-receipt", "--build-report", dest="build_report", type=Path, required=True)
+    parser.add_argument("--build-receipt-sha256", "--build-report-sha256", dest="build_report_sha256", required=True)
+    parser.add_argument("--timeout-seconds", type=float, default=1800)
+    args = parser.parse_args()
+    require(os.name == "nt", "Runner requires native Windows")
+    require(math.isfinite(args.timeout_seconds) and 5 <= args.timeout_seconds <= 1800, "Use a 5-1800 s timeout")
+    player, out, build_path = args.player.absolute(), args.output.absolute(), args.build_report.absolute()
+    require(out.resolve() == out and out != player.parent and player.parent not in out.parents,
+            "Evidence must use a fresh directory outside the player")
+    require(re.fullmatch(r"[0-9a-f]{64}", args.build_report_sha256 or ""), "Expected build report SHA-256")
+    require(native.manifest.digest(build_path) == args.build_report_sha256, "Build report hash differs")
+    report = validate_build_report(native.manifest.read_json(build_path), player)
+    before = snapshot_player(player)
+    out.mkdir(exist_ok=False)
+    (out / "captures").mkdir()
+    (out / "crashes").mkdir()
+    (out / "build-report.json").write_bytes(build_path.read_bytes())
+    native.write_new(out / "test-player-before.json", {"player": str(player), "files": before})
+    sources = {}
+    for name, path in (("runner.py", Path(__file__)), ("native-player-validation.py", ROOT / "tools/native_player_validation.py"),
+                       ("unity-validation.py", ROOT / "tools/unity_validation.py"),
+                       ("player-build-manifest.py", ROOT / "tools/player_build_manifest.py")):
+        (out / name).write_bytes(path.read_bytes())
+        sources[name] = native.manifest.digest(out / name)
+    environment = player_environment(out)
+    startup = subprocess.STARTUPINFO()
+    startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startup.wShowWindow = 0
+    kernel, user, callback = native.windows_api()
+    user.GetParent.argtypes = [wintypes.HWND]
+    user.GetParent.restype = wintypes.HWND
+    volumes = {str(path.anchor): shutil.disk_usage(path.anchor).free for path in (ROOT, player, out)}
+    record = {"schema_version": 1, "kind": "instrumented standalone primary-route fixture execution",
+        "started_utc": native.utc(), "player": str(player), "build_report_sha256": args.build_report_sha256,
+        "actual_build_report": report, "shipping_player_receipt": False, "instrumented_test_player": True,
+        "expected_cases": sorted(EXPECTED), "sources_sha256": sources, "timeout_seconds": args.timeout_seconds,
+        "disk_reserve_bytes": RESERVE, "disk_growth_limit_bytes": GROWTH_LIMIT, "initial_volume_free_bytes": volumes,
+        "player_mode": "embedded", "parent_mode": "owned", "graphics_mode": "legacy", "batch_mode": False,
+        "audio_disabling_flag": False, "foreground_or_visible_window_violation": False,
+        "child_environment_override": {"SHADOWS_ROUTE_PLAYER_OUTPUT": str(out), "SHADOWS_CAPTURE_DIR": str(out / "captures"),
+                                       "SHADOWS_PLAYER_EVIDENCE_DIR": None},
+        "cleanup_intervened": False, "errors": [], "not_qualified": ["OS-input gameplay", "human playthrough",
+        "human timing/readability", "audible-output acceptance", "hardware performance", "shipping-player identity"]}
+    process, parent = None, None
+    start = time.monotonic()
+    try:
+        require(all(free >= RESERVE for free in volumes.values()), "Initial disk reserve is insufficient")
+        record["integrity_before_launch"] = native.process_integrity(kernel)
+        require(record["integrity_before_launch"]["normal_integrity"], "Below-medium launcher integrity")
+        with native.keep_awake(kernel, record), (out / "launcher-stdout.log").open("xb") as stdout, (out / "launcher-stderr.log").open("xb") as stderr:
+            try:
+                parent = native.HiddenParentWindow(kernel, user, record)
+                parent.create()
+                command = native.player_command(player, out, "legacy", parent.handle, "embedded")
+                record["command"] = command
+                process = subprocess.Popen(command, cwd=player.parent, env=environment, startupinfo=startup,
+                    creationflags=subprocess.CREATE_NO_WINDOW, stdout=stdout, stderr=stderr)
+                record["pid"] = process.pid
+                record["child_integrity"] = native.process_integrity(kernel, process.pid)
+                require(record["child_integrity"]["normal_integrity"], "Below-medium player integrity")
+                native.write_new(out / "launch.json", record)
+                while process.poll() is None:
+                    parent.pump()
+                    elapsed = time.monotonic() - start
+                    if not native.check_hidden_windows(user, callback, process.pid, record, parent, elapsed):
+                        break
+                    if not record.get("parent_relation_verified"):
+                        relation = observe_parent(user, callback, process.pid, parent.handle)
+                        if relation["matching_parent_observed"]:
+                            native.write_new(out / "window-parent-observation.json", relation)
+                            record["parent_relation_verified"] = True
+                    for volume, initial in volumes.items():
+                        free = shutil.disk_usage(volume).free
+                        reason = stop_reason(elapsed, args.timeout_seconds, initial, free)
+                        if reason:
+                            record["errors"].append(reason + ": " + volume)
+                            record["stop_condition"] = {"reason": reason, "volume": volume, "free_bytes": free}
+                            break
+                    if record.get("stop_condition"):
+                        break
+                    time.sleep(.25)
+            finally:
+                finish_process(process, user, callback, record, parent)
+    except (Exception, KeyboardInterrupt) as error:
+        record["errors"].append(type(error).__name__ + ": " + str(error))
+    record["seconds"] = time.monotonic() - start
+    record["completed_utc"] = native.utc()
+    if record["seconds"] > args.timeout_seconds:
+        record["errors"].append("Lifecycle exceeded the bounded timeout")
+    record["callback_failure_present"] = (out / "failure.json").exists()
+    if record.get("window_violation_observation"):
+        native.write_new(out / "window-violation.json", record["window_violation_observation"])
+    for label, operation in (
+        ("results", lambda: validate_results(native.shared_read(kernel, out / "results.xml", 10_000_000))),
+        ("runtime", lambda: validate_runtime(native.manifest.read_json(out / "runtime.json"), record.get("pid"), out)),
+        ("events", lambda: validate_events(native.shared_read(kernel, out / "events.jsonl"))),
+    ):
+        try:
+            record[label + "_validation"] = operation()
+            record[label + "_verified"] = True
+        except Exception as error:
+            record["errors"].append(label + ": " + str(error))
+    try:
+        record["completion_validation"] = validate_completion(native.manifest.read_json(out / "completion.json"),
+            record["results_validation"], record["events_validation"])
+        record["completion_verified"] = True
+    except Exception as error:
+        record["errors"].append("completion: " + str(error))
+    try:
+        record.update(native.scan_player_logs(kernel, out))
+        record["logs_scanned"] = True
+        record["log_review_required"] = bool(record["diagnostic_candidates"])
+        record["crash_reports"] = native.manifest.file_tree(out / "crashes")
+    except Exception as error:
+        record["errors"].append("logs/crashes: " + str(error))
+    try:
+        after = snapshot_player(player)
+        native.write_new(out / "test-player-after.json", {"player": str(player), "files": after})
+        record["identity_unchanged"] = compare_identity(before, after)
+        require(native.manifest.digest(build_path) == args.build_report_sha256, "Builder report changed")
+    except Exception as error:
+        record["identity_unchanged"] = False
+        record["errors"].append("identity: " + str(error))
+    passed = qualify(record)
+    native.write_new(out / "execution.json", record)
+    native.write_new(out / "evidence-file-inventory.json", {"utc": native.utc(), "files": native.manifest.file_tree(out)})
+    print(json.dumps({key: record.get(key) for key in ("status", "pid", "closure", "qualification_checks",
+        "graphics_threading_observations", "log_review_required", "errors")}, indent=2))
+    return 0 if passed else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

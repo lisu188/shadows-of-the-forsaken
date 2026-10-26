@@ -1,0 +1,45 @@
+# Current column art — ordinary Windows Release, 2026-10-16
+
+The ordinary Windows Release for source **`90c5c9c9db838095cedc54c21c2869762e36db19`** now has independently qualified build/import provenance, final player identity, hidden lifecycle and complete package payloads. The current [Windows package](../../Builds/ShadowsOfTheForsaken-Windows-x64-20261016-90c5c9c.zip), recorder pins and [playtest handoff](../primary-player-playtest.md) select **`90c5c9c`**. The earlier `0b9e160` package and its own full-suite evidence remain preserved. This is delivery qualification under the recorded conditions, not completion of the remaining human, full ordinary-route or performance acceptance.
+
+This build carries the [DOCX §4 broken-column correction](throne-columns-2026-10-16.md). Current-source evidence separately qualifies the affected basic Editor route, the ten-case hidden native route suite and the readiness-gated concealed presentation diagnostic. Those instrumented test-player results do not substitute for this ordinary Release's own delivery checks.
+
+## Actual build and frozen capture
+
+The [ordinary build execution](../../artifacts/goal-20261014/ready-handshake-release-build-20261016/execution.json), SHA-256 `83b7af99fa5bfe3bca8c4e34898ce87fed5573ee28fbbde7f136e78f71708f40`, records clean source `90c5c9c`, 754 source inputs and pinned Unity **6000.6.3f1**. Owned Editor PID **53048** exits **0**, no stop, **39.109 s** runner duration, with restoration on its original wake-request thread **45620** before the final input snapshot.
+
+The retained [Editor log](../../artifacts/goal-20261014/ready-handshake-release-build-20261016/editor.log), SHA-256 `7edd6a73cfd5882c2ae15e5eab2ada8d77d144a3b8de5ee6ea35b460f1079d9f`, reports `Castle Windows build: Succeeded`, **0 errors / 0 warnings**, **133,839,960 bytes** and **18.6639307 s** BuildReport duration. The saved ordinary builder uses `BuildOptions.None` and the primary castle scene; this is separate from the Development UTF players used by the route and presentation fixtures. Zero BuildReport warnings is not a claim that the complete Editor log is diagnostic-free.
+
+The [post-build capture](../../artifacts/goal-20261014/ready-handshake-release-build-20261016/identity/completion.json), SHA-256 `c3a93aa9445448309151fae2d8adfb86a3607b8edae8cbe78a845fff19e4358f`, lists **199 engine files** and binds the execution, log, source and imported-input archive. The [imported index](../../artifacts/goal-20261014/ready-handshake-release-build-20261016/identity/imported-index.json) records **755 inputs**, CRC validation and ZIP SHA-256 `deb8d52ab32fb663d273805674ba040ebc19c65343f979ee593d5897bf30927f`.
+
+The [independent build/import review](../../artifacts/goal-20261014/ready-handshake-release-build-independent-review-20261016.json), SHA-256 `e5cefd21d463e5917b8c7fdb71f0c884971301d2dc9bf6b70da1f776726a79d7`, approves **754 source / 755 imported inputs**, 499 critical inputs, all 199 engine files and the exact corrected column mesh/meta. It verifies the retained UTF scene/meta, 18 copied cache backups and the source ZIP's 754 payloads plus 51 safe parent-directory entries. The [exact import approval](../../artifacts/goal-20261014/ready-handshake-release-build-20261016/identity/import-review.approved.json), SHA-256 `459e3c044b34a03e8e921f7119bd3820fc8cb156be0df320516bfa1915c79406`, reviews all **19 source/import pairs**, including the separate generated settings entry, with zero unreviewed pairs or unresolved findings. The separate lifecycle and package evidence follows.
+
+## Actual ordinary hidden lifecycle and audio observation
+
+The [independent ordinary-player lifecycle review](../../artifacts/goal-20261014/ready-handshake-release-native-independent-review-20261016.json), SHA-256 `ebb82de9a6a2973488855e19f98462d879141b8b154627278f5c2c0785c66319`, qualifies the exact trusted receipt **`83806140e0e340952ae0fce6602b9136d38bf6c6826c056f618cb1f0150e674d`**. Owned PID **37740** supplies **477 matching snapshots**, spanning **120.301434 s** of exact published timestamps and **120.312 s** of retained monotonic polling; all six duration checks are independently recomputed. Runner duration is **126.843 s**. Closure sends `WM_CLOSE` only to four windows owned by that player; it exits **0**, with no force or other process touched. Host cleanup, wake restoration, unchanged 199-file identity and absence of detected FMOD/native-fatal/crash markers are verified.
+
+Actual native parent ancestry is **UNMEASURED** for this lifecycle. Its sole `GetParent` query has `rows: []` and occurs after the `WM_CLOSE` request during teardown. That query supplies neither active parent proof nor an ancestry failure. Other runs' parent observations are not substituted for this missing measurement.
+
+The separate [closed endpoint-history review](../../artifacts/goal-20261014/ready-handshake-release-audio-independent-review-20261016.json), SHA-256 `c7d449bdcad3aa50e81391976572e3826ac298fd38a9b1174ba84a2a0dba5e1d`, verifies **1,130 samples over 300.0171659 s**, covering the complete PID 37740 interval. All three defaults remain active Realtek and every endpoint-state set is unchanged; maximum adjacent monotonic sample-start gap is **0.363253 s**. No endpoint/default mutation was applied. These discrete read-only samples qualify observed stability, not physical audibility, Unity's selected output stream or hotplug recovery.
+
+## Qualified package and current handoff
+
+The [independent package review](../../artifacts/goal-20261014/ready-handshake-release-package-independent-review-20261016.json), SHA-256 `1b5e2f0fb74838cebf75b3e3213d7503c65b3f3ca02bf40d56b998e1982dc935`, verifies every ZIP payload and CRC against the reviewed player: **200 entries**, comprising **199 engine files / 133,839,960 bytes** plus the exact trusted `BUILD-INFO.json`. Package size is **44,485,815 bytes**.
+
+| Current input | SHA-256 |
+| --- | --- |
+| [Windows ZIP](../../Builds/ShadowsOfTheForsaken-Windows-x64-20261016-90c5c9c.zip) | `dfdd39ccfa75adf121018354f8b81449d6da46683b9f200b8c661d4bbcc1d07f` |
+| [Trusted BUILD-INFO](../../artifacts/goal-20261014/ready-handshake-release-build-20261016/player/BUILD-INFO.json) | `83806140e0e340952ae0fce6602b9136d38bf6c6826c056f618cb1f0150e674d` |
+| [Source archive](../../artifacts/goal-20261014/ready-handshake-release-build-20261016/source.zip) | `a8c88d2d94a691c2194a1fe87c73a6635c30ecfad3fd567ab18b909b770490fd` |
+
+The recorder's [six-pin proof](../../artifacts/goal-20261014/ready-release-recorder-pins-20261016/six-pin-proof.json) verifies that only the six current identity/package/source values change, preserving every other script byte; static PowerShell parsing passes. The fresh [Windows recorder checks](../../artifacts/goal-20261014/ready-release-recorder-checks-20261016/summary.json) pass **13/13**, exit 0, with script SHA-256 `6728b5fba955d49db1730ace35ba19de60865ccb525c3129522bd93865d3045c` unchanged before/after. These checks qualify recorder tooling; no recorder/player attempt was launched by this documentation update.
+
+The older [camera delivery](camera-tangent-2026-10-16.md) retains its source-scoped `0b9e160` **235/235 PlayMode / 187/187 EditMode** and earlier package. The current correction separately has **188/188 EditMode** at `dca5740`, the affected Editor route **1/1**, native routes **10/10** and concealed presentation **3/3** at `90c5c9c`. No full 235-case PlayMode rerun for the new source is claimed.
+
+## FMOD recovery investigation
+
+The [primary-source follow-up](../../artifacts/goal-20261014/fmod60-public-api-primary-source-review-20261016.json), SHA-256 `e352dad43abd9ba37918d1d976cb898927c6d4b2a9d7530dc14445916dc782c7`, reviews fourteen official sources and both retained failure logs. It establishes no matching engine fix or guaranteed recovery from this FMOD 60 failure. Unity's [pinned-version reset API](https://docs.unity3d.com/6000.6/Documentation/ScriptReference/AudioSettings.Reset.html) reports whether settings were applied; the [audio settings manual](https://docs.unity3d.com/6000.6/Documentation/Manual/class-AudioSettings.html) also documents loss of generated clips and playback state during reconfiguration. A successful reset return alone would not qualify restored hardware output.
+
+The failed local logs already contain Unity's reset and repeated 48000 Hz initialization fallback before no-sound output. No additional production reset loop, forced sample rate or engine upgrade was introduced without supporting evidence. The supported next diagnostic is bounded test-only configuration-change telemetry correlated with the passive endpoint history; it has not been implemented or presented as a recovery result.
+
+Earlier FMOD device-transition failures remain retained. Current stable-endpoint native passes do not prove hotplug recovery, physical audibility or the historical crash cause. Full ordinary Release controls/traversal, first-time human pacing/readability, hardware performance and owner acceptance remain distinct open checks.
