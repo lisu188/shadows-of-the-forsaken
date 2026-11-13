@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ShadowsOfTheForsaken.Progression;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 // DOCX sections 2, 4 and 5: saved, original gothic architecture. This explicit
 // authoring pass never changes a collider, route, NavMesh input or actor.
@@ -40,6 +42,64 @@ public static class CastlePresentationBuilder
         AssetDatabase.SaveAssets();
         Debug.Log($"Saved gothic environment: {result.triangles} triangles, {result.renderers} renderers, {result.meshAssets} mesh assets; physics preserved.");
         return result;
+    }
+
+    // Explicit repair of two existing visual batches. No scene, material,
+    // collider or navigation authoring; keep the saved scene's mesh GUIDs.
+    public static void BuildCompletionDetailsForBatch()
+    {
+        if (!Application.isBatchMode || Application.isPlaying)
+            throw new InvalidOperationException("Run the targeted completion mesh authoring in a batch editor.");
+        const string scenePath = "Assets/Scenes/ForsakenCastle.unity";
+        if (SceneManager.GetSceneByPath(scenePath).isLoaded)
+            throw new InvalidOperationException("The targeted authoring must own its temporary scene load.");
+        var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+        try
+        {
+            var geometry = scene.GetRootGameObjects().Single(o => o.name == "Geometry");
+            var temporary = new GameObject("Temporary completion mesh drafts");
+            SceneManager.MoveGameObjectToScene(temporary, scene);
+            var context = new Context(temporary.transform);
+            context.LoadExistingMaterials();
+            context.Architecture(geometry);
+            context.SaveExistingMeshes(new[] { "Masonry_0_1_Upper_Rune", "Masonry_0_3_Upper_Limestone" });
+        }
+        finally
+        {
+            // Architecture hides source renderers and creates temporary window
+            // lights. Discard those temporary scene changes, never save them.
+            EditorSceneManager.CloseScene(scene, true);
+        }
+        Debug.Log("Updated only the existing cult-mark and exit-wall mesh assets; saved scene/navigation unchanged.");
+    }
+
+    // DOCX 4: regenerate only the existing throne stone mesh. The uneven
+    // fracture shape is an implementation choice, not extra physical geometry.
+    public static void BuildBrokenColumnsForBatch()
+    {
+        if (!Application.isBatchMode || Application.isPlaying)
+            throw new InvalidOperationException("Run the targeted throne-column mesh authoring in a batch editor.");
+        const string scenePath = "Assets/Scenes/ForsakenCastle.unity";
+        if (SceneManager.GetSceneByPath(scenePath).isLoaded)
+            throw new InvalidOperationException("The targeted authoring must own its temporary scene load.");
+        var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+        try
+        {
+            var geometry = scene.GetRootGameObjects().Single(o => o.name == "Geometry");
+            var temporary = new GameObject("Temporary broken-column mesh drafts");
+            SceneManager.MoveGameObjectToScene(temporary, scene);
+            var context = new Context(temporary.transform);
+            context.LoadExistingMaterials();
+            context.Architecture(geometry);
+            context.SaveExistingMeshes(new[] { "Throne_CarvedStone" });
+        }
+        finally
+        {
+            // Architecture changes source renderer state and temporary lights.
+            // Discard that scene, preserving the saved colliders and navigation.
+            EditorSceneManager.CloseScene(scene, true);
+        }
+        Debug.Log("Updated only the existing throne stone mesh; saved scene, materials and navigation unchanged.");
     }
 
     private static void Folder(string path)
@@ -80,6 +140,39 @@ public static class CastlePresentationBuilder
         }
         private Draft D(string zone, string material) => Get(zone, material).draft;
         private static string Zone(Vector3 p) => "Masonry_" + Mathf.FloorToInt(p.x / 24) + "_" + Mathf.FloorToInt(p.z / 24) + "_" + (p.y < -6 ? "Deep" : "Upper");
+
+        public void LoadExistingMaterials()
+        {
+            foreach (string path in System.IO.Directory.GetFiles(AssetPath, "*.mat"))
+            {
+                var material = AssetDatabase.LoadAssetAtPath<Material>(path.Replace('\\', '/'));
+                if (material == null) throw new InvalidOperationException("Missing saved presentation material: " + path);
+                materials.Add(System.IO.Path.GetFileNameWithoutExtension(path), material);
+            }
+        }
+
+        public void SaveExistingMeshes(string[] names)
+        {
+            var outputs = names.Select(name =>
+            {
+                string path = AssetPath + "/" + name + ".asset";
+                if (!batches.TryGetValue(name, out var batch) || batch.draft.indices.Count == 0)
+                    throw new InvalidOperationException("Missing completion mesh draft: " + name);
+                var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+                if (existing == null) throw new InvalidOperationException("Targeted authoring cannot create an asset: " + path);
+                return (batch, existing, path, guid: AssetDatabase.AssetPathToGUID(path));
+            }).ToArray();
+            foreach (var output in outputs)
+            {
+                var mesh = output.batch.draft.Mesh(output.batch.name);
+                try { EditorUtility.CopySerialized(mesh, output.existing); }
+                finally { UnityEngine.Object.DestroyImmediate(mesh); }
+                EditorUtility.SetDirty(output.existing);
+                AssetDatabase.SaveAssetIfDirty(output.existing);
+                if (AssetDatabase.AssetPathToGUID(output.path) != output.guid)
+                    throw new InvalidOperationException("Targeted authoring changed a mesh GUID: " + output.path);
+            }
+        }
 
         public void Materials()
         {
@@ -172,7 +265,32 @@ public static class CastlePresentationBuilder
                 { Tomb(name, t.position, size); renderer.enabled = false; continue; }
                 if (name.StartsWith("Throne_Column_") && !name.EndsWith("Base"))
                 {
-                    Column(D("Throne", "CarvedStone"), t.position - Vector3.up * size.y / 2, size.y, size.x / 2);
+                    var stone = D("Throne", "CarvedStone");
+                    var bottom = t.position - Vector3.up * size.y / 2;
+                    if (name == "Throne_Column_-2.8_-2.8" || name == "Throne_Column_2.8_-2.8")
+                        BrokenColumn(stone, bottom, size.y, size.x / 2);
+                    else Column(stone, bottom, size.y, size.x / 2);
+                    renderer.enabled = false; continue;
+                }
+                if (name == "Catacombs_CultMark")
+                {
+                    // DOCX 4: a cult inscription, rather than the blockout's
+                    // solid luminous tile. Use the same saved Rune batch.
+                    var mark = D(Zone(t.position), "Rune");
+                    Vector3 center = t.position + Vector3.up * .018f;
+                    mark.Ring(center, .42f, .016f, 24, Quaternion.Euler(90, 0, 0));
+                    mark.Beam(center + Vector3.back * .28f, center + Vector3.forward * .27f, .025f);
+                    foreach (int side in new[] { -1, 1 })
+                        mark.Beam(center + Vector3.forward * .06f,
+                            center + new Vector3(side * .21f, 0, .24f), .025f);
+                    renderer.enabled = false; continue;
+                }
+                if (name == "UpperStructure_Wall_027")
+                {
+                    // DOCX 7: the terminal threshold looks outside. Its original
+                    // end-wall collider remains behind this visual opening;
+                    // completion already stops play before reaching that wall.
+                    D(Zone(t.position), "Limestone").OpeningWall(t.position, size, 2.9f, 2.4f, 1.6f, t.rotation);
                     renderer.enabled = false; continue;
                 }
                 if (name.Contains("_Ceiling"))
@@ -571,6 +689,25 @@ public static class CastlePresentationBuilder
         }
     }
 
+    private static void BrokenColumn(Draft d, Vector3 bottom, float height, float radius)
+    {
+        // Keep the existing lower collar and fluted shaft within its collider.
+        // The fractured crown replaces the complete decorative upper capital.
+        float fractureDepth = .48f;
+        float shaftHeight = height - fractureDepth;
+        d.Tube(bottom, bottom + Vector3.up * .16f, radius, radius, 12);
+        d.Tube(bottom + Vector3.up * .16f, bottom + Vector3.up * shaftHeight,
+            radius * .68f, radius * .6f, 12);
+        for (int i = 0; i < 8; i++)
+        {
+            float angle = i * Mathf.PI / 4;
+            var offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius * .62f;
+            d.Tube(bottom + offset + Vector3.up * .2f, bottom + offset + Vector3.up * shaftHeight,
+                radius * .12f, radius * .1f, 5);
+        }
+        d.FracturedShaftTop(bottom + Vector3.up * shaftHeight, radius * .6f, fractureDepth);
+    }
+
     // Meshes contain explicit bevels, curved arch profiles and metre-scaled UVs.
     // Only renderers consume them; no MeshCollider or NavMeshModifier is added.
     private sealed class Draft
@@ -684,6 +821,32 @@ public static class CastlePresentationBuilder
             }
         }
 
+        public void OpeningWall(Vector3 center, Vector3 size, float width, float spring, float rise, Quaternion rotation)
+        {
+            Vector3 bottom = center - rotation * Vector3.up * (size.y / 2);
+            float jamb = (size.x - width) / 2;
+            foreach (int side in new[] { -1, 1 })
+                Box(center + rotation * Vector3.right * (side * (width + jamb) / 2),
+                    new Vector3(jamb, size.y, size.z), 0, rotation);
+            var profile = ArchProfile(width, spring, rise);
+            Vector3 P(Vector2 point, float z) => bottom + rotation * new Vector3(point.x, point.y, z);
+            var topLeft = new Vector2(-width / 2, size.y);
+            var topRight = new Vector2(width / 2, size.y);
+            Quad(P(topLeft, -size.z / 2), P(topRight, -size.z / 2),
+                P(topRight, size.z / 2), P(topLeft, size.z / 2), rotation * Vector3.up);
+            for (int i = 0; i < profile.Count - 1; i++)
+            {
+                var a = profile[i]; var b = profile[i + 1];
+                var topA = new Vector2(a.x, size.y); var topB = new Vector2(b.x, size.y);
+                Quad(P(a, -size.z / 2), P(b, -size.z / 2), P(topB, -size.z / 2), P(topA, -size.z / 2), rotation * Vector3.back);
+                Quad(P(a, size.z / 2), P(b, size.z / 2), P(topB, size.z / 2), P(topA, size.z / 2), rotation * Vector3.forward);
+                Vector2 tangent = b - a;
+                Quad(P(a, -size.z / 2), P(b, -size.z / 2), P(b, size.z / 2), P(a, size.z / 2),
+                    rotation * new Vector3(tangent.y, -tangent.x, 0).normalized);
+            }
+            Arch(bottom - rotation * Vector3.forward * (size.z / 2 + .035f), width, spring, rise, .16f, .12f, rotation);
+        }
+
         public void Vault(Vector3 bottom, float width, float length, float rise, Quaternion rotation)
         {
             var profile = ArchProfile(width + .04f, 0, rise);
@@ -736,6 +899,27 @@ public static class CastlePresentationBuilder
                     center + rotation * new Vector3(Mathf.Cos(b) * radius, Mathf.Sin(b) * radius, 0), rotation * Vector3.back);
             }
         }
+
+        public void FracturedShaftTop(Vector3 bottom, float radius, float height)
+        {
+            // Unequal edge heights make the ruined silhouette readable without
+            // adding debris outside the original pillar's physical footprint.
+            float[] levels = { .7f, 1, .62f, .34f, .8f, .45f, .88f, .5f, .28f, .72f, .53f, .84f };
+            var center = bottom + Vector3.up * (height * .58f);
+            for (int i = 0; i < levels.Length; i++)
+            {
+                int next = (i + 1) % levels.Length;
+                float a = i * Mathf.PI * 2 / levels.Length, b = next * Mathf.PI * 2 / levels.Length;
+                var offsetA = new Vector3(Mathf.Cos(a), 0, Mathf.Sin(a)) * radius;
+                var offsetB = new Vector3(Mathf.Cos(b), 0, Mathf.Sin(b)) * radius;
+                var lowerA = bottom + offsetA; var lowerB = bottom + offsetB;
+                var topA = lowerA + Vector3.up * (height * levels[i]);
+                var topB = lowerB + Vector3.up * (height * levels[next]);
+                Quad(lowerA, lowerB, topB, topA, (offsetA + offsetB).normalized);
+                Tri(center, topA, topB, Vector3.Cross(topB - center, topA - center).normalized);
+            }
+        }
+
         public void Crystal(Vector3 center, float radius, float height)
         {
             for (int i = 0; i < 6; i++)

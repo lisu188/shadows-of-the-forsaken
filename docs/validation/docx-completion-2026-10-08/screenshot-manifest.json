@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+  "capture_method": "Actual authored-scene camera and camera-space HUD during automated Unity PlayMode controls-driven routes.",
+  "evidence_boundary": "Editor captures only. These images do not establish standalone traversal, human first-attempt acceptance, hardware performance or the DOCX 2-3 minute human pacing target.",
+  "run": {
+    "id": "goal-20261008/committed-playmode",
+    "platform": "PlayMode",
+    "editor_version": "6000.6.3f1",
+    "scope": "Full Shadows.PlayMode.Tests assembly",
+    "source_snapshot": {
+      "path": "artifacts/goal-20261008/committed-playmode/source-snapshot.json",
+      "sha256": "d4258288f0b16fec90d6f4ef3cd54a4be581f855b1538396816c82558aa5260d",
+      "bytes": 95425
+    },
+    "runner_sha256": "048f08cf83f12f68eaae3b75c14e6a689bc83238edc3b874858b3244c4c85d22",
+    "execution_receipt_path": "artifacts/goal-20261008/committed-playmode/execution.json",
+    "completion_status": "completed",
+    "execution_receipt": {
+      "path": "artifacts/goal-20261008/committed-playmode/execution.json",
+      "sha256": "d57ecc09307ccc4c59c9653a5ce1521c1cd5caf34e770e90772e7fb67964729d",
+      "bytes": 97764
+    },
+    "exit_code": 2,
+    "results_xml": {
+      "path": "artifacts/goal-20261008/committed-playmode/results.xml",
+      "sha256": "eb1d2738144f6bcf5a3c511715f624dca2958a22f095556cdbff651f81f069b4",
+      "bytes": 276028
+    }
+  },
+  "images": [
+    {
+      "file": "01-courtyard.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-courtyard.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "sha256": "80963dbc74d0a7e6dce6b3ced70f6713a1f8618aab9dc257c497321bfb275ed1",
+      "bytes": 521348,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "Courtyard approach, castle silhouette and warm lanterns.",
+      "direct_image_inspection": true
+    },
+    {
+      "file": "02-first-fight.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-FirstEnemyDefeated.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "sha256": "29f2db94e27117e730fd0a8ff9b681a313cb5a4341454ad806be30cf28778279",
+      "bytes": 458776,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "First demon and player attack pose at the outer gate.",
+      "direct_image_inspection": true
+    },
+    {
+      "file": "03-rune-lever.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-rune-lever.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "sha256": "83ec6d8b84e1a5fcf0aae3bbc73083b4ada796d5dbd8a6a6ce27f36231971f20",
+      "bytes": 488028,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "Marked lever after activation with throne-gate feedback.",
+      "direct_image_inspection": true
+    },
+    {
+      "file": "04-throne-miniboss.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-MinibossDefeated.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "sha256": "1b565e5c4e64c3ae2aee48690aa39260c1fd291793b966845399051085a8507d",
+      "bytes": 473252,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "Corrupted guard in the throne room with stained glass and throne behind.",
+      "direct_image_inspection": true
+    },
+    {
+      "file": "05-library.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-library.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "sha256": "7f6987c2162f21b5e4f9ae6ce56763e15f5d8eb77c2e1304d9d66b594686cbca",
+      "bytes": 493318,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "Marked library book after use; opened lower passage and cult glyph visible.",
+      "direct_image_inspection": true
+    },
+    {
+      "file": "06-catacombs.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-catacombs.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "sha256": "73e546c9d633f1c7ed9c24d2acb3869e797b9e00f7ed0f731251249aca16bace",
+      "bytes": 464628,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "Catacomb tombs, candles, optional lever and the ring-and-branch cult glyph.",
+      "direct_image_inspection": true
+    },
+    {
+      "file": "07-final-fight.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-fight-FinalEnemyDefeated.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "sha256": "cfb9bf640e3c7c82e029b640849d8cd7eae8a0e9060feb3f4192df2975d883ad",
+      "bytes": 503153,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "Final demon attack pose in the cult arena; northern gate remains closed.",
+      "direct_image_inspection": true
+    },
+    {
+      "file": "08-complete-main.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-route-complete-main.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "sha256": "dc6a2136cabf6e0b7f22e9856455c51866eb23352ac5f183ce00ebc99aa77053",
+      "bytes": 365667,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "Main-route completion panel with the pointed outside opening behind it.",
+      "direct_image_inspection": true
+    },
+    {
+      "file": "09-optional-relic.png",
+      "source_path": "artifacts/goal-20261008/committed-playmode/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-route-relic.png",
+      "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+      "run_id": "goal-20261008/committed-playmode",
+      "test": "ShadowsOfTheForsaken.Tests.PlayMode.FullCastleRouteTests.CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "sha256": "2769851a4b7af8b052295be6a7b74f0ae6d354bfb793faa962a9ab8dd85da672",
+      "bytes": 461628,
+      "width": 960,
+      "height": 540,
+      "editing": "None; original Unity camera render copied byte-for-byte",
+      "visible_content": "Optional chamber immediately after relic recovery, with recovery feedback.",
+      "direct_image_inspection": true
+    }
+  ]
+}

@@ -110,6 +110,7 @@ public static class CastleLayoutBuilder
         controller.center = Vector3.up;
         controller.stepOffset = 0.3f;
         controller.skinWidth = 0.02f;
+        controller.minMoveDistance = 0; // Retain ground contact and jump motion during small positive frame steps.
         controller.slopeLimit = 45;
         var movement = player.AddComponent<PlayerMovement>();
         movement.inputActions = input;

@@ -1,0 +1,24 @@
+{
+  "name": "Shadows.StandaloneRenderedRoutes.PlayerSupport",
+  "rootNamespace": "ForsakenStandaloneRenderedRouteSupport",
+  "references": [
+    "UnityEngine.TestRunner",
+    "Shadows.Progression.Core",
+    "Shadows.Progression.Unity",
+    "Unity.RenderPipelines.Core.Runtime",
+    "Unity.RenderPipelines.Universal.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

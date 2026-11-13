@@ -1,0 +1,259 @@
+{
+  "schema_version": 1,
+  "source_commit": "5af8861c39bd5fbf4d324690e5a74b1d12aae333",
+  "source_docx": {
+    "path": "Shadows of the Forsaken.docx",
+    "sha256": "9baa88bd8a9c26fc6adcbcdc9032266096716a7475969c5a6d793356cf15ed31",
+    "bytes": 8950584
+  },
+  "unity": "6000.6.3f1",
+  "primary_scene": "Assets/Scenes/ForsakenCastle.unity",
+  "cached_import": true,
+  "python": {
+    "passed": 147,
+    "failed": 0,
+    "log": {
+      "path": "artifacts/goal-20261008/final-tooling/python-tests.log",
+      "sha256": "aaa19bf84fff0bc86b24820c5d50a1d4171a16a81801ba8d083af4aa08f49b4e",
+      "bytes": 22156
+    }
+  },
+  "contract": {
+    "without_secret": 29,
+    "with_secret": 63,
+    "log": {
+      "path": "artifacts/goal-20261008/final-tooling/contract.log",
+      "sha256": "1e6edaf74453ae59870274382ca940cca0c06e633a9d531008030237a712fdf2",
+      "bytes": 157
+    }
+  },
+  "source_integrity": {
+    "path": "artifacts/goal-20261008/final-tooling/source-integrity.log",
+    "sha256": "701419792e9f59ba05648e48e0ff0623896a6c57b630ae80472fba18738fd48e",
+    "bytes": 60
+  },
+  "headless_csharp": {
+    "passed": 186,
+    "reused_unchanged_git_inputs": 34,
+    "receipt": {
+      "path": "artifacts/goal-20261008/headless-input-reuse.json",
+      "sha256": "da871bc499d8e844a4794e186b12de177c564bc3cfc2caea5125e888d5c0f7a9",
+      "bytes": 60998
+    }
+  },
+  "editmode": {
+    "run": "committed-editmode",
+    "exit_code": 0,
+    "stopped": null,
+    "runner_seconds": 20.0,
+    "xml_seconds": 0.9731366,
+    "total": 187,
+    "passed": 187,
+    "failed": 0,
+    "skipped": 0,
+    "receipts": [
+      {
+        "path": "artifacts/goal-20261008/committed-editmode/execution.json",
+        "sha256": "8e6a1f3b839d21e055b2c47eac7fdccca6a1194d7714ebbf82672fd3899caf4d",
+        "bytes": 96186
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-editmode/results.xml",
+        "sha256": "47ed8c1d0503fe68ea36f22548ba997bcc8eae3a9132a886669e212f42a18b44",
+        "bytes": 157842
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-editmode/source-snapshot.json",
+        "sha256": "8ce926fa2ad121d26580ac643262a951f1654613ef73e21d8b2424e8dc79658e",
+        "bytes": 132939
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-editmode/runner.py",
+        "sha256": "048f08cf83f12f68eaae3b75c14e6a689bc83238edc3b874858b3244c4c85d22",
+        "bytes": 5738
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-editmode/editor.log",
+        "sha256": "64fbc93bb8380dabed64d5ff02050eb840ff22eaf3cd5e39e3bbcb8a780059fb",
+        "bytes": 208508
+      }
+    ]
+  },
+  "playmode_full": {
+    "run": "committed-playmode",
+    "exit_code": 2,
+    "stopped": null,
+    "runner_seconds": 650.0619999999763,
+    "xml_seconds": 633.5462359,
+    "total": 228,
+    "passed": 227,
+    "failed": 1,
+    "skipped": 0,
+    "receipts": [
+      {
+        "path": "artifacts/goal-20261008/committed-playmode/execution.json",
+        "sha256": "d57ecc09307ccc4c59c9653a5ce1521c1cd5caf34e770e90772e7fb67964729d",
+        "bytes": 97764
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-playmode/results.xml",
+        "sha256": "eb1d2738144f6bcf5a3c511715f624dca2958a22f095556cdbff651f81f069b4",
+        "bytes": 276028
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-playmode/source-snapshot.json",
+        "sha256": "d4258288f0b16fec90d6f4ef3cd54a4be581f855b1538396816c82558aa5260d",
+        "bytes": 95425
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-playmode/runner.py",
+        "sha256": "048f08cf83f12f68eaae3b75c14e6a689bc83238edc3b874858b3244c4c85d22",
+        "bytes": 5738
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-playmode/editor.log",
+        "sha256": "0e9a83e8100cb7ab9bcb98dcd21e7874283e68556a248e096637979a2cbc565b",
+        "bytes": 405316
+      }
+    ]
+  },
+  "playmode_focused_retry": {
+    "run": "committed-throne-retry",
+    "exit_code": 0,
+    "stopped": null,
+    "runner_seconds": 80.01500000001397,
+    "xml_seconds": 62.7883791,
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "receipts": [
+      {
+        "path": "artifacts/goal-20261008/committed-throne-retry/execution.json",
+        "sha256": "1d72a4d911ef6726b9ac0a9390d6d070579539662d01c2c96f3e13afac638042",
+        "bytes": 191758
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-throne-retry/results.xml",
+        "sha256": "99fca116ec2a2281a40a1fcde3cda48acd64a4588b5965efbfa0ab418d48f2ac",
+        "bytes": 9220
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-throne-retry/source-snapshot.json",
+        "sha256": "a6ede3804a2952d95be732f4af78c2d1bfec9422af52632c113d89e364ba40e7",
+        "bytes": 191097
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-throne-retry/runner.py",
+        "sha256": "cf4728da848e6c82377c28fde06cdfd06727d230adf07232469deebe7d3b1ef0",
+        "bytes": 6329
+      },
+      {
+        "path": "artifacts/goal-20261008/committed-throne-retry/editor.log",
+        "sha256": "20e25fc71ea2306a9604e0802136feea613c2cb834da39b72996947550b07f0d",
+        "bytes": 108343
+      }
+    ]
+  },
+  "unique_playmode_cases_with_passing_execution": 228,
+  "clean_full_playmode_pass": false,
+  "audio_failure_audit": {
+    "path": "artifacts/goal-20261008/playmode-audio-failure-audit-v2.json",
+    "sha256": "45376b5b43f08595f01ecceeca268ce492b9117ed37bd553d6d26ff31d7699bc",
+    "bytes": 8153
+  },
+  "known_editor_routes": [
+    {
+      "case": "CastleMainRouteCompletesThroughControlsWithoutSecret",
+      "seconds": 81.51165008544922,
+      "secret": false,
+      "health": 200,
+      "receipt": {
+        "path": "artifacts/goal-20261008/committed-playmode/captures/CastleMainRouteCompletesThroughControlsWithoutSecret-input.json",
+        "sha256": "d69de412dd9ddfbd728bc2f04dfc1e71485e26b0c743b0b5be0e1bae5acc5c60",
+        "bytes": 429431
+      }
+    },
+    {
+      "case": "CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight",
+      "seconds": 121.43167877197266,
+      "secret": true,
+      "health": 200,
+      "receipt": {
+        "path": "artifacts/goal-20261008/committed-playmode/captures/CastleSecretRouteReturnsThroughThroneAndStillRequiresFinalFight-input.json",
+        "sha256": "62ebb17de3a859bc0c2269d67372cb4c4e7e627393334a01f3b133848f06e4e5",
+        "bytes": 796680
+      }
+    }
+  ],
+  "build": {
+    "exit_code": 0,
+    "runner_seconds": 150.375,
+    "actual_prebuild_files": 723,
+    "package_sha256": "3c328a9382826bce0c1090fb164f09e6b572d04d6c03fd408e2a520409b71984",
+    "package_bytes": 44482497,
+    "receipt_sha256": "aa3fbf3c43943579fafe956a8fba43c5348232d3d48ef22f81b8eaa0e6a93578",
+    "files_including_receipt": 200,
+    "uncompressed_bytes_including_receipt": 134084265,
+    "summary": {
+      "path": "artifacts/goal-20261008/committed-build/identity/package-summary.json",
+      "sha256": "0b77d47d6401afa2e51c122eb6eb603b41603f3932d0f67d7b1c84cdfd66b9b5",
+      "bytes": 52828
+    },
+    "import_review": {
+      "path": "artifacts/goal-20261008/committed-build/identity/import-review.approved.json",
+      "sha256": "beea418eb3935f1525a3dbb2ea012056fafaffefd15cfd4c7dd6a9c0eefa7b94",
+      "bytes": 14709
+    }
+  },
+  "startup": {
+    "status": "startup_observed",
+    "startup_state_observed": true,
+    "closure": {
+      "requested_utc": "2026-10-08T22:03:30.564774+00:00",
+      "wm_close": [
+        {
+          "window": 112400210,
+          "owner_pid": 35312,
+          "posted": true
+        },
+        {
+          "window": 565186064,
+          "owner_pid": 35312,
+          "posted": true
+        },
+        {
+          "window": 51972218,
+          "owner_pid": 35312,
+          "posted": true
+        }
+      ],
+      "forced": false,
+      "pid": 35312,
+      "other_processes_touched": false,
+      "mode": "WM_CLOSE",
+      "exit_code": 0,
+      "completed_utc": "2026-10-08T22:03:32.722788+00:00"
+    },
+    "graceful_player_exit": true,
+    "log_review_required": false,
+    "build_identity_unchanged": true
+  },
+  "startup_receipt": {
+    "path": "artifacts/goal-20261008/committed-build/startup-headless/execution.json",
+    "sha256": "593e4e8a7862ea684f409963db09b02b08bf7de30183b09629c158c6cc9086de",
+    "bytes": 4178
+  },
+  "gallery": {
+    "path": "docs/validation/docx-completion-2026-10-08/screenshot-manifest.json",
+    "sha256": "8eda8e17efb34e2f051b914b9ba1273cdf62217b6973e96ae09a1694cd687168",
+    "bytes": 8929
+  },
+  "not_executed": [
+    "foreground standalone route controls",
+    "standalone death/restart",
+    "three basic and one secret standalone timing runs",
+    "human first-attempt and visual/audio acceptance",
+    "hardware performance qualification"
+  ]
+}

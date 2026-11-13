@@ -161,7 +161,9 @@ public sealed class LevelHUD : MonoBehaviour
         // rendering. Tests without a camera still get a usable overlay canvas.
         canvas.renderMode = camera != null ? RenderMode.ScreenSpaceCamera : RenderMode.ScreenSpaceOverlay;
         canvas.worldCamera = camera;
-        canvas.planeDistance = camera != null ? Mathf.Max(1, camera.nearClipPlane + .1f) : 1;
+        // Keep screen-space graphics within the camera's protected near-plane
+        // clearance; a deeper canvas can pass behind nearby castle walls.
+        canvas.planeDistance = camera != null ? camera.nearClipPlane + .001f : 1;
         canvas.sortingOrder = 100;
         var scaler = canvasObject.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
