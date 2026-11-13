@@ -56,7 +56,7 @@ jobs:
           test ! -d Library
       - name: Run real Unity tests
         id: unity
-        uses: game-ci/unity-test-runner@0ff419b913a3630032cbe0de48a0099b5a9f0ed9
+        uses: game-ci/unity-test-runner@32e57712352b500e17974b245a6dce9e11a73213
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
