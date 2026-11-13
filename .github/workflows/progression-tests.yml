@@ -39,7 +39,7 @@ jobs:
           PY
       - name: Upload real test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: progression-test-results
           path: artifacts/progression/

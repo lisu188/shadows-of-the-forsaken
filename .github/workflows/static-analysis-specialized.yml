@@ -35,7 +35,7 @@ jobs:
             dotnet build "$project" --nologo -p:EnableNETAnalyzers=true -p:AnalysisLevel=latest -p:TreatWarningsAsErrors=false > "analyzer-results/$name.txt" 2>&1 || true
           done
           test ${#projects[@]} -gt 0
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: unity-roslyn-reports
