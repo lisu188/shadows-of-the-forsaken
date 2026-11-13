@@ -1,0 +1,23 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "nuget"
+    directories:
+      - "/tests/Camera"
+      - "/tests/Camera/Core"
+      - "/tests/Combat"
+      - "/tests/Combat/Core"
+      - "/tests/Interactions"
+      - "/tests/Interactions/Core"
+      - "/tests/Movement"
+      - "/tests/Movement/Core"
+      - "/tests/Performance"
+      - "/tests/Progression"
+      - "/tests/Progression/Core"
+      - "/tests/Puzzles"
+      - "/tests/Puzzles/Core"
+    schedule:
+      interval: "weekly"
