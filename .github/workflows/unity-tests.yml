@@ -74,7 +74,7 @@ jobs:
         run: python3 tools/unity_validation.py results --mode '${{ matrix.mode }}' 'artifacts/unity/${{ matrix.mode }}/${{ matrix.mode }}-results.xml'
       - name: Upload Unity results and editor log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unity-${{ matrix.mode }}-${{ github.sha }}
           path: |
