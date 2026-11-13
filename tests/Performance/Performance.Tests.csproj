@@ -11,7 +11,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="NUnit" Version="3.14.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.1" />
     <Compile Include="../../Assets/LevelSession/PlayerFrameMetrics.cs" Link="PlayerFrameMetrics.cs" />
     <Compile Include="../../Assets/LevelSession/PlayerRoomFrameMetrics.cs" Link="PlayerRoomFrameMetrics.cs" />
     <Compile Include="RoomFrameMetricsTests.cs" />
